@@ -1,1 +1,108 @@
 @import 'tailwindcss';
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-travel-blue: #3c4ef4;
+  --color-blue09f: #0099ff;
+  --color-blue0cf: #00ccff;
+  --color-blue-light: #b2e4fb;
+
+  --color-grayd9: #d9d9d9;
+  --color-gray99: #99a1af;
+  --color-gray4a: #4a5569;
+  --color-gray22: #222222;
+
+  --color-positive: #48d592;
+  --color-negative: #fd7565;
+
+  --background-image-gradient1: linear-gradient(180deg, #c3eff6 0%, #3da8e5 100%);
+  --background-image-gradient2: linear-gradient(274deg, #3c4ef4 -3.2%, #0cf 110.11%);
+}
+
+@layer base {
+  html,
+  body {
+    font-family: 'Pretendard';
+    background-color: #fff;
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .h1 {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .h2 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .h3 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .t1 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .t2 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .t3 {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .b1 {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .b2 {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .b3 {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+  }
+}
