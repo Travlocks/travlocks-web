@@ -151,53 +151,82 @@
   ## 📂 프로젝트 구조
 
   ```
-📦TRAVLOCKS-FE
- ┣ 📂.github
- ┃ ┣ 📂ISSUE_TEMPLATE
- ┃ ┗ 📜pull_request_template.md
- ┣ 📂public
- ┃ ┗ 📂fonts
- ┣ 📂src
- ┃ ┣ 📂apis
- ┃ ┣ 📂assets
- ┃ ┣ 📂components
- ┃ ┣ 📂constants
- ┃ ┣ 📂hooks
- ┃ ┣ 📂layouts
- ┃ ┣ 📂pages
- ┃ ┃ ┣ 📂LoginPage
- ┃ ┣ 📂routes
- ┃ ┣ 📂types
- ┃ ┣ 📂utils
- ┃ ┣ 📜App.tsx
- ┃ ┗ 📜main.jsx
- ┣ 📜.env
- ┣ 📜.gitignore
- ┣ 📜.prettierrc
- ┣ 📜.stylelintrc
- ┣ 📜eslint.config.js
- ┣ 📜index.html
- ┣ 📜package.json
- ┣ 📜pnpm-lock.yaml
- ┣ 📜README.md
- ┣ 📜tsconfig.app.json
- ┣ 📜tsconfig.json
- ┣ 📜tsconfig.node.json
- ┣ 📜vercel.json
- ┗ 📜vite.config.ts
+📦트래블록스
+┣ 📂.github
+┃ ┣ 📂ISSUE_TEMPLATE
+┃ ┗ 📜pull_request_template.md
+┣ 📂public
+┃ ┗ 📂fonts
+┣ 📂src
+┃ ┣ 📂feature
+┃ ┃ ┣ 📂block-builder
+┃ ┃ ┃ ┣ 📂apis
+┃ ┃ ┃ ┣ 📂components
+┃ ┃ ┃ ┣ 📂hooks
+┃ ┃ ┃ ┣ 📂ui
+┃ ┃ ┃ ┗ 📂types
+┃ ┣ 📂pages
+┃ ┃ ┣ 📜BlockPage.tsx
+┃ ┃ ┣ 📜HomePage.tsx
+┃ ┃ ┣ 📜LoginPage.tsx
+┃ ┃ ┣ 📜MyPage.tsx
+┃ ┃ ┣ 📜ResetPasswordPage.tsx
+┃ ┃ ┣ 📜SignupPage.tsx
+┃ ┃ ┣ 📜TemplatePage.tsx
+┃ ┣ 📂shared
+┃ ┃ ┣ 📂apis
+┃ ┃ ┃ ┗ 📜axios.ts # axios/fetch 인스턴스, interceptor, 공통 fetcher
+┃ ┃ ┣ 📂assets
+┃ ┃ ┣ 📂components
+┃ ┃ ┣ 📂constants
+┃ ┃ ┣ 📂data
+┃ ┃ ┣ 📂hooks
+┃ ┃ ┃ ┣ 📂mutations
+┃ ┃ ┃ ┗ 📂queries
+┃ ┃ ┣ 📂layouts
+┃ ┃ ┣ 📂routes
+┃ ┃ ┣ 📂stores
+┃ ┃ ┣ 📂types
+┃ ┃ ┗ 📂utils
+┃ ┣ 📜App.tsx
+┃ ┗ 📜main.tsx
+┣ 📜.env
+┣ 📜.gitignore
+┣ 📜.prettierrc
+┣ 📜.stylelintrc
+┣ 📜eslint.config.js
+┣ 📜index.html
+┣ 📜package.json
+┣ 📜pnpm-lock.yaml
+┣ 📜README.md
+┣ 📜tsconfig.app.json
+┣ 📜tsconfig.json
+┣ 📜tsconfig.node.json
+┣ 📜vercel.json
+┗ 📜vite.config.ts
 ```
 
 - public
   - fonts - 폰트
 - src
-  - apis - 서버와 통신하는 API 함수 모음
-  - assets - 사용되는 모든 에셋
-  - components - 공용 컴포넌트 및 스타일
-  - constants - 프로젝트 전역에서 사용되는 상수값 및 설정 모음
-  - hooks - 전역으로 사용되는 훅
-  - layouts - 페이지의 공통 레이아웃 컴포넌트
-  - pages - 실제 라우팅되는 페이지 컴포넌트
-  - routes - 도메인 별 라우팅 페이지와 컴포넌트 및 스타일 등
-  - types - TypeScript 타입 정의 모음
-  - utils - 전역으로 사용되는 함수
+    - feature
+        - block-builder
+            - components
+            - ui
+            - apis
+            - hooks
+    - pages - 실제 라우팅되는 페이지 컴포넌트
+    - shared
+        - apis - 서버와 통신하는 API 함수 모음
+        - assets - 사용되는 모든 에셋
+        - components - 공용 컴포넌트 및 스타일
+        - data - json 데이터
+        - hooks - 전역으로 사용되는 훅
+            - mutations - React Query의 useMutation 훅 관련 로직
+            - queries - React Query의 useQuery / useInfiniteQuery 관련 로직
+        - layouts - 페이지의 공통 레이아웃 컴포넌트
+        - routes - 도메인 별 라우팅 페이지와 컴포넌트 및 스타일 등
+        - stores - Zustand 기반 전역 상태 관리 로직
+        - types - TypeScript 타입 정의 모음
+        - utils - 전역으로 사용되는 함수
 </div>
