@@ -47,7 +47,7 @@
       },
       {
         "groupName": "Typography",
-        "emptyLineBefore": "never",
+        "emptyLineBefore": "always",
         "noEmptyLineBetween": true,
         "properties": ["color", "font", "font-size", "font-weight", "line-height", "text-align"]
       }
