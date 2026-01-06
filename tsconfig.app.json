@@ -27,18 +27,21 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@apis/*": ["src/apis/*"],
-      "@assets/*": ["src/assets/*"],
-      "@constants/*": ["src/constants/*"],
-      "@data/*": ["src/data/*"],
       "@feature/*": ["src/feature/*"],
-      "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
-      "@routes/*": ["src/routes/*"],
       "@shared/*": ["src/shared/*"],
-      "@stores/*": ["src/stores/*"],
-      "@types/*": ["src/types/*"]
+      "@apis/*": ["src/shared/apis/*"],
+      "@assets/*": ["src/shared/assets/*"],
+      "@components/*": ["src/shared/components/*"],
+      "@constants/*": ["src/shared/constants/*"],
+      "@data/*": ["src/shared/data/*"],
+      "@hooks/*": ["src/shared/hooks/*"],
+      "@layouts/*": ["src/shared/layouts/*"],
+      "@routes/*": ["src/shared/routes/*"],
+      "@stores/*": ["src/shared/stores/*"],
+      "@types/*": ["src/shared/types/*"],
+      "@utils/*": ["src/shared/utils/*"]
     }
   },
-  "include": ["src", "src/types"]
+  "include": ["src", "src/shared/types"]
 }

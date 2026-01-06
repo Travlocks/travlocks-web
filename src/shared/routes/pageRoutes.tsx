@@ -1,4 +1,4 @@
-import HomeLayout from '@/layouts/HomeLayout';
+import HomeLayout from '@layouts/HomeLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
 
