@@ -25,21 +25,24 @@
 }
 
 @theme {
-  --color-travel-blue: #3c4ef4;
-  --color-blue09f: #0099ff;
-  --color-blue0cf: #00ccff;
-  --color-blue-light: #b2e4fb;
+  --color-primary-color: #3c4ef4;
+  --color-secondary-color-1: #0099ff;
+  --color-secondary-color-2: #00ccff;
+  --color-secondary-color-3: #b2e4fb;
 
-  --color-grayd9: #d9d9d9;
-  --color-gray99: #99a1af;
-  --color-gray4a: #4a5569;
-  --color-gray22: #222222;
+  --color-base-color-0: #222222;
+  --color-base-color-1: #99a1af;
+  --color-base-color-2: #4a5569;
+  --color-base-color-3: #d9d9d9;
+  --color-base-color-4: #f3f4f6;
+  --color-base-color-5: #f9fafb;
+  --color-base-color-6: #ffffff;
 
   --color-positive: #48d592;
   --color-negative: #fd7565;
 
-  --background-image-gradient1: linear-gradient(180deg, #c3eff6 0%, #3da8e5 100%);
-  --background-image-gradient2: linear-gradient(274deg, #3c4ef4 -3.2%, #0cf 110.11%);
+  --background-image-gradient-color-background: linear-gradient(180deg, #c3eff6 0%, #3da8e5 100%);
+  --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #0cf 110.11%);
 }
 
 @layer base {
