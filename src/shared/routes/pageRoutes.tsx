@@ -1,6 +1,7 @@
 import HomeLayout from '@layouts/HomeLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
+import TestPage from '@/pages/TestPage';
 
 export const routes: RouteObject[] = [
   {
@@ -29,6 +30,7 @@ export const routes: RouteObject[] = [
       },
       { path: 'signup', element: <lazyRoutes.SignupPage /> },
       { path: 'template', element: <lazyRoutes.TemplatePage /> },
+      { path: 'test', element: <TestPage /> },
     ],
   },
 ];
