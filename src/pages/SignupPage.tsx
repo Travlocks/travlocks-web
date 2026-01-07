@@ -1,5 +1,11 @@
+import AuthNavButton from '@/shared/components/Button/AuthNavButton';
+
 const SignupPage = () => {
-  return <div>회원가입 페이지</div>;
+  return (
+    <>
+      <AuthNavButton />
+    </>
+  );
 };
 
 export default SignupPage;

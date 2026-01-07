@@ -1,5 +1,11 @@
+import AuthNavButton from '@/shared/components/Button/AuthNavButton';
+
 const LoginPage = () => {
-  return <div>로그인 페이지</div>;
+  return (
+    <>
+      <AuthNavButton />
+    </>
+  );
 };
 
 export default LoginPage;
