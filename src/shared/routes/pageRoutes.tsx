@@ -1,11 +1,11 @@
-import HomeLayout from '@layouts/HomeLayout';
+import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
 
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <HomeLayout />,
+    element: <DefaultLayout />,
     children: [
       {
         index: true,
@@ -16,10 +16,6 @@ export const routes: RouteObject[] = [
         element: <lazyRoutes.BlockPage />,
       },
       {
-        path: 'login',
-        element: <lazyRoutes.LoginPage />,
-      },
-      {
         path: 'mypage',
         element: <lazyRoutes.MyPage />,
       },
@@ -27,9 +23,23 @@ export const routes: RouteObject[] = [
         path: 'password',
         element: <lazyRoutes.ResetPasswordPage />,
       },
-      { path: 'signup', element: <lazyRoutes.SignupPage /> },
       { path: 'template', element: <lazyRoutes.TemplatePage /> },
     ],
+  },
+  {
+    path: '/login',
+    element: <DefaultLayout showNavbar={false} />,
+    children: [
+      {
+        index: true,
+        element: <lazyRoutes.LoginPage />,
+      },
+    ],
+  },
+  {
+    path: '/signup',
+    element: <DefaultLayout showNavbar={false} />,
+    children: [{ index: true, element: <lazyRoutes.SignupPage /> }],
   },
 ];
 
