@@ -35,10 +35,10 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick }: RoundButtonP
       type={type}
       onClick={onClick}
       className={clsx(
-        't2 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer',
+        't2 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
         bg ?? 'bg-primary-color',
       )}
-      style={{ width: width ?? '100%' }}>
+      style={{ maxWidth: width ?? '100%' }}>
       {text}
       <BackIcon />
     </button>
