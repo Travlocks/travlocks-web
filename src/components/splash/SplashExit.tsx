@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import Plane from '@/shared/assets/splash/plane.svg?react';
 import { usePathMotion } from './utils/usePathMotion';
 import {
-  ANIMATION_DURATION,
+  SPLASH_EXIT_ANIMATION,
   SPLASH_VIEWBOX_D,
   PLANE_H,
   PLANE_W,
@@ -28,8 +28,8 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
     targetRef: planeGroupRef as React.RefObject<SVGGElement>,
     planeW: PLANE_W,
     planeH: PLANE_H,
-    duration: ANIMATION_DURATION,
-    ease: 'linear',
+    duration: SPLASH_EXIT_ANIMATION.duration,
+    ease: SPLASH_EXIT_ANIMATION.ease,
     onComplete: onDone,
     // rotateOffsetDeg: 0, // 비행기 방향이 이상하면 여기서 +90/-90 같은 오프셋 조정
   });

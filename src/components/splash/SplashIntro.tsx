@@ -1,5 +1,6 @@
 import splashGroupUrl from '@assets/splash/splash-group.svg?url';
 import { motion } from 'motion/react';
+import { SPLASH_INTRO_ANIMATION } from './utils/constants';
 
 interface SplashIntroProps {
   onNext: () => void;
@@ -12,8 +13,19 @@ const SplashIntro = ({ onNext }: SplashIntroProps) => {
       className="flex w-full h-full translate-x-[10%] items-center justify-center"
       initial={{ x: '-120%', opacity: 1 }}
       animate={{ x: 0, opacity: 1 }}
-      exit={{ x: '120%', opacity: 1, transition: { duration: 1.7, ease: 'linear' } }}
-      transition={{ type: 'tween', duration: 2, ease: 'linear' }}>
+      exit={{
+        x: '120%',
+        opacity: 1,
+        transition: {
+          duration: SPLASH_INTRO_ANIMATION.exitDuration,
+          ease: SPLASH_INTRO_ANIMATION.ease,
+        },
+      }}
+      transition={{
+        type: SPLASH_INTRO_ANIMATION.type,
+        duration: SPLASH_INTRO_ANIMATION.duration,
+        ease: SPLASH_INTRO_ANIMATION.ease,
+      }}>
       <div className="relative">
         <img src={splashGroupUrl} alt="splash-group" className="block select-none" draggable={false} />
 

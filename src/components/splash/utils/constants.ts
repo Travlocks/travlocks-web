@@ -8,5 +8,23 @@ export const SPLASH_VIEWBOX_D = 'M-24 508.842C76 420.254 952.5 -207.246 1954.5 7
 export const PLANE_W = 170;
 // 스플래시 비행기 높이
 export const PLANE_H = 132;
-// 애니메이션 시간(초)
-export const ANIMATION_DURATION = 1.5;
+
+// 스플래시 인트로 애니메이션 설정
+export const SPLASH_INTRO_ANIMATION = {
+  // 인트로 진입 애니메이션 시간(초)
+  duration: 2,
+  // 인트로 종료 애니메이션 시간(초)
+  exitDuration: 1.7,
+  // 애니메이션 이징 함수
+  ease: 'linear' as const,
+  // 애니메이션 타입
+  type: 'tween' as const,
+} as const;
+
+// 스플래시 종료 애니메이션 설정
+export const SPLASH_EXIT_ANIMATION = {
+  // 비행기 이동 애니메이션 시간(초)
+  duration: 1.5,
+  // 애니메이션 함수 타입
+  ease: 'linear' as const,
+} as const;
