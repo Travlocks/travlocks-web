@@ -2,8 +2,42 @@ import Button from '@/shared/components/Button/Button';
 import DualButton from '@/shared/components/Button/DualButton';
 import RoundButton from '@/shared/components/Button/RoundButton';
 import SingleButton from '@/shared/components/Button/SingleButton';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
+import Input from '@/shared/components/Form/Input';
 
 const TestPage = () => {
+  const schema = z.object({
+    email: z.string().email({ message: '올바르지 않은 이메일' }),
+    email2: z.string().email({ message: '올바르지 않은 이메일' }),
+    password: z.string().min(8, { message: '비밀번호는 8자 이상' }).max(20, { message: '비밀번호는 20자 이하' }),
+    password2: z.string().min(8, { message: '비밀번호는 8자 이상' }).max(20, { message: '비밀번호는 20자 이하' }),
+    nickname: z.string(),
+  });
+
+  type FormFields = z.infer<typeof schema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>({
+    defaultValues: {
+      email: '',
+      email2: '',
+      password: '',
+      password2: '',
+      nickname: '',
+    },
+    resolver: zodResolver(schema),
+    mode: 'onChange',
+  });
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    console.log(data);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -52,6 +86,27 @@ const TestPage = () => {
           gap={17}
           textSize={18}
         />
+      </div>
+
+      <div>
+        <h1>✅ Input.tsx</h1>
+        <form className="flex flex-col gap-4 mt-4">
+          {/* 아이콘 상단에 있는 input */}
+          <Input register={register('email')} type="email" label="top" />
+          {errors && <p>{errors.email?.message}</p>}
+          <Input register={register('password')} type="password" label="top" />
+
+          {/* 아이콘 좌측에 있는 input */}
+          <Input register={register('email2')} type="email" label="left" placeholder="your@eamil.com" width={500} />
+          <Input register={register('password2')} type="password" label="left" />
+          <Input
+            register={register('nickname')}
+            label="left"
+            placeholder="닉네임 (한글, 영문 2자 이상 ~ 10자 이하)"
+            disabled={true}
+          />
+          <SingleButton text="제출" width={217} height={65} textSize={20} onClick={handleSubmit(onSubmit)} />
+        </form>
       </div>
     </>
   );
