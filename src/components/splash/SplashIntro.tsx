@@ -1,7 +1,7 @@
 import splashGroupUrl from '@assets/splash/splash-group.svg?url';
 import { motion } from 'motion/react';
 import { SPLASH_INTRO_ANIMATION } from './utils/constants';
-import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import RoundButton from '@/shared/components/Button/RoundButton';
 
 interface SplashIntroProps {
   onNext: () => void;
@@ -30,13 +30,11 @@ const SplashIntro = ({ onNext }: SplashIntroProps) => {
       <div className="relative">
         <img src={splashGroupUrl} alt="splash-group" className="block select-none" draggable={false} />
 
-        <button
-          type="button"
+        <div
           onClick={onNext}
-          className="flex items-center gap-2.5 absolute left-[21.5%] top-[63%] rounded-[30px] bg-primary-color px-[52px] py-[22px] hover:bg-image-gradient-color-hover cursor-pointer">
-          <span className="text-base-color-6 text-t2 font-semibold">여행 조립하러 떠나기</span>
-          <AppIcon name="arrow" color="white" size={16} />
-        </button>
+          className="flex items-center absolute left-[21.5%] top-[63%] hover:bg-gradient-color-hover">
+          <RoundButton text="여행 조립하러 떠나기" onClick={onNext} />
+        </div>
       </div>
     </motion.div>
   );

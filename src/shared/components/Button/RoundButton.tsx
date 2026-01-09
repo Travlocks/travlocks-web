@@ -1,4 +1,5 @@
-import BackIcon from '@assets/icon-back.svg?react';
+import { type ComponentPropsWithoutRef } from 'react';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import clsx from 'clsx';
 
 /**
@@ -21,15 +22,18 @@ import clsx from 'clsx';
  * @author 김진효
  * **/
 
-interface RoundButtonProps {
+type ButtonBaseProps = ComponentPropsWithoutRef<'button'>;
+interface RoundButtonProps extends ButtonBaseProps {
   text: string;
   type?: 'button' | 'submit';
   width?: number;
   bg?: string;
   onClick?: () => void;
+  hover?: boolean;
+  className?: string;
 }
 
-const RoundButton = ({ text, type = 'button', width, bg, onClick }: RoundButtonProps) => {
+const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, className, ...props }: RoundButtonProps) => {
   return (
     <button
       type={type}
@@ -37,10 +41,13 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick }: RoundButtonP
       className={clsx(
         't2 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
         bg ?? 'bg-primary-color',
+        hover && 'hover:bg-gradient-color-hover',
+        className,
       )}
-      style={{ maxWidth: width ?? '100%' }}>
+      style={{ maxWidth: width ?? '100%' }}
+      {...props}>
       {text}
-      <BackIcon />
+      <AppIcon name="arrow" color="white" size={16} />
     </button>
   );
 };
