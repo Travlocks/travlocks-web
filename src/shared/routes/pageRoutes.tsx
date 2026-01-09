@@ -1,6 +1,7 @@
 import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
+import TestPage from '@/pages/TestPage';
 
 export const routes: RouteObject[] = [
   {
@@ -24,6 +25,7 @@ export const routes: RouteObject[] = [
         element: <lazyRoutes.ResetPasswordPage />,
       },
       { path: 'template', element: <lazyRoutes.TemplatePage /> },
+      { path: 'test', element: <TestPage /> },
     ],
   },
   {
