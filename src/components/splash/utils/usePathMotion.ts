@@ -31,7 +31,7 @@ export function usePathMotion({
   ease = 'linear',
   aheadPx = 1,
   rotateOffsetDeg = 10,
-  offsetY = 0,
+  offsetY = 16,
   onComplete,
 }: UsePathMotionArgs) {
   const doneRef = useRef(false);
@@ -80,5 +80,18 @@ export function usePathMotion({
       unsub();
       animation.cancel();
     };
-  }, [run, pathRef, targetRef, planeW, planeH, duration, ease, aheadPx, rotateOffsetDeg, onComplete, progress]);
+  }, [
+    run,
+    pathRef,
+    targetRef,
+    planeW,
+    planeH,
+    duration,
+    ease,
+    aheadPx,
+    rotateOffsetDeg,
+    onComplete,
+    progress,
+    offsetY,
+  ]);
 }
