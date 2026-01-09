@@ -1,11 +1,20 @@
 import React from 'react';
 
 export const lazyRoutes = {
-  BlockPage: React.lazy(() => import('../../pages/BlockPage')),
-  HomePage: React.lazy(() => import('../../pages/HomePage')),
+  /** 로그인 관련 페이지 */
   LoginPage: React.lazy(() => import('../../pages/LoginPage')),
+  SignupPage: React.lazy(() => import('../../pages/SignupPage')),
+
+  /** 홈 페이지 */
+  HomePage: React.lazy(() => import('../../pages/HomePage')),
+
+  /** 블록 페이지 */
+  BlockPage: React.lazy(() => import('../../pages/BlockPage')),
+
+  /** 템플릿 페이지 */
+  TemplatePage: React.lazy(() => import('../../pages/TemplatePage')),
+
+  /** 마이페이지 */
   MyPage: React.lazy(() => import('../../pages/MyPage')),
   ResetPasswordPage: React.lazy(() => import('../../pages/ResetPasswordPage')),
-  SignupPage: React.lazy(() => import('../../pages/SignupPage')),
-  TemplatePage: React.lazy(() => import('../../pages/TemplatePage')),
 };
