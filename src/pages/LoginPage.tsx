@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
 import Button from '@/shared/components/Button/Button';
+import SocialLoginButton from '@/shared/components/Button/SocialLoginButton';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import { loginSchema, type LoginFormData } from '@/shared/utils/validationSchemas';
@@ -32,6 +33,11 @@ const LoginPage = () => {
   const onSubmit = (data: LoginFormData) => {
     // TODO: 백엔드 API 연동
     console.log('로그인 데이터:', data);
+  };
+
+  const handleSocialLogin = (provider: 'naver' | 'kakao' | 'google') => {
+    // TODO: 소셜 로그인 API 연동
+    console.log(`${provider} 로그인 클릭`);
   };
 
   return (
@@ -98,10 +104,20 @@ const LoginPage = () => {
           </div>
 
           {/* 소셜 로그인 버튼들 */}
-          <div className="flex justify-center items-center gap-[20px] mb-[20px]"></div>
+          <div className="flex justify-center items-center gap-[20px] mb-[20px]">
+            <SocialLoginButton provider="naver" onClick={() => handleSocialLogin('naver')} />
+            <SocialLoginButton provider="kakao" onClick={() => handleSocialLogin('kakao')} />
+            <SocialLoginButton provider="google" onClick={() => handleSocialLogin('google')} />
+          </div>
 
           {/* 로그인 버튼 */}
-          <Button text="Vlock 쌓으러 가기" type="submit" disabled={!isValid} onClick={handleSubmit(onSubmit)} />
+          <Button
+            text="Vlock 쌓으러 가기"
+            type="submit"
+            disabled={!isValid}
+            onClick={handleSubmit(onSubmit)}
+            className="rounded-[10px]"
+          />
         </form>
       </div>
     </div>

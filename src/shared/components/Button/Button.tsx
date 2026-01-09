@@ -22,13 +22,14 @@ import clsx from 'clsx';
  * @author 김진효
  * **/
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   type?: 'button' | 'submit';
   bg?: string;
   variant?: 'primary' | 'gradient';
   disabled?: boolean;
   onClick?: () => void;
+  className?: string;
 }
 
 // variant별 기본 배경 (bg 넘기면 무시됨)
@@ -37,7 +38,7 @@ const VARIANT_BG: Record<NonNullable<ButtonProps['variant']>, string> = {
   gradient: 'bg-gradient-color-hover',
 };
 
-const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, onClick }: ButtonProps) => {
+const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, className, onClick }: ButtonProps) => {
   const backgroundClass = bg ?? VARIANT_BG[variant]; // bg 있으면 최우선, 없으면 variant 사용
 
   return (
@@ -49,6 +50,7 @@ const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, onCl
         't2 max-w-[500px] w-full h-[64px] flex justify-center items-center text-base-color-6 rounded-[5px] cursor-pointer',
         backgroundClass,
         disabled && 'cursor-not-allowed',
+        className,
       )}>
       {text}
     </button>
