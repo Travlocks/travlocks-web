@@ -1,6 +1,7 @@
 import splashGroupUrl from '@assets/splash/splash-group.svg?url';
 import { motion } from 'motion/react';
 import { SPLASH_INTRO_ANIMATION } from './utils/constants';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
 interface SplashIntroProps {
   onNext: () => void;
@@ -32,9 +33,9 @@ const SplashIntro = ({ onNext }: SplashIntroProps) => {
         <button
           type="button"
           onClick={onNext}
-          className="flex gap-2.5 absolute left-[21.5%] top-[63%] rounded-[30px] bg-primary-color px-[52px] py-[22px] hover:bg-image-gradient-color-hover cursor-pointer">
+          className="flex items-center gap-2.5 absolute left-[21.5%] top-[63%] rounded-[30px] bg-primary-color px-[52px] py-[22px] hover:bg-image-gradient-color-hover cursor-pointer">
           <span className="text-base-color-6 text-t2 font-semibold">여행 조립하러 떠나기</span>
-          <p className="text-white">→</p>
+          <AppIcon name="arrow" color="white" size={16} />
         </button>
       </div>
     </motion.div>
