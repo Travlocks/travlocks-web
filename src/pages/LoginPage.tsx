@@ -44,15 +44,15 @@ const LoginPage = () => {
     <div className="flex justify-center items-center min-h-dvh px-4 py-8">
       <div className="w-full max-w-[585px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[43px] py-[48px]">
         {/* 로고 */}
-        <div className="flex justify-center mb-[24px]">
+        <div className="flex justify-center mb-[28px]">
           <LogoAuth className="w-[367px] h-[89px]" />
         </div>
 
         {/* 카피 문구 */}
-        <p className="t2 text-base-color-2 text-center mb-[24px]">조립하는 즐거움, 나만의 여행 블록 쌓기</p>
+        <p className="t2 text-base-color-2 text-center mb-12">조립하는 즐거움, 나만의 여행 블록 쌓기</p>
 
         {/* 로그인/회원가입 탭 */}
-        <div className="mb-[24px]">
+        <div className="mb-15">
           <AuthNavButton />
         </div>
 
@@ -85,26 +85,27 @@ const LoginPage = () => {
                   }
                 }}
               />
-              {/* 비밀번호를 잊으셨나요? 링크 */}
-              <Link
-                to="/password"
-                className="absolute right-0 top-[60px] t3 text-base-color-2 underline hover:underline">
+              {/* `비밀번호를 잊으셨나요?` 링크 */}
+              <Link to="/password" className="absolute right-0 top-full mt-[40px] t3 text-base-color-2 underline">
                 비밀번호를 잊으셨나요?
               </Link>
             </div>
-            {errors.password && <Alert text={errors.password.message || ''} type="alert" width={500} />}
+
+            <div className="min-h-[56px]">
+              {errors.password ? <Alert text={errors.password.message || ''} type="alert" width={500} /> : null}
+            </div>
           </div>
 
           {/* 소셜 로그인 구분선 */}
-          <div className="relative flex items-center justify-center my-[20px]">
-            <div className="absolute w-full h-px bg-[rgba(0,0,0,0.1)]"></div>
+          <div className="relative flex items-center justify-center mt-[-10px] mb-[7.5px]">
+            <div className="absolute w-full h-px bg-black/10"></div>
             <div className="relative bg-base-color-6 px-[8px]">
               <span className="b1 text-[#717182]">Or</span>
             </div>
           </div>
 
           {/* 소셜 로그인 버튼들 */}
-          <div className="flex justify-center items-center gap-[20px] mb-[20px]">
+          <div className="flex justify-center items-center gap-[20px] mb-[23px]">
             <SocialLoginButton provider="naver" onClick={() => handleSocialLogin('naver')} />
             <SocialLoginButton provider="kakao" onClick={() => handleSocialLogin('kakao')} />
             <SocialLoginButton provider="google" onClick={() => handleSocialLogin('google')} />
