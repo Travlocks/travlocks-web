@@ -10,11 +10,10 @@ interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
-  const [showSplash, setShowSplash] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-
   const isHomeRoute = location.pathname === '/';
+  const [showSplash, setShowSplash] = useState(isHomeRoute);
 
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">
