@@ -16,6 +16,7 @@ type UsePathMotionArgs = {
   ease?: Ease;
   aheadPx?: number;
   rotateOffsetDeg?: number;
+  offsetY?: number;
   onComplete?: () => void;
 };
 
@@ -29,7 +30,8 @@ export function usePathMotion({
   duration = 2.2,
   ease = 'linear',
   aheadPx = 1,
-  rotateOffsetDeg = 0,
+  rotateOffsetDeg = 10,
+  offsetY = 0,
   onComplete,
 }: UsePathMotionArgs) {
   const doneRef = useRef(false);
@@ -51,7 +53,7 @@ export function usePathMotion({
 
       target.setAttribute(
         'transform',
-        `translate(${x} ${y}) rotate(${angle + rotateOffsetDeg}) translate(${-planeW / 2})`,
+        `translate(${x} ${y}) rotate(${angle + rotateOffsetDeg}) translate(${-planeW / 2} ${-planeH / offsetY})`,
       );
     };
 

@@ -14,27 +14,9 @@ const MainBg = () => {
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <div className="relative w-full h-full bg-gradient-color-background">
-        <img
-          src={Cloud1Url}
-          alt="cloud1"
-          aria-hidden="true"
-          className={`${imgBase} ${CLOUD_POS.cloud1}`}
-          draggable={false}
-        />
-        <img
-          src={Cloud2Url}
-          alt="cloud2"
-          aria-hidden="true"
-          className={`${imgBase} ${CLOUD_POS.cloud2}`}
-          draggable={false}
-        />
-        <img
-          src={Cloud3Url}
-          alt="cloud3"
-          aria-hidden="true"
-          className={`${imgBase} ${CLOUD_POS.cloud3}`}
-          draggable={false}
-        />
+        <img src={Cloud1Url} alt="" aria-hidden="true" className={`${imgBase} ${CLOUD_POS.cloud1}`} draggable={false} />
+        <img src={Cloud2Url} alt="" aria-hidden="true" className={`${imgBase} ${CLOUD_POS.cloud2}`} draggable={false} />
+        <img src={Cloud3Url} alt="" aria-hidden="true" className={`${imgBase} ${CLOUD_POS.cloud3}`} draggable={false} />
       </div>
     </div>
   );

@@ -31,11 +31,18 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
     duration: SPLASH_EXIT_ANIMATION.duration,
     ease: SPLASH_EXIT_ANIMATION.ease,
     onComplete: onDone,
-    // rotateOffsetDeg: 0, // 비행기 방향이 이상하면 여기서 +90/-90 같은 오프셋 조정
+    rotateOffsetDeg: 10, // 비행기 방향이 이상하면 여기서 +90/-90 같은 오프셋 조정
+    offsetY: 16,
   });
 
   return (
     <div className="absolute inset-0 z-50 pointer-events-none">
+      <img
+        src={splashPlaneLineUrl}
+        alt="splash-plane-line"
+        className="absolute translate-y-[6%] inset-0 w-full h-full"
+      />
+
       {/* 스플래시 비행기 경로 */}
       <svg
         viewBox={SPLASH_VIEWBOX}
@@ -49,11 +56,6 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
           <Plane width={PLANE_W} height={PLANE_H} />
         </g>
       </svg>
-      <img
-        src={splashPlaneLineUrl}
-        alt="splash-plane-line"
-        className="absolute translate-y-[6%] inset-0 w-full h-full"
-      />
     </div>
   );
 };
