@@ -30,11 +30,13 @@ const SplashIntro = ({ onNext }: SplashIntroProps) => {
       <div className="relative">
         <img src={splashGroupUrl} alt="splash-group" className="block select-none" draggable={false} />
 
-        <div
+        <RoundButton
+          text="여행 조립하러 떠나기"
           onClick={onNext}
-          className="flex items-center absolute left-[21.5%] top-[63%] hover:bg-gradient-color-hover">
-          <RoundButton text="여행 조립하러 떠나기" onClick={onNext} />
-        </div>
+          hover
+          width={292}
+          className="absolute! left-[20%] top-[63%]"
+        />
       </div>
     </motion.div>
   );
