@@ -1,9 +1,9 @@
-import AuthNavButton from '@/shared/components/Button/AuthNavButton';
+import Modal from '@/feature/signup/components/Modal';
 
 const SignupPage = () => {
   return (
     <>
-      <AuthNavButton />
+      <Modal />
     </>
   );
 };
