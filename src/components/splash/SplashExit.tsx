@@ -37,11 +37,7 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
 
   return (
     <div className="absolute inset-0 z-50 pointer-events-none">
-      <img
-        src={splashPlaneLineUrl}
-        alt="splash-plane-line"
-        className="absolute translate-y-[6%] inset-0 w-full h-full"
-      />
+      <img src={splashPlaneLineUrl} alt="" className="absolute translate-y-[6%] inset-0 w-full h-full" />
 
       {/* 스플래시 비행기 경로 */}
       <svg

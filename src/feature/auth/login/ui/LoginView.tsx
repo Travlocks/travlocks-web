@@ -57,6 +57,7 @@ export const LoginView = () => {
               error={!!inlineMessage}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && canSubmit) {
+                  e.preventDefault();
                   submit();
                 }
               }}

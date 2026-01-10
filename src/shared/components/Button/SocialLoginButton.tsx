@@ -32,19 +32,19 @@ const SocialLoginButton = ({ provider, onClick }: SocialLoginButtonProps) => {
       ariaLabel: '네이버 로그인',
       bgColor: 'bg-[#03EB66]',
       borderColor: 'border-base-color-3',
-      icon: <IconBase icon={NaverIcon} width="51px" height="51px" />,
+      icon: <IconBase icon={NaverIcon} size={51} />,
     },
     kakao: {
       ariaLabel: '카카오 로그인',
       bgColor: 'bg-[#FFE812]',
       borderColor: '',
-      icon: <IconBase icon={KakaoIcon} width="51px" height="51px" />,
+      icon: <IconBase icon={KakaoIcon} size={51} />,
     },
     google: {
       ariaLabel: '구글 로그인',
       bgColor: 'bg-base-color-6',
       borderColor: 'border-base-color-3',
-      icon: <IconBase icon={GoogleIcon} width="51px" height="51px" fill="#ffffff" />,
+      icon: <IconBase icon={GoogleIcon} size={51} fill="#ffffff" />,
     },
   };
 
