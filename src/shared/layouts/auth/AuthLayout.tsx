@@ -1,6 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
 import LogoAuth from '@assets/logo/logo-auth.svg?react';
+import type { AuthLayoutHeader } from './AuthLayout.type';
+import { useState } from 'react';
+import type { AuthLayoutOutletCtx } from './AuthLayout.type';
 
 /**
  * 인증 관련 페이지(로그인, 회원가입, 비밀번호 재설정)에서 사용되는 공통 레이아웃
@@ -11,13 +14,37 @@ import LogoAuth from '@assets/logo/logo-auth.svg?react';
  * @author seomgin36
  */
 
-interface AuthLayoutProps {
-  subtitle?: string;
-  description?: string;
-  showAuthNav?: boolean;
-}
+const DEFAULT_HEADER: AuthLayoutHeader = {
+  subtitle: undefined,
+  description: undefined,
+  showAuthNav: false,
+};
 
-const AuthLayout = ({ subtitle, description, showAuthNav = false }: AuthLayoutProps) => {
+const AuthLayout = () => {
+  const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
+
+  // 헤더 교체 함수
+  const setAuthHeader = (next: AuthLayoutHeader) => {
+    setHeader(next);
+  };
+
+  const updateAuthHeader = (patch: Partial<AuthLayoutHeader>) => {
+    setHeader((prev) => ({ ...prev, ...patch }));
+  };
+
+  const resetAuthHeader = () => {
+    setHeader(DEFAULT_HEADER);
+  };
+
+  const ctx = {
+    header,
+    setAuthHeader,
+    updateAuthHeader,
+    resetAuthHeader,
+  } satisfies AuthLayoutOutletCtx;
+
+  const { subtitle, description, showAuthNav = false } = header;
+
   return (
     <div className="flex justify-center items-center min-h-dvh px-4 py-8">
       <div className="w-full max-w-[585px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[43px] py-[48px]">
@@ -40,7 +67,7 @@ const AuthLayout = ({ subtitle, description, showAuthNav = false }: AuthLayoutPr
         )}
 
         {/* Child 컴포넌트 */}
-        <Outlet />
+        <Outlet context={ctx} />
       </div>
     </div>
   );
