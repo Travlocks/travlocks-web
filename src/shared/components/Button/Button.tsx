@@ -38,7 +38,7 @@ const VARIANT_BG: Record<NonNullable<ButtonProps['variant']>, string> = {
 };
 
 const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, className, ...props }: ButtonProps) => {
-  const backgroundClass = bg ?? VARIANT_BG[variant]; // bg 있으면 최우선, 없으면 variant 사용
+  const backgroundClass = disabled ? 'bg-[#9CA3AF]' : (bg ?? VARIANT_BG[variant]); // bg 있으면 최우선, 없으면 variant 사용
 
   return (
     <button
@@ -48,7 +48,7 @@ const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, clas
       className={clsx(
         't2 max-w-[500px] w-full h-[64px] flex justify-center items-center text-base-color-6 rounded-[5px] cursor-pointer',
         backgroundClass,
-        disabled && 'cursor-not-allowed',
+        disabled && 'disabled:cursor-not-allowed',
         className,
       )}>
       {text}
