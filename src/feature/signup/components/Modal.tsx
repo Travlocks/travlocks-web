@@ -8,6 +8,10 @@ import Password from './Password';
 import Nickname from './Nickname';
 import Preference from './Preference';
 
+export interface StepProps {
+  setLevel: React.Dispatch<React.SetStateAction<number>>;
+}
+
 const STEPS = [
   { id: 0, title: '약관동의', Component: Terms },
   { id: 1, title: '이메일 인증', Component: Email },
@@ -20,11 +24,13 @@ const Modal = () => {
   const [level, setLevel] = useState<number>(0); // 현재 단계
 
   return (
-    <div className="max-w-[585px] w-full h-[988px] px-[43px] pt-[48px] rounded-[30px] flex flex-col items-center border border-[rgba(34,34,34,0.10)] bg-base-color-6 shadow-[0_8px_10px_-5px_rgba(0,0,0,0.10),_0_20px_25px_-5px_rgba(0,0,0,0.10)]">
+    <div className="max-w-[585px] w-full h-[988px] px-[43px] pt-[48px] rounded-[30px] flex flex-col items-center gap-[20px] border border-[rgba(34,34,34,0.10)] bg-base-color-6 shadow-[0_8px_10px_-5px_rgba(0,0,0,0.10),_0_20px_25px_-5px_rgba(0,0,0,0.10)]">
       <LogoIcon />
-      <h1>조립하는 즐거움, 나만의 여행 블록 쌓기</h1>
+      <h1 className="text-[#4A5569] t2 mt-[8px]">조립하는 즐거움, 나만의 여행 블록 쌓기</h1>
 
-      <AuthNavButton />
+      <div className="mt-[28px] w-full">
+        <AuthNavButton />
+      </div>
 
       {/* 단계 영역 */}
       <div className="relative w-full self-start">
@@ -34,12 +40,11 @@ const Modal = () => {
         </div>
 
         {/* 단계 리스트 */}
-        <div className="absolute top-0 flex flex-col h-full">
+        <div className="absolute top-0 flex flex-col h-full gap-[28px]">
           {STEPS.map(({ id, title, Component }) => (
             <div key={id} className={clsx('flex', level === id ? 'h2 gap-[23px]' : 'h3 gap-[13px] items-center')}>
               {/* 원 */}
               <div
-                onClick={() => setLevel(id)}
                 className={clsx(
                   't2 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color cursor-pointer relative z-10 shrink-0',
                   level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
@@ -51,7 +56,7 @@ const Modal = () => {
               <div className={clsx(level === id && 'mt-[5px]')}>
                 <span>{title}</span>
                 {/* 각 단계별 컴포넌트 */}
-                {level === id && <Component />}
+                {level === id && <Component setLevel={setLevel} />}
               </div>
             </div>
           ))}

@@ -48,7 +48,7 @@ const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, onCl
       className={clsx(
         't2 max-w-[500px] w-full h-[64px] flex justify-center items-center text-base-color-6 rounded-[5px] cursor-pointer',
         backgroundClass,
-        disabled && 'cursor-not-allowed',
+        disabled && 'cursor-not-allowed bg-base-color-3!',
       )}>
       {text}
     </button>
