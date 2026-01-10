@@ -1,5 +1,11 @@
+import PasswordView from '@/feature/auth/password/ui/PasswordView';
+
 const ResetPasswordPage = () => {
-  return <div>비밀번호 재설정 페이지</div>;
+  return (
+    <div className="mt-13 max-w-[440px] mx-auto">
+      <PasswordView />
+    </div>
+  );
 };
 
 export default ResetPasswordPage;
