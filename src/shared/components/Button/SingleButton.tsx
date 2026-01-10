@@ -67,8 +67,8 @@ const SingleButton = ({
       onClick={onClick}
       disabled={disabled}
       className={clsx(
-        'w-full flex justify-center items-center rounded-[10px] border ',
-        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        'w-full flex justify-center items-center rounded-[10px] ',
+        disabled ? 'cursor-not-allowed bg-base-color-3!' : 'cursor-pointer border',
         backgroundClass,
         textSizeClass,
       )}
