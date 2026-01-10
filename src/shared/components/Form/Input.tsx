@@ -6,6 +6,7 @@ import EmailIcon from '@assets/icon-email.svg?react';
 import PasswordIcon from '@assets/icon-password.svg?react';
 import EyeClosed from '@assets/icon-eye-closed.svg?react';
 import EyeOpen from '@assets/icon-eye-open.svg?react';
+import { IconBase } from '@/shared/ui/icon/IconBase';
 
 /**
  * react-hook-form의 register를 기반으로 동작하는 공통 Input 컴포넌트입니다.
@@ -84,8 +85,8 @@ const Input = ({ register, width, label, error, type, ...rest }: InputProps) => 
           type="button"
           disabled={rest.disabled}
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute top-1/2 -translate-y-1/2 right-[10px] cursor-pointer">
-          <EyeIcon />
+          className="absolute top-1/2 -translate-y-1/2 right-[15px] cursor-pointer">
+          <IconBase icon={EyeIcon} width={20} height={20} />
         </button>
       )}
     </div>
