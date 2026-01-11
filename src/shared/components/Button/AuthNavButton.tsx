@@ -26,8 +26,8 @@ const AuthNavButton = () => {
           to={link.to}
           className={({ isActive }) =>
             clsx(
-              'w-1/2 flex items-center justify-center relative',
-              isActive ? 'b3 bg-primary-color text-base-color-6' : 'b4 text-primary-color',
+              'b3 w-1/2 flex items-center justify-center relative',
+              isActive ? 'bg-primary-color text-base-color-6' : 'text-primary-color',
             )
           }>
           {({ isActive }) => (
