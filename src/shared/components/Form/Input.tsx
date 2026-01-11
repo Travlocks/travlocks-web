@@ -75,6 +75,7 @@ const Input = ({ register, width, label, error, type, ...rest }: InputProps) => 
           error && 'border-negative',
           label === 'top' ? 'px-[18px] h-[60px] focus:border-primary-color' : 'h-[55px]',
           label === 'left' && Icon ? 'px-[49px]' : 'px-[18px]',
+          rest.disabled && 'bg-base-color-4! border-base-color-3! text-[#9CA3AF]!',
         )}
       />
 
