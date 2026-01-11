@@ -11,6 +11,7 @@ export function IconBase({ size = 16, title, icon: Component, style, ...props }:
       width={size}
       height={size}
       aria-hidden={title ? undefined : true}
+      aria-label={title}
       role={title ? 'img' : undefined}
       style={style}
       fill="currentColor"

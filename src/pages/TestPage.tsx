@@ -53,7 +53,7 @@ const TestPage = () => {
 
       <div className="flex flex-col gap-2">
         <h1>✅ RoundButton.tsx</h1>
-        <RoundButton text="여행 조립하러 떠나기" width={292} />
+        <RoundButton text="여행 조립하러 떠나기" width={292} hover />
         <RoundButton text="여행 시작하기" />
       </div>
 

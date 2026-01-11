@@ -31,11 +31,15 @@ export function usePathMotion({
   ease = 'linear',
   aheadPx = 1,
   rotateOffsetDeg = 10,
-  offsetY = 16,
+  offsetY = 0,
   onComplete,
 }: UsePathMotionArgs) {
   const doneRef = useRef(false);
   const progress = useMotionValue(0);
+
+  if (offsetY === 0) {
+    throw new Error('offsetY cannot be zero');
+  }
 
   useEffect(() => {
     if (!run) return;
