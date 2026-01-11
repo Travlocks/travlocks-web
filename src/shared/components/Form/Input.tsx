@@ -55,7 +55,7 @@ const Input = ({ register, width, label, error, type, className, ...rest }: Inpu
       {label === 'top' && Icon && (
         <div className="flex gap-[3px] justify-center items-center px-[5px] py-[3px] absolute left-[22px] top-[-12px] bg-base-color-6">
           <Icon className="text-base-color-1 group-focus-within:text-primary-color" />
-          <p className="b2 text-base-color-1 group-focus-within:text-primary-color">
+          <p className="b6 text-base-color-1 group-focus-within:text-primary-color">
             {isPassword ? '비밀번호' : '이메일'}
           </p>
         </div>
@@ -72,7 +72,7 @@ const Input = ({ register, width, label, error, type, className, ...rest }: Inpu
         {...register}
         {...rest}
         className={clsx(
-          `b1 w-full py-[16px] rounded-[10px] border border-base-color-1 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-1 placeholder:tracking-[-0.15px] outline-none`,
+          `b4 w-full py-[16px] rounded-[10px] border border-base-color-1 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-1 placeholder:tracking-[-0.15px] outline-none`,
           'disabled:bg-base-color-4 disabled:cursor-not-allowed disabled:border-[rgba(0,0,0,0.1)]',
           error && 'border-negative',
           label === 'top' ? 'px-[18px] h-[60px] focus:border-primary-color' : 'h-[55px]',
