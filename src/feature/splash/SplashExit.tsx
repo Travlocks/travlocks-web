@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import clsx from 'clsx';
 import Plane from '@/shared/assets/splash/plane.svg?react';
 import { usePathMotion } from './utils/usePathMotion';
 import {
@@ -19,6 +20,7 @@ interface SplashExitProps {
 const SplashExit = ({ onDone }: SplashExitProps) => {
   const pathRef = useRef<SVGPathElement | null>(null);
   const planeGroupRef = useRef<SVGGElement | null>(null);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const run = true;
 
   // 스플래시 비행기 이동 애니메이션
@@ -30,7 +32,10 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
     planeH: PLANE_H,
     duration: SPLASH_EXIT_ANIMATION.duration,
     ease: SPLASH_EXIT_ANIMATION.ease,
-    onComplete: onDone,
+    onComplete: () => {
+      setIsAnimationComplete(true);
+      onDone();
+    },
     rotateOffsetDeg: 10, // 비행기 방향이 이상하면 여기서 +90/-90 같은 오프셋 조정
     offsetY: 16,
   });
@@ -48,7 +53,9 @@ const SplashExit = ({ onDone }: SplashExitProps) => {
         <path ref={pathRef} d={SPLASH_VIEWBOX_D} fill="none" stroke="none" />
 
         {/* 비행기 */}
-        <g ref={planeGroupRef}>
+        <g
+          ref={planeGroupRef}
+          className={clsx('transition-opacity duration-100', isAnimationComplete ? 'opacity-0' : 'opacity-100')}>
           <Plane width={PLANE_W} height={PLANE_H} />
         </g>
       </svg>
