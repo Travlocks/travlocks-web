@@ -15,7 +15,7 @@ const SplashIntro = ({ onNext }: SplashIntroProps) => {
       initial={{ x: '-120%', opacity: 1 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{
-        x: '120%',
+        x: '130%',
         opacity: 1,
         transition: {
           duration: SPLASH_INTRO_ANIMATION.exitDuration,

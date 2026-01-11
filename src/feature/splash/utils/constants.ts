@@ -24,7 +24,7 @@ export const SPLASH_INTRO_ANIMATION = {
 // 스플래시 종료 애니메이션 설정
 export const SPLASH_EXIT_ANIMATION = {
   // 비행기 이동 애니메이션 시간(초)
-  duration: 1.5,
+  duration: 1.7,
   // 애니메이션 함수 타입
   ease: 'linear' as const,
 } as const;
