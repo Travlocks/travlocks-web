@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
 import LogoAuth from '@assets/logo/logo-auth.svg?react';
 import type { AuthLayoutHeader } from './AuthLayout.type';
@@ -21,6 +21,7 @@ const DEFAULT_HEADER: AuthLayoutHeader = {
 };
 
 const AuthLayout = () => {
+  const location = useLocation();
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
 
   // 헤더 교체 함수
@@ -46,7 +47,7 @@ const AuthLayout = () => {
   const { subtitle, description, showAuthNav = false } = header;
 
   return (
-    <div className="flex justify-center items-center min-h-dvh px-4 py-8">
+    <div key={location.pathname} className="flex justify-center animate-fade-in items-center min-h-dvh px-4 py-8">
       <div className="w-full max-w-[585px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[43px] py-[48px]">
         {/* 로고 */}
         <div className="flex justify-center mb-[28px]">
