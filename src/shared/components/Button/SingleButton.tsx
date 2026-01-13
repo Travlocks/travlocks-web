@@ -43,8 +43,8 @@ const VARIANT_BG: Record<NonNullable<SingleButtonProps['variant']>, string> = {
 
 // 글씨 크기 별 스타일
 const TEXT_SIZE: Record<number, string> = {
-  20: 't2',
-  18: 'b1 font-medium',
+  20: 'h9',
+  18: 'b3',
 };
 
 const SingleButton = ({
