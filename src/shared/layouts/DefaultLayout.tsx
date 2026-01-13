@@ -1,6 +1,6 @@
 import Navbar from '@components/Navbar';
 import MainBg from '@components/MainBg';
-import SplashFlow from '@/components/splash/SplashFlow';
+import SplashFlow from '@/feature/splash/SplashFlow';
 import { Suspense, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';

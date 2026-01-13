@@ -1,0 +1,55 @@
+import Input from '@/shared/components/Form/Input';
+import { useResetPasswordForm } from '../hooks/useResetPasswordForm';
+import type { ResetPasswordFormData } from '@/shared/utils/validationSchemas';
+import Button from '@/shared/components/Button/Button';
+import Alert from '@/shared/components/Form/Alert';
+import { Link } from 'react-router-dom';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import type { Step } from '@/pages/ResetPasswordPage';
+import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+
+type Props = {
+  step: Step;
+  onSendMail: (email: string) => Promise<void>;
+};
+
+const PasswordView = ({ step, onSendMail }: Props) => {
+  const onSubmitResetPassword = async (data: ResetPasswordFormData) => {
+    await onSendMail(data.email);
+  };
+
+  const { register, canSubmit, isSubmitting, inlineMessage, submit } = useResetPasswordForm(onSubmitResetPassword);
+
+  if (step === 'sent') {
+    const { buttonText } = AUTH_HEADER.password.sent;
+
+    return (
+      <div className="flex flex-col">
+        <Link to="/login">
+          <Button text={buttonText} showIcon={true} className="rounded-[10px]" />
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <form onSubmit={submit}>
+        <Input register={register('email')} label="left" type="email" placeholder="your@email.com" />
+        {inlineMessage && <Alert type="alert" text={inlineMessage} className="mt-2.5" />}
+        <Button
+          type="submit"
+          text="비밀번호 재설정 링크 전송"
+          disabled={!canSubmit || isSubmitting}
+          className="rounded-[10px] mt-10"
+        />
+      </form>
+      <Link to="/login" className="flex justify-center items-center gap-2.5 mt-10">
+        <AppIcon name="arrow" className="rotate-180" fill="base-color-2" size={16} />
+        <p className="h3 font-medium text-base-color-2">로그인으로 돌아가기</p>
+      </Link>
+    </>
+  );
+};
+
+export default PasswordView;

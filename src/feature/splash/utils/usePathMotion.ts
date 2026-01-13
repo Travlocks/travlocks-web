@@ -76,7 +76,6 @@ export function usePathMotion({
       if (doneRef.current) return;
       doneRef.current = true;
 
-      progress.set(0);
       onComplete?.();
     });
 

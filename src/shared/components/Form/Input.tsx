@@ -30,6 +30,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: 'top' | 'left';
   width?: number;
   error?: boolean;
+  className?: string;
 }
 
 const IconList = {
@@ -37,7 +38,7 @@ const IconList = {
   password: PasswordIcon,
 } as const;
 
-const Input = ({ register, width, label, error, type, ...rest }: InputProps) => {
+const Input = ({ register, width, label, error, type, className, ...rest }: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const isPassword = type === 'password';
@@ -76,6 +77,7 @@ const Input = ({ register, width, label, error, type, ...rest }: InputProps) => 
           error && 'border-negative',
           label === 'top' ? 'px-[18px] h-[60px] focus:border-primary-color' : 'h-[55px]',
           label === 'left' && Icon ? 'px-[49px]' : 'px-[18px]',
+          className,
         )}
       />
 

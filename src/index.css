@@ -43,6 +43,27 @@
 
   --background-image-gradient-color-background: linear-gradient(180deg, #9fcdff -4.71%, #e1f7fb 47.65%, #fff 100%);
   --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #0cf 110.11%);
+
+  --animate-fade-in: fadeIn 1000ms ease-out forwards;
+  --animate-fade-out: fadeOut 1000ms ease-out forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {

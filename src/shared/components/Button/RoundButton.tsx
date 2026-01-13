@@ -51,7 +51,7 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
       {hover && (
         <div
           className={clsx(
-            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-700 ease-in-out',
+            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
             'group-hover:opacity-100',
           )}
         />
