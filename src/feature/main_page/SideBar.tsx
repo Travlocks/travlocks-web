@@ -1,4 +1,5 @@
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import LocationIcon from '@assets/icon-location.svg?react';
 
 interface SideBarProps {
   onClose?: () => void;
