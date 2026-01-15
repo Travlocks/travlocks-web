@@ -1,11 +1,7 @@
-import AuthNavButton from '@/shared/components/Button/AuthNavButton';
+import { LoginView } from '@feature/auth/login/ui/LoginView';
 
 const LoginPage = () => {
-  return (
-    <>
-      <AuthNavButton />
-    </>
-  );
+  return <LoginView />;
 };
 
 export default LoginPage;

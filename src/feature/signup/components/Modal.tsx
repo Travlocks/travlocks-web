@@ -1,5 +1,3 @@
-import AuthNavButton from '@/shared/components/Button/AuthNavButton';
-import LogoIcon from '@assets/GNB/logo.svg?react';
 import clsx from 'clsx';
 import { useState } from 'react';
 import Terms from './Terms';
@@ -7,6 +5,9 @@ import Email from './Email';
 import Password from './Password';
 import Nickname from './Nickname';
 import Preference from './Preference';
+import { FormProvider, useForm } from 'react-hook-form';
+import { schema, type FormFields } from '../types/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export interface StepProps {
   setLevel: React.Dispatch<React.SetStateAction<number>>;
@@ -23,15 +24,19 @@ const STEPS = [
 const Modal = () => {
   const [level, setLevel] = useState<number>(0); // 현재 단계
 
+  const methods = useForm<FormFields>({
+    defaultValues: {
+      email: '',
+      code: undefined,
+      password: '',
+      passwordCheck: '',
+    },
+    resolver: zodResolver(schema),
+    mode: 'onChange',
+  });
+
   return (
-    <div className="max-w-[585px] w-full h-[988px] px-[43px] pt-[48px] rounded-[30px] flex flex-col items-center gap-[20px] border border-[rgba(34,34,34,0.10)] bg-base-color-6 shadow-[0_8px_10px_-5px_rgba(0,0,0,0.10),_0_20px_25px_-5px_rgba(0,0,0,0.10)]">
-      <LogoIcon />
-      <h1 className="text-[#4A5569] t2 mt-[8px]">조립하는 즐거움, 나만의 여행 블록 쌓기</h1>
-
-      <div className="mt-[28px] w-full">
-        <AuthNavButton />
-      </div>
-
+    <FormProvider {...methods}>
       {/* 단계 영역 */}
       <div className="relative w-full self-start">
         {/* 세로 진행선 */}
@@ -40,7 +45,7 @@ const Modal = () => {
         </div>
 
         {/* 단계 리스트 */}
-        <div className="absolute top-0 flex flex-col h-full gap-[28px]">
+        <div className="absolute top-0 flex flex-col w-full h-full gap-[28px]">
           {STEPS.map(({ id, title, Component }) => (
             <div key={id} className={clsx('flex', level === id ? 'h2 gap-[23px]' : 'h3 gap-[13px] items-center')}>
               {/* 원 */}
@@ -53,7 +58,7 @@ const Modal = () => {
               </div>
 
               {/* 각 단계 이름 + 컴포넌트 */}
-              <div className={clsx(level === id && 'mt-[5px]')}>
+              <div className={clsx('flex-1', level === id && 'mt-[5px]')}>
                 <span>{title}</span>
                 {/* 각 단계별 컴포넌트 */}
                 {level === id && <Component setLevel={setLevel} />}
@@ -62,7 +67,7 @@ const Modal = () => {
           ))}
         </div>
       </div>
-    </div>
+    </FormProvider>
   );
 };
 
