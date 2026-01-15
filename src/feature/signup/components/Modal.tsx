@@ -47,11 +47,11 @@ const Modal = () => {
         {/* 단계 리스트 */}
         <div className="absolute top-0 flex flex-col w-full h-full gap-[28px]">
           {STEPS.map(({ id, title, Component }) => (
-            <div key={id} className={clsx('flex', level === id ? 'h2 gap-[23px]' : 'h3 gap-[13px] items-center')}>
+            <div key={id} className={clsx('flex', level === id ? 'h6 gap-[23px]' : 'b3 gap-[13px] items-center')}>
               {/* 원 */}
               <div
                 className={clsx(
-                  't2 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color cursor-pointer relative z-10 shrink-0',
+                  'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color cursor-pointer relative z-10 shrink-0',
                   level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
                 )}>
                 {id + 1}
