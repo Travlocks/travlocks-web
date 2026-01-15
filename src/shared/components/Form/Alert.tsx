@@ -23,9 +23,10 @@ interface AlertProps {
   type: 'check' | 'alert';
   width?: number;
   onClick?: () => void;
+  className?: string;
 }
 
-const Alert = ({ text, type, width, onClick }: AlertProps) => {
+const Alert = ({ text, type, width, onClick, className }: AlertProps) => {
   const Icon = type === 'check' ? CheckIcon : AlertIcon;
 
   return (
@@ -35,6 +36,7 @@ const Alert = ({ text, type, width, onClick }: AlertProps) => {
         !width && 'max-w-[500px]',
         type === 'alert' && 'bg-[rgba(253,117,101,0.1)] text-negative',
         type === 'check' && 'bg-[rgba(60,78,244,0.1)] text-primary-color',
+        className,
       )}
       style={{ maxWidth: width }}>
       <Icon />

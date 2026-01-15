@@ -41,7 +41,7 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
       className={clsx(
         // group 클래스를 추가하여 하위 요소 제어 준비
         'group relative overflow-hidden',
-        't2 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
+        'h9 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
         bg ?? 'bg-primary-color',
         className,
       )}
@@ -51,7 +51,7 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
       {hover && (
         <div
           className={clsx(
-            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-700 ease-in-out',
+            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
             'group-hover:opacity-100',
           )}
         />

@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
 /**
  * 가장 기본적으로 사용되는 버튼 컴포넌트입니다.
@@ -28,6 +29,7 @@ interface ButtonProps extends Omit<ButtonBaseProps, 'children'> {
   text: string;
   bg?: string;
   variant?: 'primary' | 'gradient';
+  showIcon?: boolean;
   className?: string;
 }
 
@@ -37,7 +39,16 @@ const VARIANT_BG: Record<NonNullable<ButtonProps['variant']>, string> = {
   gradient: 'bg-gradient-color-hover',
 };
 
-const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, className, ...props }: ButtonProps) => {
+const Button = ({
+  text,
+  type = 'button',
+  bg,
+  variant = 'primary',
+  disabled,
+  className,
+  showIcon = false,
+  ...props
+}: ButtonProps) => {
   const backgroundClass = disabled ? 'bg-[#9CA3AF]' : (bg ?? VARIANT_BG[variant]); // bg 있으면 최우선, 없으면 variant 사용
 
   return (
@@ -46,12 +57,13 @@ const Button = ({ text, type = 'button', bg, variant = 'primary', disabled, clas
       type={type}
       disabled={disabled}
       className={clsx(
-        't2 max-w-[500px] w-full h-[64px] flex justify-center items-center text-base-color-6 rounded-[5px] cursor-pointer',
+        'h9 max-w-[500px] w-full h-[64px] flex justify-center items-center gap-2.5 text-base-color-6 rounded-[5px] cursor-pointer',
         backgroundClass,
         disabled && 'cursor-not-allowed bg-base-color-3!',
         disabled && 'disabled:cursor-not-allowed',
         className,
       )}>
+      {showIcon && <AppIcon name="arrow" className="rotate-180" fill="base-color-6" size={16} />}
       {text}
     </button>
   );

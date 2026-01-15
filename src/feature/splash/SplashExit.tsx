@@ -19,11 +19,10 @@ interface SplashExitProps {
 const SplashExit = ({ onDone }: SplashExitProps) => {
   const pathRef = useRef<SVGPathElement | null>(null);
   const planeGroupRef = useRef<SVGGElement | null>(null);
-  const run = true;
 
   // 스플래시 비행기 이동 애니메이션
   usePathMotion({
-    run,
+    run: true,
     pathRef: pathRef as React.RefObject<SVGPathElement>,
     targetRef: planeGroupRef as React.RefObject<SVGGElement>,
     planeW: PLANE_W,
