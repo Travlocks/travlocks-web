@@ -34,6 +34,7 @@ const Modal = () => {
     },
     resolver: zodResolver(schema),
     mode: 'onChange',
+    criteriaMode: 'all',
   });
 
   return (

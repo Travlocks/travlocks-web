@@ -6,12 +6,14 @@ import XIcon from '@assets/icon-x-password.svg?react';
 import clsx from 'clsx';
 import DualButton from '@/shared/components/Button/DualButton';
 import type { StepProps } from './Modal';
+import { useEffect } from 'react';
 
 const Password = ({ setLevel }: StepProps) => {
   const {
     register,
     watch,
     formState: { errors, dirtyFields },
+    trigger,
   } = useFormContext<FormFields>();
 
   const password = watch('password');
@@ -22,16 +24,22 @@ const Password = ({ setLevel }: StepProps) => {
   const hasNumber = /\d/.test(password);
   const isCombinationValid = hasLetter && hasNumber;
 
+  useEffect(() => {
+    if (passwordCheck) {
+      trigger('passwordCheck');
+    }
+  }, [password, passwordCheck, trigger]);
+
   return (
     <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-1 b1 mt-[3px]">안전한 비밀번호를 만들어주세요</p>
+      <p className="text-base-color-2 b3 mt-[3px]">안전한 비밀번호를 만들어주세요</p>
 
       <div className="flex flex-col gap-[10px]">
         <Input register={register('password')} type="password" label="left" placeholder="비밀번호를 입력해주세요." />
         <div
           className={clsx(
-            'flex gap-[10px] items-center h3 font-[500] ml-[15px]',
-            !dirtyFields.password && 'text-base-color-1',
+            'flex gap-[10px] items-center b4 font-[500] ml-[15px]',
+            !dirtyFields.password && 'text-base-color-2',
             dirtyFields.password && (isLengthValid ? 'text-positive' : 'text-negative'),
           )}>
           {!dirtyFields.password && <CheckIcon />}
@@ -41,8 +49,8 @@ const Password = ({ setLevel }: StepProps) => {
 
         <div
           className={clsx(
-            'flex gap-[10px] items-center h3 font-[500] ml-[15px]',
-            !dirtyFields.password && 'text-base-color-1',
+            'flex gap-[10px] items-center b4 ml-[15px]',
+            !dirtyFields.password && 'text-base-color-2',
             dirtyFields.password && (isCombinationValid ? 'text-positive' : 'text-negative'),
           )}>
           {!dirtyFields.password && <CheckIcon />}
@@ -59,7 +67,9 @@ const Password = ({ setLevel }: StepProps) => {
             error={!!errors.passwordCheck?.message}
           />
           {errors.passwordCheck?.message && (
-            <p className="text-negative h3 font-[500] left-[15px] absolute top-[65px]">비밀번호가 일치하지 않습니다</p>
+            <p className="text-negative b3 font-[500] left-[15px] absolute top-[65px]">
+              {errors.passwordCheck.message}
+            </p>
           )}
         </div>
       </div>
@@ -73,7 +83,7 @@ const Password = ({ setLevel }: StepProps) => {
           }}
           right={{
             text: '다음',
-            disabled: !!errors.passwordCheck || password.length === 0 || passwordCheck.length === 0,
+            disabled: !password || !passwordCheck || !!errors.password || !!errors.passwordCheck,
             onClick: () => setLevel(3),
           }}
           width={215}
