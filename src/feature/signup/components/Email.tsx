@@ -5,6 +5,7 @@ import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import { useEffect, useState } from 'react';
 import type { StepProps } from './Modal';
+import EmailModal from './EmailModal';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
@@ -19,6 +20,7 @@ const Email = ({ setLevel }: StepProps) => {
   const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
   const [hasRetry, setHasRetry] = useState(false); //
   const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
+  const [showModal, setShowModal] = useState(false);
 
   const email = watch('email');
   const code = watch('code');
@@ -121,7 +123,11 @@ const Email = ({ setLevel }: StepProps) => {
       </div>
 
       {step === 2 && (
-        <p className="underline text-base-color-1 b4 self-end mt-[10px] cursor-pointer">이메일을 받지 못하셨나요?</p>
+        <p
+          onClick={() => setShowModal(true)}
+          className="underline text-base-color-1 b4 self-end mt-[10px] cursor-pointer">
+          이메일을 받지 못하셨나요?
+        </p>
       )}
 
       {step === 1 && (
@@ -173,6 +179,8 @@ const Email = ({ setLevel }: StepProps) => {
           />
         </>
       )}
+
+      {showModal && <EmailModal onClick={() => setShowModal(false)} />}
     </section>
   );
 };
