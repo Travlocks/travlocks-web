@@ -1,15 +1,23 @@
-import Nature from '@assets/icon-preference-nature.svg?react';
-import Culture from '@assets/icon-preference-culture.svg?react';
-import Food from '@assets/icon-preference-food.svg?react';
-import Healing from '@assets/icon-preference-healing.svg?react';
-import Activity from '@assets/icon-preference-activity.svg?react';
-import Local from '@assets/icon-preference-local.svg?react';
+import Nature from '@assets/preference/icon-preference-nature.svg?react';
+import Culture from '@assets/preference/icon-preference-culture.svg?react';
+import Food from '@assets/preference/icon-preference-food.svg?react';
+import Healing from '@assets/preference/icon-preference-healing.svg?react';
+import Activity from '@assets/preference/icon-preference-activity.svg?react';
+import Local from '@assets/preference/icon-preference-local.svg?react';
+
+import Free from '@assets/preference/icon-preference-style-free.svg?react';
+import Plan from '@assets/preference/icon-preference-style-plan.svg?react';
+import Schedule from '@assets/preference/icon-preference-style-schedule.svg?react';
+import Efficiency from '@assets/preference/icon-preference-style-efficiency.svg?react';
+import Improvise from '@assets/preference/icon-preference-style-plan.svg?react';
+import Stay from '@assets/preference/icon-preference-style-stay.svg?react';
+
 import DualButton from '@/shared/components/Button/DualButton';
 import type { StepProps } from './Modal';
 import { useState } from 'react';
 import clsx from 'clsx';
 
-const PREFERENCES = [
+const THEMES = [
   {
     id: 1,
     label: '자연',
@@ -22,22 +30,72 @@ const PREFERENCES = [
   { id: 5, label: '액티비티', icon: <Activity className="group-hover:text-white" />, text: '체험과 활동 중심' },
   { id: 6, label: '로컬', icon: <Local className="group-hover:text-white" />, text: '동네와 시장 탐방' },
 ];
-const Preference = ({ setLevel }: StepProps) => {
-  const [selected, setSelected] = useState<number[]>([]);
 
-  const handleSelect = (id: number) => {
+const STYLES = [
+  {
+    id: 1,
+    label: '자유 계획형',
+    icon: <Free className="group-hover:text-white" />,
+    text: '일정은 유연하게, 내 방식대로',
+  },
+  {
+    id: 2,
+    label: '계획 충실형',
+    icon: <Plan className="group-hover:text-white" />,
+    text: '출발 전 일정과 동선을 꼼꼼히',
+  },
+  {
+    id: 3,
+    label: '느긋한 일정형',
+    icon: <Schedule className="group-hover:text-white" />,
+    text: '여유 있게 머무는 여행',
+  },
+  {
+    id: 4,
+    label: '효율 중시형',
+    icon: <Efficiency className="group-hover:text-white" />,
+    text: '시간과 동선을 고려한 이동',
+  },
+  {
+    id: 5,
+    label: '즉흥 탐색형',
+    icon: <Improvise className="group-hover:text-white" />,
+    text: '현장에서 발견하는 여행',
+  },
+  { id: 6, label: '숙소 중심형', icon: <Stay className="group-hover:text-white" />, text: '머무는 시간이 중요한 여행' },
+];
+
+const Preference = ({ setLevel }: StepProps) => {
+  const [selected, setSelected] = useState<{
+    theme: number[];
+    style: number[];
+  }>({
+    theme: [],
+    style: [],
+  }); // 선택된 취향 저장
+  const [preferenceLevel, setPreferenceLevel] = useState<'theme' | 'style'>('theme'); // 여행 테마 및 여행 스타일 단계
+
+  const handleSelect = (level: 'theme' | 'style', id: number) => {
     setSelected((prev) => {
-      if (prev.includes(id)) {
+      const current = prev[level];
+
+      if (current.includes(id)) {
         // 선택 해제
-        return prev.filter((v) => v !== id);
+        return {
+          ...prev,
+          [level]: current.filter((v) => v !== id),
+        };
       }
 
-      if (prev.length >= 2) {
+      if (current.length >= 2) {
         // 이미 2개 이상인 경우에는 무시
         return prev;
       }
 
-      return [...prev, id];
+      return {
+        ...prev,
+        [level]: [...current, id],
+      };
     });
   };
 
@@ -46,13 +104,13 @@ const Preference = ({ setLevel }: StepProps) => {
       <p className="text-base-color-2 b3 mt-[3px]">관심 있는 여행 테마를 선택해주세요 (최대2개)</p>
 
       <div className="grid grid-cols-3 gap-[15px]">
-        {PREFERENCES.map((preference) => {
-          const isSelected = selected.includes(preference.id);
+        {(preferenceLevel === 'theme' ? THEMES : STYLES).map((preference) => {
+          const isSelected = selected[preferenceLevel].includes(preference.id);
 
           return (
             <div
               key={preference.id}
-              onClick={() => handleSelect(preference.id)}
+              onClick={() => handleSelect(preferenceLevel, preference.id)}
               className={clsx(
                 'group rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color cursor-pointer hover:text-primary-color',
                 isSelected ? 'boder-primary-color text-primary-color bg-[rgba(60,78,244,0.10)]' : 'border-base-color',
@@ -81,7 +139,9 @@ const Preference = ({ setLevel }: StepProps) => {
         })}
       </div>
 
-      <p className="self-end underline text-base-color-2 b4 cursor-pointer -mt-4">건너뛰기</p>
+      <p onClick={() => setLevel(5)} className="self-end underline text-base-color-2 b4 cursor-pointer -mt-4">
+        건너뛰기
+      </p>
 
       <DualButton
         left={{
@@ -92,6 +152,13 @@ const Preference = ({ setLevel }: StepProps) => {
         }}
         right={{
           text: '다음',
+          onClick: () => {
+            if (preferenceLevel === 'theme') {
+              setPreferenceLevel('style');
+            } else {
+              setLevel(5);
+            }
+          },
         }}
         width={215}
         height={64}

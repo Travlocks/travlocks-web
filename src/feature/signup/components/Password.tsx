@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form';
 import type { FormFields } from '../types/schema';
 import Input from '@/shared/components/Form/Input';
 import CheckIcon from '@assets/icon-check-password.svg?react';
-import XIcon from '@assets/icon-x-password.svg?react';
+import XIcon from '@assets/icon-x.svg?react';
 import clsx from 'clsx';
 import DualButton from '@/shared/components/Button/DualButton';
 import type { StepProps } from './Modal';

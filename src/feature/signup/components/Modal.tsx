@@ -39,41 +39,45 @@ const Modal = () => {
 
   return (
     <FormProvider {...methods}>
-      {/* 단계 영역 */}
-      <div className="relative w-full self-start top-[-40px]">
-        {/* 세로 진행선 */}
-        <div className="relative w-[40px] h-[631px] flex flex-col">
-          <div
-            className={clsx(
-              'absolute left-1/2 -translate-x-1/2 w-[3px] h-[631px] rounded-[5px] bg-primary-color',
-              level === 4 && 'h-[300px]!',
-            )}></div>
-        </div>
+      {level < 5 && (
+        // 단계 영역
+        <div className="relative w-full self-start top-[-40px]">
+          {/* 세로 진행선 */}
+          <div className="relative w-[40px] h-[631px] flex flex-col">
+            <div
+              className={clsx(
+                'absolute left-1/2 -translate-x-1/2 w-[3px] h-[631px] rounded-[5px] bg-primary-color',
+                level === 4 && 'h-[300px]!',
+              )}></div>
+          </div>
 
-        {/* 단계 리스트 */}
-        <div className="absolute top-0 flex flex-col w-full h-full gap-[28px]">
-          {STEPS.map(({ id, title, Component }) => (
-            <div key={id} className={clsx('flex', level === id ? 'h6 gap-[23px]' : 'b3 gap-[13px] items-center')}>
-              {/* 원 */}
-              <div
-                className={clsx(
-                  'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color relative z-10 shrink-0',
-                  level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
-                )}>
-                {id < level && <CheckIcon className="size-[30px]" />}
-                {id >= level && id + 1}
-              </div>
+          {/* 단계 리스트 */}
+          <div className="absolute top-0 flex flex-col w-full h-full gap-[28px]">
+            {STEPS.map(({ id, title, Component }) => (
+              <div key={id} className={clsx('flex', level === id ? 'h6 gap-[23px]' : 'b3 gap-[13px] items-center')}>
+                {/* 원 */}
+                <div
+                  className={clsx(
+                    'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color relative z-10 shrink-0',
+                    level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
+                  )}>
+                  {id < level && <CheckIcon className="size-[30px]" />}
+                  {id >= level && id + 1}
+                </div>
 
-              {/* 각 단계 이름 + 컴포넌트 */}
-              <div className={clsx('flex-1', level === id && 'mt-[5px]')}>
-                <span>{title}</span>
-                {/* 각 단계별 컴포넌트 */}
-                {level === id && <Component setLevel={setLevel} />}
+                {/* 각 단계 이름 + 컴포넌트 */}
+                <div className={clsx('flex-1', level === id && 'mt-[5px]')}>
+                  <span>{title}</span>
+                  {/* 각 단계별 컴포넌트 */}
+                  {level === id && <Component setLevel={setLevel} />}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {level === 5 && <div className="">환영합니다</div>}
     </FormProvider>
   );
 };
