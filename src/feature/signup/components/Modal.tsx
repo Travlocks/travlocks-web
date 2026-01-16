@@ -8,6 +8,7 @@ import Preference from './Preference';
 import { FormProvider, useForm } from 'react-hook-form';
 import { schema, type FormFields } from '../types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import CheckIcon from '@assets/icon-check-password.svg?react';
 
 export interface StepProps {
   setLevel: React.Dispatch<React.SetStateAction<number>>;
@@ -54,7 +55,8 @@ const Modal = () => {
                   'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color relative z-10 shrink-0',
                   level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
                 )}>
-                {id + 1}
+                {id < level && <CheckIcon className="size-[30px]" />}
+                {id >= level && id + 1}
               </div>
 
               {/* 각 단계 이름 + 컴포넌트 */}
