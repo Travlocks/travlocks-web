@@ -45,9 +45,6 @@ const SideBar = ({ onClose }: SideBarProps) => {
           </div>
         </div>
 
-        {/* 하단 플레이스홀더 */}
-        <div className="w-full h-[300px] bg-base-color rounded-[5px]" />
-
         {/* 통계 카드 */}
         <div className="flex gap-4.5">
           <div className="flex-1 bg-base-color-5 rounded-[10px] p-5 flex flex-col items-center gap-3">
@@ -80,6 +77,46 @@ const SideBar = ({ onClose }: SideBarProps) => {
             </div>
           </div>
         </div>
+
+        {/* 상세 설명 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="h8 text-base-color-0">상세 설명</h3>
+          <div className="p-5 bg-base-color-5 rounded-[5px] border border-base-color">
+            <p className="b4 text-base-color-3">부산 인생 23년차 최고의 맛집들만 모았습니다 ^^</p>
+          </div>
+        </div>
+
+        {/* 태그 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="h8 text-base-color-0">태그</h3>
+          <div className="flex flex-wrap gap-2.5">
+            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+              #부산
+            </span>
+            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+              #부산여행
+            </span>
+            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+              #맛집
+            </span>
+            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+              #부산맛집
+            </span>
+          </div>
+        </div>
+
+        {/* 지도 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="h8 text-base-color-0">지도</h3>
+          {/* TODO: Integrate actual map component or API */}
+          <div className="h-[277px] border border-base-color rounded-[5px] bg-base-color-4" />
+        </div>
+
+        {/* 리믹스 하기 버튼 */}
+        <button className="w-full bg-primary-color hover:opacity-90 transition-opacity rounded-[5px] py-5 flex items-center justify-center gap-2.75">
+          <RemixIcon className="w-7 h-7 [&_path]:fill-base-color-6" />
+          <span className="b1 font-semibold text-base-color-6">리믹스 하기</span>
+        </button>
       </div>
     </div>
   );
