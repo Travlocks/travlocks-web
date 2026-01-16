@@ -51,7 +51,7 @@ const Modal = () => {
               {/* 원 */}
               <div
                 className={clsx(
-                  'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color cursor-pointer relative z-10 shrink-0',
+                  'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color relative z-10 shrink-0',
                   level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
                 )}>
                 {id + 1}

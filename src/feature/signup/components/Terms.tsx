@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { StepProps } from './Modal';
 import ArrowIcon from '@assets/icon-arrow-right.svg?react';
 import clsx from 'clsx';
+import TermsModal from './TermsModal';
 
 const TERMS = [
   {
@@ -30,6 +31,8 @@ const Terms = ({ setLevel }: StepProps) => {
     marketing: false, // 마케팅 정보 수신 동의
     all: false, // 전체 동의
   });
+
+  const [modalType, setModalType] = useState<'service' | 'privacy' | 'marketing' | null>(null);
 
   const isRequired = agreements.service && agreements.privacy; // 필수 조건
 
@@ -82,9 +85,11 @@ const Terms = ({ setLevel }: StepProps) => {
             onChange={(checked) => handleItemChange(term.key, checked)}
             className="w-max pr-0"
           />
-          <ArrowIcon className="cursor-pointer" />
+          <ArrowIcon className="cursor-pointer" onClick={() => setModalType(term.key)} />
         </div>
       ))}
+
+      {modalType && <TermsModal type={modalType} onClose={() => setModalType(null)} />}
 
       <Button text="다음" disabled={!isRequired} onClick={() => setLevel((prev) => prev + 1)} />
     </section>

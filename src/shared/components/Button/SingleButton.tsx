@@ -33,6 +33,7 @@ export interface SingleButtonProps {
   variant?: 'primary' | 'white';
   disabled?: boolean;
   onClick?: () => void;
+  className?: string;
 }
 
 // variant별 기본 배경 (bg 넘기면 무시됨)
@@ -57,6 +58,7 @@ const SingleButton = ({
   variant = 'primary',
   disabled,
   onClick,
+  className,
 }: SingleButtonProps) => {
   const backgroundClass = bg ?? VARIANT_BG[variant];
   const textSizeClass = TEXT_SIZE[textSize];
@@ -71,6 +73,7 @@ const SingleButton = ({
         disabled ? 'cursor-not-allowed bg-base-color-3!' : 'cursor-pointer border',
         backgroundClass,
         textSizeClass,
+        className,
       )}
       style={{ maxWidth: width, height }}>
       {text}
