@@ -1,9 +1,9 @@
-import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import LocationIcon from '@assets/icon-location.svg?react';
 import ProfileImageUrl from '@assets/GNB/mask-group.svg?url';
 import StarIcon from '@assets/icon-star.svg?react';
 import TimeIcon from '@assets/icon-time.svg?react';
 import RemixIcon from '@assets/icon-remix.svg?react';
+import XIcon from '@assets/icon-x.svg?react';
 
 interface SideBarProps {
   onClose?: () => void;
@@ -13,13 +13,13 @@ const SideBar = ({ onClose }: SideBarProps) => {
   return (
     <div className="w-195 h-full bg-base-color-6 flex flex-col overflow-y-auto">
       {/* 헤더 */}
-      <div className="sticky top-0 bg-base-color-6 z-10 p-17.5 flex justify-end">
+      <div className="sticky top-0 bg-base-color-6 z-10 px-14 py-9.5 flex justify-end border-b border-base-color">
         <button onClick={onClose} className="cursor-pointer">
-          <AppIcon name="x" size={32} className="text-base-color-0" />
+          <XIcon className="w-8 h-8 text-base-color-1" />
         </button>
       </div>
 
-      <div className="px-10 pb-10 flex flex-col gap-8">
+      <div className="px-10 pt-13.5 pb-10 flex flex-col gap-8">
         {/* 타이틀 */}
         <div className="flex flex-col gap-5">
           <span className="h8 text-primary-color">템플릿 이름</span>
