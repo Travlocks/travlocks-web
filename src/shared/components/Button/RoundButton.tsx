@@ -13,6 +13,7 @@ import clsx from 'clsx';
  * @param {string} bg -- tailwind 배경 클래스
  * @param {number} width -- 버튼 가로 길이 (px, 기본값: 100%)
  * @param {function} onClick -- 버튼 클릭 시 실행될 함수
+ * @param {boolean} arrowLeft -- 화살표가 왼쪽으로 되어있는지 여부
 
  *
  * @example
@@ -31,9 +32,20 @@ interface RoundButtonProps extends ButtonBaseProps {
   onClick?: () => void;
   hover?: boolean;
   className?: string;
+  arrowLeft?: boolean;
 }
 
-const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, className, ...props }: RoundButtonProps) => {
+const RoundButton = ({
+  text,
+  type = 'button',
+  width,
+  bg,
+  onClick,
+  hover,
+  arrowLeft,
+  className,
+  ...props
+}: RoundButtonProps) => {
   return (
     <button
       type={type}
@@ -41,7 +53,7 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
       className={clsx(
         // group 클래스를 추가하여 하위 요소 제어 준비
         'group relative overflow-hidden',
-        'h9 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
+        'b3 rounded-[30px] h-[64px] flex items-center justify-center gap-[10px] text-base-color-6 cursor-pointer w-full',
         bg ?? 'bg-primary-color',
         className,
       )}
@@ -56,9 +68,9 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
           )}
         />
       )}
-      <span className="relative z-10 flex items-center gap-[10px]">
+      <span className={clsx('relative z-10 flex items-center gap-[10px]', arrowLeft && 'flex-row-reverse')}>
         {text}
-        <AppIcon name="arrow" color="white" size={16} />
+        <AppIcon name="arrow" color="white" size={16} className={clsx(arrowLeft && 'rotate-180')} />
       </span>
     </button>
   );
