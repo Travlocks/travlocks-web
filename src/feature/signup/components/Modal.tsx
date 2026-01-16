@@ -40,10 +40,14 @@ const Modal = () => {
   return (
     <FormProvider {...methods}>
       {/* 단계 영역 */}
-      <div className="relative w-full self-start">
+      <div className="relative w-full self-start top-[-40px]">
         {/* 세로 진행선 */}
         <div className="relative w-[40px] h-[631px] flex flex-col">
-          <div className="absolute left-1/2 -translate-x-1/2 w-[3px] h-[631px] rounded-[5px] bg-primary-color"></div>
+          <div
+            className={clsx(
+              'absolute left-1/2 -translate-x-1/2 w-[3px] h-[631px] rounded-[5px] bg-primary-color',
+              level === 4 && 'h-[300px]!',
+            )}></div>
         </div>
 
         {/* 단계 리스트 */}
