@@ -45,8 +45,8 @@ const PasswordView = ({ step, onSendMail }: Props) => {
         />
       </form>
       <Link to="/login" className="flex justify-center items-center gap-2.5 mt-10">
-        <AppIcon name="arrow" className="rotate-180" fill="base-color-2" size={16} />
-        <p className="h3 font-medium text-base-color-2">로그인으로 돌아가기</p>
+        <AppIcon name="arrow" className="rotate-180 text-base-color-1" size={16} />
+        <p className="b4 text-base-color-1">로그인으로 돌아가기</p>
       </Link>
     </>
   );

@@ -16,6 +16,7 @@
  * @author seomgin36
  */
 
+import clsx from 'clsx';
 import { IconBase } from '@/shared/ui/icon/IconBase';
 import NaverIcon from '@assets/logo/logo-naver.svg?react';
 import KakaoIcon from '@assets/logo/logo-kakao.svg?react';
@@ -54,7 +55,11 @@ const SocialLoginButton = ({ provider, onClick }: SocialLoginButtonProps) => {
     <button
       type="button"
       onClick={onClick}
-      className={`w-[51px] h-[51px] rounded-full ${config.bgColor} flex items-center justify-center ${config.borderColor ? `border ${config.borderColor}` : ''} hover:opacity-80 transition-opacity`}
+      className={clsx(
+        'w-[51px] h-[51px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity',
+        config.bgColor,
+        config.borderColor && `border ${config.borderColor}`,
+      )}
       aria-label={config.ariaLabel}>
       {config.icon}
     </button>
