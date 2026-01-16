@@ -63,7 +63,7 @@ const Input = ({ register, width, label, error, type, className, ...rest }: Inpu
 
       {/* 좌측 라벨 (아이콘) */}
       {label === 'left' && Icon && (
-        <Icon className="absolute top-1/2 -translate-y-1/2 left-[14px] text-base-color-1 size-[20px] object-cover" />
+        <Icon className="absolute top-1/2 -translate-y-1/2 left-[14px] text-base-color-3 size-[20px] object-cover" />
       )}
 
       {/* 실제 input 영역 */}
@@ -72,7 +72,7 @@ const Input = ({ register, width, label, error, type, className, ...rest }: Inpu
         {...register}
         {...rest}
         className={clsx(
-          `b4 w-full py-[16px] rounded-[10px] border border-base-color-1 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-1 placeholder:tracking-[-0.15px] outline-none`,
+          `b4 w-full py-[16px] rounded-[10px] border border-base-color-3 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none`,
           'disabled:bg-base-color-4 disabled:cursor-not-allowed disabled:border-[rgba(0,0,0,0.1)]',
           error && 'border-negative',
           label === 'top' ? 'px-[18px] h-[60px] focus:border-primary-color' : 'h-[55px]',

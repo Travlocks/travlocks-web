@@ -15,7 +15,10 @@ const Email = ({ setLevel }: StepProps) => {
 
   const [step, setStep] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(300); // 5분
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
+  const [hasRetry, setHasRetry] = useState(false); //
+  const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
 
   const email = watch('email');
   const code = watch('code');
@@ -27,6 +30,12 @@ const Email = ({ setLevel }: StepProps) => {
     const s = sec % 60;
 
     return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleResend = () => {
+    setHasTriedResend(true);
+    setHasRetry(false);
+    setHasTriedVerify(false);
   };
 
   useEffect(() => {
@@ -48,9 +57,9 @@ const Email = ({ setLevel }: StepProps) => {
 
   return (
     <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-1 b1 mt-[3px]">로그인에 사용할 이메일을 입력해 주세요</p>
+      <p className="text-base-color-2 b3 mt-[3px]">로그인에 사용할 이메일을 입력해 주세요</p>
 
-      <div className="mb-[150px] relative w-full">
+      <div className="mb-[125px] relative w-full flex-1">
         <Input
           register={register('email')}
           type="email"
@@ -64,19 +73,25 @@ const Email = ({ setLevel }: StepProps) => {
           {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
 
           {step === 2 && (
-            <div className="flex flex-col gap-[10px]">
-              {!isSubmitted && !isCodeError && <Alert text={'인증 메일 발송 완료'} type="check" />}
+            <div className="flex flex-col gap-[10px] justify-between">
+              {!hasRetry && !hasTriedResend && (
+                <Alert text={'인증 메일 발송 완료'} type="check" onClick={() => setHasTriedResend(true)} />
+              )}
+              {!hasRetry && hasTriedResend && (
+                <Alert text="인증 메일 재발송 완료!" type="check" onClick={() => setHasTriedResend(true)} />
+              )}
 
               <div className="relative">
                 <Input
-                  register={register('code')}
+                  register={register('code', {
+                    onChange: () => {
+                      setHasTriedVerify(false);
+                    },
+                  })}
                   label="left"
                   placeholder="인증코드를 입력하세요"
                   maxLength={6}
-                  error={isSubmitted && isCodeError}
-                  onChange={() => {
-                    if (isSubmitted) setIsSubmitted(false);
-                  }}
+                  error={hasTriedVerify && isCodeError}
                 />
                 {step === 2 && (
                   <p className="absolute top-1/2 -translate-y-1/2 right-[15px] text-negative text-[16px] font-[400] leading-[15px]">
@@ -85,27 +100,29 @@ const Email = ({ setLevel }: StepProps) => {
                 )}
               </div>
 
-              {isSubmitted && isCodeError && (
+              {hasTriedVerify && isCodeError && (
                 <div>
                   <Alert
                     text={
                       <div className="flex justify-between flex-1">
                         <p>인증코드가 올바르지 않습니다</p>
-                        <p className="underline cursor-pointer">재전송</p>
+                        <p onClick={handleResend} className="underline cursor-pointer">
+                          재전송
+                        </p>
                       </div>
                     }
                     type="alert"
                   />
                 </div>
               )}
-
-              <p className="underline text-base-color-2 b1 self-end mt-[10px] cursor-pointer">
-                이메일을 받지 못하셨나요?
-              </p>
             </div>
           )}
         </div>
       </div>
+
+      {step === 2 && (
+        <p className="underline text-base-color-1 b4 self-end mt-[10px] cursor-pointer">이메일을 받지 못하셨나요?</p>
+      )}
 
       {step === 1 && (
         <>
@@ -114,6 +131,7 @@ const Email = ({ setLevel }: StepProps) => {
               text: '이전',
               variant: 'white',
               onClick: () => setLevel(0),
+              className: 'border-base-color!',
             }}
             right={{
               text: '다음',
@@ -138,9 +156,10 @@ const Email = ({ setLevel }: StepProps) => {
             }}
             right={{
               text: '인증 완료',
-              disabled: !code || (isSubmitted && isCodeError),
+              disabled: !code || (hasTriedVerify && isCodeError),
               onClick: () => {
-                setIsSubmitted(true);
+                setHasTriedVerify(true);
+                setHasRetry(true);
 
                 if (!isCodeError) {
                   setLevel(2);
