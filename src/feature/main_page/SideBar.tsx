@@ -4,14 +4,21 @@ import StarIcon from '@assets/icon-star.svg?react';
 import TimeIcon from '@assets/icon-time.svg?react';
 import RemixIcon from '@assets/icon-remix.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
+import { useState } from 'react';
+import clsx from 'clsx';
 
 interface SideBarContentProps {
   onClose?: () => void;
+  isClosing?: boolean;
 }
 
-const SideBarContent = ({ onClose }: SideBarContentProps) => {
+const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
   return (
-    <div className="fixed top-0 right-0 z-50 w-195 h-full bg-base-color-6 flex flex-col overflow-y-auto animate-slide-in-from-right">
+    <div
+      className={clsx(
+        'fixed top-0 right-0 z-50 w-195 h-full bg-base-color-6 flex flex-col overflow-y-auto',
+        isClosing ? 'animate-slide-out-to-right' : 'animate-slide-in-from-right',
+      )}>
       {/* 헤더 */}
       <div className="sticky top-0 bg-base-color-6 z-10 px-14 py-9.5 flex justify-end border-b border-base-color">
         <button onClick={onClose} className="cursor-pointer">
@@ -127,11 +134,26 @@ interface SideBarProps {
 }
 
 const SideBar = ({ onClose }: SideBarProps) => {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose?.();
+    }, 300); // 닫히는 애니메이션 시간과 일치
+  };
+
   return (
     <>
       {/* Dim background */}
-      <div className="fixed inset-0 z-50 bg-black/50 animate-overlay-fade-in" onClick={onClose} />
-      <SideBarContent onClose={onClose} />
+      <div
+        className={clsx(
+          'fixed inset-0 z-50 bg-black/50',
+          isClosing ? 'animate-overlay-fade-out' : 'animate-overlay-fade-in',
+        )}
+        onClick={handleClose}
+      />
+      <SideBarContent onClose={handleClose} isClosing={isClosing} />
     </>
   );
 };
