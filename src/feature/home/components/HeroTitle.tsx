@@ -8,7 +8,7 @@ const container: Variants = {
     y: 0,
     transition: {
       duration: 0.0,
-      staggerChildren: 0.12,
+      staggerChildren: 0.3,
       delay: 0.15,
     },
   },
@@ -30,7 +30,7 @@ export const HeroTitle = () => {
       variants={container}
       initial="hidden"
       animate={reduce ? undefined : 'show'}>
-      <motion.h1 className="h1 mb-[13px] tracking-[0.352px] text-center" variants={item}>
+      <motion.h1 className="text-[48px] h1 mb-[30px] tracking-[0.352px] text-center" variants={item}>
         조립하는 즐거움, <br />
         나만의 여행 블록 쌓기
       </motion.h1>

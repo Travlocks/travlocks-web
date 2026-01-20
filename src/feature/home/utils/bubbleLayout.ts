@@ -77,7 +77,7 @@ export function buildBubbleSpecs(opts: BubbleOptions): BubbleSpec[] {
       variant: pick(rng, ['b', 'a'] as const),
       size,
       left: toPct(x, w),
-      floatSec: randFloat(rng, 6, 10),
+      floatSec: randFloat(rng, 4, 10),
       rotateSec: ROTATE_SEC,
       delaySec: randFloat(rng, 0, 2.5),
       startY: h + size + extra,
