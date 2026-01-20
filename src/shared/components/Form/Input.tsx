@@ -42,9 +42,11 @@ const IconList = {
   password: PasswordIcon,
 } as const;
 
-const Input = ({ register, width, label, error, type, hasCancle, className, ...rest }: InputProps) => {
+const Input = ({ register, width, label, error, type, hasCancle = false, className, ...rest }: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setValue } = useFormContext();
+
+  const form = useFormContext();
+  const setValue = form?.setValue;
 
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type; // 비밀번호 표시 여부에 따라 input type 결정
@@ -99,12 +101,12 @@ const Input = ({ register, width, label, error, type, hasCancle, className, ...r
       )}
 
       {/* 전체 삭제 */}
-      {hasCancle && (
+      {hasCancle && setValue && (
         <button
           type="button"
           disabled={rest.disabled}
           onClick={() => {
-            setValue(register.name, '');
+            setValue(register?.name, '');
           }}
           className="absolute top-1/2 -translate-y-1/2 right-[15px] cursor-pointer size-[17px] bg-base-color-3 rounded-full flex items-center justify-center">
           <XIcon className="text-white" />
