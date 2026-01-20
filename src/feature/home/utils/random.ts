@@ -6,11 +6,9 @@ export function mulberry32(seed: number | string): PRNG {
   let t = Number(seed) >>> 0;
   return () => {
     // 랜덤 숫자 생성
-    t += 0x6d2b79;
+    t += Date.now() * Math.random();
     let x = Math.imul(t ^ (t >>> 15), 1 | t);
-    // 랜덤 숫자 생성
     x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
-    // 랜덤 숫자 생성
     return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
   };
 }

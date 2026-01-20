@@ -44,7 +44,7 @@ export function buildPuzzleSpecs(opts: PuzzleOptions): PuzzleSpec[] {
       left: toPct(x, w),
       floatSec: randFloat(rng, 6, 8),
       rotateSec: ROTATE_SEC,
-      delaySec: randFloat(rng, 0, 1.2),
+      delaySec: randFloat(rng, 2.5, 8.5),
       startY: h + size + extra,
       endY: -size - extra,
       opacity: 1,
