@@ -50,8 +50,10 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
 
               {Array.isArray(section.content) ? (
                 <ul className="flex flex-col gap-[15px]">
-                  {section.content.map((line) => (
-                    <li className="b4 leading-[26px]">{line}</li>
+                  {section.content.map((line, idx) => (
+                    <li key={idx} className="b4 leading-[26px]">
+                      {line}
+                    </li>
                   ))}
                 </ul>
               ) : (
@@ -67,16 +69,14 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
               {section.container && (
                 <div className="rounded-[20px] bg-base-color-5 px-[18px] py-[22px] mt-[-5px]">
                   <ul className="list-disc pl-[18px] pr-[13px] marker:text-primary-color flex flex-col gap-[10px]">
-                    {section.container?.map((list) => (
-                      <>
-                        <li className="b6 leading-[26px]">
-                          <span className="font-bold">{list.bold}</span>
-                          <span className={clsx(list.highlight === '(필수) ' ? 'text-negative' : 'text-primary-color')}>
-                            {list.highlight}
-                          </span>
-                          {list.text}
-                        </li>
-                      </>
+                    {section.container?.map((list, idx) => (
+                      <li className="b6 leading-[26px]" key={idx}>
+                        <span className="font-bold">{list.bold}</span>
+                        <span className={clsx(list.highlight === '(필수) ' ? 'text-negative' : 'text-primary-color')}>
+                          {list.highlight}
+                        </span>
+                        {list.text}
+                      </li>
                     ))}
                   </ul>
                   {section.appendix && (
