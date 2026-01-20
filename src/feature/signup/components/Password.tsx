@@ -42,11 +42,11 @@ const Password = ({ setLevel }: StepProps) => {
   }, [password, passwordCheck, trigger]);
 
   return (
-    <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-2 b3 mt-[3px]">안전한 비밀번호를 만들어주세요</p>
+    <section className="flex flex-col gap-[16px]">
+      <p className="text-base-color-2 b3 mt-[8px]">안전한 비밀번호를 만들어주세요</p>
 
       <form>
-        <div className="flex flex-col gap-[10px]">
+        <div className="flex flex-col gap-[8px]">
           {/* 비밀번호 입력 */}
           <Input
             register={register('password')}
@@ -86,7 +86,7 @@ const Password = ({ setLevel }: StepProps) => {
 
             {/* 비밀번호 재입력 유효성 검사 */}
             {errors.passwordCheck?.message && (
-              <div className="flex items-center justify-center gap-[10px] left-[15px] absolute top-[65px]">
+              <div className="flex items-center justify-center gap-[10px] left-[15px] absolute top-[61px]">
                 <div className="rounded-full bg-negative size-[17px] text-center text-[14px] font-[500] tracking-[-0.15px] text-white">
                   !
                 </div>
@@ -115,6 +115,7 @@ const Password = ({ setLevel }: StepProps) => {
             height={64}
             gap={10}
             textSize={20}
+            className="mt-[60px]"
           />
         </div>
       </form>

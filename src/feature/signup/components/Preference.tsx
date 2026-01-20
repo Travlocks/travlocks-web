@@ -101,8 +101,8 @@ const Preference = ({ setLevel }: StepProps) => {
   };
 
   return (
-    <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-2 b3 mt-[3px]">관심 있는 여행 테마를 선택해주세요 (최대2개)</p>
+    <section className="flex flex-col gap-[16px]">
+      <p className="text-base-color-2 b3 mt-[8px]">관심 있는 여행 테마를 선택해주세요 (최대2개)</p>
 
       <div className="grid grid-cols-3 gap-[15px]">
         {(preferenceLevel === 'theme' ? THEMES : STYLES).map((preference) => {

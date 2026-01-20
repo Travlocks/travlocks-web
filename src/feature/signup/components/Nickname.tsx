@@ -16,8 +16,8 @@ const Nickname = ({ setLevel }: StepProps) => {
   const nickname = watch('nickname', '');
 
   return (
-    <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-2 b3 mt-[3px]">트래블록스에서 사용할 닉네임을 입력해주세요</p>
+    <section className="flex flex-col gap-[16px]">
+      <p className="text-base-color-2 b3 mt-[8px]">트래블록스에서 사용할 닉네임을 입력해주세요</p>
 
       <div className="relative">
         <Input

@@ -70,10 +70,10 @@ const Email = ({ setLevel }: StepProps) => {
   }, [step, timerKey]);
 
   return (
-    <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-2 b3 mt-[3px]">로그인에 사용할 이메일을 입력해 주세요</p>
+    <section className="flex flex-col gap-[16px]">
+      <p className="text-base-color-2 b3 mt-[8px]">로그인에 사용할 이메일을 입력해 주세요</p>
 
-      <div className="mb-[125px] relative w-full flex-1">
+      <div className="mb-[181px] relative w-full flex-1">
         {/* 이메일 입력 */}
         <Input
           register={register('email')}
@@ -84,12 +84,12 @@ const Email = ({ setLevel }: StepProps) => {
           disabled={step === 2}
         />
 
-        <div className="absolute top-[65px] w-full">
+        <div className="absolute top-[61px] w-full">
           {/* 이메일 유효성 검사 */}
           {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
 
           {step === 2 && (
-            <div className="flex flex-col gap-[10px] justify-between">
+            <div className="flex flex-col gap-[8px] justify-between">
               {/* 가장 먼저 이메일 인증 요청 */}
               {!hasRetry && !hasTriedResend && (
                 <Alert text={'인증 메일 발송 완료'} type="check" onClick={handleResend} />
@@ -146,7 +146,7 @@ const Email = ({ setLevel }: StepProps) => {
       {step === 2 && (
         <p
           onClick={() => setShowModal(true)}
-          className="underline text-base-color-1 b4 self-end mt-[10px] cursor-pointer">
+          className="underline text-base-color-1 b4 self-end cursor-pointer absolute top-[352px]">
           이메일을 받지 못하셨나요?
         </p>
       )}

@@ -63,32 +63,34 @@ const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
   };
 
   return (
-    <section className="flex flex-col gap-[25px]">
-      <p className="text-base-color-2 b3 mt-[3px]">트래블록스 서비스 이용을 위해 약관 동의가 필요합니다</p>
+    <section className="flex flex-col gap-[16px]">
+      <p className="text-base-color-2 b3 mt-[8px]">트래블록스 서비스 이용을 위해 약관 동의가 필요합니다</p>
 
       {/* 전체 동의 */}
       <Checkbox text="전체 동의" outline={true} checked={agreements.all} onChange={handleAllChange} />
 
       {/* 개별 약관 */}
-      {TERMS.map((term) => (
-        <div key={term.key} className="flex">
-          <Checkbox
-            text={
-              <div className="flex gap-[3px]">
-                <span className={clsx(term.required ? 'text-negative' : 'text-base-color-2')}>
-                  {term.required ? '(필수)' : '(선택)'}
-                </span>
-                {term.label}
-              </div>
-            }
-            outline={false}
-            checked={agreements[term.key]}
-            onChange={(checked) => handleItemChange(term.key, checked)}
-            className="w-max pr-0"
-          />
-          <ArrowIcon className="cursor-pointer" onClick={() => setModalType(term.key)} />
-        </div>
-      ))}
+      <div className="flex flex-col my-[8px] gap-[24px]">
+        {TERMS.map((term) => (
+          <div key={term.key} className="flex">
+            <Checkbox
+              text={
+                <div className="flex gap-[3px]">
+                  <span className={clsx(term.required ? 'text-negative' : 'text-base-color-2')}>
+                    {term.required ? '(필수)' : '(선택)'}
+                  </span>
+                  {term.label}
+                </div>
+              }
+              outline={false}
+              checked={agreements[term.key]}
+              onChange={(checked) => handleItemChange(term.key, checked)}
+              className="w-max pr-0"
+            />
+            <ArrowIcon className="cursor-pointer" onClick={() => setModalType(term.key)} />
+          </div>
+        ))}
+      </div>
 
       {modalType && (
         <TermsModal
