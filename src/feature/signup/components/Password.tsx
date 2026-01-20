@@ -1,17 +1,28 @@
 import { useFormContext } from 'react-hook-form';
+import clsx from 'clsx';
+import { useEffect } from 'react';
+
 import type { FormFields } from '../types/schema';
+import type { StepProps } from './Modal';
 import Input from '@/shared/components/Form/Input';
+import DualButton from '@/shared/components/Button/DualButton';
+
 import CheckIcon from '@assets/icon-check-password.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
-import clsx from 'clsx';
-import DualButton from '@/shared/components/Button/DualButton';
-import type { StepProps } from './Modal';
-import { useEffect } from 'react';
+
+const ERRORS = [
+  { id: 1, error: '최소 8자 이상' },
+  {
+    id: 2,
+    error: '영문 + 숫자 포함',
+  },
+];
 
 const Password = ({ setLevel }: StepProps) => {
   const {
     register,
     watch,
+    setValue,
     formState: { errors, dirtyFields },
     trigger,
   } = useFormContext<FormFields>();
@@ -35,30 +46,28 @@ const Password = ({ setLevel }: StepProps) => {
       <p className="text-base-color-2 b3 mt-[3px]">안전한 비밀번호를 만들어주세요</p>
 
       <div className="flex flex-col gap-[10px]">
+        {/* 비밀번호 입력 */}
         <Input register={register('password')} type="password" label="left" placeholder="비밀번호를 입력해주세요." />
-        <div
-          className={clsx(
-            'flex gap-[10px] items-center b4 font-[500] ml-[15px]',
-            !dirtyFields.password && 'text-base-color-2',
-            dirtyFields.password && (isLengthValid ? 'text-positive' : 'text-negative'),
-          )}>
-          {!dirtyFields.password && <CheckIcon />}
-          {dirtyFields.password && (isLengthValid ? <CheckIcon /> : <XIcon />)}
-          <p>최소 8자 이상</p>
-        </div>
 
-        <div
-          className={clsx(
-            'flex gap-[10px] items-center b4 ml-[15px]',
-            !dirtyFields.password && 'text-base-color-2',
-            dirtyFields.password && (isCombinationValid ? 'text-positive' : 'text-negative'),
-          )}>
-          {!dirtyFields.password && <CheckIcon />}
-          {dirtyFields.password && (isCombinationValid ? <CheckIcon /> : <XIcon />)}
-          <p>영문 + 숫자 포함</p>
-        </div>
+        {/* 비밀번호 유효성 검사 */}
+        {ERRORS.map((error) => (
+          <div
+            key={error.id}
+            className={clsx(
+              'flex gap-[10px] items-center b4 font-[500] ml-[15px]',
+              !dirtyFields.password && 'text-base-color-2',
+              dirtyFields.password &&
+                ((error.id === 1 ? isLengthValid : isCombinationValid) ? 'text-positive' : 'text-negative'),
+            )}>
+            {!dirtyFields.password && <CheckIcon />}
+            {dirtyFields.password &&
+              ((error.id === 1 ? isLengthValid : isCombinationValid) ? <CheckIcon /> : <XIcon />)}
+            <p>{error.error}</p>
+          </div>
+        ))}
 
         <div className="relative">
+          {/* 비밀번호 재입력 */}
           <Input
             register={register('passwordCheck')}
             type="password"
@@ -66,10 +75,15 @@ const Password = ({ setLevel }: StepProps) => {
             placeholder="비밀번호를 확인해주세요."
             error={!!errors.passwordCheck?.message}
           />
+
+          {/* 비밀번호 재입력 유효성 검사 */}
           {errors.passwordCheck?.message && (
-            <p className="text-negative b3 font-[500] left-[15px] absolute top-[65px]">
-              {errors.passwordCheck.message}
-            </p>
+            <div className="flex items-center justify-center gap-[10px] left-[15px] absolute top-[65px]">
+              <div className="rounded-full bg-negative size-[17px] text-center text-[14px] font-[500] tracking-[-0.15px] text-white">
+                !
+              </div>
+              <p className="text-negative b3 font-[500]">{errors.passwordCheck.message}</p>
+            </div>
           )}
         </div>
       </div>
@@ -79,7 +93,10 @@ const Password = ({ setLevel }: StepProps) => {
           left={{
             text: '이전',
             variant: 'white',
-            onClick: () => setLevel(1),
+            onClick: () => {
+              setLevel(1);
+              setValue('code', '');
+            },
           }}
           right={{
             text: '다음',

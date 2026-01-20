@@ -187,7 +187,7 @@ const Email = ({ setLevel }: StepProps) => {
             }}
             right={{
               text: '인증 완료',
-              disabled: (hasTriedVerify && isCodeError) || code.length < 6,
+              disabled: (hasTriedVerify && isCodeError) || code?.length < 6,
               onClick: () => {
                 setHasTriedVerify(true);
                 setHasRetry(true);
