@@ -13,7 +13,7 @@ const EmailModal = ({ onClick, handleTimer }: EmailModalProps) => {
     <div className="fixed inset-0 z-20 flex justify-center items-center">
       <MainBg />
 
-      <div className="relative flex flex-col gap-[20px] items-center bg-white rounded-[30px] py-[48px] px-[43px] border-[rgba(60,78,244,0.1)] shadow-[0_8px_10px_-5px rgba(0,0,0,0.10), 0_20px_25px_-5px rgba(0,0,0,0.10)]">
+      <div className="relative flex flex-col gap-[20px] items-center bg-white rounded-[30px] py-[48px] px-[43px] border-[rgba(60,78,244,0.1)] shadow-[0_8px_10px_-5px_rgba(0,0,0,0.10),0_20px_25px_-5px_rgba(0,0,0,0.10)]">
         <Logo />
         <h1 className="h6 text-[23px]">이메일을 받지 못하셨나요?</h1>
         <h2 className="h7 font-[400] leading-[26px] text-base-color-1">
