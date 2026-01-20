@@ -113,13 +113,13 @@ const Preference = ({ setLevel }: StepProps) => {
               key={preference.id}
               onClick={() => handleSelect(preferenceLevel, preference.id)}
               className={clsx(
-                'group rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color cursor-pointer hover:text-primary-color trnasition-all duration-500',
-                isSelected ? 'boder-primary-color text-primary-color bg-[rgba(60,78,244,0.10)]' : 'border-base-color',
+                'group rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color cursor-pointer hover:text-primary-color transition-all duration-500',
+                isSelected ? 'border-primary-color text-primary-color bg-[rgba(60,78,244,0.10)]' : 'border-base-color',
               )}>
               {/* 아이콘 */}
               <div
                 className={clsx(
-                  'size-[45px] rounded-[10px] flex items-center justify-center group-hover:bg-primary-color trnasition-all duration-500',
+                  'size-[45px] rounded-[10px] flex items-center justify-center group-hover:bg-primary-color transition-all duration-500',
                   isSelected ? 'bg-primary-color  text-white' : 'bg-base-color-4',
                 )}>
                 {preference.icon}
@@ -133,7 +133,7 @@ const Preference = ({ setLevel }: StepProps) => {
               {/* hover시 보이는 상세 설명 */}
               <p
                 className={clsx(
-                  'b7 tracking-[-0.312px] text-primary-color whitespace-nowrap group-hover:opacity-100  trnasition-all duration-500',
+                  'b7 tracking-[-0.312px] text-primary-color whitespace-nowrap group-hover:opacity-100  transition-all duration-500',
                   isSelected ? 'opacity-100' : 'opacity-0',
                 )}>
                 {preference.text}
