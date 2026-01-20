@@ -1,9 +1,11 @@
+import clsx from 'clsx';
+import { useRef } from 'react';
+
 import DualButton from '@/shared/components/Button/DualButton';
 import Checkbox from '@/shared/components/Form/Checkbox';
 import { TERMS } from '@/shared/data/signup/terms';
-import clsx from 'clsx';
+
 import CloseIcon from '@assets/icon-x.svg?react';
-import { useRef } from 'react';
 
 interface TemrsModalProps {
   type: 'service' | 'privacy' | 'marketing';

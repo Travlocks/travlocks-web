@@ -1,10 +1,12 @@
+import { useState } from 'react';
+import clsx from 'clsx';
+
+import type { StepProps } from './Modal';
 import Button from '@/shared/components/Button/Button';
 import Checkbox from '@/shared/components/Form/Checkbox';
-import { useState } from 'react';
-import type { StepProps } from './Modal';
-import ArrowIcon from '@assets/icon-arrow-right.svg?react';
-import clsx from 'clsx';
 import TermsModal from './TermsModal';
+
+import ArrowIcon from '@assets/icon-arrow-right.svg?react';
 
 const TERMS = [
   {
@@ -24,20 +26,13 @@ const TERMS = [
   },
 ] as const;
 
-type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
+export type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
 
-type Agreements = Record<TermKey, boolean> & {
+export type Agreements = Record<TermKey, boolean> & {
   all: boolean;
 };
 
-const Terms = ({ setLevel }: StepProps) => {
-  const [agreements, setAgreements] = useState<Agreements>({
-    service: false, // 서비스 이용약관
-    privacy: false, // 개인정보 처리방침
-    marketing: false, // 마케팅 정보 수신 동의
-    all: false, // 전체 동의
-  });
-
+const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
   const [modalType, setModalType] = useState<TermKey | null>(null);
 
   const isRequired = agreements.service && agreements.privacy; // 필수 조건

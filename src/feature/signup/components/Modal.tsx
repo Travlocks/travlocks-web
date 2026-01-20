@@ -1,17 +1,21 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import Terms from './Terms';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { schema, type FormFields } from '../types/schema';
+import Terms, { type Agreements } from './Terms';
 import Email from './Email';
 import Password from './Password';
 import Nickname from './Nickname';
 import Preference from './Preference';
-import { FormProvider, useForm } from 'react-hook-form';
-import { schema, type FormFields } from '../types/schema';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import CheckIcon from '@assets/icon-check-password.svg?react';
 
 export interface StepProps {
   setLevel: React.Dispatch<React.SetStateAction<number>>;
+  agreements: Agreements;
+  setAgreements: React.Dispatch<React.SetStateAction<Agreements>>;
 }
 
 const STEPS = [
@@ -24,6 +28,13 @@ const STEPS = [
 
 const Modal = () => {
   const [level, setLevel] = useState<number>(0); // 현재 단계
+
+  const [agreements, setAgreements] = useState<Agreements>({
+    service: false, // 서비스 이용약관
+    privacy: false, // 개인정보 처리방침
+    marketing: false, // 마케팅 정보 수신 동의
+    all: false, // 전체 동의
+  });
 
   const methods = useForm<FormFields>({
     defaultValues: {
@@ -72,7 +83,9 @@ const Modal = () => {
                   <span>{title}</span>
 
                   {/* 각 단계별 컴포넌트 */}
-                  {level === id && <Component setLevel={setLevel} />}
+                  {level === id && (
+                    <Component setLevel={setLevel} agreements={agreements} setAgreements={setAgreements} />
+                  )}
                 </div>
               </div>
             ))}
