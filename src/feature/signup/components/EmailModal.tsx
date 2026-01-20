@@ -1,12 +1,14 @@
 import RoundButton from '@/shared/components/Button/RoundButton';
 import MainBg from '@/shared/components/MainBg';
+
 import Logo from '@assets/logo/logo-auth.svg?react';
 
 interface EmailModalProps {
   onClick: () => void;
+  handleTimer: () => void;
 }
 
-const EmailModal = ({ onClick }: EmailModalProps) => {
+const EmailModal = ({ onClick, handleTimer }: EmailModalProps) => {
   return (
     <div className="fixed inset-0 z-20 flex justify-center items-center">
       <MainBg />
@@ -38,7 +40,10 @@ const EmailModal = ({ onClick }: EmailModalProps) => {
           text="이메일 인증 화면으로 돌아가기"
           className="mt-[56px] rounded-[15px]!"
           arrowLeft={true}
-          onClick={onClick}
+          onClick={() => {
+            onClick();
+            handleTimer();
+          }}
         />
       </div>
     </div>

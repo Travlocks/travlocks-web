@@ -1,31 +1,34 @@
 import { useFormContext } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+
 import type { FormFields } from '../types/schema';
+import type { StepProps } from './Modal';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
-import { useEffect, useState } from 'react';
-import type { StepProps } from './Modal';
 import EmailModal from './EmailModal';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
     register,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext<FormFields>();
 
-  const [step, setStep] = useState<number>(1);
-  const [timeLeft, setTimeLeft] = useState<number>(300); // 5분
+  const [step, setStep] = useState<number>(1); // step 1: 이메일, step2: 인증번호
+  const [timeLeft, setTimeLeft] = useState<number>(300); // 5분 타이머
+  const [timerKey, setTimerKey] = useState(0);
 
   const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
-  const [hasRetry, setHasRetry] = useState(false); //
+  const [hasRetry, setHasRetry] = useState(false);
   const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
   const [showModal, setShowModal] = useState(false);
 
   const email = watch('email');
   const code = watch('code');
 
-  const isCodeError = code !== '123123';
+  const isCodeError = code !== '123123'; // TODO: 이메일 인증 코드 맞는지 확인하는 로직 필요
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -34,10 +37,19 @@ const Email = ({ setLevel }: StepProps) => {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
+  const handleTimer = () => {
+    setTimeLeft(300); // 시간 초기화
+    setTimerKey((prev) => prev + 1); // 타이머 초기화
+    setValue('code', ''); // 입력란 비우기
+  };
+
+  // 인증 메일 재전송
   const handleResend = () => {
     setHasTriedResend(true);
     setHasRetry(false);
     setHasTriedVerify(false);
+
+    handleTimer();
   };
 
   useEffect(() => {
@@ -55,13 +67,14 @@ const Email = ({ setLevel }: StepProps) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [step]);
+  }, [step, timerKey]);
 
   return (
     <section className="flex flex-col gap-[25px]">
       <p className="text-base-color-2 b3 mt-[3px]">로그인에 사용할 이메일을 입력해 주세요</p>
 
       <div className="mb-[125px] relative w-full flex-1">
+        {/* 이메일 입력 */}
         <Input
           register={register('email')}
           type="email"
@@ -72,18 +85,23 @@ const Email = ({ setLevel }: StepProps) => {
         />
 
         <div className="absolute top-[65px] w-full">
+          {/* 이메일 유효성 검사 */}
           {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
 
           {step === 2 && (
             <div className="flex flex-col gap-[10px] justify-between">
+              {/* 가장 먼저 이메일 인증 요청 */}
               {!hasRetry && !hasTriedResend && (
-                <Alert text={'인증 메일 발송 완료'} type="check" onClick={() => setHasTriedResend(true)} />
+                <Alert text={'인증 메일 발송 완료'} type="check" onClick={handleResend} />
               )}
+
+              {/* 인증 메일 발송 완료 후 재전송 요청 */}
               {!hasRetry && hasTriedResend && (
-                <Alert text="인증 메일 재발송 완료!" type="check" onClick={() => setHasTriedResend(true)} />
+                <Alert text="인증 메일 재발송 완료!" type="check" onClick={handleResend} />
               )}
 
               <div className="relative">
+                {/* 인증코드 */}
                 <Input
                   register={register('code', {
                     onChange: () => {
@@ -95,6 +113,8 @@ const Email = ({ setLevel }: StepProps) => {
                   maxLength={6}
                   error={hasTriedVerify && isCodeError}
                 />
+
+                {/* 타이머 */}
                 {step === 2 && (
                   <p className="absolute top-1/2 -translate-y-1/2 right-[15px] text-negative text-[16px] font-[400] leading-[15px]">
                     {formatTime(timeLeft)}
@@ -102,6 +122,7 @@ const Email = ({ setLevel }: StepProps) => {
                 )}
               </div>
 
+              {/* 인증코드 틀렸을 때 */}
               {hasTriedVerify && isCodeError && (
                 <div>
                   <Alert
@@ -158,11 +179,15 @@ const Email = ({ setLevel }: StepProps) => {
             left={{
               text: '이전',
               variant: 'white',
-              onClick: () => setStep(1),
+              onClick: () => {
+                setStep(1);
+                setHasTriedResend(false);
+                handleTimer();
+              },
             }}
             right={{
               text: '인증 완료',
-              disabled: !code || (hasTriedVerify && isCodeError),
+              disabled: (hasTriedVerify && isCodeError) || code.length < 6,
               onClick: () => {
                 setHasTriedVerify(true);
                 setHasRetry(true);
@@ -180,7 +205,7 @@ const Email = ({ setLevel }: StepProps) => {
         </>
       )}
 
-      {showModal && <EmailModal onClick={() => setShowModal(false)} />}
+      {showModal && <EmailModal onClick={() => setShowModal(false)} handleTimer={handleTimer} />}
     </section>
   );
 };
