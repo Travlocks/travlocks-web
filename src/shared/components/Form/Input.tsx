@@ -1,12 +1,14 @@
-import type { UseFormRegisterReturn } from 'react-hook-form';
+import { useFormContext, type UseFormRegisterReturn } from 'react-hook-form';
 import { useState } from 'react';
 import clsx from 'clsx';
+
+import { IconBase } from '@/shared/ui/icon/IconBase';
 
 import EmailIcon from '@assets/icon-email.svg?react';
 import PasswordIcon from '@assets/icon-password.svg?react';
 import EyeClosed from '@assets/icon-eye-closed.svg?react';
 import EyeOpen from '@assets/icon-eye-open.svg?react';
-import { IconBase } from '@/shared/ui/icon/IconBase';
+import XIcon from '@assets/icon-x.svg?react';
 
 /**
  * react-hook-form의 register를 기반으로 동작하는 공통 Input 컴포넌트입니다.
@@ -17,6 +19,7 @@ import { IconBase } from '@/shared/ui/icon/IconBase';
  * @param {UseFormRegisterReturn} register -- react-hook-form의 register 반환값
  * @param {'top' | 'left'} label -- 라벨 위치
  * @param {number} width -- input의 max-width. 전달하지 않으면 label 타입에 따라 기본 값 적용됩니다.
+ * @param {boolean} hasCancle -- 입력값 전체 삭제 있는 경우 true를 넘기면 됩니다.
  *
  * @example
  * <Input register={register('email')} type="email" label="top" />
@@ -29,6 +32,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   register: UseFormRegisterReturn;
   label: 'top' | 'left';
   width?: number;
+  hasCancle?: boolean;
   error?: boolean;
   className?: string;
 }
@@ -38,8 +42,9 @@ const IconList = {
   password: PasswordIcon,
 } as const;
 
-const Input = ({ register, width, label, error, type, className, ...rest }: InputProps) => {
+const Input = ({ register, width, label, error, type, hasCancle, className, ...rest }: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setValue } = useFormContext();
 
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type; // 비밀번호 표시 여부에 따라 input type 결정
@@ -90,6 +95,19 @@ const Input = ({ register, width, label, error, type, className, ...rest }: Inpu
           onClick={() => setShowPassword((prev) => !prev)}
           className="absolute top-1/2 -translate-y-1/2 right-[15px] cursor-pointer">
           <IconBase icon={EyeIcon} width={20} height={20} />
+        </button>
+      )}
+
+      {/* 전체 삭제 */}
+      {hasCancle && (
+        <button
+          type="button"
+          disabled={rest.disabled}
+          onClick={() => {
+            setValue(register.name, '');
+          }}
+          className="absolute top-1/2 -translate-y-1/2 right-[15px] cursor-pointer size-[17px] bg-base-color-3 rounded-full flex items-center justify-center">
+          <XIcon className="text-white" />
         </button>
       )}
     </div>
