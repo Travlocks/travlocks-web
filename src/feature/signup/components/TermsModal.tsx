@@ -3,6 +3,7 @@ import Checkbox from '@/shared/components/Form/Checkbox';
 import { TERMS } from '@/shared/data/signup/terms';
 import clsx from 'clsx';
 import CloseIcon from '@assets/icon-x.svg?react';
+import { useRef } from 'react';
 
 interface TemrsModalProps {
   type: 'service' | 'privacy' | 'marketing';
@@ -13,6 +14,19 @@ interface TemrsModalProps {
 
 const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) => {
   const term = TERMS[type]; // 어떤 모달인지
+  const checkRef = useRef<HTMLDivElement>(null);
+
+  // 스크롤 최하단 도달 시 활성화되도록
+  const handleScroll = () => {
+    const el = checkRef.current;
+    if (!el) return;
+
+    const isBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
+
+    if (isBottom && !agreements) {
+      onChange(true);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-20 flex justify-center pt-8">
@@ -22,7 +36,10 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
           <CloseIcon className="size-[15px] cursor-pointer" onClick={onClose} />
         </div>
 
-        <section className="p-[40px] flex-1 overflow-y-scroll flex flex-col gap-[40px]">
+        <section
+          ref={checkRef}
+          onScroll={handleScroll}
+          className="p-[40px] flex-1 overflow-y-scroll flex flex-col gap-[40px]">
           {term.subTitle && <h2 className="b4 leading-[26px]">{term.subTitle}</h2>}
 
           {term.section.map((section) => (
