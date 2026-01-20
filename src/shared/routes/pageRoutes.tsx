@@ -11,6 +11,7 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
+        path: 'home',
         element: <lazyRoutes.HomePage />,
       },
       {

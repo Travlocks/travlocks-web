@@ -15,10 +15,14 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const isHomeRoute = location.pathname === '/';
   const [showSplash, setShowSplash] = useState(isHomeRoute);
 
+  // 인증 페이지 목록
+  const AUTH_PAGES = ['/login', '/signup', '/password'];
+  const isAuthPage = AUTH_PAGES.includes(location.pathname);
+
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">
       {/* 메인 배경 */}
-      <MainBg />
+      {isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-0 bg-base-color-6" />}
       {/* 스플래시 플로우 */}
       {isHomeRoute && (
         <AnimatePresence
