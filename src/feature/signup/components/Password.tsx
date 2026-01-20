@@ -45,70 +45,79 @@ const Password = ({ setLevel }: StepProps) => {
     <section className="flex flex-col gap-[25px]">
       <p className="text-base-color-2 b3 mt-[3px]">안전한 비밀번호를 만들어주세요</p>
 
-      <div className="flex flex-col gap-[10px]">
-        {/* 비밀번호 입력 */}
-        <Input register={register('password')} type="password" label="left" placeholder="비밀번호를 입력해주세요." />
-
-        {/* 비밀번호 유효성 검사 */}
-        {ERRORS.map((error) => (
-          <div
-            key={error.id}
-            className={clsx(
-              'flex gap-[10px] items-center b4 font-[500] ml-[15px]',
-              !dirtyFields.password && 'text-base-color-2',
-              dirtyFields.password &&
-                ((error.id === 1 ? isLengthValid : isCombinationValid) ? 'text-positive' : 'text-negative'),
-            )}>
-            {!dirtyFields.password && <CheckIcon />}
-            {dirtyFields.password &&
-              ((error.id === 1 ? isLengthValid : isCombinationValid) ? <CheckIcon /> : <XIcon />)}
-            <p>{error.error}</p>
-          </div>
-        ))}
-
-        <div className="relative">
-          {/* 비밀번호 재입력 */}
+      <form>
+        <div className="flex flex-col gap-[10px]">
+          {/* 비밀번호 입력 */}
           <Input
-            register={register('passwordCheck')}
+            register={register('password')}
             type="password"
             label="left"
-            placeholder="비밀번호를 확인해주세요."
-            error={!!errors.passwordCheck?.message}
+            placeholder="비밀번호를 입력해주세요."
+            autoComplete="new-password"
           />
 
-          {/* 비밀번호 재입력 유효성 검사 */}
-          {errors.passwordCheck?.message && (
-            <div className="flex items-center justify-center gap-[10px] left-[15px] absolute top-[65px]">
-              <div className="rounded-full bg-negative size-[17px] text-center text-[14px] font-[500] tracking-[-0.15px] text-white">
-                !
-              </div>
-              <p className="text-negative b3 font-[500]">{errors.passwordCheck.message}</p>
+          {/* 비밀번호 유효성 검사 */}
+          {ERRORS.map((error) => (
+            <div
+              key={error.id}
+              className={clsx(
+                'flex gap-[10px] items-center b4 font-[500] ml-[15px]',
+                !dirtyFields.password && 'text-base-color-2',
+                dirtyFields.password &&
+                  ((error.id === 1 ? isLengthValid : isCombinationValid) ? 'text-positive' : 'text-negative'),
+              )}>
+              {!dirtyFields.password && <CheckIcon />}
+              {dirtyFields.password &&
+                ((error.id === 1 ? isLengthValid : isCombinationValid) ? <CheckIcon /> : <XIcon />)}
+              <p>{error.error}</p>
             </div>
-          )}
-        </div>
-      </div>
+          ))}
 
-      <div className="mt-[28px]">
-        <DualButton
-          left={{
-            text: '이전',
-            variant: 'white',
-            onClick: () => {
-              setLevel(1);
-              setValue('code', '');
-            },
-          }}
-          right={{
-            text: '다음',
-            disabled: !password || !passwordCheck || !!errors.password || !!errors.passwordCheck,
-            onClick: () => setLevel(3),
-          }}
-          width={215}
-          height={64}
-          gap={10}
-          textSize={20}
-        />
-      </div>
+          <div className="relative">
+            {/* 비밀번호 재입력 */}
+            <Input
+              register={register('passwordCheck')}
+              type="password"
+              label="left"
+              placeholder="비밀번호를 확인해주세요."
+              autoComplete="new-password"
+              error={!!errors.passwordCheck?.message}
+            />
+
+            {/* 비밀번호 재입력 유효성 검사 */}
+            {errors.passwordCheck?.message && (
+              <div className="flex items-center justify-center gap-[10px] left-[15px] absolute top-[65px]">
+                <div className="rounded-full bg-negative size-[17px] text-center text-[14px] font-[500] tracking-[-0.15px] text-white">
+                  !
+                </div>
+                <p className="text-negative b3 font-[500]">{errors.passwordCheck.message}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-[28px]">
+          <DualButton
+            left={{
+              text: '이전',
+              variant: 'white',
+              onClick: () => {
+                setLevel(1);
+                setValue('code', '');
+              },
+            }}
+            right={{
+              text: '다음',
+              disabled: !password || !passwordCheck || !!errors.password || !!errors.passwordCheck,
+              onClick: () => setLevel(3),
+            }}
+            width={215}
+            height={64}
+            gap={10}
+            textSize={20}
+          />
+        </div>
+      </form>
     </section>
   );
 };

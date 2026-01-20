@@ -44,8 +44,8 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
           className="p-[40px] flex-1 overflow-y-scroll flex flex-col gap-[40px]">
           {term.subTitle && <h2 className="b4 leading-[26px]">{term.subTitle}</h2>}
 
-          {term.section.map((section) => (
-            <div className="flex flex-col gap-[20px]">
+          {term.section.map((section, idx) => (
+            <div key={idx} className="flex flex-col gap-[20px]">
               <h2 className="h7 text-primary-color">{section.heading}</h2>
 
               {Array.isArray(section.content) ? (
