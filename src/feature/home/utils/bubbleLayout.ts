@@ -95,7 +95,7 @@ export function buildBubbleSpecs(opts: BubbleOptions): BubbleSpec[] {
     viewportHeight: h,
     centerBlockWidthPx = 350,
     bigSizes = [387, 300, 250],
-    smallSizes = [200, 138, 100],
+    smallSizes = [200, 200, 138, 100],
   } = opts;
 
   const rng = mulberry32(seed);
@@ -108,7 +108,7 @@ export function buildBubbleSpecs(opts: BubbleOptions): BubbleSpec[] {
     sizes: bigSizes.slice(0, 3),
     centerBlockWidthPx,
     prefix: 'big',
-    floatSecRange: [8, 12],
+    floatSecRange: [8, 10],
     jitterRatio: 0.15,
   });
 
@@ -117,10 +117,10 @@ export function buildBubbleSpecs(opts: BubbleOptions): BubbleSpec[] {
     rng,
     w,
     h,
-    sizes: smallSizes,
+    sizes: smallSizes.slice(0, 4),
     centerBlockWidthPx,
     prefix: 'small',
-    floatSecRange: [4, 8],
+    floatSecRange: [3, 8],
     jitterRatio: 0.15,
   });
 

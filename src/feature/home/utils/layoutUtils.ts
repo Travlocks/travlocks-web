@@ -62,9 +62,9 @@ export function sampleXUniform(params: {
   const leftMax = centerLeft - half;
   const rightMin = centerRight + half;
 
-  if (leftMax < minX || rightMin > maxX) {
-    return side === 'left' ? w * 0.05 : w * 0.95;
-  }
+  // if (leftMax < minX || rightMin > maxX) {
+  //   return side === 'left' ? w * 0.05 : w * 0.95;
+  // }
 
   if (side === 'left') {
     const availableWidth = leftMax - minX;
@@ -72,13 +72,13 @@ export function sampleXUniform(params: {
     const baseX = minX + segmentWidth * (index + 0.5);
     const jitter = segmentWidth * jitterRatio;
     const x = randFloat(rng, baseX - jitter, baseX + jitter);
-    return Math.max(minX, Math.min(leftMax, x));
+    return x;
   } else {
     const availableWidth = maxX - rightMin;
     const segmentWidth = availableWidth / totalCount;
     const baseX = rightMin + segmentWidth * (index + 0.5);
     const jitter = segmentWidth * jitterRatio;
     const x = randFloat(rng, baseX - jitter, baseX + jitter);
-    return Math.max(rightMin, Math.min(maxX, x));
+    return x;
   }
 }
