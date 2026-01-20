@@ -1,8 +1,9 @@
 import { useFormContext } from 'react-hook-form';
+
+import type { StepProps } from './Modal';
 import type { FormFields } from '../types/schema';
 import Input from '@/shared/components/Form/Input';
 import DualButton from '@/shared/components/Button/DualButton';
-import type { StepProps } from './Modal';
 import Alert from '@/shared/components/Form/Alert';
 
 const Nickname = ({ setLevel }: StepProps) => {
@@ -24,6 +25,7 @@ const Nickname = ({ setLevel }: StepProps) => {
           label="left"
           placeholder="닉네임 (한글, 영문 2자 이상 ~ 10자 이하)"
           error={!!errors.nickname?.message}
+          hasCancle={true}
         />
 
         <div className="absolute top-[65px] w-full">
