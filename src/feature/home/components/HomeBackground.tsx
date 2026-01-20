@@ -22,10 +22,10 @@ export function HomeBackground() {
         seed,
         viewportWidth: w,
         viewportHeight: h,
-        centerBlockWidthPx: 500,
+        centerBlockWidthPx: 350,
         // big/small sizes는 배열로 고정된 값
-        bigSizes: [387, 300],
-        smallSizes: [200, 180, 138, 100],
+        bigSizes: [387, 300, 250],
+        smallSizes: [200, 180, 100],
       }),
     );
 
@@ -35,7 +35,6 @@ export function HomeBackground() {
         seed,
         viewportWidth: w,
         viewportHeight: h,
-        centerBlockWidthPx: 500,
         sizes: [50, 50, 50, 50, 50],
       }),
     );

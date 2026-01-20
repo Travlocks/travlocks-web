@@ -38,3 +38,47 @@ export function sampleXAvoidCenter(params: {
   const x = randFloat(rng, rightMin, maxX);
   return x;
 }
+
+// 균일한 배치를 위한 함수: 좌우 영역을 균등하게 나눠서 배치
+export function sampleXUniform(params: {
+  rng: PRNG;
+  w: number;
+  size: number;
+  centerBlockWidth?: number;
+  side: 'left' | 'right';
+  index: number;
+  totalCount: number;
+  jitterRatio?: number;
+}) {
+  const { rng, w, size, centerBlockWidth, side, index, totalCount, jitterRatio = 0.2 } = params;
+  const half = size / 2;
+
+  const centerLeft = w / 2 - (centerBlockWidth ?? 0) / 2;
+  const centerRight = w / 2 + (centerBlockWidth ?? 0) / 2;
+
+  const minX = half;
+  const maxX = w - half;
+
+  const leftMax = centerLeft - half;
+  const rightMin = centerRight + half;
+
+  if (leftMax < minX || rightMin > maxX) {
+    return side === 'left' ? w * 0.05 : w * 0.95;
+  }
+
+  if (side === 'left') {
+    const availableWidth = leftMax - minX;
+    const segmentWidth = availableWidth / totalCount;
+    const baseX = minX + segmentWidth * (index + 0.5);
+    const jitter = segmentWidth * jitterRatio;
+    const x = randFloat(rng, baseX - jitter, baseX + jitter);
+    return Math.max(minX, Math.min(leftMax, x));
+  } else {
+    const availableWidth = maxX - rightMin;
+    const segmentWidth = availableWidth / totalCount;
+    const baseX = rightMin + segmentWidth * (index + 0.5);
+    const jitter = segmentWidth * jitterRatio;
+    const x = randFloat(rng, baseX - jitter, baseX + jitter);
+    return Math.max(rightMin, Math.min(maxX, x));
+  }
+}

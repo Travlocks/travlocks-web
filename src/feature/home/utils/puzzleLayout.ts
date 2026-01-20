@@ -1,5 +1,5 @@
-import { mulberry32, pick, randFloat } from './random';
-import { sampleXAvoidCenter, toPct } from './layoutUtils';
+import { mulberry32, randFloat } from './random';
+import { sampleXUniform, toPct } from './layoutUtils';
 import { ROTATE_SEC, extraMax, extraMin } from './bubbleLayout';
 
 export type PuzzleSpec = {
@@ -23,28 +23,40 @@ type PuzzleOptions = {
 };
 
 export function buildPuzzleSpecs(opts: PuzzleOptions): PuzzleSpec[] {
-  const {
-    seed = Date.now(),
-    viewportWidth: w,
-    viewportHeight: h,
-    centerBlockWidthPx = 300,
-    sizes = [50, 50, 50, 50, 50],
-  } = opts;
-
+  const { seed = Date.now(), viewportWidth: w, viewportHeight: h, sizes = [50, 50, 50, 50, 50] } = opts;
   const rng = mulberry32(seed);
 
+  // 퍼즐을 좌우 균등 배치
+  const puzzleCount = sizes.length;
+  const puzzleLeftCount = Math.ceil(puzzleCount / 2);
+  const puzzleRightCount = puzzleCount - puzzleLeftCount;
+  let puzzleLeftIdx = 0;
+  let puzzleRightIdx = 0;
+
   const puzzles: PuzzleSpec[] = sizes.map((size, idx) => {
-    const side: 'left' | 'right' = pick(rng, ['left', 'right'] as const);
-    const x = sampleXAvoidCenter({ rng, w, size, centerBlockWidth: centerBlockWidthPx, side });
+    // 좌우 번갈아가며 배치
+    const side: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
+    const sideIndex = side === 'left' ? puzzleLeftIdx++ : puzzleRightIdx++;
+    const totalCount = side === 'left' ? puzzleLeftCount : puzzleRightCount;
+
+    const x = sampleXUniform({
+      rng,
+      w,
+      size,
+      side,
+      index: sideIndex,
+      totalCount,
+      jitterRatio: 0.2,
+    });
     const extra = randFloat(rng, extraMin, extraMax);
 
     return {
       id: `puzzle-${idx + 1}`,
       size,
       left: toPct(x, w),
-      floatSec: randFloat(rng, 6, 8),
+      floatSec: randFloat(rng, 4, 5),
       rotateSec: ROTATE_SEC,
-      delaySec: randFloat(rng, 2.5, 8.5),
+      delaySec: randFloat(rng, 2, 8.5),
       startY: h + size + extra,
       endY: -size - extra,
       opacity: 1,
