@@ -25,7 +25,7 @@ const Nickname = ({ setLevel }: StepProps) => {
           label="left"
           placeholder="닉네임 (한글, 영문 2자 이상 ~ 10자 이하)"
           error={!!errors.nickname?.message}
-          hasCancle={true}
+          hasCancel={true}
         />
 
         <div className="absolute top-[65px] w-full">

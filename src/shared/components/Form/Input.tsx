@@ -19,7 +19,7 @@ import XIcon from '@assets/icon-x.svg?react';
  * @param {UseFormRegisterReturn} register -- react-hook-form의 register 반환값
  * @param {'top' | 'left'} label -- 라벨 위치
  * @param {number} width -- input의 max-width. 전달하지 않으면 label 타입에 따라 기본 값 적용됩니다.
- * @param {boolean} hasCancle -- 입력값 전체 삭제 있는 경우 true를 넘기면 됩니다.
+ * @param {boolean} hasCancel -- 입력값 전체 삭제 있는 경우 true를 넘기면 됩니다.
  *
  * @example
  * <Input register={register('email')} type="email" label="top" />
@@ -32,7 +32,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   register: UseFormRegisterReturn;
   label: 'top' | 'left';
   width?: number;
-  hasCancle?: boolean;
+  hasCancel?: boolean;
   error?: boolean;
   className?: string;
 }
@@ -42,7 +42,7 @@ const IconList = {
   password: PasswordIcon,
 } as const;
 
-const Input = ({ register, width, label, error, type, hasCancle = false, className, ...rest }: InputProps) => {
+const Input = ({ register, width, label, error, type, hasCancel = false, className, ...rest }: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const form = useFormContext();
@@ -101,7 +101,7 @@ const Input = ({ register, width, label, error, type, hasCancle = false, classNa
       )}
 
       {/* 전체 삭제 */}
-      {hasCancle && setValue && (
+      {hasCancel && setValue && (
         <button
           type="button"
           disabled={rest.disabled}
