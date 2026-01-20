@@ -2,7 +2,7 @@ import { useFormContext } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 
 import type { FormFields } from '../types/schema';
-import type { StepProps } from './Modal';
+import type { StepProps } from './SignupView';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';

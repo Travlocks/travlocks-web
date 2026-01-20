@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useEffect } from 'react';
 
 import type { FormFields } from '../types/schema';
-import type { StepProps } from './Modal';
+import type { StepProps } from './SignupView';
 import Input from '@/shared/components/Form/Input';
 import DualButton from '@/shared/components/Button/DualButton';
 

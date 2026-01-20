@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 
-import type { StepProps } from './Modal';
+import type { StepProps } from './SignupView';
 import type { FormFields } from '../types/schema';
 import Input from '@/shared/components/Form/Input';
 import DualButton from '@/shared/components/Button/DualButton';

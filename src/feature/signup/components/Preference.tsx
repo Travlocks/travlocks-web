@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 
-import type { StepProps } from './Modal';
+import type { StepProps } from './SignupView';
 import DualButton from '@/shared/components/Button/DualButton';
 
 import Nature from '@assets/preference/icon-preference-nature.svg?react';

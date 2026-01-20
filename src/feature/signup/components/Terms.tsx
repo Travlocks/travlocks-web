@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 
-import type { StepProps } from './Modal';
+import type { StepProps } from './SignupView';
 import Button from '@/shared/components/Button/Button';
 import Checkbox from '@/shared/components/Form/Checkbox';
 import TermsModal from './TermsModal';

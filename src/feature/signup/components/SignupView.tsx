@@ -26,7 +26,7 @@ const STEPS = [
   { id: 4, title: '개인 취향 탐색', Component: Preference },
 ] as const;
 
-const Modal = () => {
+const SignupView = () => {
   const [level, setLevel] = useState<number>(0); // 현재 단계
 
   const [agreements, setAgreements] = useState<Agreements>({
@@ -99,4 +99,4 @@ const Modal = () => {
   );
 };
 
-export default Modal;
+export default SignupView;
