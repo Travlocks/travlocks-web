@@ -1,7 +1,13 @@
 // src/pages/home/utils/bubbleLayout.ts
-import { mulberry32, pick, randFloat, type PRNG } from './random';
+import { mulberry32, pick, randFloat } from './random';
+import { sampleXAvoidCenter, toPct } from './layoutUtils';
 
 export type BubbleVariant = 'a' | 'b';
+
+// 회전 속도와 상승 거리는 고정
+export const ROTATE_SEC = 10;
+export const extraMin = 80;
+export const extraMax = 180;
 
 export type BubbleSpec = {
   id: string;
@@ -16,7 +22,7 @@ export type BubbleSpec = {
   opacity: number;
 };
 
-type Options = {
+type BubbleOptions = {
   seed?: number | string;
   viewportWidth: number;
   viewportHeight: number;
@@ -27,47 +33,8 @@ type Options = {
   smallSizes?: number[];
 };
 
-// 퍼센트 변환 함수
-function toPct(px: number, total: number) {
-  return `${(px / total) * 100}%`;
-}
-
-// 중앙 영역을 피하면서 랜덤 배치 함수
-function sampleXAvoidCenter(params: {
-  rng: PRNG;
-  w: number;
-  size: number;
-  centerBlockWidth: number;
-  side: 'left' | 'right';
-}) {
-  const { rng, w, size, centerBlockWidth, side } = params;
-  const half = size / 2;
-
-  const centerLeft = w / 2 - centerBlockWidth / 2;
-  const centerRight = w / 2 + centerBlockWidth / 2;
-
-  const minX = half;
-  const maxX = w;
-
-  // “원 전체”가 중앙 영역을 침범하지 않도록 반지름까지 고려
-  const leftMax = centerLeft - half;
-  const rightMin = centerRight + half;
-
-  // 화면이 너무 좁아 범위가 깨질 때 fallback
-  if (leftMax < minX || rightMin > maxX) {
-    return side === 'left' ? w * 0.12 : w * 0.88;
-  }
-
-  if (side === 'left') {
-    const x = randFloat(rng, minX, leftMax);
-    return x;
-  }
-  const x = randFloat(rng, rightMin, maxX);
-  return x;
-}
-
 // 버블 생성 함수
-export function buildBubbleSpecs(opts: Options): BubbleSpec[] {
+export function buildBubbleSpecs(opts: BubbleOptions): BubbleSpec[] {
   const {
     seed = Date.now(),
     viewportWidth: w,
@@ -78,11 +45,6 @@ export function buildBubbleSpecs(opts: Options): BubbleSpec[] {
   } = opts;
 
   const rng = mulberry32(seed);
-
-  // 회전 속도와 상승 거리는 고정
-  const ROTATE_SEC = 10;
-  const extraMin = 80;
-  const extraMax = 180;
 
   // 큰 버블 생성
   const big: BubbleSpec[] = bigSizes.slice(0, 2).map((size, idx) => {
