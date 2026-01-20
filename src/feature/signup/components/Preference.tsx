@@ -1,3 +1,9 @@
+import { useState } from 'react';
+import clsx from 'clsx';
+
+import type { StepProps } from './Modal';
+import DualButton from '@/shared/components/Button/DualButton';
+
 import Nature from '@assets/preference/icon-preference-nature.svg?react';
 import Culture from '@assets/preference/icon-preference-culture.svg?react';
 import Food from '@assets/preference/icon-preference-food.svg?react';
@@ -11,11 +17,6 @@ import Schedule from '@assets/preference/icon-preference-style-schedule.svg?reac
 import Efficiency from '@assets/preference/icon-preference-style-efficiency.svg?react';
 import Improvise from '@assets/preference/icon-preference-style-plan.svg?react';
 import Stay from '@assets/preference/icon-preference-style-stay.svg?react';
-
-import DualButton from '@/shared/components/Button/DualButton';
-import type { StepProps } from './Modal';
-import { useState } from 'react';
-import clsx from 'clsx';
 
 const THEMES = [
   {
@@ -112,24 +113,27 @@ const Preference = ({ setLevel }: StepProps) => {
               key={preference.id}
               onClick={() => handleSelect(preferenceLevel, preference.id)}
               className={clsx(
-                'group rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color cursor-pointer hover:text-primary-color',
+                'group rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color cursor-pointer hover:text-primary-color trnasition-all duration-500',
                 isSelected ? 'boder-primary-color text-primary-color bg-[rgba(60,78,244,0.10)]' : 'border-base-color',
               )}>
+              {/* 아이콘 */}
               <div
                 className={clsx(
-                  'size-[45px] rounded-[10px] flex items-center justify-center group-hover:bg-primary-color',
+                  'size-[45px] rounded-[10px] flex items-center justify-center group-hover:bg-primary-color trnasition-all duration-500',
                   isSelected ? 'bg-primary-color  text-white' : 'bg-base-color-4',
                 )}>
                 {preference.icon}
               </div>
 
+              {/* 화면에 표시될 이름 */}
               <p className="text-[16px] font-[500] leading-[24px] tracking-[-0.312px] whitespace-nowrap">
                 {preference.label}
               </p>
 
+              {/* hover시 보이는 상세 설명 */}
               <p
                 className={clsx(
-                  'b7 tracking-[-0.312px] text-primary-color whitespace-nowrap group-hover:opacity-100',
+                  'b7 tracking-[-0.312px] text-primary-color whitespace-nowrap group-hover:opacity-100  trnasition-all duration-500',
                   isSelected ? 'opacity-100' : 'opacity-0',
                 )}>
                 {preference.text}
