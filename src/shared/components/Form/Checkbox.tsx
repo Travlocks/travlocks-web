@@ -1,6 +1,8 @@
 import clsx from 'clsx';
 import { useId } from 'react';
 
+import Checked from '../../assets/icon-checked.png';
+
 interface CheckboxProps {
   text: string | React.ReactNode;
   outline: boolean;
@@ -25,7 +27,10 @@ const Checkbox = ({ text, outline, checked, onChange, className }: CheckboxProps
         id={id}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className={`peer appearance-none size-[20px] rounded-[5px] border border-base-color checked:bg-[rgba(60,78,244,0.05)] checked:border-none checked:bg-[url('https://rlexwdwoprxkgngnucap.supabase.co/storage/v1/object/sign/image/icon-checked.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wYTdlNjA2Yy03NDdiLTRiMDUtODVlMC0zZmYxMjU3YjM2NzYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpbWFnZS9pY29uLWNoZWNrZWQuc3ZnIiwiaWF0IjoxNzY3OTQ1Njk0LCJleHAiOjE3OTk0ODE2OTR9.NVT-mfevqksKOKTsmKOUtKCeH2XcZ2jbRj3-l4RhlBo')] bg-no-repeat bg-center`}></input>
+        style={{
+          backgroundImage: checked ? `url(${Checked})` : 'none',
+        }}
+        className={`peer appearance-none size-[20px] rounded-[5px] border border-base-color checked:bg-[rgba(60,78,244,0.05)] checked:border-none bg-no-repeat bg-center bg-cover`}></input>
       <span>{text}</span>
       <div className={clsx('absolute inset-0', outline && 'peer-checked:bg-[rgba(60,78,244,0.05)]')}></div>
     </label>
