@@ -79,7 +79,7 @@ const Email = ({ setLevel }: StepProps) => {
           register={register('email')}
           type="email"
           label="left"
-          placeholder="your@eamil.com"
+          placeholder="your@email.com"
           width={500}
           disabled={step === 2}
         />
