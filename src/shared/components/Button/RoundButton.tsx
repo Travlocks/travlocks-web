@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef } from 'react';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import { motion } from 'motion/react';
 import clsx from 'clsx';
 
 /**
@@ -30,10 +31,21 @@ interface RoundButtonProps extends ButtonBaseProps {
   bg?: string;
   onClick?: () => void;
   hover?: boolean;
+  isAnimated?: boolean;
   className?: string;
 }
 
-const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, className, ...props }: RoundButtonProps) => {
+const RoundButton = ({
+  text,
+  type = 'button',
+  width,
+  bg,
+  onClick,
+  hover,
+  className,
+  isAnimated = false,
+  ...props
+}: RoundButtonProps) => {
   return (
     <button
       type={type}
@@ -58,7 +70,16 @@ const RoundButton = ({ text, type = 'button', width, bg, onClick, hover, classNa
       )}
       <span className="relative z-10 flex items-center gap-[10px]">
         {text}
-        <AppIcon name="arrow" color="white" size={16} />
+        {/* 애니메이션 추가 시 사용 */}
+        {isAnimated ? (
+          <motion.div
+            animate={{ x: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear', delay: 0.5 }}>
+            <AppIcon name="arrow" color="white" size={16} />
+          </motion.div>
+        ) : (
+          <AppIcon name="arrow" color="white" size={16} />
+        )}
       </span>
     </button>
   );
