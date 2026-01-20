@@ -31,6 +31,7 @@ const Modal = () => {
       code: undefined,
       password: '',
       passwordCheck: '',
+      nickname: '',
     },
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -67,7 +68,9 @@ const Modal = () => {
 
                 {/* 각 단계 이름 + 컴포넌트 */}
                 <div className={clsx('flex-1', level === id && 'mt-[5px]')}>
+                  {/* 각 단계 이름 */}
                   <span>{title}</span>
+
                   {/* 각 단계별 컴포넌트 */}
                   {level === id && <Component setLevel={setLevel} />}
                 </div>
@@ -77,6 +80,7 @@ const Modal = () => {
         </div>
       )}
 
+      {/* 가입완료 */}
       {level === 5 && <div className="">환영합니다</div>}
     </FormProvider>
   );

@@ -24,15 +24,21 @@ const TERMS = [
   },
 ] as const;
 
+type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
+
+type Agreements = Record<TermKey, boolean> & {
+  all: boolean;
+};
+
 const Terms = ({ setLevel }: StepProps) => {
-  const [agreements, setAgreements] = useState({
+  const [agreements, setAgreements] = useState<Agreements>({
     service: false, // 서비스 이용약관
     privacy: false, // 개인정보 처리방침
     marketing: false, // 마케팅 정보 수신 동의
     all: false, // 전체 동의
   });
 
-  const [modalType, setModalType] = useState<'service' | 'privacy' | 'marketing' | null>(null);
+  const [modalType, setModalType] = useState<TermKey | null>(null);
 
   const isRequired = agreements.service && agreements.privacy; // 필수 조건
 
@@ -47,7 +53,7 @@ const Terms = ({ setLevel }: StepProps) => {
   };
 
   // 개별 약관 변경 로직
-  const handleItemChange = (key: string, checked: boolean) => {
+  const handleItemChange = (key: TermKey, checked: boolean) => {
     setAgreements((prev) => {
       const next = {
         ...prev,
@@ -89,7 +95,14 @@ const Terms = ({ setLevel }: StepProps) => {
         </div>
       ))}
 
-      {modalType && <TermsModal type={modalType} onClose={() => setModalType(null)} />}
+      {modalType && (
+        <TermsModal
+          type={modalType}
+          onClose={() => setModalType(null)}
+          onChange={(checked) => handleItemChange(modalType, checked)}
+          agreements={agreements[modalType]}
+        />
+      )}
 
       <Button text="다음" disabled={!isRequired} onClick={() => setLevel((prev) => prev + 1)} />
     </section>

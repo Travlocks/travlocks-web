@@ -2,17 +2,17 @@ import DualButton from '@/shared/components/Button/DualButton';
 import Checkbox from '@/shared/components/Form/Checkbox';
 import { TERMS } from '@/shared/data/signup/terms';
 import clsx from 'clsx';
-import { useState } from 'react';
 import CloseIcon from '@assets/icon-x.svg?react';
 
 interface TemrsModalProps {
   type: 'service' | 'privacy' | 'marketing';
   onClose: () => void;
+  onChange: (checked: boolean) => void;
+  agreements: boolean;
 }
 
-const TermsModal = ({ type, onClose }: TemrsModalProps) => {
+const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) => {
   const term = TERMS[type]; // 어떤 모달인지
-  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   return (
     <div className="fixed inset-0 z-20 flex justify-center pt-8">
@@ -76,10 +76,8 @@ const TermsModal = ({ type, onClose }: TemrsModalProps) => {
           <Checkbox
             text="내용을 모두 확인하였으며 동의합니다."
             outline={true}
-            checked={isChecked}
-            onChange={() => {
-              setIsChecked((prev) => !prev);
-            }}
+            checked={agreements}
+            onChange={onChange}
             className="w-full max-w-none"
           />
           <DualButton
@@ -91,7 +89,7 @@ const TermsModal = ({ type, onClose }: TemrsModalProps) => {
             }}
             right={{
               text: '확인',
-              disabled: !isChecked,
+              disabled: !agreements,
               onClick: onClose,
             }}
             width={105}
