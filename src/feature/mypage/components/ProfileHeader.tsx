@@ -1,9 +1,13 @@
 import SettingsIcon from '@/shared/assets/icon-settings.svg?react';
 import clsx from 'clsx';
 
-const ProfileHeader = () => {
+interface ProfileHeaderProps {
+  className?: string;
+}
+
+const ProfileHeader = ({ className }: ProfileHeaderProps) => {
   return (
-    <div className="flex items-start justify-between w-full mb-12">
+    <div className={clsx('flex items-start justify-between w-full mb-12', className)}>
       <div className="flex items-center gap-8">
         {/* Avatar */}
         <div className="relative w-45 h-45 rounded-full bg-base-color-6 flex items-center justify-center border-8 border-base-color-6 overflow-hidden">

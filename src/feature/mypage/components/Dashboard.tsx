@@ -4,6 +4,8 @@ import StarIcon from '@/shared/assets/icon-star.svg?react';
 import TemplateIcon from '@/shared/assets/icon-template.svg?react';
 import ActivityList from './ActivityList';
 import ProfileHeader from './ProfileHeader';
+import SectionHeader from './SectionHeader';
+import SettingsSection from './SettingsSection';
 import StatusCard from './StatusCard';
 
 const recentlyCreatedBlocks = [
@@ -78,9 +80,8 @@ const Dashboard = () => {
         <StatusCard icon={<StarIcon />} label="즐겨찾기" count={12} />
       </div>
 
-      <div className="flex items-center gap-3 mt-12">
-        <div className="w-2 h-11 bg-primary-color rounded-sm" />
-        <h2 className="h2 text-base-color-0">최근 활동</h2>
+      <div className="mt-12">
+        <SectionHeader title="최근 활동" />
       </div>
 
       <div className="flex gap-5 mt-7">
@@ -95,6 +96,15 @@ const Dashboard = () => {
             onToggleFavorite={handleToggleFavorite}
           />
         </div>
+      </div>
+
+      <div className="mt-12">
+        <SettingsSection
+          initialNickname="디모"
+          email="your@email.com"
+          initialBio="한줄소개 내용이 이곳에 들어갑니다"
+          onSave={(data) => console.log('Settings saved:', data)}
+        />
       </div>
     </div>
   );

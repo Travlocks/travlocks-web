@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import LocationIcon from '@/shared/assets/icon-location.svg?react';
 import StarEmptyIcon from '@/shared/assets/icon-star-empty.svg?react';
 import StarFilledIcon from '@/shared/assets/icon-star-filled.svg?react';
@@ -10,6 +11,7 @@ interface ActivityCardProps {
   showStar?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  className?: string;
 }
 
 const ActivityCard = ({
@@ -20,10 +22,11 @@ const ActivityCard = ({
   showStar = false,
   isFavorite = false,
   onToggleFavorite,
+  className,
 }: ActivityCardProps) => {
   if (showStar) {
     return (
-      <div className="px-6.5 py-6.25 bg-base-color-5 rounded-[10px]">
+      <div className={clsx('px-6.5 py-6.25 bg-base-color-5 rounded-[10px]', className)}>
         <div className="flex items-start justify-between gap-5 mb-2.75">
           <p className="b1 text-base-color-0">{title}</p>
           <button
@@ -39,7 +42,7 @@ const ActivityCard = ({
   }
 
   return (
-    <div className="px-6.5 py-6.25 bg-base-color-5 rounded-[10px]">
+    <div className={clsx('px-6.5 py-6.25 bg-base-color-5 rounded-[10px]', className)}>
       <p className="b1 text-base-color-0 mb-0.75">{title}</p>
       <div className="flex items-center gap-5">
         <div className="flex items-center gap-0.75">

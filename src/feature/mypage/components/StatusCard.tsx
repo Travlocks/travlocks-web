@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import ChevronRightIcon from '@/shared/assets/icon-chevron-right.svg?react';
 import React from 'react';
 
@@ -6,12 +7,16 @@ interface StatusCardProps {
   label: string;
   count: number;
   onClick?: () => void;
+  className?: string;
 }
 
-const StatusCard = ({ icon, label, count, onClick }: StatusCardProps) => {
+const StatusCard = ({ icon, label, count, onClick, className }: StatusCardProps) => {
   return (
     <div
-      className="flex flex-col flex-1 bg-base-color-6 border border-base-color-3 rounded-[10px] p-8 shadow-sm hover:shadow-md cursor-pointer justify-between"
+      className={clsx(
+        'flex flex-col flex-1 bg-base-color-6 border border-base-color-3 rounded-[10px] p-8 shadow-sm hover:shadow-md cursor-pointer justify-between',
+        className,
+      )}
       onClick={onClick}>
       <div className="flex items-center gap-1.5 mb-3">
         <div className="text-primary-color">{icon}</div>
