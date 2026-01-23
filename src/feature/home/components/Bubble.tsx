@@ -24,6 +24,7 @@ export function Bubble({
     <div className={clsx('absolute -translate-x-1/2 -translate-y-1/2', className)} style={{ left, top: 0 }}>
       {/* float 애니메이션 */}
       <motion.div
+        initial={reduce ? {} : { y: startY }}
         animate={reduce ? {} : { y: [startY, endY] }}
         transition={reduce ? undefined : { duration: floatSec, repeat: Infinity, ease: 'linear', delay: delaySec }}
         style={{ willChange: 'transform' }}>
