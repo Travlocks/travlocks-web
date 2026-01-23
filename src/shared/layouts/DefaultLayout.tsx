@@ -24,7 +24,7 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
         <AnimatePresence
           mode="wait"
           onExitComplete={() => {
-            navigate('/login');
+            navigate('/');
           }}>
           {showSplash && (
             <SplashFlow
