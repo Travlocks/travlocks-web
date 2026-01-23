@@ -1,7 +1,7 @@
 import Navbar from '@components/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 
@@ -13,7 +13,16 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomeRoute = location.pathname === '/';
-  const [showSplash, setShowSplash] = useState(isHomeRoute);
+  // 스플래시 표시 여부 저장
+  const showSplashStorage = sessionStorage.getItem('showSplash');
+  const [showSplash, setShowSplash] = useState(showSplashStorage !== 'false');
+
+  // 홈 페이지에서 스플래시 표시 여부 저장
+  useEffect(() => {
+    if (!showSplash && isHomeRoute) {
+      sessionStorage.setItem('showSplash', 'false');
+    }
+  }, [showSplash, isHomeRoute]);
 
   // 인증 페이지 목록
   const AUTH_PAGES = ['/login', '/signup', '/password'];
@@ -22,7 +31,7 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">
       {/* 메인 배경 */}
-      {isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-0 bg-base-color-6" />}
+      {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-0 bg-base-color-6" />}
       {/* 스플래시 플로우 */}
       {isHomeRoute && (
         <AnimatePresence

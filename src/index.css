@@ -24,6 +24,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: light;
+  font-display: swap;
+}
+
 @theme {
   --color-primary-color: #3c4ef4;
   --color-secondary-color-1: #0099ff;

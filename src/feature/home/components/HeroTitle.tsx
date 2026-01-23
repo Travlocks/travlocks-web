@@ -35,7 +35,7 @@ export const HeroTitle = () => {
         나만의 여행 블록 쌓기
       </motion.h1>
 
-      <motion.p className="h9 text-base-color-1 mb-[30px] text-center" variants={item}>
+      <motion.p className="h9 font-light text-base-color-1 mb-[30px] text-center" variants={item}>
         복잡한 여행 계획을 간단하게 만드는 가장 쉬운 방법
       </motion.p>
 
