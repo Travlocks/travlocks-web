@@ -66,9 +66,16 @@ const Password = ({ setLevel }: StepProps) => {
                 dirtyFields.password &&
                   ((error.id === 1 ? isLengthValid : isCombinationValid) ? 'text-positive' : 'text-negative'),
               )}>
-              {!dirtyFields.password && <CheckIcon />}
-              {dirtyFields.password &&
-                ((error.id === 1 ? isLengthValid : isCombinationValid) ? <CheckIcon /> : <XIcon />)}
+              <div className="size-[19px] flex items-center justify-center">
+                {!dirtyFields.password && <CheckIcon />}
+                {dirtyFields.password &&
+                  ((error.id === 1 ? isLengthValid : isCombinationValid) ? (
+                    <CheckIcon />
+                  ) : (
+                    <XIcon className="object-cover" />
+                  ))}
+              </div>
+
               <p>{error.error}</p>
             </div>
           ))}
