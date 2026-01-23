@@ -57,10 +57,10 @@ const CompleteModal = () => {
 
         <div
           className={clsx(
-            'relative h-[60px] bg-white overflow-visible z-10',
+            'relative h-[30px] bg-white',
             // 반지름 30px(지름 60)원을 잘라냄 (-> black은 보이고, transparent는 안 보이는 부분)
             '[mask-image:radial-gradient(circle_30px_at_left_center,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_center,transparent_99%,black_100%)]',
-            '[-webkit-mask-image:radial-gradient(circle_30px_at_left_center,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_center,transparent_99%,black_100%)]',
+            '[-webkit-mask-image:radial-gradient(circle_30px_at_left_bottom,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_bottom,transparent_99%,black_100%)]',
             // 두 마스크 합치는 법 (-> black인 부분만 보이도록 합침)
             '[mask-composite:intersect]',
             '[-webkit-mask-composite:destination-in]',
@@ -71,10 +71,26 @@ const CompleteModal = () => {
           <hr className="border border-base-color border-dashed relative top-[30px] border-[5px]" />
         </div>
 
-        <section className="pt-[14px] bg-white pb-[40px] flex flex-col gap-[28px] items-center rounded-b-[30px] border-b border-x border-base-color">
-          <Logo />
-          <p className="text-base-color-1 h9">조립하는 즐거움, 나만의 여행 블록 쌓기</p>
-        </section>
+        {/* 잘릴 영역 */}
+        <div>
+          <div
+            className={clsx(
+              'relative h-[30px] bg-white',
+              '[mask-image:radial-gradient(circle_30px_at_left_top,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_top,transparent_99%,black_100%)]',
+              '[-webkit-mask-image:radial-gradient(circle_30px_at_left_top,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_top,transparent_99%,black_100%)]',
+              '[mask-composite:intersect]',
+              '[-webkit-mask-composite:destination-in]',
+              'before:content-[""] before:absolute before:size-[62px] before:rounded-full before:border before:border-base-color before:left-[-31px] before:bottom-[-1px]',
+              'after:content-[""] after:absolute after:size-[62px] after:rounded-full after:border after:border-base-color after:right-[-31px] after:bottom-[-1px]',
+            )}>
+            <hr className="border border-base-color border-dashed relative border-[5px]" />
+          </div>
+
+          <section className="pt-[14px] bg-white pb-[40px] flex flex-col gap-[28px] items-center rounded-b-[30px] border-b border-x border-base-color">
+            <Logo />
+            <p className="text-base-color-1 h9">조립하는 즐거움, 나만의 여행 블록 쌓기</p>
+          </section>
+        </div>
       </div>
     </div>
   );
