@@ -146,7 +146,7 @@ const Email = ({ setLevel }: StepProps) => {
       {step === 2 && (
         <p
           onClick={() => setShowModal(true)}
-          className="underline text-base-color-1 b4 self-end cursor-pointer absolute top-[352px]">
+          className="underline text-base-color-1 underline-offset-3 b4 self-end cursor-pointer absolute top-[352px]">
           이메일을 받지 못하셨나요?
         </p>
       )}

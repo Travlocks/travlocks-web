@@ -143,7 +143,9 @@ const Preference = ({ setLevel }: StepProps) => {
         })}
       </div>
 
-      <p onClick={() => setLevel(5)} className="self-end underline text-base-color-2 b4 cursor-pointer">
+      <p
+        onClick={() => setLevel(5)}
+        className="self-end underline text-base-color-2 b4 cursor-pointer underline-offset-3">
         건너뛰기
       </p>
 
