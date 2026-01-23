@@ -15,7 +15,7 @@ import Free from '@assets/preference/icon-preference-style-free.svg?react';
 import Plan from '@assets/preference/icon-preference-style-plan.svg?react';
 import Schedule from '@assets/preference/icon-preference-style-schedule.svg?react';
 import Efficiency from '@assets/preference/icon-preference-style-efficiency.svg?react';
-import Improvise from '@assets/preference/icon-preference-style-plan.svg?react';
+import Improvise from '@assets/preference/icon-preference-style-imporvise.svg?react';
 import Stay from '@assets/preference/icon-preference-style-stay.svg?react';
 
 const THEMES = [
@@ -102,7 +102,10 @@ const Preference = ({ setLevel }: StepProps) => {
 
   return (
     <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">관심 있는 여행 테마를 선택해주세요 (최대2개)</p>
+      <p className="text-base-color-2 b3 mt-[8px]">
+        {preferenceLevel === 'theme' && '관심 있는 여행 테마를 선택해주세요 (최대2개)'}
+        {preferenceLevel === 'style' && '평소 여행 스타일을 선택해주세요 (최대2개)'}
+      </p>
 
       <div className="grid grid-cols-3 gap-x-[15px] gap-y-[12px] flex-1">
         {(preferenceLevel === 'theme' ? THEMES : STYLES).map((preference) => {
@@ -145,7 +148,7 @@ const Preference = ({ setLevel }: StepProps) => {
 
       <p
         onClick={() => setLevel(5)}
-        className="self-end underline text-base-color-2 b4 cursor-pointer underline-offset-3">
+        className="self-end underline text-base-color-1 b4 cursor-pointer underline-offset-3">
         건너뛰기
       </p>
 
