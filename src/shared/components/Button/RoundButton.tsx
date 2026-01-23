@@ -63,12 +63,12 @@ const RoundButton = ({
       {hover && (
         <div
           className={clsx(
-            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
+            'absolute inset-0 z-base bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
             'group-hover:opacity-100',
           )}
         />
       )}
-      <span className="relative z-10 flex items-center gap-[10px]">
+      <span className="relative z-content flex items-center gap-[10px]">
         {text}
         {/* 애니메이션 추가 시 사용 */}
         {isAnimated ? (

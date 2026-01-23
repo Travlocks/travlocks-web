@@ -74,6 +74,21 @@
       opacity: 0;
     }
   }
+
+  /* z-index 규칙 */
+  --z-hide: -10;
+  --z-base: 0;
+  --z-above: 10;
+  --z-content: 20;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-header: 300;
+  --z-modal-backdrop: 400;
+  --z-sidebar: 500;
+  --z-modal: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+  --z-max: 999;
 }
 
 @layer base {
@@ -180,5 +195,35 @@
     font-size: 10px;
     font-weight: 400;
     line-height: normal;
+  }
+}
+
+@layer utilities {
+  .z-base {
+    z-index: var(--z-base);
+  }
+  .z-above {
+    z-index: var(--z-above);
+  }
+  .z-content {
+    z-index: var(--z-content);
+  }
+  .z-dropdown {
+    z-index: var(--z-dropdown);
+  }
+  .z-sticky {
+    z-index: var(--z-sticky);
+  }
+  .z-header {
+    z-index: var(--z-header);
+  }
+  .z-modal-backdrop {
+    z-index: var(--z-modal-backdrop);
+  }
+  .z-sidebar {
+    z-index: var(--z-sidebar);
+  }
+  .z-modal {
+    z-index: var(--z-modal);
   }
 }

@@ -14,7 +14,7 @@ const SplashFlow = ({ onDone }: SplashFlowProps) => {
   const [step, setStep] = useState<Step>('intro');
 
   return (
-    <div className="absolute inset-0 z-30">
+    <div className="absolute inset-0 z-modal">
       <AnimatePresence mode="wait">
         {step === 'intro' ? (
           <SplashIntro key="intro" onNext={() => setStep('exit')} />

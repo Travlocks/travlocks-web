@@ -5,9 +5,9 @@ import AuthBgLineUrl from '@assets/backgrounds/auth-bg-line.svg?url';
 import { useLocation } from 'react-router-dom';
 
 const CLOUD_POS = {
-  cloud1: 'left-[287px] top-[136px] z-30',
-  cloud2: 'right-[328px] top-[177px] z-30',
-  cloud3: 'left-[287px] bottom-[337px] z-30',
+  cloud1: 'left-[287px] top-[136px] z-content',
+  cloud2: 'right-[328px] top-[177px] z-content',
+  cloud3: 'left-[287px] bottom-[337px] z-content',
 } as const;
 
 const imgBase = 'absolute w-auto h-auto max-w-none select-none pointer-events-none';
@@ -19,14 +19,14 @@ const MainBg = () => {
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 z-base overflow-hidden pointer-events-none">
       <div className="relative w-full h-full bg-gradient-color-background">
         {isAuthPage && (
           <img
             src={AuthBgLineUrl}
             alt=""
             aria-hidden="true"
-            className="absolute left-0 bottom-[180px] w-full h-full z-10"
+            className="absolute left-0 bottom-[180px] w-full h-full z-content"
             draggable={false}
           />
         )}

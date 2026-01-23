@@ -31,7 +31,7 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">
       {/* 메인 배경 */}
-      {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-0 bg-base-color-6" />}
+      {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-base bg-base-color-6" />}
       {/* 스플래시 플로우 */}
       {isHomeRoute && (
         <AnimatePresence
@@ -51,7 +51,7 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
       )}
       {/* 스플래시 완료 후 메인 콘텐츠 렌더링 */}
       {!showSplash && (
-        <div className="relative z-10">
+        <div className="relative z-content">
           {showNavbar && <Navbar />}
 
           <main>
