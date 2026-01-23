@@ -53,18 +53,18 @@ const SignupView = () => {
     <FormProvider {...methods}>
       {level < 5 && (
         // 단계 영역
-        <div className="relative w-full self-start top-[-40px]">
+        <div className="relative w-full self-start mt-[-32px]">
           {/* 세로 진행선 */}
-          <div className="relative w-[40px] h-[631px] flex flex-col">
+          <div className="absolute w-[40px] min-h-[631px] flex flex-col">
             <div
               className={clsx(
-                'absolute left-1/2 -translate-x-1/2 w-[3px] h-[631px] rounded-[5px] bg-primary-color',
-                level === 4 && 'h-[300px]!',
+                'absolute left-1/2 -translate-x-1/2 w-[3px] min-h-[631px] rounded-[5px] bg-primary-color',
+                level === 4 && 'min-h-[300px]!',
               )}></div>
           </div>
 
           {/* 단계 리스트 */}
-          <div className="absolute top-0 flex flex-col w-full h-full gap-[28px]">
+          <div className="flex flex-col w-full gap-[28px]">
             {STEPS.map(({ id, title, Component }) => (
               <div key={id} className={clsx('flex', level === id ? 'h6 gap-[23px]' : 'b3 gap-[13px] items-center')}>
                 {/* 원 */}

@@ -104,7 +104,7 @@ const Preference = ({ setLevel }: StepProps) => {
     <section className="flex flex-col gap-[16px]">
       <p className="text-base-color-2 b3 mt-[8px]">관심 있는 여행 테마를 선택해주세요 (최대2개)</p>
 
-      <div className="grid grid-cols-3 gap-[15px]">
+      <div className="grid grid-cols-3 gap-x-[15px] gap-y-[12px] flex-1">
         {(preferenceLevel === 'theme' ? THEMES : STYLES).map((preference) => {
           const isSelected = selected[preferenceLevel].includes(preference.id);
 
@@ -143,7 +143,7 @@ const Preference = ({ setLevel }: StepProps) => {
         })}
       </div>
 
-      <p onClick={() => setLevel(5)} className="self-end underline text-base-color-2 b4 cursor-pointer -mt-4">
+      <p onClick={() => setLevel(5)} className="self-end underline text-base-color-2 b4 cursor-pointer">
         건너뛰기
       </p>
 
@@ -168,7 +168,6 @@ const Preference = ({ setLevel }: StepProps) => {
         height={64}
         gap={10}
         textSize={20}
-        className="-mt-4"
       />
     </section>
   );
