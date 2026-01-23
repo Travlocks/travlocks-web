@@ -6,6 +6,7 @@ import Checkbox from '@/shared/components/Form/Checkbox';
 import { TERMS } from '@/shared/data/signup/terms';
 
 import CloseIcon from '@assets/icon-x.svg?react';
+import MainBg from '@/shared/components/MainBg';
 
 interface TemrsModalProps {
   type: 'service' | 'privacy' | 'marketing';
@@ -31,8 +32,13 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
   };
 
   return (
-    <div className="fixed inset-0 z-20 flex justify-center pt-8">
-      <div className="max-w-[790px] w-full max-h-[1113px] bg-white w-full rounded-[15px] border border-[rgba(0,0,0,0.1)] flex flex-col">
+    <div className="fixed inset-0 z-20 flex justify-center py-8">
+      <div className="z-0">
+        <div className="fixed inset-0 z-1 bg-[rgba(74,85,105,0.6)]"></div>
+        <MainBg />
+      </div>
+
+      <div className="z-20 max-w-[790px] w-full max-h-[1113px] bg-white w-full rounded-[15px] border border-[rgba(0,0,0,0.1)] flex flex-col">
         <div className="h-[113px] pt-[52px] pb-[28px] px-[39px] border-b border-[rgba(0,0,0,0.1)] flex justify-between">
           <h1 className="h3">{term.title}</h1>
           <CloseIcon className="size-[15px] cursor-pointer" onClick={onClose} />
@@ -91,7 +97,7 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
           ))}
         </section>
 
-        <div className="h-[195px] bg-base-color-5 py-[35px] px-[26px] flex flex-col gap-[20px]">
+        <div className="h-[195px] bg-base-color-5 py-[35px] px-[26px] flex flex-col gap-[20px] rounded-[15px]">
           <Checkbox
             text="내용을 모두 확인하였으며 동의합니다."
             outline={true}
