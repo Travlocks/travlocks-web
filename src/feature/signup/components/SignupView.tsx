@@ -11,6 +11,7 @@ import Nickname from './Nickname';
 import Preference from './Preference';
 
 import CheckIcon from '@assets/icon-check-password.svg?react';
+import CompleteModal from './CompleteModal';
 
 export interface StepProps {
   setLevel: React.Dispatch<React.SetStateAction<number>>;
@@ -27,7 +28,7 @@ const STEPS = [
 ] as const;
 
 const SignupView = () => {
-  const [level, setLevel] = useState<number>(0); // 현재 단계
+  const [level, setLevel] = useState<number>(4); // 현재 단계
 
   const [agreements, setAgreements] = useState<Agreements>({
     service: false, // 서비스 이용약관
@@ -94,7 +95,7 @@ const SignupView = () => {
       )}
 
       {/* 가입완료 */}
-      {level === 5 && <div className="">환영합니다</div>}
+      {level === 5 && <CompleteModal />}
     </FormProvider>
   );
 };
