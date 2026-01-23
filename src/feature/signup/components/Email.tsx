@@ -116,7 +116,7 @@ const Email = ({ setLevel }: StepProps) => {
 
                 {/* 타이머 */}
                 {step === 2 && (
-                  <p className="absolute top-1/2 -translate-y-1/2 right-[15px] text-negative text-[16px] font-[400] leading-[15px]">
+                  <p className="absolute top-1/2 -translate-y-1/2 right-[24px] text-negative text-[16px] font-[400] leading-[15px]">
                     {formatTime(timeLeft)}
                   </p>
                 )}
