@@ -16,7 +16,7 @@ const CompleteModal = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 flex justify-center z-30 py-8 overflow-y-auto">
+    <div className="fixed inset-0 flex justify-center z-30 pt-8 overflow-y-auto">
       <MainBg isFixed={true} />
 
       <div className="max-w-[585px] w-full relative z-30 h-[1047px] animate-fade-in">
@@ -68,11 +68,11 @@ const CompleteModal = () => {
             'before:content-[""] before:absolute before:size-[62px] before:rounded-full before:border before:border-base-color before:left-[-31px] before:top-[-1px]',
             'after:content-[""] after:absolute after:size-[62px] after:rounded-full after:border after:border-base-color after:right-[-31px] after:top-[-1px]',
           )}>
-          <hr className="border border-base-color border-dashed relative top-[30px] border-[5px]" />
+          <hr className="border border-base-color border-dashed relative top-[20px] border-[5px]" />
         </div>
 
         {/* 잘릴 영역 */}
-        <div>
+        <div className="[animation-delay:2000ms] animate-ticket-fall relative top-[-10px]">
           <div
             className={clsx(
               'relative h-[30px] bg-white',
