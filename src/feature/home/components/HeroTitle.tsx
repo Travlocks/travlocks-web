@@ -40,7 +40,7 @@ export const HeroTitle = () => {
       </motion.p>
 
       <motion.div variants={item} className="w-full max-w-[292px]">
-        <RoundButton text="여행 조립하러 떠나기" isAnimated={true} width={292} onClick={click} />
+        <RoundButton text="여행 조립하러 떠나기" hover={true} isAnimated={true} width={292} onClick={click} />
       </motion.div>
     </motion.div>
   );
