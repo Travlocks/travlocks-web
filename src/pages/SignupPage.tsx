@@ -1,6 +1,8 @@
-import { useAuthLayoutHeader } from '@/shared/layouts/auth/useAuthLayoutHeader';
 import { useLayoutEffect } from 'react';
+
+import { useAuthLayoutHeader } from '@/shared/layouts/auth/useAuthLayoutHeader';
 import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+import SignupView from '@/feature/signup/components/SignupView';
 
 const SignupPage = () => {
   const { setAuthHeader, resetAuthHeader } = useAuthLayoutHeader();
@@ -10,7 +12,11 @@ const SignupPage = () => {
     return () => resetAuthHeader();
   }, [setAuthHeader, resetAuthHeader]);
 
-  return <div>회원가입 페이지</div>;
+  return (
+    <>
+      <SignupView />
+    </>
+  );
 };
 
 export default SignupPage;
