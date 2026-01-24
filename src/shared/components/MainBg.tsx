@@ -3,6 +3,11 @@ import Cloud2Url from '@assets/backgrounds/cloud-2.svg?url';
 import Cloud3Url from '@assets/backgrounds/cloud-3.svg?url';
 import AuthBgLineUrl from '@assets/backgrounds/auth-bg-line.svg?url';
 import { useLocation } from 'react-router-dom';
+import clsx from 'clsx';
+
+interface MainBgProps {
+  isFixed?: boolean;
+}
 
 const CLOUD_POS = {
   cloud1: 'left-[287px] top-[136px] z-content',
@@ -13,13 +18,13 @@ const CLOUD_POS = {
 const imgBase = 'absolute w-auto h-auto max-w-none select-none pointer-events-none';
 
 const AUTH_PAGES = ['/login', '/signup', '/password'];
-const MainBg = () => {
+const MainBg = ({ isFixed }: MainBgProps) => {
   const location = useLocation();
 
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   return (
-    <div className="absolute inset-0 z-base overflow-hidden pointer-events-none">
+    <div className={clsx(isFixed ? 'fixed' : 'absolute', 'inset-0 z-0 overflow-hidden pointer-events-none')}>
       <div className="relative w-full h-full bg-gradient-color-background">
         {isAuthPage && (
           <img
