@@ -54,7 +54,7 @@ export const createConnectorPath = (
   tabHeight: number,
   type: ConnectorType,
   direction: ConnectorDirection,
-  inset: number = 6,
+  inset: number = 5,
 ): string => {
   const isPlug = type === 'plug';
 
@@ -137,7 +137,7 @@ export const createConnectorPath = (
   return ` Q ${c1x} ${c1y} ${p1x} ${p1y} L ${p2x} ${p2y} Q ${c2x} ${c2y} ${p3x} ${p3y} L ${p4x} ${p4y} Q ${c3x} ${c3y} ${p5x} ${p5y} L ${p6x} ${p6y} Q ${c4x} ${c4y} ${destX} ${destY}`;
 };
 
-export const createRectPoints = (width: number, height: number, startX: number = 16, startY: number = 16): Point[] => {
+export const createRectPoints = (width: number, height: number, startX: number = 0, startY: number = 0): Point[] => {
   return [
     { x: startX, y: startY },
     { x: startX + width, y: startY },
@@ -211,7 +211,7 @@ export const createPolygonBlockPath = (
 
       path += ` L ${tx} ${ty}`;
 
-      path += createConnectorPath(tx, ty, tabWidth, tabHeight, conn.type, direction);
+      path += createConnectorPath(tx, ty, tabWidth, tabHeight, conn.type, direction, radius);
 
       path += ` L ${endX} ${endY}`;
     } else {
