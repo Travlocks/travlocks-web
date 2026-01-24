@@ -9,7 +9,7 @@ interface BlockContentProps {
 
 export const BlockContent = ({ icon, category, title }: BlockContentProps) => {
   return (
-    <div className="flex items-center justify-center gap-2 mt-1">
+    <div className="flex items-center gap-2 mt-1">
       <AppIcon name={icon} width={30} height={30} />
       <div className="flex flex-col">
         <span className="text-[12px] font-normal text-base-color-5">{category}</span>

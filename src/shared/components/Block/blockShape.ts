@@ -1,14 +1,51 @@
+export interface Point {
+  x: number;
+  y: number;
+}
+
 export type ConnectorType = 'plug' | 'socket';
 export type ConnectorDirection = 'top' | 'right' | 'bottom' | 'left';
 export type ConnectorAlignment = 'start' | 'center' | 'end';
 
 export interface Connector {
-  direction: ConnectorDirection;
   type: ConnectorType;
+  edgeIndex: number;
   align?: ConnectorAlignment;
 }
 
-export type BlockConnections = Connector[];
+// 편의를 위해서 폴리곤을 사각형으로 표현하는 경우 사용함
+export interface DirectionalConnector {
+  type: ConnectorType;
+  direction: ConnectorDirection;
+  align?: ConnectorAlignment;
+}
+
+export type BlockConnector = Connector | DirectionalConnector;
+export type BlockConnections = BlockConnector[];
+
+export const convertToPolygonConnections = (connections: BlockConnections): Connector[] => {
+  const polygonConnections: Connector[] = [];
+  connections.forEach((c) => {
+    if ('edgeIndex' in c) {
+      polygonConnections.push(c);
+    } else {
+      let edgeIndex = -1;
+      if (c.direction === 'top') edgeIndex = 0;
+      else if (c.direction === 'right') edgeIndex = 1;
+      else if (c.direction === 'bottom') edgeIndex = 2;
+      else if (c.direction === 'left') edgeIndex = 3;
+
+      if (edgeIndex !== -1) {
+        polygonConnections.push({
+          type: c.type,
+          align: c.align,
+          edgeIndex,
+        });
+      }
+    }
+  });
+  return polygonConnections;
+};
 
 export const createConnectorPath = (
   x: number,
@@ -100,107 +137,105 @@ export const createConnectorPath = (
   return ` Q ${c1x} ${c1y} ${p1x} ${p1y} L ${p2x} ${p2y} Q ${c2x} ${c2y} ${p3x} ${p3y} L ${p4x} ${p4y} Q ${c3x} ${c3y} ${p5x} ${p5y} L ${p6x} ${p6y} Q ${c4x} ${c4y} ${destX} ${destY}`;
 };
 
-export const createBlockPath = (
-  width: number,
-  height: number,
+export const createRectPoints = (width: number, height: number, startX: number = 16, startY: number = 16): Point[] => {
+  return [
+    { x: startX, y: startY },
+    { x: startX + width, y: startY },
+    { x: startX + width, y: startY + height },
+    { x: startX, y: startY + height },
+  ];
+};
+
+export const createPolygonBlockPath = (
+  points: Point[],
   radius: number,
   tabWidth: number,
   tabHeight: number,
-  connections: BlockConnections,
-  startX: number = tabHeight,
-  startY: number = tabHeight,
+  connections: Connector[],
 ): string => {
-  const endX = startX + width;
-  const endY = startY + height;
+  if (points.length < 3) return '';
 
+  let path = '';
   const ALIGN_MARGIN = 30;
 
-  const getTabStart = (edgeLength: number, align?: ConnectorAlignment) => {
-    switch (align) {
-      case 'start':
-        return ALIGN_MARGIN;
-      case 'end':
-        return edgeLength - tabWidth - ALIGN_MARGIN;
-      case 'center':
-      default:
-        return (edgeLength - tabWidth) / 2;
-    }
-  };
-
-  const connMap: Partial<Record<ConnectorDirection, Connector>> = {};
+  // Map connectors to edges by index
+  const connMap: Record<number, Connector> = {};
   connections.forEach((c) => {
-    connMap[c.direction] = c;
+    connMap[c.edgeIndex] = c;
   });
 
-  // Helper for straight lines and corners
-  //
-  //   (startX, startY)
-  //      *-----------------------* (endX, startY)
-  //      |  Top Edge (L->R)      |
-  //      |                       |
-  // Left |                       | Right
-  // Edge |                       | Edge
-  // (B->T)|                       | (T->B)
-  //      |                       |
-  //      *-----------------------* (endX, endY)
-  //   (startX, endY)  Bottom Edge (R->L)
-  //
-  let path = `M ${startX} ${startY + radius}`;
+  const len = points.length;
 
-  path += ` Q ${startX} ${startY} ${startX + radius} ${startY}`;
-  const topConn = connMap.top;
-  if (!topConn) {
-    path += ` L ${endX - radius} ${startY}`;
-  } else {
-    const offset = getTabStart(width, topConn.align);
-    const tabStart = startX + offset;
+  for (let i = 0; i < len; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % len];
 
-    path += ` L ${tabStart} ${startY}`;
-    path += createConnectorPath(tabStart, startY, tabWidth, tabHeight, topConn.type, 'top');
-    path += ` L ${endX - radius} ${startY}`;
+    // Vector P1->P2
+    const vx = p2.x - p1.x;
+    const vy = p2.y - p1.y;
+    const dist = Math.sqrt(vx * vx + vy * vy);
+
+    // Normalized direction
+    const dx = vx / dist;
+    const dy = vy / dist;
+
+    let direction: ConnectorDirection = 'top';
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx > 0 ? 'top' : 'bottom';
+    } else {
+      direction = dy > 0 ? 'right' : 'left';
+    }
+
+    const startX = p1.x + dx * radius;
+    const startY = p1.y + dy * radius;
+
+    const endX = p2.x - dx * radius;
+    const endY = p2.y - dy * radius;
+
+    if (i === 0) {
+      path += `M ${startX} ${startY}`;
+    } else {
+      path += ` Q ${p1.x} ${p1.y} ${startX} ${startY}`;
+    }
+
+    const conn = connMap[i];
+    if (conn) {
+      let tabStartDist = 0;
+
+      if (conn.align === 'start') tabStartDist = ALIGN_MARGIN;
+      else if (conn.align === 'end') tabStartDist = dist - tabWidth - ALIGN_MARGIN;
+      else tabStartDist = (dist - tabWidth) / 2;
+
+      const tx = p1.x + dx * tabStartDist;
+      const ty = p1.y + dy * tabStartDist;
+
+      path += ` L ${tx} ${ty}`;
+
+      path += createConnectorPath(tx, ty, tabWidth, tabHeight, conn.type, direction);
+
+      path += ` L ${endX} ${endY}`;
+    } else {
+      path += ` L ${endX} ${endY}`;
+    }
   }
 
-  path += ` Q ${endX} ${startY} ${endX} ${startY + radius}`;
-  const rightConn = connMap.right;
-  if (!rightConn) {
-    path += ` L ${endX} ${endY - radius}`;
-  } else {
-    const offset = getTabStart(height, rightConn.align);
-    const tabStart = startY + offset;
-
-    path += ` L ${endX} ${tabStart}`;
-    path += createConnectorPath(endX, tabStart, tabWidth, tabHeight, rightConn.type, 'right');
-    path += ` L ${endX} ${endY - radius}`;
-  }
-
-  path += ` Q ${endX} ${endY} ${endX - radius} ${endY}`;
-  const bottomConn = connMap.bottom;
-  if (!bottomConn) {
-    path += ` L ${startX + radius} ${endY}`;
-  } else {
-    const offset = getTabStart(width, bottomConn.align);
-    const tabVisualStart = startX + offset;
-    const tabVisualEnd = tabVisualStart + tabWidth;
-
-    path += ` L ${tabVisualEnd} ${endY}`;
-    path += createConnectorPath(tabVisualEnd, endY, tabWidth, tabHeight, bottomConn.type, 'bottom');
-    path += ` L ${startX + radius} ${endY}`;
-  }
-
-  path += ` Q ${startX} ${endY} ${startX} ${endY - radius}`;
-  const leftConn = connMap.left;
-  if (!leftConn) {
-    path += ` L ${startX} ${startY + radius}`;
-  } else {
-    const offset = getTabStart(height, leftConn.align);
-    const tabVisualStart = startY + offset;
-    const tabVisualEnd = tabVisualStart + tabWidth;
-
-    path += ` L ${startX} ${tabVisualEnd}`;
-    path += createConnectorPath(startX, tabVisualEnd, tabWidth, tabHeight, leftConn.type, 'left');
-    path += ` L ${startX} ${startY + radius}`;
-  }
+  path += ` Q ${points[0].x} ${points[0].y} ${points[0].x + ((points[1].x - points[0].x) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius} ${points[0].y + ((points[1].y - points[0].y) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius}`;
 
   path += ' Z';
+
+  const p0 = points[0];
+  const p1 = points[1];
+  const v0x = p1.x - p0.x;
+  const v0y = p1.y - p0.y;
+  const d0 = Math.sqrt(v0x * v0x + v0y * v0y);
+  const dx0 = v0x / d0;
+  const dy0 = v0y / d0;
+  const start0x = p0.x + dx0 * radius;
+  const start0y = p0.y + dy0 * radius;
+
+  // Replace the simple Z with the final corner
+  path = path.substring(0, path.length - 2); // remove " Z" if I added it above
+  path += ` Q ${p0.x} ${p0.y} ${start0x} ${start0y} Z`;
+
   return path;
 };
