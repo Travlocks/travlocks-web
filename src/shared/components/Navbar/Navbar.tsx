@@ -32,12 +32,9 @@ const Navbar = () => {
                 clsx(
                   'text-base-color-1 text-[23px] font-regular relative',
                   menu.id === 3 &&
-                    'py-[12px] px-[30px] rounded-[30px] bg-gradient-color-hover text-white flex items-center gap-[10px]',
+                    'py-[12px] px-[30px] rounded-[30px] bg-gradient-color-hover text-white flex items-center gap-[10px] z-1 transition-all duration-300 ease overflow-hidden after:content-[""] after:absolute after:inset-0 after:z-[-1] after:transition-all after:duration-300 after:ease after:scale-[0.1] hover:bg-transparent hover:bg-none hover:text-white hover:after:bg-gradient-color-hover hover:after:scale-[1]',
                   menu.id === 2 && 'ml-[12px]',
                   isActive && 'font-[500]',
-                  isActive &&
-                    menu.id === 3 &&
-                    'before:absolute before:inset-0 before:bg-black overflow-hidden before:opacity-10 before:z-0',
                   isActive && menu.id !== 3 && 'text-base-color-0!',
                 )
               }>
