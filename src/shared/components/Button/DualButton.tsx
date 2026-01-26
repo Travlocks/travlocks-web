@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import SingleButton, { type SingleButtonProps } from './SingleButton';
 
 /**
@@ -41,11 +42,12 @@ interface DualButtonProps {
   height: number;
   textSize?: number;
   gap: number;
+  className?: string;
 }
 
-const DualButton = ({ left, right, width, height, gap, textSize }: DualButtonProps) => {
+const DualButton = ({ left, right, width, height, gap, textSize, className }: DualButtonProps) => {
   return (
-    <div className="flex" style={{ gap }}>
+    <div className={clsx('flex', className)} style={{ gap }}>
       <SingleButton {...left} width={width} height={height} textSize={textSize} />
       <SingleButton {...right} width={width} height={height} textSize={textSize} />
     </div>

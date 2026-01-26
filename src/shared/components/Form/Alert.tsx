@@ -19,7 +19,7 @@ import AlertIcon from '@assets/icon-alert.svg?react';
  * **/
 
 interface AlertProps {
-  text: string;
+  text: string | React.ReactNode;
   type: 'check' | 'alert';
   width?: number;
   onClick?: () => void;

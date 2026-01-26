@@ -57,8 +57,9 @@ const Button = ({
       type={type}
       disabled={disabled}
       className={clsx(
-        'h9 max-w-[500px] w-full h-[64px] flex justify-center items-center gap-2.5 text-base-color-6 rounded-[5px] cursor-pointer',
+        'h9 max-w-[500px] w-full h-[64px] flex justify-center items-center gap-2.5 text-base-color-6 rounded-[5px] cursor-pointer transition-all duration-500',
         backgroundClass,
+        disabled && 'cursor-not-allowed bg-base-color-3!',
         disabled && 'disabled:cursor-not-allowed',
         className,
       )}>
