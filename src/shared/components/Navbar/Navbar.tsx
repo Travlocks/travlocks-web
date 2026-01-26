@@ -53,7 +53,7 @@ const Navbar = () => {
             </div>
 
             <div
-              className="py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px]"
+              className="py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
               onClick={() => {
                 navigate('/mypage');
               }}>
