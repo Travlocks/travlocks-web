@@ -1,4 +1,4 @@
-import Navbar from '@components/Navbar';
+import Navbar from '@/shared/components/Navbar/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
 import { Suspense, useState } from 'react';
