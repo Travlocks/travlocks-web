@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import BlockCreateButton from '../button/BlockCreateButton';
 import BlockTabs, { type TabType } from './BlockTabs';
+import BlockItem from './BlockItem';
+import type { Block } from '../../types/block';
+interface BlockSidebarProps {
+  items: Block[];
+}
 
-const BlockSidebar = () => {
+const BlockSidebar = ({ items }: BlockSidebarProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
 
   const content = () => {
     switch (activeTab) {
       case '인기':
-        return <div>인기</div>;
+        return (
+          <div className="flex flex-col gap-3">
+            {items.map((item) => (
+              <BlockItem key={item.blockId} item={item} />
+            ))}
+          </div>
+        );
       case '카테고리':
         return <div>카테고리</div>;
       case '생성':

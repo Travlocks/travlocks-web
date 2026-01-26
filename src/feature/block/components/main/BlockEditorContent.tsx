@@ -1,5 +1,6 @@
 import { IconBase } from '@/shared/ui/icon/IconBase';
 import TriangleIcon from '@assets/blockEdit/icon-triangle.svg?react';
+import clsx from 'clsx';
 
 const BlockEditorContent = () => {
   return (
@@ -24,7 +25,9 @@ const BlockEditorContent = () => {
       </div>
 
       {/* 2. 메인 캔버스 영역 (드롭존) */}
-      <div className="flex-1 relative overflow-hidden"></div>
+      <div className="relative overflow-hidden h-screen bg-[#F8FAFC]">
+        <div className={clsx('w-full h-full overflow-auto relative')}></div>
+      </div>
     </div>
   );
 };
