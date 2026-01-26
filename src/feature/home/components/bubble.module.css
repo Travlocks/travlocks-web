@@ -1,0 +1,40 @@
+.bubble {
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform;
+
+  --bubble-from: var(--color-secondary-color-3);
+  --bubble-to: var(--color-primary-color);
+
+  --bubble-radial-alpha: 0.2;
+
+  --bubble-radial-x: 40%;
+  --bubble-radial-y: 35%;
+}
+
+.bubble--a {
+  background-image:
+    radial-gradient(
+      circle at var(--bubble-radial-x) var(--bubble-radial-y),
+      rgba(255, 255, 255, 0) 0%,
+      rgba(60, 78, 244, var(--bubble-radial-alpha)) 100%
+    ),
+    linear-gradient(180deg, var(--bubble-from) 0%, var(--bubble-to) 100%);
+}
+
+.bubble--b {
+  --bubble-radial-alpha: 0.16;
+  --bubble-radial-x: 35%;
+  --bubble-radial-y: 30%;
+  --bubble-to: #2393e0;
+
+  background-image:
+    radial-gradient(
+      circle at var(--bubble-radial-x) var(--bubble-radial-y),
+      rgba(255, 255, 255, 0) 0%,
+      rgba(60, 78, 244, var(--bubble-radial-alpha, 0.2)) 100%
+    ),
+    linear-gradient(180deg, var(--bubble-from, var(--color-secondary-color-3)) 0%, var(--bubble-to) 100%);
+}

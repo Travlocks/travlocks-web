@@ -24,6 +24,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: light;
+  font-display: swap;
+}
+
 @theme {
   --color-primary-color: #3c4ef4;
   --color-secondary-color-1: #0099ff;
@@ -45,6 +53,7 @@
   --background-image-gradient-color-background: linear-gradient(180deg, #9fcdff 0%, #e1f7fb 50%, #ffffff 100%);
   --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
 
+  /* 페이드 인/아웃 애니메이션 */
   --animate-fade-in: fadeIn 1000ms ease-out forwards;
   --animate-fade-out: fadeOut 1000ms ease-out forwards;
   --animate-ticket-fall: ticketFall 2000ms ease-out forwards;
@@ -81,6 +90,21 @@
       opacity: 0;
     }
   }
+
+  /* z-index 규칙 */
+  --z-hide: -10;
+  --z-base: 0;
+  --z-above: 10;
+  --z-content: 20;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-header: 300;
+  --z-modal-backdrop: 400;
+  --z-sidebar: 500;
+  --z-modal: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+  --z-max: 999;
 }
 
 @layer base {
@@ -187,5 +211,35 @@
     font-size: 10px;
     font-weight: 400;
     line-height: normal;
+  }
+}
+
+@layer utilities {
+  .z-base {
+    z-index: var(--z-base);
+  }
+  .z-above {
+    z-index: var(--z-above);
+  }
+  .z-content {
+    z-index: var(--z-content);
+  }
+  .z-dropdown {
+    z-index: var(--z-dropdown);
+  }
+  .z-sticky {
+    z-index: var(--z-sticky);
+  }
+  .z-header {
+    z-index: var(--z-header);
+  }
+  .z-modal-backdrop {
+    z-index: var(--z-modal-backdrop);
+  }
+  .z-sidebar {
+    z-index: var(--z-sidebar);
+  }
+  .z-modal {
+    z-index: var(--z-modal);
   }
 }

@@ -63,14 +63,14 @@ export const LoginView = () => {
               }}
             />
             {/* `비밀번호를 잊으셨나요?` 링크 */}
-            <Link to="/password" className="absolute right-[8px] top-full mt-[35px] t3 text-base-color-2 underline">
+            <Link to="/password" className="absolute right-[8px] top-full mt-[35px] b6 text-base-color-1 underline">
               비밀번호를 잊으셨나요?
             </Link>
           </div>
 
           <div className="min-h-[44px]">
             {inlineMessage ? (
-              <span className="t3 text-[16px] text-negative px-[22px] flex items-center gap-2">
+              <span className="b6 text-negative px-[22px] flex items-center gap-2">
                 <IconBase icon={XIcon} width="17px" height="17px" fill="#FD7565" />
                 <p>{inlineMessage}</p>
               </span>
@@ -82,7 +82,7 @@ export const LoginView = () => {
         <div className="relative flex items-center justify-center mt-[-10px] mb-[7.5px]">
           <div className="absolute w-full h-px bg-black/10"></div>
           <div className="relative bg-base-color-6 px-[8px]">
-            <span className="b1 text-[#717182]">Or</span>
+            <span className="b2 text-base-color-3">Or</span>
           </div>
         </div>
 

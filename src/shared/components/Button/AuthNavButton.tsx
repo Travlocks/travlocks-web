@@ -38,7 +38,7 @@ const AuthNavButton = () => {
               {link.to === '/login' && (
                 <div
                   className={clsx(
-                    'w-[11px] h-[23px] absolute right-[-11px] z-10',
+                    'w-[11px] h-[23px] absolute right-[-11px] z-content',
                     isActive ? 'bg-primary-color' : 'bg-base-color-6',
                   )}></div>
               )}

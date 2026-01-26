@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef } from 'react';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import { motion } from 'motion/react';
 import clsx from 'clsx';
 
 /**
@@ -31,6 +32,7 @@ interface RoundButtonProps extends ButtonBaseProps {
   bg?: string;
   onClick?: () => void;
   hover?: boolean;
+  isAnimated?: boolean;
   className?: string;
   arrowLeft?: boolean;
 }
@@ -43,6 +45,7 @@ const RoundButton = ({
   onClick,
   hover,
   arrowLeft,
+  isAnimated = false,
   className,
   ...props
 }: RoundButtonProps) => {
@@ -63,14 +66,23 @@ const RoundButton = ({
       {hover && (
         <div
           className={clsx(
-            'absolute inset-0 z-0 bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
+            'absolute inset-0 z-base bg-gradient-color-hover opacity-0 transition-opacity duration-1000 ease-in-out',
             'group-hover:opacity-100',
           )}
         />
       )}
-      <span className={clsx('relative z-10 flex items-center gap-[10px]', arrowLeft && 'flex-row-reverse')}>
+      <span className={clsx('relative z-content flex items-center gap-[10px]', arrowLeft && 'flex-row-reverse')}>
         {text}
-        <AppIcon name="arrow" color="white" size={16} className={clsx(arrowLeft && 'rotate-180')} />
+        {/* 애니메이션 추가 시 사용 */}
+        {isAnimated ? (
+          <motion.div
+            animate={{ x: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear', delay: 0.5 }}>
+            <AppIcon name="arrow" color="white" size={16} className={clsx(arrowLeft && 'rotate-180')} />
+          </motion.div>
+        ) : (
+          <AppIcon name="arrow" color="white" size={16} className={clsx(arrowLeft && 'rotate-180')} />
+        )}
       </span>
     </button>
   );

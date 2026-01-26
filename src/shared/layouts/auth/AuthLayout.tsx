@@ -57,7 +57,7 @@ const AuthLayout = () => {
         {subtitle && <p className="h2 text-[23px] text-black text-center mb-[23px] whitespace-pre-wrap">{subtitle}</p>}
         {/* 카피 문구 */}
         {description && (
-          <p className="t2 text-base-color-2 text-center font-normal whitespace-pre-wrap">{description}</p>
+          <p className="b2 text-base-color-1 text-center font-normal whitespace-pre-wrap">{description}</p>
         )}
 
         {/* 로그인 / 회원가입 / 비밀번호 재설정 탭 */}
