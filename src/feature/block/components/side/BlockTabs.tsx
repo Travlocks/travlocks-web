@@ -21,8 +21,8 @@ const BlockTabs = ({ activeTab, onTabChange }: Props) => {
               className={clsx(
                 'w-full py-[6px] px-[11px] rounded-[5px] text-base font-medium transition-all',
                 activeTab === tab
-                  ? 'bg-white text-[#3C4EF4] font-semibold shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600',
+                  ? 'bg-white text-primary-color font-semibold shadow-sm'
+                  : 'text-base-color-2 hover:text-base-color-1',
               )}>
               {tab}
             </button>

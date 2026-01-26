@@ -17,13 +17,13 @@ const BlockTooltip = ({ textKey, className }: Props) => {
   return (
     <div
       className={clsx(
-        'absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col items-center z-50 w-max pointer-events-none transition-opacity duration-200',
+        'absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col items-center z-tooltip w-max pointer-events-none transition-opacity duration-200',
         className,
       )}>
       {/* 말풍선 화살표 (Polygon) */}
-      <div className="border-l-2.5 border-l-transparent border-r-2.5 border-r-transparent border-b-2 border-b-base-color-0" />
+      <div className="border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[8px] border-b-base-color-0" />
       {/* 말풍선 본문 */}
-      <div className="bg-base-color-0 text-white text-[16px] px-3 py-2 rounded-lg -mt-px shadow-lg">
+      <div className="bg-base-color-0 text-base-color-6 text-b6 px-3 py-2 rounded-lg -mt-px shadow-lg">
         {TooltipText[textKey]}{' '}
       </div>
     </div>

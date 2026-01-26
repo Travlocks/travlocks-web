@@ -2,11 +2,7 @@ import { useState } from 'react';
 import BlockCreateButton from '../button/BlockCreateButton';
 import BlockTabs, { type TabType } from './BlockTabs';
 
-interface Props {
-  onCreateBlock: () => void;
-}
-
-const BlockSidebar = ({ onCreateBlock }: Props) => {
+const BlockSidebar = () => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
 
   const content = () => {
@@ -18,7 +14,7 @@ const BlockSidebar = ({ onCreateBlock }: Props) => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            <BlockCreateButton onClick={onCreateBlock} />
+            <BlockCreateButton />
           </div>
         );
     }

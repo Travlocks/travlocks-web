@@ -1,9 +1,10 @@
-import BlockSidebar from '@/feature/block/components/side/BlockSidebar';
+import BlockEditor from '@/feature/block/components/BlockEditor';
 
 const BlockPage = () => {
   return (
     <div className="flex h-full">
-      <BlockSidebar onCreateBlock={() => {}} />
+      {/* 여기다가 여행 타이틀 */}
+      <BlockEditor />
     </div>
   );
 };

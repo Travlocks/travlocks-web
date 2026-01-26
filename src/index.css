@@ -96,6 +96,7 @@
   --z-base: 0;
   --z-above: 10;
   --z-content: 20;
+  --z-tooltip: 30;
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-header: 300;
@@ -223,6 +224,9 @@
   }
   .z-content {
     z-index: var(--z-content);
+  }
+  .z-tooltip {
+    z-index: var(--z-tooltip);
   }
   .z-dropdown {
     z-index: var(--z-dropdown);
