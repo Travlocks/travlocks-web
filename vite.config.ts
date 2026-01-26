@@ -25,4 +25,5 @@ export default defineConfig({
       { find: '@utils', replacement: '/src/shared/utils' },
     ],
   },
+  assetsInclude: ['**/*.lottie'],
 });
