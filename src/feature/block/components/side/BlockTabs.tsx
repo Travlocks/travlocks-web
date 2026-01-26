@@ -28,11 +28,7 @@ const BlockTabs = ({ activeTab, onTabChange }: Props) => {
             </button>
 
             {/* 일단 "생성" 탭에만 툴팁 표시 (Hover) */}
-            {tab === '생성' && (
-              <BlockTooltip className="group-hover:opacity-100 opacity-0">
-                생성 버튼을 눌러 나만의 블록을 만들어봐요!
-              </BlockTooltip>
-            )}
+            {tab === '생성' && <BlockTooltip textKey="생성" className="group-hover:opacity-100 opacity-0" />}
           </div>
         ))}
       </div>
