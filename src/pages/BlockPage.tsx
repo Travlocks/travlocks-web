@@ -1,5 +1,11 @@
+import BlockSidebar from '@/feature/block/components/side/BlockSidebar';
+
 const BlockPage = () => {
-  return <div>블록 쌓기 페이지</div>;
+  return (
+    <div className="flex h-full">
+      <BlockSidebar onCreateBlock={() => {}} />
+    </div>
+  );
 };
 
 export default BlockPage;
