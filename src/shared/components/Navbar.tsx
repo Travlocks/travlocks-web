@@ -30,15 +30,19 @@ const Navbar = () => {
               to={menu.to}
               className={({ isActive }) =>
                 clsx(
-                  'text-base-color-1 text-[23px] font-regular',
+                  'text-base-color-1 text-[23px] font-regular relative',
                   menu.id === 3 &&
                     'py-[12px] px-[30px] rounded-[30px] bg-gradient-color-hover text-white flex items-center gap-[10px]',
                   menu.id === 2 && 'ml-[12px]',
-                  isActive && menu.id !== 3 && 'font-[600] text-base-color-0!',
+                  isActive && 'font-[500]',
+                  isActive &&
+                    menu.id === 3 &&
+                    'before:absolute before:inset-0 before:bg-black overflow-hidden before:opacity-10 before:z-0',
+                  isActive && menu.id !== 3 && 'text-base-color-0!',
                 )
               }>
-              {menu.id === 3 && <Puzzle />}
-              {menu.label}
+              {menu.id === 3 && <Puzzle className="relative z-10" />}
+              <span className="relative z-10">{menu.label}</span>
             </NavLink>
           ))}
 
