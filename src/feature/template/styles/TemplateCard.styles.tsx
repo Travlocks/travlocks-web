@@ -32,7 +32,7 @@ export const templateCardStyles = {
     'p-[4px_20px]',
     'flex items-center justify-center',
     'rounded-[30px]',
-    'tagText',
+    'b3 text-white',
     'whitespace-nowrap',
     //hover 시
     'group-hover:top-[20.67px] group-hover:right-[20.75px]',
@@ -45,15 +45,15 @@ export const templateCardStyles = {
   bottomSection: 'flex flex-col gap-[16px]',
 
   // Title
-  title: 'h2',
+  title: 'h6',
 
   // Subtitle
-  subtitle: 'b1 font-medium text-[#717182]',
+  subtitle: 'b3 font-medium text-[#717182]',
 
   // Metadata
-  metadata: 'flex justify-between items-center b1 text-base-color-1',
+  metadata: 'flex justify-between items-center',
 
-  metadataItem: 'flex items-center gap-[4px] b1 text-base-color-1',
+  metadataItem: 'flex items-center gap-[4px] b3 text-base-color-2',
   starIcon: 'w-[20px] h-[20px]',
   pinIcon: 'w-[20px] h-[20px]',
 
@@ -62,7 +62,7 @@ export const templateCardStyles = {
     'box-border w-full py-[11px]',
     'flex items-center justify-center gap-[10px]',
     'rounded-[5px] border border-base-color-3 bg-white',
-    'b1 font-medium text-base-color-0',
+    'b3 font-medium text-base-color-0',
     'cursor-pointer',
     'transition-all duration-300',
     'group-hover:border-primary-color group-hover:text-primary-color',

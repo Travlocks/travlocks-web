@@ -69,7 +69,7 @@ const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
                     <PinIcon className={templateCardStyles.pinIcon} />
                     {template.region}
                   </span>
-                  <span>{template.tripDays}</span>
+                  <span className={templateCardStyles.metadataItem}>{template.tripDays}</span>
                 </>
               ) : (
                 <>
@@ -77,7 +77,7 @@ const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
                     <StarIcon className={templateCardStyles.starIcon} />
                     {template.avgRating}
                   </span>
-                  <span>즐겨찾는 여행자 {template.remixCount}명</span>
+                  <span className={templateCardStyles.metadataItem}>즐겨찾는 여행자 {template.remixCount}명</span>
                 </>
               )}
             </div>
