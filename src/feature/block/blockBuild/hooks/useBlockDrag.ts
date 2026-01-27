@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import type { Block, SidebarBlock } from '../types/block';
 import type { ActiveDrag, DockHintState, DragType } from '../types/drag';
 import { getTailIdFromBlocks } from '../utils/path';
-import { commitEditorDrop, commitSidebarDrop, detachTail } from '../utils/commit';
+import { commitEditorDrop, commitSidebarDrop, detachTail, removeBlock } from '../utils/commit';
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
@@ -176,7 +176,7 @@ export const useBlockDrag = () => {
       setPuzzleBlocks,
       reset: () => setPuzzleBlocks([START_BLOCK]),
       removeById: (blockId: number) =>
-        setPuzzleBlocks((prev) => prev.filter((block) => block.blockId !== blockId && block.blockId !== START_ID)),
+        setPuzzleBlocks((prev) => removeBlock({ blocks: prev, blockId, startId: START_ID })),
       updateBlock: (blockId: number, updates: Partial<Block>) =>
         setPuzzleBlocks((prev) => prev.map((block) => (block.blockId === blockId ? { ...block, ...updates } : block))),
     },

@@ -1,4 +1,4 @@
-import BlockEditor from '@/feature/block/components/BlockEditor';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 
 const BlockPage = () => {
   return (

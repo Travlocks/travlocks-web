@@ -5,7 +5,9 @@ export default function BlockGhost({ hint }: { hint: DockHintState }) {
   if (!hint?.visible) return null;
 
   return (
-    <div className="absolute z-content pointer-events-none" style={{ left: hint.x, top: hint.y }}>
+    <div
+      className="absolute z-content pointer-events-none"
+      style={{ left: hint.x, top: hint.y, width: hint.w, height: hint.h }}>
       {/* TODO: 퍼즐 가까이 다가갔을 때 힌트 컴포넌트 여기다가 추가 */}
       {/* 지금은 임시 */}
       <div className={clsx('w-full h-full rounded-xl border-2 border-dashed border-blue-500 bg-blue-200/20')} />

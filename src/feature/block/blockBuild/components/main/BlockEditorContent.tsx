@@ -12,7 +12,7 @@ const CANVAS_W = 1680;
 const CANVAS_H = 2600;
 
 interface BlockEditorContentProps {
-  boardRef: React.RefObject<HTMLDivElement | null>;
+  boardRef: React.MutableRefObject<HTMLDivElement | null>;
   puzzleBlocks: Block[];
   dockHint: DockHintState;
 }

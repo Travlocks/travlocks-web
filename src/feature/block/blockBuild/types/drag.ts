@@ -9,9 +9,6 @@ export type ActiveDrag =
   | { type: 'blockEditor'; blockId: number; w: number; h: number; connectors: Block['connectors'] }
   | null;
 
-// 연결 선 방향
-export type ConnectorLine = 'top' | 'bottom' | 'left' | 'right';
-
 // 근처 블록 힌트 상태
 export type DockHintState = {
   visible: boolean;

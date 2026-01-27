@@ -120,3 +120,32 @@ export function commitEditorDrop(params: {
 
   return next;
 }
+
+// 블록 삭제 (연결 관계 정리)
+export function removeBlock(params: { blocks: Block[]; blockId: number; startId: number }): Block[] {
+  const { blocks, blockId, startId } = params;
+
+  // START 블록은 삭제 불가
+  if (blockId === startId) return blocks;
+
+  const toRemove = blocks.find((b) => b.blockId === blockId);
+  if (!toRemove) return blocks;
+
+  const parentId = toRemove.connectedFrom ?? null;
+  const childId = toRemove.connectedTo ?? null;
+
+  // 연결 관계 정리 후 삭제
+  return blocks
+    .map((b) => {
+      // 부모 블록의 connectedTo를 null로 설정
+      if (parentId != null && b.blockId === parentId) {
+        return { ...b, connectedTo: null };
+      }
+      // 자식 블록의 connectedFrom을 null로 설정
+      if (childId != null && b.blockId === childId) {
+        return { ...b, connectedFrom: null };
+      }
+      return b;
+    })
+    .filter((b) => b.blockId !== blockId);
+}
