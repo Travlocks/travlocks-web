@@ -1,15 +1,32 @@
-import { type Block } from '../../types/block';
+import { type SidebarBlock } from '../../types/block';
 import ClockIcon from '@assets/blockEdit/icon-clock.svg?react';
-import { blockItemStyles } from './block-styles';
+import { blockItemStyles, categoryColor } from './block-styles';
 import clsx from 'clsx';
+import { useDraggable } from '@dnd-kit/core';
 
 interface BlockItemProps {
-  item: Block;
+  item: SidebarBlock;
 }
 
 const BlockItem = ({ item }: BlockItemProps) => {
+  const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
+    id: item.id,
+    data: {
+      type: 'blockSidebar',
+      blockId: item.id,
+      item,
+    },
+  });
   return (
-    <button className="relative w-full h-[84px] rounded-[10px] border border-gray-200 bg-white flex items-center gap-3 p-3 cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md">
+    <button
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className={clsx(
+        'relative w-full h-[84px] rounded-[10px] border border-gray-200 bg-white flex items-center gap-3 p-3',
+        'cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md',
+        isDragging && 'opacity-0',
+      )}>
       {/* 이미지 영역 */}
       <div className="w-16 h-16 rounded-[10px] bg-gray-200 shrink-0 flex items-center justify-center overflow-hidden">
         {item.imageUrl ? (
@@ -30,7 +47,9 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {/* 텍스트 정보 */}
       <div className="flex flex-col items-start text-left">
         {/* 카테고리 */}
-        <span className={blockItemStyles.smallText} style={{ color: blockItemStyles.categoryColor[item.category] }}>
+        <span
+          className={blockItemStyles.smallText}
+          style={{ color: categoryColor[item.category as keyof typeof categoryColor] }}>
           {item.category}
         </span>
 

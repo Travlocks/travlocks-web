@@ -2,9 +2,9 @@ import { useState } from 'react';
 import BlockCreateButton from '../button/BlockCreateButton';
 import BlockTabs, { type TabType } from './BlockTabs';
 import BlockItem from './BlockItem';
-import type { Block } from '../../types/block';
+import type { SidebarBlock } from '../../types/block';
 interface BlockSidebarProps {
-  items: Block[];
+  items: SidebarBlock[];
 }
 
 const BlockSidebar = ({ items }: BlockSidebarProps) => {
@@ -16,7 +16,7 @@ const BlockSidebar = ({ items }: BlockSidebarProps) => {
         return (
           <div className="flex flex-col gap-3">
             {items.map((item) => (
-              <BlockItem key={item.blockId} item={item} />
+              <BlockItem key={item.id} item={item} />
             ))}
           </div>
         );
@@ -41,7 +41,7 @@ const BlockSidebar = ({ items }: BlockSidebarProps) => {
       <BlockTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* 탭별 컨텐츠 */}
-      <div className="flex-1 overflow-y-auto px-6 pb-6">{content()}</div>
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>
     </div>
   );
 };
