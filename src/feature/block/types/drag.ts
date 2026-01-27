@@ -1,4 +1,5 @@
 import type { Block, SidebarBlock } from './block';
+import type { DockSide } from '../utils/snapToTail';
 
 export type DragType = 'blockSidebar' | 'blockEditor';
 
@@ -18,5 +19,14 @@ export type SnapPreviewsState = {
   w: number;
   h: number;
   visible: boolean;
-  targetId?: string;
+  targetId?: number;
+} | null;
+
+// 근처 블록 힌트 상태
+export type DockHintState = {
+  visible: boolean;
+  targetId?: number;
+  side: DockSide;
+  x: number;
+  y: number;
 } | null;

@@ -2,7 +2,7 @@ import { IconBase } from '@/shared/ui/icon/IconBase';
 import TriangleIcon from '@assets/blockEdit/icon-triangle.svg?react';
 import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { Block } from '../../types/block';
 import type { SnapPreviewsState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
@@ -15,9 +15,17 @@ interface BlockEditorContentProps {
 }
 
 const BlockEditorContent = ({ boardRef, puzzleBlocks, snapPreview }: BlockEditorContentProps) => {
+  // 임시용 날짜 관리
+  const [day, setDay] = useState(1);
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
   });
+
+  // 날짜 변경 핸들러
+  const handleDayChange = (day: number) => {
+    if (day < 1 || day > 5) return;
+    setDay(day);
+  };
 
   const setRefs = useCallback(
     (node: HTMLDivElement | null) => {
@@ -33,14 +41,18 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, snapPreview }: BlockEditor
       <div className="h-[79px] shrink-0 bg-white border-b border-[#D9D9D9] flex items-center justify-between px-8">
         <div className="flex items-center gap-5">
           {/* 왼쪽 화살표 */}
-          <button className="text-base-color-0 hover:text-gray-600 transition-colors">
+          <button
+            className="text-base-color-0 hover:text-gray-600 transition-colors"
+            onClick={() => handleDayChange(day - 1)}>
             <IconBase icon={TriangleIcon} className="rotate-180" />
           </button>
 
-          <span className="text-[28px] font-semibold text-black leading-none">DAY 1</span>
+          <span className="text-[28px] font-semibold text-black leading-none">DAY {day}</span>
 
           {/* 오른쪽 화살표 */}
-          <button className="text-base-color-0 hover:text-gray-600 transition-colors">
+          <button
+            className="text-base-color-0 hover:text-gray-600 transition-colors"
+            onClick={() => handleDayChange(day + 1)}>
             <IconBase icon={TriangleIcon} />
           </button>
         </div>

@@ -12,7 +12,7 @@ const BlockEditor = () => {
     <DndContext sensors={sensors} {...handlers}>
       <div className="flex h-full w-full">
         {/* 사이드바 */}
-        <aside className="w-[302px] h-full shrink-0 relative z-10">
+        <aside className="w-[302px] h-full shrink-0 relative z-above">
           <BlockSidebar items={MOCK_BLOCKS} />
         </aside>
 
@@ -22,7 +22,6 @@ const BlockEditor = () => {
         </main>
       </div>
 
-      {/* DragOverlay - 드래그 중 마우스를 따라다니는 블록 (z-index 문제 해결) */}
       <DragOverlay dropAnimation={null}>
         {activeDrag?.type === 'blockSidebar' && <BlockItem item={activeDrag.block} />}
         {activeDrag?.type === 'blockEditor' && (

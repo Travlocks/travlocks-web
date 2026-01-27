@@ -10,7 +10,7 @@ interface BlockItemProps {
 
 const BlockItem = ({ item }: BlockItemProps) => {
   const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
-    id: item.id,
+    id: `sidebar:${item.id}`,
     data: {
       type: 'blockSidebar',
       blockId: item.id,
