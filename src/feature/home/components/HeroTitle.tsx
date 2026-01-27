@@ -1,5 +1,6 @@
 import RoundButton from '@/shared/components/Button/RoundButton';
 import { motion, useReducedMotion, type Variants } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 
 const container: Variants = {
   hidden: { opacity: 0, y: 18 },
@@ -21,8 +22,9 @@ const item: Variants = {
 
 export const HeroTitle = () => {
   const reduce = useReducedMotion();
+  const navigate = useNavigate();
   const click = () => {
-    console.log('click');
+    navigate('/block');
   };
   return (
     <motion.div
