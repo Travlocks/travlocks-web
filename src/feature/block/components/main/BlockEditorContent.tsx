@@ -4,17 +4,20 @@ import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
 import { useCallback, useState } from 'react';
 import type { Block } from '../../types/block';
-import type { SnapPreviewsState } from '../../types/drag';
+import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
-import SnapPreview from '../ui/SnapPreview';
+import BlockGhost from '../ui/BlockGhost';
+
+const CANVAS_W = 1680;
+const CANVAS_H = 2600;
 
 interface BlockEditorContentProps {
-  boardRef: React.MutableRefObject<HTMLDivElement | null>;
+  boardRef: React.RefObject<HTMLDivElement | null>;
   puzzleBlocks: Block[];
-  snapPreview: SnapPreviewsState;
+  dockHint: DockHintState;
 }
 
-const BlockEditorContent = ({ boardRef, puzzleBlocks, snapPreview }: BlockEditorContentProps) => {
+const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorContentProps) => {
   // 임시용 날짜 관리
   const [day, setDay] = useState(1);
   const { setNodeRef, isOver } = useDroppable({
@@ -38,7 +41,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, snapPreview }: BlockEditor
   return (
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
       {/* 1. 상단 헤더 */}
-      <div className="h-[79px] shrink-0 bg-white border-b border-[#D9D9D9] flex items-center justify-between px-8">
+      <div className="h-[79px] shrink-0 bg-white border-b border-base-color flex items-center justify-between px-8">
         <div className="flex items-center gap-5">
           {/* 왼쪽 화살표 */}
           <button
@@ -61,19 +64,21 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, snapPreview }: BlockEditor
       </div>
 
       {/* 2. 메인 캔버스 영역 (드롭존) */}
-      <div className="relative h-screen">
+      <div className="flex-1 min-h-0">
         <div
           ref={setRefs}
           className={clsx(
-            'w-full h-full overflow-y-auto overflow-x-hidden relative transition-colors duration-150',
+            'h-full w-full overflow-auto overscroll-contain relative transition-colors duration-150',
             isOver ? 'bg-blue-50/30' : 'bg-[#F8FAFC]',
           )}>
-          {puzzleBlocks.map((block) => (
-            <PuzzleBlock key={block.blockId} block={block} />
-          ))}
+          {/* 3) 실제 Canvas (보드) */}
+          <div className="relative" style={{ width: CANVAS_W, height: CANVAS_H }}>
+            {puzzleBlocks.map((block) => (
+              <PuzzleBlock key={block.blockId} block={block} />
+            ))}
 
-          {/* 스냅 프리뷰 */}
-          <SnapPreview snapPreview={snapPreview} />
+            <BlockGhost hint={dockHint} />
+          </div>
         </div>
       </div>
     </div>

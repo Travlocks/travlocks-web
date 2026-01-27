@@ -6,19 +6,19 @@ import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 
 const BlockEditor = () => {
-  const { sensors, boardRef, activeDrag, puzzleBlocks, snapPreview, handlers } = useBlockDrag();
+  const { sensors, boardRef, activeDrag, puzzleBlocks, dockHint, handlers } = useBlockDrag();
 
   return (
     <DndContext sensors={sensors} {...handlers}>
-      <div className="flex h-full w-full">
+      <div className="flex h-full w-full overflow-hidden">
         {/* 사이드바 */}
         <aside className="w-[302px] h-full shrink-0 relative z-above">
           <BlockSidebar items={MOCK_BLOCKS} />
         </aside>
 
         {/* 메인 영역 */}
-        <main className="flex-1 h-full">
-          <BlockEditorContent boardRef={boardRef} puzzleBlocks={puzzleBlocks} snapPreview={snapPreview} />
+        <main className="flex-1 h-full min-w-0">
+          <BlockEditorContent boardRef={boardRef} puzzleBlocks={puzzleBlocks} dockHint={dockHint} />
         </main>
       </div>
 

@@ -12,16 +12,6 @@ export type ActiveDrag =
 // 연결 선 방향
 export type ConnectorLine = 'top' | 'bottom' | 'left' | 'right';
 
-// 스냅 프리뷰 정보
-export type SnapPreviewsState = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  visible: boolean;
-  targetId?: number;
-} | null;
-
 // 근처 블록 힌트 상태
 export type DockHintState = {
   visible: boolean;
@@ -29,4 +19,6 @@ export type DockHintState = {
   side: DockSide;
   x: number;
   y: number;
+  w: number;
+  h: number;
 } | null;
