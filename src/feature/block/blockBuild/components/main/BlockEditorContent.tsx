@@ -1,5 +1,5 @@
 import { IconBase } from '@/shared/ui/icon/IconBase';
-import TriangleIcon from '@assets/blockEdit/icon-triangle.svg?react';
+import TriangleIcon from '@assets/blockEdit/edit-icon-triangle.svg?react';
 import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
 import { useCallback } from 'react';

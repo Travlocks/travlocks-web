@@ -1,5 +1,5 @@
 import { type SidebarBlock } from '../../types/block';
-import ClockIcon from '@assets/blockEdit/icon-clock.svg?react';
+import ClockIcon from '@assets/blockEdit/edit-icon-clock.svg?react';
 import { blockItemStyles, categoryColor } from './block-styles';
 import clsx from 'clsx';
 import { useDraggable } from '@dnd-kit/core';
