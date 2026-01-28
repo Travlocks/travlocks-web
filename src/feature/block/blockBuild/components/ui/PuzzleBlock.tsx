@@ -1,7 +1,7 @@
 import { useDraggable } from '@dnd-kit/core';
 import type { Block } from '../../types/block';
 
-export default function PuzzleBlock({ block }: { block: Block }) {
+export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag: boolean }) {
   const { setNodeRef, listeners, attributes, transform, isDragging } = useDraggable({
     id: `editor:${block.blockId}`,
     data: {
@@ -13,13 +13,15 @@ export default function PuzzleBlock({ block }: { block: Block }) {
       h: block.h,
       connectors: block.connectors,
     },
+    disabled: !canDrag,
   });
+
+  const dragProps = canDrag ? { ...listeners, ...attributes } : {};
 
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
+      {...dragProps}
       className={[
         'absolute select-none cursor-grab active:cursor-grabbing',
         isDragging ? 'z-50 opacity-80' : 'z-10',

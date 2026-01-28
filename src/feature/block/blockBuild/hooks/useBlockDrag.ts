@@ -8,10 +8,11 @@ import { commitEditorDrop, commitSidebarDrop, detachTail, removeBlock } from '..
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
+// TODO: 여기서 퍼즐 시간 단위로 교체
 const DEFAULT_BLOCK = { w: 260, h: 64 };
 const GRID = 40;
 
-const START_ID = 1;
+const START_ID = 0;
 
 const SNAP_THRESHOLD = 67;
 const CONNECTOR_OFFSET = 0;
@@ -25,8 +26,8 @@ const START_BLOCK: Block = {
   duration: '',
   x: 44,
   y: 76,
-  w: DEFAULT_BLOCK.w,
-  h: DEFAULT_BLOCK.h,
+  w: 186,
+  h: 87,
   connectors: { input: null, output: 'right' },
   connectedTo: null,
   connectedFrom: null,
@@ -43,7 +44,7 @@ export const useBlockDrag = () => {
   const boardRef = useRef<HTMLDivElement | null>(null);
 
   const [activeDrag, setActiveDrag] = useState<ActiveDrag>(null);
-  const [puzzleBlocks, setPuzzleBlocks] = useState<Block[]>([]);
+  const [puzzleBlocks, setPuzzleBlocks] = useState<Block[]>(() => [START_BLOCK]);
   const [dockHint, setDockHint] = useState<DockHintState>(null);
 
   // 드래그 시작 후 블록 정보 설정

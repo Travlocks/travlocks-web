@@ -7,9 +7,13 @@ import type { Block } from '../../types/block';
 import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
 import BlockGhost from '../ui/BlockGhost';
+import BlockStartNode from '../ui/BlockStartNode';
+import { getTailIdFromBlocks } from '../../utils/path';
 
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
+
+const START_ID = 0;
 
 interface BlockEditorContentProps {
   boardRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -37,6 +41,8 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorCon
     },
     [setNodeRef, boardRef],
   );
+
+  const tailId = getTailIdFromBlocks(puzzleBlocks, START_ID) ?? START_ID;
 
   return (
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
@@ -73,9 +79,16 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorCon
           )}>
           {/* 3) 실제 Canvas (보드) */}
           <div className="relative" style={{ width: CANVAS_W, height: CANVAS_H }}>
-            {puzzleBlocks.map((block) => (
-              <PuzzleBlock key={block.blockId} block={block} />
-            ))}
+            {puzzleBlocks.map((block) => {
+              const isStart = block.blockId === START_ID;
+              if (isStart) {
+                return <BlockStartNode key={block.blockId} block={block} />;
+              }
+              const isTail = block.blockId === tailId;
+              // 드래그 규칙: free or tail 블록은 드래그 가능
+              const canDrag = block.connectedFrom == null || isTail;
+              return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
+            })}
 
             <BlockGhost hint={dockHint} />
           </div>

@@ -6,6 +6,7 @@ import { getTailIdFromBlocks } from './path';
 export function detachTail(params: { blocks: Block[]; startId: number; movingId: number }): Block[] {
   const { blocks, startId, movingId } = params;
 
+  // START 블록은 분리 불가
   if (movingId === startId) return blocks;
 
   const tailId = getTailIdFromBlocks(blocks, startId) ?? startId;
