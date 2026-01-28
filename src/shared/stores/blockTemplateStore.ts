@@ -35,6 +35,7 @@ type BlockTemplateActions = {
   updateBlocksByDay: (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => void;
 };
 
+// TODO: 필드명 Days 범위 추가 시 동적 수정 필요
 function createDefaultBlocksByDayRecord(): Record<number, Block[]> {
   return {
     1: [START_BLOCK],

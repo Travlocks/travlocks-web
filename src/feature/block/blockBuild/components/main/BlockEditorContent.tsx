@@ -48,21 +48,21 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
       {/* 1. 상단 헤더 */}
       <div className="h-[79px] shrink-0 bg-white border-b border-base-color flex items-center justify-between px-8">
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2">
           {/* 왼쪽 화살표 */}
           <button
-            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer"
+            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer p-3"
             onClick={() => handleDayChange(currentDay - 1)}>
-            <IconBase icon={TriangleIcon} className="rotate-180" />
+            <IconBase icon={TriangleIcon} className="w-2.5 h-2.5 rotate-180" />
           </button>
 
-          <span className="text-[28px] font-semibold text-black leading-none">DAY {currentDay}</span>
+          <span className="text-[28px] font-medium text-black leading-none">DAY {currentDay}</span>
 
           {/* 오른쪽 화살표 */}
           <button
-            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer"
+            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer p-3"
             onClick={() => handleDayChange(currentDay + 1)}>
-            <IconBase icon={TriangleIcon} />
+            <IconBase icon={TriangleIcon} className="w-2.5 h-2.5" />
           </button>
         </div>
 
@@ -70,7 +70,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
       </div>
 
       {/* 2. 메인 캔버스 영역 (드롭존) */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 h-[1200px] relative">
         <div
           ref={setRefs}
           className={clsx(
