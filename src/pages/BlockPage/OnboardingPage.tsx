@@ -1,3 +1,5 @@
+import TravelThemeSelector from '@/feature/block/onboarding/components/TravelThemeSelector';
+
 const OnboardingPage = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -18,7 +20,8 @@ const OnboardingPage = () => {
             {/* form 영역*/}
             <div className="flex-1">
               {/* 추후 실제 form 요소로 교체 */}
-              <div className="h-full w-full rounded-md border border-dashed border-slate-300" />
+              {/* <div className="h-full w-full rounded-md border border-dashed border-slate-300" /> */}
+              <TravelThemeSelector />
             </div>
 
             {/* 제출 버튼 */}
