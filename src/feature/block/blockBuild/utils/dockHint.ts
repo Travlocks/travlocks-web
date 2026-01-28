@@ -26,13 +26,17 @@ export function computeSnapDecision(params: {
     return { canSnap: false, x: candidate.x, y: candidate.y, side: null, targetId: null };
   }
 
+  // start 블록은 아래 방향(bottom) 도킹 x
+  const isStart = tail.blockId === 0;
+  const effectiveAllowBottom = allowBottom && !isStart;
+
   // 꼬리 스냅 결과 계산
   const snap: TailSnapResult = snapToTail({
     drag: candidate,
     tail,
     threshold,
     connectorOffset,
-    allowBottom,
+    allowBottom: effectiveAllowBottom,
   });
 
   if (!snap.canSnap || !snap.side) {
