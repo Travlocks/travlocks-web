@@ -2,14 +2,14 @@ import type { ComponentType, SVGProps } from 'react';
 
 import NatureIcon from '@shared/assets/preference/icon-preference-nature.svg?react';
 import CultureIcon from '@shared/assets/preference/icon-preference-culture.svg?react';
-import ActivityIcon from '@shared/assets/preference/icon-preference-activity.svg?react';
 import FoodIcon from '@shared/assets/preference/icon-preference-food.svg?react';
 import HealingIcon from '@shared/assets/preference/icon-preference-healing.svg?react';
+import ActivityIcon from '@shared/assets/preference/icon-preference-activity.svg?react';
 import LocalIcon from '@shared/assets/preference/icon-preference-local.svg?react';
 
 export type TravleThemeId = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type TravleThemeKey = 'nature' | 'culture' | 'activity' | 'food' | 'healing' | 'local';
+export type TravleThemeKey = 'nature' | 'culture' | 'food' | 'healing' | 'activity' | 'local';
 
 export interface TravelTheme {
   id: TravleThemeId;
@@ -42,15 +42,6 @@ export const TRAVEL_THEME: TravelTheme[] = [
   },
   {
     id: 3,
-    key: 'activity',
-    name: {
-      korean: '액티비티',
-      english: 'Activity',
-    },
-    icon: ActivityIcon,
-  },
-  {
-    id: 4,
     key: 'food',
     name: {
       korean: '맛집',
@@ -59,13 +50,22 @@ export const TRAVEL_THEME: TravelTheme[] = [
     icon: FoodIcon,
   },
   {
-    id: 5,
+    id: 4,
     key: 'healing',
     name: {
       korean: '힐링',
       english: 'Healing',
     },
     icon: HealingIcon,
+  },
+  {
+    id: 5,
+    key: 'activity',
+    name: {
+      korean: '액티비티',
+      english: 'Activity',
+    },
+    icon: ActivityIcon,
   },
   {
     id: 6,
