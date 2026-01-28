@@ -1,40 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-import clsx from 'clsx';
-import { type DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import RoundButton from '@/shared/components/Button/RoundButton';
 import MainBg from '@/shared/components/MainBg';
 
 import Logo from '@assets/logo/logo-auth.svg?react';
-import SignupAnimation from '@feature/signup/assets/signup-animation.lottie';
-import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
 const USER = [
   { id: 1, label: 'TRAVELER', text: '윤디모' },
-  { id: 2, label: 'INTERESTS', text: '자연, 맛집' },
-  { id: 3, label: 'STYLE', text: '효율중시형' },
+  { id: 1, label: 'INTERESTS', text: '자연, 맛집' },
+  { id: 1, label: 'STYLE', text: '효율중시형' },
 ];
 
 const CompleteModal = () => {
   const navigate = useNavigate();
-  const [dotLottie, setDotLottie] = useState<DotLottie | null>(null); // 로티 애니메이션 인스턴스
-  const [isLottieDone, setIsLottieDone] = useState<boolean>(false); // 로티 에니메이션 종료 여부
-
-  useEffect(() => {
-    const onComplete = () => {
-      setIsLottieDone(true);
-    };
-
-    if (dotLottie) {
-      dotLottie.addEventListener('complete', onComplete);
-    }
-
-    return () => {
-      if (dotLottie) {
-        dotLottie.removeEventListener('complete', onComplete);
-      }
-    };
-  }, [dotLottie]);
 
   return (
     <div className="fixed inset-0 flex justify-center z-30 pt-8 overflow-y-auto">
@@ -47,15 +26,7 @@ const CompleteModal = () => {
 
         <section className="bg-white flex flex-col gap-[20px] items-center pt-[41px] px-[43px] pb-[25px] border-x border-base-color">
           <div className="size-[242px] rounded-full overflow-hidden bg-[#F6FAFF]">
-            <DotLottieReact
-              src={SignupAnimation}
-              loop={false}
-              autoplay
-              speed={1.5}
-              dotLottieRefCallback={(dotLottie) => {
-                setDotLottie(dotLottie);
-              }}
-            />
+            <img />
           </div>
 
           <h2 className="h4 leading-[20px]">
@@ -101,8 +72,7 @@ const CompleteModal = () => {
         </div>
 
         {/* 잘릴 영역 */}
-        {/* 로티 애니메이션 종료 후 재생됨 */}
-        <div className={clsx('relative top-[-10px]', isLottieDone && 'animate-ticket-fall')}>
+        <div className="[animation-delay:2000ms] animate-ticket-fall relative top-[-10px]">
           <div
             className={clsx(
               'relative h-[30px] bg-white',

@@ -28,7 +28,7 @@ const STEPS = [
 ] as const;
 
 const SignupView = () => {
-  const [level, setLevel] = useState<number>(0); // 현재 단계
+  const [level, setLevel] = useState<number>(5); // 현재 단계
 
   const [agreements, setAgreements] = useState<Agreements>({
     service: false, // 서비스 이용약관
