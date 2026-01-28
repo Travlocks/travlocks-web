@@ -51,7 +51,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
         <div className="flex items-center gap-5">
           {/* 왼쪽 화살표 */}
           <button
-            className="text-base-color-0 hover:text-gray-600 transition-colors"
+            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer"
             onClick={() => handleDayChange(currentDay - 1)}>
             <IconBase icon={TriangleIcon} className="rotate-180" />
           </button>
@@ -60,7 +60,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
 
           {/* 오른쪽 화살표 */}
           <button
-            className="text-base-color-0 hover:text-gray-600 transition-colors"
+            className="text-base-color-0 hover:text-gray-600 transition-colors cursor-pointer"
             onClick={() => handleDayChange(currentDay + 1)}>
             <IconBase icon={TriangleIcon} />
           </button>
