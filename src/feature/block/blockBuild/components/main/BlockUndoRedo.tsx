@@ -9,7 +9,7 @@ interface BlockUndoRedoProps {
 const BUTTON_TYPE = {
   common: {
     className:
-      'flex items-center justify-center w-10 h-10 rounded-full border border-[#D9D9D9] bg-white shadow-sm cursor-pointer',
+      'flex items-center justify-center w-10 h-10 rounded-full border border-[#D9D9D9] bg-base-color-6 shadow-sm cursor-pointer',
   },
   undo: {
     icon: GoBackIcon,

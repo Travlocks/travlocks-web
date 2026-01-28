@@ -23,7 +23,7 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {...listeners}
       {...attributes}
       className={clsx(
-        'relative w-full h-[84px] rounded-[10px] border border-gray-200 bg-white flex items-center gap-3 p-3',
+        'relative w-full h-[84px] rounded-[10px] border border-gray-200 bg-base-color-6 flex items-center gap-3 p-3',
         'cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md',
         isDragging && 'opacity-0',
       )}>

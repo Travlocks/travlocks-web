@@ -31,7 +31,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
     id: 'block-board',
   });
 
-  const { viewportRef, isPanning, spaceDown, handlers } = useCanvasPanZoom({
+  const { viewportRef, zoom, isPanning, spaceDown, handlers } = useCanvasPanZoom({
     enableBackgroundPan: true,
     panIgnoreSelector: '[data-pan-ignore]',
     enableSpacePan: true,
@@ -57,7 +57,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
   return (
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
       {/* 1. 상단 헤더 */}
-      <div className="h-[79px] shrink-0 bg-white border-b border-base-color flex items-center justify-between px-8">
+      <div className="h-[79px] shrink-0 bg-base-color-6 border-b border-base-color flex items-center justify-between px-8">
         <div className="flex items-center gap-2">
           {/* 왼쪽 화살표 */}
           <button
@@ -95,7 +95,13 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
             isPanning ? 'cursor-grabbing' : spaceDown ? 'cursor-grab' : 'cursor-default',
           )}>
           {/* 3) 실제 Canvas (보드) */}
-          <div className="relative" style={{ width: CANVAS_W, height: CANVAS_H }}>
+          <div
+            className="relative origin-top-left"
+            style={{
+              width: CANVAS_W,
+              height: CANVAS_H,
+              transform: `scale(${zoom})`,
+            }}>
             {puzzleBlocks.map((block) => {
               const isStart = block.blockId === START_ID;
               if (isStart) {

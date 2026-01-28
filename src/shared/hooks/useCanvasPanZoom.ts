@@ -15,7 +15,7 @@ export function useCanvasPanZoom(options: Options = {}) {
   const {
     minZoom = 0.5,
     maxZoom = 2,
-    zoomSpeed = 0.001,
+    zoomSpeed = 0.003,
     allowMetaKey = true,
     enableSpacePan = true,
     enableBackgroundPan = true,

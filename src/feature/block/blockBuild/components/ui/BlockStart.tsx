@@ -16,8 +16,8 @@ const BlockStart = ({ className }: BlockStartProps) => {
 
       {/* 텍스트 영역 */}
       <div className="absolute left-[70px] top-[30px] flex flex-col">
-        <span className="text-[12px] font-medium leading-[14.32px] text-white">여행시작</span>
-        <span className="text-[15px] font-semibold leading-[17.9px] text-white mt-px">출발</span>
+        <span className="text-[12px] font-medium leading-[14.32px] text-base-color-6">여행시작</span>
+        <span className="text-[15px] font-semibold leading-[17.9px] text-base-color-6 mt-px">출발</span>
       </div>
 
       {/* 움직이는바 아이콘 */}

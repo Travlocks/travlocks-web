@@ -31,7 +31,7 @@ const BlockSidebar = ({ items }: BlockSidebarProps) => {
     }
   };
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div className="flex flex-col h-full bg-base-color-6 border-r border-gray-200">
       {/* 헤더 타이틀 */}
       <div className="px-6 pt-8 pb-4">
         <h2 className="text-xl font-semibold text-black">Vlock 라이브러리</h2>

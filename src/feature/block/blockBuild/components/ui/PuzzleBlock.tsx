@@ -35,7 +35,7 @@ export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag:
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
       }}>
       {/* TODO: 여기서 퍼즐 SVG 컴포넌트로 교체 */}
-      <div className="w-full h-full rounded-xl bg-primary-color text-white p-4">
+      <div className="w-full h-full rounded-xl bg-primary-color text-base-color-6 p-4">
         <div className="font-semibold">{block.name}</div>
         <div className="text-xs opacity-90">
           {block.category} · {block.duration}
