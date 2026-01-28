@@ -9,6 +9,8 @@ import PuzzleBlock from '../ui/PuzzleBlock';
 import BlockGhost from '../ui/BlockGhost';
 import BlockStartNode from '../ui/BlockStartNode';
 import { getTailIdFromBlocks } from '../../utils/path';
+import BlockTrash from './BlockTrash';
+import BlockUndoRedo from './BlockUndoRedo';
 
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
@@ -66,11 +68,16 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
           </button>
         </div>
 
-        <span className="text-base-color-1 h9 font-medium">마우스로 블록을 드래그하여 일정을 조립하세요</span>
+        <span className="text-base-color-1 h9 font-light">마우스로 블록을 드래그하여 일정을 조립하세요</span>
       </div>
 
       {/* 2. 메인 캔버스 영역 (드롭존) */}
+      {/* h-[1200px] -> 편집 섹션 높이 */}
       <div className="flex-1 min-h-0 h-[1200px] relative">
+        {/* Redo, Undo 버튼 */}
+        <div className="absolute top-[15px] right-8 z-content">
+          <BlockUndoRedo />
+        </div>
         <div
           ref={setRefs}
           className={clsx(
@@ -92,6 +99,10 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
 
             <BlockGhost hint={dockHint} />
           </div>
+        </div>
+        {/* 블록 삭제 드래그 영역 */}
+        <div className="absolute bottom-11 right-10">
+          <BlockTrash />
         </div>
       </div>
     </div>

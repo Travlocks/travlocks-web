@@ -12,6 +12,7 @@ const BlockEditor = () => {
     puzzleBlocks,
     currentDay,
     updateBlocksByDay: editorActions.updateBlocksByDay,
+    removeById: editorActions.removeById,
   });
 
   return (

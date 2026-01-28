@@ -22,9 +22,10 @@ interface UseBlockDragParams {
   puzzleBlocks: Block[];
   currentDay: number;
   updateBlocksByDay: (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => void; // 날짜별 블록 업데이트
+  removeById: (blockId: number) => void;
 }
 
-export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay }: UseBlockDragParams) => {
+export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, removeById }: UseBlockDragParams) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
@@ -111,12 +112,23 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay }: Us
       setActiveDrag(null);
       setDockHint(null);
 
-      if (e.over?.id !== 'block-board') return;
+      const overId = e.over?.id;
+
+      const type = e.active.data.current?.type as DragType | undefined;
+
+      // 휴지통 위에 드롭된 경우 -> 편집 중인 블록만 삭제
+      if (overId === 'blockTrash' && type === 'blockEditor') {
+        const blockId = e.active.data.current?.blockId as number | undefined;
+        if (blockId != null) {
+          removeById(blockId);
+        }
+        return;
+      }
+
+      if (overId !== 'block-board') return;
 
       const boardEl = boardRef.current;
       if (!boardEl) return;
-
-      const type = e.active.data.current?.type as DragType | undefined;
 
       const candidate = calcCandidate({
         e,
@@ -178,7 +190,7 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay }: Us
         });
       }
     },
-    [currentDay, puzzleBlocks, updateBlocksByDay],
+    [currentDay, puzzleBlocks, updateBlocksByDay, removeById],
   );
 
   // 드래그 취소 시 블록 정보 초기화
