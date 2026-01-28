@@ -1,12 +1,18 @@
 import BlockSidebar from './side/BlockSidebar';
 import BlockEditorContent from './main/BlockEditorContent';
 import { MOCK_BLOCKS } from '../mock';
+import { useBlockEditor } from '../hooks/useBlockEditor';
 import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 
 const BlockEditor = () => {
-  const { sensors, boardRef, activeDrag, puzzleBlocks, dockHint, handlers } = useBlockDrag();
+  const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
+  const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
+    puzzleBlocks,
+    currentDay,
+    updateBlocksByDay: editorActions.updateBlocksByDay,
+  });
 
   return (
     <DndContext sensors={sensors} {...handlers}>
@@ -18,7 +24,13 @@ const BlockEditor = () => {
 
         {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
-          <BlockEditorContent boardRef={boardRef} puzzleBlocks={puzzleBlocks} dockHint={dockHint} />
+          <BlockEditorContent
+            boardRef={boardRef}
+            puzzleBlocks={puzzleBlocks}
+            dockHint={dockHint}
+            currentDay={currentDay}
+            onDayChange={editorActions.setDay}
+          />
         </main>
       </div>
 

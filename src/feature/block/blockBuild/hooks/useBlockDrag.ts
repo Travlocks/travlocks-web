@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import type { Block, SidebarBlock } from '../types/block';
 import type { ActiveDrag, DockHintState, DragType } from '../types/drag';
 import { getTailIdFromBlocks } from '../utils/path';
-import { commitEditorDrop, commitSidebarDrop, detachTail, removeBlock } from '../utils/commit';
+import { commitEditorDrop, commitSidebarDrop, detachTail } from '../utils/commit';
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
@@ -18,22 +18,13 @@ const SNAP_THRESHOLD = 67;
 const CONNECTOR_OFFSET = 0;
 const ALLOW_BOTTOM = true;
 
-// 임시 시작 블럭
-const START_BLOCK: Block = {
-  blockId: START_ID,
-  name: 'START',
-  category: '기타',
-  duration: '',
-  x: 44,
-  y: 76,
-  w: 186,
-  h: 87,
-  connectors: { input: null, output: 'right' },
-  connectedTo: null,
-  connectedFrom: null,
-};
+interface UseBlockDragParams {
+  puzzleBlocks: Block[];
+  currentDay: number;
+  updateBlocksByDay: (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => void; // 날짜별 블록 업데이트
+}
 
-export const useBlockDrag = () => {
+export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay }: UseBlockDragParams) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
@@ -44,34 +35,42 @@ export const useBlockDrag = () => {
   const boardRef = useRef<HTMLDivElement | null>(null);
 
   const [activeDrag, setActiveDrag] = useState<ActiveDrag>(null);
-  const [puzzleBlocks, setPuzzleBlocks] = useState<Block[]>(() => [START_BLOCK]);
   const [dockHint, setDockHint] = useState<DockHintState>(null);
 
   // 드래그 시작 후 블록 정보 설정
-  const onDragStart = useCallback((e: DragStartEvent) => {
-    const type = e.active.data.current?.type as DragType | undefined;
+  const onDragStart = useCallback(
+    (e: DragStartEvent) => {
+      const type = e.active.data.current?.type as DragType | undefined;
 
-    if (type === 'blockSidebar') {
-      const item = e.active.data.current?.item as SidebarBlock | undefined;
-      if (item) {
-        setActiveDrag({ type: 'blockSidebar', block: item });
-      }
-    }
-
-    if (type === 'blockEditor') {
-      const blockId = e.active.data.current?.blockId as number;
-      const w = e.active.data.current?.w as number;
-      const h = e.active.data.current?.h as number;
-      const connectors = e.active.data.current?.connectors as Block['connectors'];
-      if (blockId && w && h) {
-        setActiveDrag({ type: 'blockEditor', blockId, w, h, connectors });
+      if (type === 'blockSidebar') {
+        const item = e.active.data.current?.item as SidebarBlock | undefined;
+        if (item) {
+          setActiveDrag({ type: 'blockSidebar', block: item });
+        }
       }
 
-      if (blockId !== null) {
-        setPuzzleBlocks((prev) => detachTail({ blocks: prev, startId: START_ID, movingId: blockId }));
+      if (type === 'blockEditor') {
+        const blockId = e.active.data.current?.blockId as number;
+        const w = e.active.data.current?.w as number;
+        const h = e.active.data.current?.h as number;
+        const connectors = e.active.data.current?.connectors as Block['connectors'];
+        if (blockId && w && h) {
+          setActiveDrag({ type: 'blockEditor', blockId, w, h, connectors });
+        }
+
+        if (blockId !== null) {
+          updateBlocksByDay((prev) => {
+            const currentBlocks = prev[currentDay] ?? [];
+            return {
+              ...prev,
+              [currentDay]: detachTail({ blocks: currentBlocks, startId: START_ID, movingId: blockId }),
+            };
+          });
+        }
       }
-    }
-  }, []);
+    },
+    [currentDay, updateBlocksByDay],
+  );
 
   // 드래그 중일 때 스냅 프리뷰 표시
   const onDragMove = useCallback(
@@ -142,9 +141,20 @@ export const useBlockDrag = () => {
         const item = e.active.data.current?.item as SidebarBlock | undefined;
         if (!item) return;
 
-        setPuzzleBlocks((prev) =>
-          commitSidebarDrop({ blocks: prev, tpl: item, candidate, decision, startId: START_ID }),
-        );
+        // 날짜별 블록 업데이트
+        updateBlocksByDay((prev) => {
+          const currentBlocks = prev[currentDay] ?? [];
+          return {
+            ...prev,
+            [currentDay]: commitSidebarDrop({
+              blocks: currentBlocks,
+              tpl: item,
+              candidate,
+              decision,
+              startId: START_ID,
+            }),
+          };
+        });
         return;
       }
 
@@ -153,12 +163,22 @@ export const useBlockDrag = () => {
         const blockId = e.active.data.current?.blockId as number | undefined;
         if (!blockId) return;
 
-        setPuzzleBlocks((prev) =>
-          commitEditorDrop({ blocks: prev, movingId: blockId, candidate, decision, startId: START_ID }),
-        );
+        updateBlocksByDay((prev) => {
+          const currentBlocks = prev[currentDay] ?? [];
+          return {
+            ...prev,
+            [currentDay]: commitEditorDrop({
+              blocks: currentBlocks,
+              movingId: blockId,
+              candidate,
+              decision,
+              startId: START_ID,
+            }),
+          };
+        });
       }
     },
-    [puzzleBlocks],
+    [currentDay, puzzleBlocks, updateBlocksByDay],
   );
 
   // 드래그 취소 시 블록 정보 초기화
@@ -171,16 +191,7 @@ export const useBlockDrag = () => {
     sensors,
     boardRef,
     activeDrag,
-    puzzleBlocks,
     dockHint,
-    actions: {
-      setPuzzleBlocks,
-      reset: () => setPuzzleBlocks([START_BLOCK]),
-      removeById: (blockId: number) =>
-        setPuzzleBlocks((prev) => removeBlock({ blocks: prev, blockId, startId: START_ID })),
-      updateBlock: (blockId: number, updates: Partial<Block>) =>
-        setPuzzleBlocks((prev) => prev.map((block) => (block.blockId === blockId ? { ...block, ...updates } : block))),
-    },
     handlers: { onDragStart, onDragMove, onDragEnd, onDragCancel },
   };
 };

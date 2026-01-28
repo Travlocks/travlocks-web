@@ -2,7 +2,7 @@ import { IconBase } from '@/shared/ui/icon/IconBase';
 import TriangleIcon from '@assets/blockEdit/icon-triangle.svg?react';
 import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import type { Block } from '../../types/block';
 import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
@@ -19,11 +19,11 @@ interface BlockEditorContentProps {
   boardRef: React.MutableRefObject<HTMLDivElement | null>;
   puzzleBlocks: Block[];
   dockHint: DockHintState;
+  currentDay: number;
+  onDayChange: (day: number) => void;
 }
 
-const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorContentProps) => {
-  // 임시용 날짜 관리
-  const [day, setDay] = useState(1);
+const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDayChange }: BlockEditorContentProps) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
   });
@@ -31,7 +31,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorCon
   // 날짜 변경 핸들러
   const handleDayChange = (day: number) => {
     if (day < 1 || day > 5) return;
-    setDay(day);
+    onDayChange(day);
   };
 
   const setRefs = useCallback(
@@ -52,16 +52,16 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint }: BlockEditorCon
           {/* 왼쪽 화살표 */}
           <button
             className="text-base-color-0 hover:text-gray-600 transition-colors"
-            onClick={() => handleDayChange(day - 1)}>
+            onClick={() => handleDayChange(currentDay - 1)}>
             <IconBase icon={TriangleIcon} className="rotate-180" />
           </button>
 
-          <span className="text-[28px] font-semibold text-black leading-none">DAY {day}</span>
+          <span className="text-[28px] font-semibold text-black leading-none">DAY {currentDay}</span>
 
           {/* 오른쪽 화살표 */}
           <button
             className="text-base-color-0 hover:text-gray-600 transition-colors"
-            onClick={() => handleDayChange(day + 1)}>
+            onClick={() => handleDayChange(currentDay + 1)}>
             <IconBase icon={TriangleIcon} />
           </button>
         </div>
