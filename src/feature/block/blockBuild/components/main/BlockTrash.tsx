@@ -9,6 +9,7 @@ const BlockTrash = () => {
 
   return (
     <div ref={setNodeRef} className={clsx('w-20 h-20', isOver ? 'bg-blue-50/30' : 'bg-[#F8FAFC]')}>
+      {/* TODO: 로티파일로 변경 */}
       <TrashIcon className="w-20 h-20" />
     </div>
   );

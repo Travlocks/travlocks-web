@@ -11,6 +11,7 @@ import BlockStartNode from '../ui/BlockStartNode';
 import { getTailIdFromBlocks } from '../../utils/path';
 import BlockTrash from './BlockTrash';
 import BlockUndoRedo from './BlockUndoRedo';
+import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
 
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
@@ -30,6 +31,12 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
     id: 'block-board',
   });
 
+  const { viewportRef, isPanning, spaceDown, handlers } = useCanvasPanZoom({
+    enableBackgroundPan: true,
+    panIgnoreSelector: '[data-pan-ignore]',
+    enableSpacePan: true,
+  });
+
   // 날짜 변경 핸들러
   const handleDayChange = (day: number) => {
     if (day < 1 || day > 5) return;
@@ -40,8 +47,9 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
     (node: HTMLDivElement | null) => {
       setNodeRef(node);
       boardRef.current = node;
+      viewportRef.current = node;
     },
-    [setNodeRef, boardRef],
+    [setNodeRef, boardRef, viewportRef],
   );
 
   const tailId = getTailIdFromBlocks(puzzleBlocks, START_ID) ?? START_ID;
@@ -75,14 +83,16 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
       {/* h-[1200px] -> 편집 섹션 높이 */}
       <div className="flex-1 min-h-0 h-[1200px] relative">
         {/* Redo, Undo 버튼 */}
-        <div className="absolute top-[15px] right-8 z-content">
+        <div data-pan-ignore className="absolute top-[15px] right-8 z-content">
           <BlockUndoRedo />
         </div>
         <div
           ref={setRefs}
+          {...handlers}
           className={clsx(
             'h-full w-full overflow-auto overscroll-contain relative transition-colors duration-150',
             isOver ? 'bg-blue-50/30' : 'bg-[#F8FAFC]',
+            isPanning ? 'cursor-grabbing' : spaceDown ? 'cursor-grab' : 'cursor-default',
           )}>
           {/* 3) 실제 Canvas (보드) */}
           <div className="relative" style={{ width: CANVAS_W, height: CANVAS_H }}>
@@ -101,7 +111,7 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
           </div>
         </div>
         {/* 블록 삭제 드래그 영역 */}
-        <div className="absolute bottom-11 right-10">
+        <div data-pan-ignore className="absolute bottom-11 right-10">
           <BlockTrash />
         </div>
       </div>

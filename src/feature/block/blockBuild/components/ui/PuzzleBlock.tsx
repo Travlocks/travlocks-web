@@ -20,6 +20,7 @@ export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag:
 
   return (
     <div
+      data-pan-ignore
       ref={setNodeRef}
       {...dragProps}
       className={[
