@@ -4,8 +4,8 @@ const OnboardingPage = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* 컨텐츠 영역 */}
-      <div className="px-[360px] py-[157px]">
-        <div className="flex flex-col gap-[60px]">
+      <div className="py-[157px]">
+        <div className="w-full flex flex-col gap-[60px]">
           {/* (1) 헤더 영역 */}
           <header className="flex flex-col items-center gap-[40px]">
             <p className="h5 text-base-color-1">나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!</p>
