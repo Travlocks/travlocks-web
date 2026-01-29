@@ -12,6 +12,7 @@ import { getTailIdFromBlocks } from '../../utils/path';
 // import BlockTrash from './BlockTrash';
 import BlockUndoRedo from './BlockUndoRedo';
 import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
+import BlockTrash from './BlockTrash';
 
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
@@ -132,8 +133,8 @@ const BlockEditorContent = ({
           </div>
         </div>
         {/* 블록 삭제 드래그 영역 */}
-        <div data-pan-ignore className="absolute bottom-11 right-10">
-          {/* <BlockTrash /> */}
+        <div data-pan-ignore className="absolute bottom-11 right-10 z-5 p-2">
+          <BlockTrash />
         </div>
       </div>
     </div>
