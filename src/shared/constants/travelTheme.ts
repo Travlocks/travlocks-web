@@ -7,20 +7,41 @@ import HealingIcon from '@shared/assets/preference/icon-preference-healing.svg?r
 import ActivityIcon from '@shared/assets/preference/icon-preference-activity.svg?react';
 import LocalIcon from '@shared/assets/preference/icon-preference-local.svg?react';
 
+/**
+ * 여행 테마 ID 타입입니다.
+ *
+ * @remarks
+ * 1: 자연, 2: 문화, 3: 맛집, 4: 힐링, 5: 액티비티, 6: 로컬을 의미합니다.
+ */
 export type TravleThemeId = 1 | 2 | 3 | 4 | 5 | 6;
 
+/**
+ * 여행 테마 키 타입입니다.
+ *
+ * @remarks
+ * 내부 로직, 필터링, API 통신 시 문자열 기반 식별자로 사용됩니다.
+ */
 export type TravleThemeKey = 'nature' | 'culture' | 'food' | 'healing' | 'activity' | 'local';
 
+/**
+ * 여행 테마 정보를 나타내는 타입입니다.
+ */
 export interface TravelTheme {
-  id: TravleThemeId;
-  key: TravleThemeKey;
+  id: TravleThemeId; // 여행 테마 고유 ID
+  key: TravleThemeKey; // 여행 테마 키
   name: {
-    korean: string;
-    english: string;
+    korean: string; // 한국어 이름
+    english: string; // 영어 이름
   };
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: ComponentType<SVGProps<SVGSVGElement>>; // 여행 테마 아이콘
 }
 
+/**
+ * 여행 테마 목록입니다.
+ *
+ * @remarks
+ * 여행 사전 정보 입력 단계에서 사용자의 여행 테마 선택 UI를 구성하는 데 사용됩니다.
+ */
 export const TRAVEL_THEME: TravelTheme[] = [
   {
     id: 1,
@@ -78,6 +99,18 @@ export const TRAVEL_THEME: TravelTheme[] = [
   },
 ];
 
+/**
+ * 여행 테마 ID를 키로 하는 여행 테마 매핑 객체입니다.
+ *
+ * @remarks
+ * 여행 테마 ID를 통해 빠르게 테마 정보를 조회할 때 사용합니다.
+ *
+ * @example
+ * ```ts
+ * const theme = TRAVEL_THEME_MAP[3];
+ * console.log(theme.name.korean); // '맛집'입니다.
+ * ```
+ */
 export const TRAVEL_THEME_MAP: Record<TravleThemeId, TravelTheme> = TRAVEL_THEME.reduce(
   (acc, category) => {
     acc[category.id] = category;

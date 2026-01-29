@@ -1,7 +1,27 @@
+/**
+ * 대한민국 여행 권역 ID 타입입니다.
+ *
+ * @remarks
+ * 1: 서울, 2: 경기, 3: 강원, 4: 충청, 5: 전라, 6: 경상, 7: 제주
+ */
+
 export type RegionId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+/**
+ * 대한민국 여행 권역 키 타입입니다.
+ *
+ * @remarks
+ * seoul: 서울, gyeonggi: 경기, gangwon: 강원, chungcheong: 충청, jeolla: 전라, gyeongsang: 경상, jeju: 제주
+ */
 export type RegionKey = 'seoul' | 'gyeonggi' | 'gangwon' | 'chungcheong' | 'jeolla' | 'gyeongsang' | 'jeju';
 
+/**
+ * 여행 목적지 도시 ID 타입입니다.
+ *
+ * @remarks
+ * 100번대는 서울, 200번대는 경기, 300번대는 강원, 400번대는 충청,
+ * 500번대는 전라, 600번대는 경상, 700번대는 제주를 의미합니다.
+ */
 // prettier-ignore
 export type DestinationCityId =
     | 101 | 102 | 103 | 104 | 105 | 106 | 107 | 108 | 109 | 110 // 서울
@@ -12,25 +32,37 @@ export type DestinationCityId =
     | 601 | 602 | 603 | 604 | 605 | 606 | 607 | 608 | 609 | 610 // 경상
     | 701 | 702 | 703 | 704; // 제주
 
+/**
+ * 여행 목적지 도시 정보를 나타내는 타입입니다.
+ */
 export interface DestinationCity {
-  id: DestinationCityId;
+  id: DestinationCityId; // 목적지 도시 고유 ID
   name: {
-    korean: string;
-    english: string;
+    korean: string; // 한국어 이름
+    english: string; // 영어 이름
   };
-  regionId: RegionId;
+  regionId: RegionId; // 속한 권역 ID
 }
 
+/**
+ * 여행 권역 정보를 나타내는 타입입니다.
+ */
 export interface Region {
-  id: RegionId;
-  key: RegionKey;
+  id: RegionId; // 권역 고유 ID
+  key: RegionKey; // 권역 키
   name: {
-    korean: string;
-    english: string;
+    korean: string; // 한국어 이름
+    english: string; // 영어 이름
   };
-  cities: DestinationCity[];
+  cities: DestinationCity[]; // 속한 도시 목록
 }
 
+/**
+ * 여행 목적지 도시 목록
+ *
+ * @remarks
+ * UI에서 권역 별 도시 목록을 구성할 때 사용합니다.
+ */
 export const DESTINATION_CITIES: DestinationCity[] = [
   // 서울 (100번대)
   { id: 101, name: { korean: '종로·중구', english: 'Jongno·Jung-gu' }, regionId: 1 },
@@ -109,6 +141,12 @@ export const DESTINATION_CITIES: DestinationCity[] = [
   { id: 704, name: { korean: '성산', english: 'Seongsan' }, regionId: 7 },
 ];
 
+/**
+ * 대한민국 여행 권역 목록입니다.
+ *
+ * @remarks
+ * 각 권역에는 해당 권역에 속한 도시 목록이 함께 포함되어 있습니다.
+ */
 export const REGIONS: Region[] = [
   {
     id: 1,
@@ -175,6 +213,18 @@ export const REGIONS: Region[] = [
   },
 ];
 
+/**
+ * 목적지 도시 ID를 키로 하는 목적지 도시 매핑 객체입니다.
+ *
+ * @remarks
+ * 도시 ID로 빠르게 도시 정보를 조회할 때 사용합니다.
+ *
+ * @example
+ * ```ts
+ * const city = DESTINATION_CITY_MAP[301];
+ * console.log(city.name.korean); // '강릉'입니다.
+ * ```
+ */
 export const DESTINATION_CITY_MAP: Record<DestinationCityId, DestinationCity> = DESTINATION_CITIES.reduce(
   (acc, city) => {
     acc[city.id] = city;
@@ -183,6 +233,18 @@ export const DESTINATION_CITY_MAP: Record<DestinationCityId, DestinationCity> = 
   {} as Record<DestinationCityId, DestinationCity>,
 );
 
+/**
+ * 권역 ID를 키로 하는 권역 매핑 객체입니다.
+ *
+ * @remarks
+ * 권역 ID로 빠르게 권역 정보를 조회할 때 사용합니다.
+ *
+ * @example
+ * ```ts
+ * const region = REGION_MAP[1];
+ * console.log(region.name.korean); // '서울'입니다.
+ * ```
+ */
 export const REGION_MAP: Record<RegionId, Region> = REGIONS.reduce(
   (acc, region) => {
     acc[region.id] = region;
