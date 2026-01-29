@@ -1,7 +1,7 @@
 // src/shared/components/SelectButton.style.tsx
 import { clsx } from 'clsx';
 
-export const SelectButton = {
+export const SelectButtonStyles = {
   Root: (isSelected?: boolean) =>
     clsx(
       // 바깥 버튼 레이아웃
