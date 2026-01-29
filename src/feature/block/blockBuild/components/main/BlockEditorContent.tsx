@@ -17,6 +17,11 @@ import BlockTrash from './BlockTrash';
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
 
+// 가상 캔버스 패딩
+const PAD = 2000;
+const VIRTUAL_W = CANVAS_W + PAD * 2;
+const VIRTUAL_H = CANVAS_H + PAD * 2;
+
 const START_ID = 0;
 
 interface BlockEditorContentProps {
@@ -48,6 +53,7 @@ const BlockEditorContent = ({
     enableBackgroundPan: true,
     panIgnoreSelector: '[data-pan-ignore]',
     enableSpacePan: true,
+    initialScroll: () => ({ left: PAD * zoom, top: PAD * zoom }),
   });
 
   // 날짜 변경 핸들러
@@ -108,27 +114,29 @@ const BlockEditorContent = ({
             isOver ? 'bg-blue-50/30' : 'bg-[#F8FAFC]',
             isPanning ? 'cursor-grabbing' : spaceDown ? 'cursor-grab' : 'cursor-default',
           )}>
-          <div className="relative" style={{ width: CANVAS_W * zoom, height: CANVAS_H * zoom }}>
+          <div className="relative" style={{ width: VIRTUAL_W * zoom, height: VIRTUAL_H * zoom }}>
             {/* 3) 실제 Canvas (보드) */}
             <div
               className="relative origin-top-left"
               style={{
-                width: CANVAS_W,
-                height: CANVAS_H,
+                width: VIRTUAL_W,
+                height: VIRTUAL_H,
                 transform: `scale(${zoom})`,
               }}>
-              {puzzleBlocks.map((block) => {
-                const isStart = block.blockId === START_ID;
-                if (isStart) {
-                  return <BlockStartNode key={block.blockId} block={block} />;
-                }
-                const isTail = block.blockId === tailId;
-                // 드래그 규칙: free or tail 블록은 드래그 가능
-                const canDrag = block.connectedFrom == null || isTail;
-                return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
-              })}
+              <div className="absolute" style={{ left: PAD, top: PAD, width: CANVAS_W, height: CANVAS_H }}>
+                {puzzleBlocks.map((block) => {
+                  const isStart = block.blockId === START_ID;
+                  if (isStart) {
+                    return <BlockStartNode key={block.blockId} block={block} />;
+                  }
+                  const isTail = block.blockId === tailId;
+                  // 드래그 규칙: free or tail 블록은 드래그 가능
+                  const canDrag = block.connectedFrom == null || isTail;
+                  return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
+                })}
 
-              <BlockGhost hint={dockHint} />
+                <BlockGhost hint={dockHint} />
+              </div>
             </div>
           </div>
         </div>
