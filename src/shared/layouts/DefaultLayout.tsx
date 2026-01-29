@@ -18,7 +18,6 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const showSplashStorage = sessionStorage.getItem(SESSION_STORAGE_KEY.showSplash);
   const [showSplash, setShowSplash] = useState(showSplashStorage !== 'false');
 
-  console.log(showSplash, showSplashStorage);
   // 스플래시 완료 시 세션 스토리지에 표시 여부 저장
   const handleSplashDone = () => {
     setShowSplash(false);
