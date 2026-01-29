@@ -7,7 +7,7 @@ import clsx from 'clsx';
 const PLACEHOLDER_TEXT = '여행기간 선택';
 
 interface TripDurationDropdownProps {
-  onSelect?: (duration: TripDuration) => void;
+  onSelect?: (trip: TripDuration.trip) => void;
 }
 
 const TripDurationDropdown = ({ onSelect }: TripDurationDropdownProps) => {

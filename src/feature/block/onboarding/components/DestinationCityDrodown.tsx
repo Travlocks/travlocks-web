@@ -9,7 +9,7 @@ import clsx from 'clsx';
 const PLACEHOLDER_TEXT = '도시 또는 지역명을 직접 검색하거나 아래에서 선택해주세요';
 
 interface DestinationCityDropdownProps {
-  onSelect?: (cities: DestinationCity[]) => void;
+  onSelect?: (destinationCityIds: DestinationCityId[]) => void;
 }
 
 const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => {
@@ -55,13 +55,13 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
     }
 
     setSelectedCities(newCities);
-    onSelect?.(newCities);
+    onSelect?.(newCities.map((city) => city.id));
   };
 
   const handleDeleteCity = (cityId: DestinationCityId) => {
     const newCities = selectedCities.filter((c) => c.id !== cityId);
     setSelectedCities(newCities);
-    onSelect?.(newCities);
+    onSelect?.(newCities.map((city) => city.id));
   };
 
   return (

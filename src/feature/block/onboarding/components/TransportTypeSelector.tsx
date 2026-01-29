@@ -1,22 +1,25 @@
 import { useState } from 'react';
-import { TRANSPORT_TYPE, type TransportTypeId } from '@/shared/constants/transportType';
+import { TRANSPORT_TYPE, type TransportTypeKey } from '@/shared/constants/transportType';
 import SelectButton from '@/feature/block/onboarding/components/SelectButton';
 
-const TransportTypeSelector = () => {
-  const [selectedIds, setSelectedIds] = useState<TransportTypeId[]>([]);
+interface TransportTypeSelectorProps {
+  onSelect?: (transportTypes: TransportTypeKey[]) => void;
+}
 
-  const handleToggleTransport = (transportId: TransportTypeId) => {
-    setSelectedIds((prev) => {
-      const isAlreadySelected = prev.includes(transportId);
+const TransportTypeSelector = ({ onSelect }: TransportTypeSelectorProps) => {
+  const [selectedTypes, setSelectedTypes] = useState<TransportTypeKey[]>([]);
 
-      // 이미 선택된 값이면 선택 해제
-      if (isAlreadySelected) {
-        return prev.filter((id) => id !== transportId);
-      }
+  const handleToggleTransport = (transportType: TransportTypeKey) => {
+    let newSelectedTypes: TransportTypeKey[];
 
-      // 새로 추가
-      return [...prev, transportId];
-    });
+    if (selectedTypes.includes(transportType)) {
+      newSelectedTypes = selectedTypes.filter((type) => type !== transportType);
+    } else {
+      newSelectedTypes = [...selectedTypes, transportType];
+    }
+
+    setSelectedTypes(newSelectedTypes);
+    onSelect?.(newSelectedTypes);
   };
 
   return (
@@ -26,8 +29,8 @@ const TransportTypeSelector = () => {
           key={transport.id}
           type="transport"
           item={transport}
-          isSelected={selectedIds.includes(transport.id)}
-          onClick={handleToggleTransport}
+          isSelected={selectedTypes.includes(transport.key)}
+          onClick={() => handleToggleTransport(transport.key)}
         />
       ))}
     </div>

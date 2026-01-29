@@ -21,7 +21,7 @@ export const TRIP_DURATION: TripDuration[] = [
     },
   },
   {
-    id: 1,
+    id: 2,
     label: '1박 2일',
     trip: {
       days: 1,
@@ -29,7 +29,7 @@ export const TRIP_DURATION: TripDuration[] = [
     },
   },
   {
-    id: 2,
+    id: 3,
     label: '2박 3일',
     trip: {
       days: 2,
@@ -37,7 +37,7 @@ export const TRIP_DURATION: TripDuration[] = [
     },
   },
   {
-    id: 3,
+    id: 4,
     label: '3박 4일',
     trip: {
       days: 3,
@@ -45,7 +45,7 @@ export const TRIP_DURATION: TripDuration[] = [
     },
   },
   {
-    id: 4,
+    id: 5,
     label: '4일 이상',
     trip: {
       days: 4,

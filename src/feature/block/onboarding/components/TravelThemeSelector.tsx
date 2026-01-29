@@ -4,26 +4,27 @@ import SelectButton from '@/feature/block/onboarding/components/SelectButton';
 
 const MAX_SELECTED_THEMES = 3;
 
-const TravelThemeSelector = () => {
+interface TravelThemeSelectorProps {
+  onSelect?: (travelThemeIds: TravleThemeId[]) => void;
+}
+
+const TravelThemeSelector = ({ onSelect }: TravelThemeSelectorProps) => {
   const [selectedIds, setSelectedIds] = useState<TravleThemeId[]>([]);
 
   const handleToggleTheme = (themeId: TravleThemeId) => {
-    setSelectedIds((prev) => {
-      const isAlreadySelected = prev.includes(themeId);
+    let newSelectedIds: TravleThemeId[];
 
-      // 이미 선택된 값이면 선택 해제
-      if (isAlreadySelected) {
-        return prev.filter((id) => id !== themeId);
+    if (selectedIds.includes(themeId)) {
+      newSelectedIds = selectedIds.filter((id) => id !== themeId);
+    } else {
+      if (selectedIds.length >= MAX_SELECTED_THEMES) {
+        return;
       }
+      newSelectedIds = [...selectedIds, themeId];
+    }
 
-      // 새로 선택하려는데 이미 3개면 더 이상 선택 불가
-      if (prev.length >= MAX_SELECTED_THEMES) {
-        return prev;
-      }
-
-      // 그 외에는 새로 추가
-      return [...prev, themeId];
-    });
+    setSelectedIds(newSelectedIds);
+    onSelect?.(newSelectedIds);
   };
 
   return (

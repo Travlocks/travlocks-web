@@ -1,13 +1,10 @@
-import TravelThemeSelector from '@/feature/block/onboarding/components/TravelThemeSelector';
-import TransportTypeSelector from '@/feature/block/onboarding/components/TransportTypeSelector';
-import TripDurationDropdown from '@/feature/block/onboarding/components/TripDurationDropdown';
-import DestinationCityDropdown from '@/feature/block/onboarding/components/DestinationCityDrodown';
+import OnboardingWidget from '@/feature/block/onboarding/widgets/OnboardingWidget';
 
 const OnboardingPage = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* 컨텐츠 영역 */}
-      <div className="px-[360px] pt-[157px]">
+      <div className="px-[360px] py-[157px]">
         <div className="flex flex-col gap-[60px]">
           {/* (1) 헤더 영역 */}
           <header className="flex flex-col items-center gap-[40px]">
@@ -22,18 +19,8 @@ const OnboardingPage = () => {
 
             {/* form 영역*/}
             <div className="flex-1">
-              <DestinationCityDropdown />
-              <TripDurationDropdown />
-              <TransportTypeSelector />
-              <TravelThemeSelector />
+              <OnboardingWidget />
             </div>
-
-            {/* 제출 버튼 */}
-            <button
-              type="button"
-              className="h9 text-base-color-6 w-[217px] h-[65px] p-[13px_25px] rounded-[15px] self-end bg-base-color-3 cursor-pointer">
-              설정 완료
-            </button>
           </section>
         </div>
       </div>
