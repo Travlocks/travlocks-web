@@ -1,27 +1,33 @@
-// src/shared/components/SelectButton.tsx
-import type { TravelTheme } from '@/shared/constants/travelTheme';
-import { SelectButton } from '@/feature/block/onboarding/styles/SelectButton.style';
+// src/feature/block/onboarding/components/SelectButton.tsx
+import { SelectButtonStyles } from '@/feature/block/onboarding/styles/SelectButton.style';
+import type { SelectButtonProps } from '@/feature/block/onboarding/types/selectButtonTypes';
 
-interface TravelThemeButtonProps {
-  theme: TravelTheme;
-  isSelected?: boolean;
-  onClick?: (themeId: TravelTheme['id']) => void;
-}
+export const SelectButton = (props: SelectButtonProps) => {
+  const { isSelected = false } = props;
 
-export const TravelThemeButton = ({ theme, isSelected = false, onClick }: TravelThemeButtonProps) => {
-  const Icon = theme.icon;
+  // Discriminated union을 통해 item과 onClick 타입 추론
+  const item = props.item;
+  const Icon = item.icon;
+
+  const handleClick = () => {
+    if (props.type === 'theme') {
+      props.onClick?.(props.item.id);
+    } else {
+      props.onClick?.(props.item.id);
+    }
+  };
 
   return (
-    <button type="button" onClick={() => onClick?.(theme.id)} className={SelectButton.Root(isSelected)}>
+    <button type="button" onClick={handleClick} className={SelectButtonStyles.Root(isSelected)}>
       {/* 아이콘 박스 */}
-      <div className={SelectButton.IconWrapper(isSelected)}>
-        <Icon className={SelectButton.Icon(isSelected)} aria-hidden />
+      <div className={SelectButtonStyles.IconWrapper(isSelected)}>
+        <Icon className={SelectButtonStyles.Icon(isSelected)} />
       </div>
 
       {/* 라벨 */}
-      <span className={SelectButton.Label(isSelected)}>{theme.name.korean}</span>
+      <span className={SelectButtonStyles.Label(isSelected)}>{item.name.korean}</span>
     </button>
   );
 };
 
-export default TravelThemeButton;
+export default SelectButton;

@@ -31,7 +31,8 @@ const TravelThemeSelector = () => {
       {TRAVEL_THEME.map((theme) => (
         <SelectButton
           key={theme.id}
-          theme={theme}
+          type="theme"
+          item={theme}
           isSelected={selectedIds.includes(theme.id)}
           onClick={handleToggleTheme}
         />
