@@ -24,7 +24,6 @@ export const SelectButton = (props: SelectButtonProps) => {
         <Icon className={SelectButtonStyles.Icon(isSelected)} />
       </div>
 
-      {/* 라벨 */}
       <span className={SelectButtonStyles.Label(isSelected)}>{item.name.korean}</span>
     </button>
   );
