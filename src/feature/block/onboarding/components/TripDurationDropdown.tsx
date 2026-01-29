@@ -7,14 +7,20 @@ import clsx from 'clsx';
 const PLACEHOLDER_TEXT = '여행기간 선택';
 
 interface TripDurationDropdownProps {
-  onSelect?: (trip: TripDuration.trip) => void;
+  /**
+   * 여행 기간이 선택되었을 때 호출되는 콜백입니다.
+   *
+   * @param trip 선택된 여행 기간 정보입니다.
+   */
+  onSelect?: (trip: TripDuration) => void;
 }
 
 const TripDurationDropdown = ({ onSelect }: TripDurationDropdownProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState<TripDuration | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false); // 드롭다운 열림 상태
+  const [selectedDuration, setSelectedDuration] = useState<TripDuration | null>(null); // 선택된 여행 기간
+  const dropdownRef = useRef<HTMLDivElement>(null); // 드롭다운 참조
 
+  // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -28,10 +34,19 @@ const TripDurationDropdown = ({ onSelect }: TripDurationDropdownProps) => {
     };
   }, []);
 
+  // input 클릭 시 드롭다운 열림/닫힘
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
   };
 
+  /**
+   * 특정 여행 기간이 선택되었을 때 호출되는 핸들러입니다.
+   *
+   * @param duration 선택된 여행 기간 정보입니다.
+   *
+   * @remarks
+   * 선택된 기간을 상태에 저장하고, 드롭다운을 닫은 뒤 onSelect 콜백을 호출합니다.
+   */
   const handleSelect = (duration: TripDuration) => {
     setSelectedDuration(duration);
     setIsOpen(false);

@@ -2,15 +2,38 @@ import { useState } from 'react';
 import { TRAVEL_THEME, type TravleThemeId } from '@/shared/constants/travelTheme';
 import SelectButton from '@/feature/block/onboarding/components/SelectButton';
 
+// 선택 가능한 최대 여행 테마 개수
 const MAX_SELECTED_THEMES = 3;
 
 interface TravelThemeSelectorProps {
+  /**
+   * 선택된 여행 테마 ID 목록이 변경될 때 호출되는 콜백입니다.
+   *
+   * @param travelThemeIds 현재 선택된 여행 테마 ID 배열입니다.
+   */
   onSelect?: (travelThemeIds: TravleThemeId[]) => void;
 }
 
+/**
+ * 여행 테마 선택 컴포넌트입니다.
+ *
+ * @remarks
+ * 온보딩 과정에서 사용자가 선호하는 여행 테마를 최대 3개까지 선택할 수 있도록 합니다.
+ * 각 테마는 아이콘과 라벨을 포함한 선택 버튼 형태로 표시됩니다.
+ */
 const TravelThemeSelector = ({ onSelect }: TravelThemeSelectorProps) => {
-  const [selectedIds, setSelectedIds] = useState<TravleThemeId[]>([]);
+  const [selectedIds, setSelectedIds] = useState<TravleThemeId[]>([]); // 현재 선택된 여행 테마 목록 ID
 
+  /**
+   * 특정 여행 테마의 선택 상태를 토글하는 핸들러입니다.
+   *
+   * @param themeId 토글할 여행 테마 ID입니다.
+   *
+   * @remarks
+   * 이미 선택된 테마인 경우 선택을 해제합니다.
+   * 선택되지 않은 테마인 경우, 최대 선택 개수를 초과하지 않을 때만 선택 목록에 추가합니다.
+   * 선택 결과는 onSelect 콜백을 통해 상위 컴포넌트로 전달됩니다.
+   */
   const handleToggleTheme = (themeId: TravleThemeId) => {
     let newSelectedIds: TravleThemeId[];
 

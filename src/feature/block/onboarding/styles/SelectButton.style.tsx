@@ -4,7 +4,6 @@ import { clsx } from 'clsx';
 export const SelectButtonStyles = {
   Root: (isSelected?: boolean) =>
     clsx(
-      // 바깥 버튼 레이아웃
       'inline-flex flex-col items-center justify-center',
       'gap-[4px]',
       'px-[152px] py-[44px]',
@@ -14,7 +13,6 @@ export const SelectButtonStyles = {
       'transition-colors',
       'cursor-pointer',
 
-      // 선택(클릭) 상태
       isSelected && ['border-primary-color', 'bg-[var(--Primary-color,rgba(60,78,244,0.10))]'],
     ),
 
