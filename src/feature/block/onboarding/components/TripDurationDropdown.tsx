@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { TRIP_DURATION, type TripDuration } from '@/shared/constants/tripDuration';
-import DropdownIcon from '@/shared/assets/travel-onboarding/icon-dropdown.svg?react';
+import DropdownIcon from '@/shared/assets/icon-arrow-down.svg?react';
 import { DropdownStyles } from '../styles/Dropdown.style';
+import clsx from 'clsx';
 
 const PLACEHOLDER_TEXT = '여행기간 선택';
 
@@ -39,7 +40,7 @@ const TripDurationDropdown = ({ onSelect }: TripDurationDropdownProps) => {
 
   return (
     <div ref={dropdownRef} className="relative w-full">
-      <div className={DropdownStyles.inputField} onClick={handleToggle}>
+      <div className={clsx(DropdownStyles.inputField, 'justify-between')} onClick={handleToggle}>
         <span className={selectedDuration ? DropdownStyles.selectedText : DropdownStyles.placeholder}>
           {selectedDuration?.label || PLACEHOLDER_TEXT}
         </span>
