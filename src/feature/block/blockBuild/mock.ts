@@ -1,8 +1,8 @@
 import type { SidebarBlock } from './types/block';
-import hotelImage from '@assets/blockEdit/img-sample1.jpg';
-import restaurantImage from '@assets/blockEdit/img-sample2.jpg';
-import cafeImage from '@assets/blockEdit/img-sample3.jpg';
-import hotelImage2 from '@assets/blockEdit/img-sample4.jpg';
+import hotelImage from '@feature/block/blockBuild/assets/img-sample1.jpg';
+import restaurantImage from '@feature/block/blockBuild/assets/img-sample2.jpg';
+import cafeImage from '@feature/block/blockBuild/assets/img-sample3.jpg';
+import hotelImage2 from '@feature/block/blockBuild/assets/img-sample4.jpg';
 
 export const MOCK_BLOCKS: SidebarBlock[] = [
   { id: 1, name: '신라스테이', category: '숙소', duration: '1박', imageUrl: hotelImage },

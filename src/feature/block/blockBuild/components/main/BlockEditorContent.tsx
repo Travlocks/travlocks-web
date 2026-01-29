@@ -1,5 +1,5 @@
 import { IconBase } from '@/shared/ui/icon/IconBase';
-import TriangleIcon from '@assets/blockEdit/edit-icon-triangle.svg?react';
+import TriangleIcon from '@feature/block/blockBuild/assets/edit-icon-triangle.svg?react';
 import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
 import { useCallback } from 'react';
@@ -9,7 +9,7 @@ import PuzzleBlock from '../ui/PuzzleBlock';
 import BlockGhost from '../ui/BlockGhost';
 import BlockStartNode from '../ui/BlockStartNode';
 import { getTailIdFromBlocks } from '../../utils/path';
-import BlockTrash from './BlockTrash';
+// import BlockTrash from './BlockTrash';
 import BlockUndoRedo from './BlockUndoRedo';
 import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
 
@@ -133,7 +133,7 @@ const BlockEditorContent = ({
         </div>
         {/* 블록 삭제 드래그 영역 */}
         <div data-pan-ignore className="absolute bottom-11 right-10">
-          <BlockTrash />
+          {/* <BlockTrash /> */}
         </div>
       </div>
     </div>

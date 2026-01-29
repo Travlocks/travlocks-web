@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import GoBackIcon from '@assets/blockEdit/edit-icon-goBack.svg?react';
+import GoBackIcon from '@feature/block/blockBuild/assets/edit-icon-goBack.svg?react';
 import { IconBase } from '@/shared/ui/icon/IconBase';
 
 interface BlockUndoRedoProps {

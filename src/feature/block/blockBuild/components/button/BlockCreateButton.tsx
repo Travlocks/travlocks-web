@@ -1,4 +1,4 @@
-import CreateIcon from '@assets/blockEdit/edit-icon-create.svg?react';
+import CreateIcon from '@feature/block/blockBuild/assets/edit-icon-create.svg?react';
 
 const BlockCreateButton = () => {
   const onCreateBlock = () => {
