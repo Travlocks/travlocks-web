@@ -133,7 +133,7 @@ const BlockEditorContent = ({
           </div>
         </div>
         {/* 블록 삭제 드래그 영역 */}
-        <div data-pan-ignore className="absolute bottom-11 right-10 z-5 p-2">
+        <div data-pan-ignore className="absolute bottom-11 right-10 p-2">
           <BlockTrash />
         </div>
       </div>
