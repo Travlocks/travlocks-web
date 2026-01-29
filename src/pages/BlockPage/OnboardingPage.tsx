@@ -1,5 +1,6 @@
 import TravelThemeSelector from '@/feature/block/onboarding/components/TravelThemeSelector';
 import TransportTypeSelector from '@/feature/block/onboarding/components/TransportTypeSelector';
+import TripDurationDropdown from '@/feature/block/onboarding/components/TripDurationDropdown';
 
 const OnboardingPage = () => {
   return (
@@ -20,8 +21,7 @@ const OnboardingPage = () => {
 
             {/* form 영역*/}
             <div className="flex-1">
-              {/* 추후 실제 form 요소로 교체 */}
-              {/* <div className="h-full w-full rounded-md border border-dashed border-slate-300" /> */}
+              <TripDurationDropdown />
               <TransportTypeSelector />
               <TravelThemeSelector />
             </div>
