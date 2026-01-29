@@ -1,7 +1,9 @@
 import { clamp } from '@/feature/home/utils/random';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 type Options = {
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
   minZoom?: number;
   maxZoom?: number;
   zoomSpeed?: number;
@@ -11,25 +13,35 @@ type Options = {
   panIgnoreSelector?: string; // 패닝 무시할 요소 선택자 ('data-pan-ignore')
 };
 
-export function useCanvasPanZoom(options: Options = {}) {
+export function useCanvasPanZoom(options: Options = { zoom: 1, onZoomChange: () => {} }) {
   const {
+    zoom,
+    onZoomChange,
     minZoom = 0.5,
     maxZoom = 2,
     zoomSpeed = 0.003,
     allowMetaKey = true,
     enableSpacePan = true,
     enableBackgroundPan = true,
-    panIgnoreSelector = '',
+    panIgnoreSelector = '[data-pan-ignore]',
   } = options;
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const zoomRef = useRef(zoom);
+  const panRef = useRef({
+    active: false,
+    startX: 0,
+    startY: 0,
+    startLeft: 0,
+    startTop: 0,
+    pointerId: -1,
+  });
 
-  const [zoom, setZoom] = useState(1);
-  const zoomRef = useRef(1);
-  // 줌 값 참조
-  useEffect(() => void (zoomRef.current = zoom), [zoom]);
+  const pendingScrollRef = useRef<{ left: number; top: number } | null>(null);
 
   const [spaceDown, setSpaceDown] = useState(false);
+  const [isPanning, setIsPanning] = useState(false);
+
   // 스페이스 패닝 이벤트 리스너
   useEffect(() => {
     if (!enableSpacePan) return;
@@ -50,15 +62,19 @@ export function useCanvasPanZoom(options: Options = {}) {
     };
   }, [enableSpacePan]);
 
-  const [isPanning, setIsPanning] = useState(false);
-  const panRef = useRef({
-    active: false,
-    startX: 0,
-    startY: 0,
-    startLeft: 0,
-    startTop: 0,
-    pointerId: -1,
-  });
+  // 줌 값 참조 동기화 및 스크롤 위치 업데이트
+  useLayoutEffect(() => {
+    zoomRef.current = zoom;
+
+    const el = viewportRef.current;
+    const pending = pendingScrollRef.current;
+
+    if (!el || !pending) return;
+
+    el.scrollLeft = pending.left;
+    el.scrollTop = pending.top;
+    pendingScrollRef.current = null;
+  }, [zoom]);
 
   // 포인터 위치에서 줌 값 계산
   const zoomAtPointer = useCallback(
@@ -77,17 +93,14 @@ export function useCanvasPanZoom(options: Options = {}) {
       const worldX = (el.scrollLeft + mx) / prev;
       const worldY = (el.scrollTop + my) / prev;
 
-      setZoom(next);
+      pendingScrollRef.current = {
+        left: worldX * next - mx,
+        top: worldY * next - my,
+      };
 
-      requestAnimationFrame(() => {
-        const el2 = viewportRef.current;
-        if (!el2) return;
-
-        el2.scrollLeft = worldX * next - mx;
-        el2.scrollTop = worldY * next - my;
-      });
+      onZoomChange(next);
     },
-    [minZoom, maxZoom, zoomSpeed],
+    [minZoom, maxZoom, zoomSpeed, onZoomChange],
   );
 
   useEffect(() => {
@@ -171,7 +184,7 @@ export function useCanvasPanZoom(options: Options = {}) {
   return {
     viewportRef, // 컨테이너에 ref로 연결
     zoom,
-    setZoom,
+    onZoomChange,
     spaceDown,
     isPanning,
     handlers: {

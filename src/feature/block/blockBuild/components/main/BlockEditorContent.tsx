@@ -24,14 +24,26 @@ interface BlockEditorContentProps {
   dockHint: DockHintState;
   currentDay: number;
   onDayChange: (day: number) => void;
+  zoom: number;
+  onZoomChange: (zoom: number) => void;
 }
 
-const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDayChange }: BlockEditorContentProps) => {
+const BlockEditorContent = ({
+  boardRef,
+  puzzleBlocks,
+  dockHint,
+  currentDay,
+  onDayChange,
+  zoom,
+  onZoomChange,
+}: BlockEditorContentProps) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
   });
 
-  const { viewportRef, zoom, isPanning, spaceDown, handlers } = useCanvasPanZoom({
+  const { viewportRef, isPanning, spaceDown, handlers } = useCanvasPanZoom({
+    zoom,
+    onZoomChange,
     enableBackgroundPan: true,
     panIgnoreSelector: '[data-pan-ignore]',
     enableSpacePan: true,
@@ -89,31 +101,34 @@ const BlockEditorContent = ({ boardRef, puzzleBlocks, dockHint, currentDay, onDa
         <div
           ref={setRefs}
           {...handlers}
+          onPointerLeave={handlers.onPointerUp}
           className={clsx(
             'h-full w-full overflow-auto overscroll-contain relative transition-colors duration-150',
             isOver ? 'bg-blue-50/30' : 'bg-[#F8FAFC]',
             isPanning ? 'cursor-grabbing' : spaceDown ? 'cursor-grab' : 'cursor-default',
           )}>
-          {/* 3) 실제 Canvas (보드) */}
-          <div
-            className="relative origin-top-left"
-            style={{
-              width: CANVAS_W,
-              height: CANVAS_H,
-              transform: `scale(${zoom})`,
-            }}>
-            {puzzleBlocks.map((block) => {
-              const isStart = block.blockId === START_ID;
-              if (isStart) {
-                return <BlockStartNode key={block.blockId} block={block} />;
-              }
-              const isTail = block.blockId === tailId;
-              // 드래그 규칙: free or tail 블록은 드래그 가능
-              const canDrag = block.connectedFrom == null || isTail;
-              return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
-            })}
+          <div className="relative" style={{ width: CANVAS_W * zoom, height: CANVAS_H * zoom }}>
+            {/* 3) 실제 Canvas (보드) */}
+            <div
+              className="relative origin-top-left"
+              style={{
+                width: CANVAS_W,
+                height: CANVAS_H,
+                transform: `scale(${zoom})`,
+              }}>
+              {puzzleBlocks.map((block) => {
+                const isStart = block.blockId === START_ID;
+                if (isStart) {
+                  return <BlockStartNode key={block.blockId} block={block} />;
+                }
+                const isTail = block.blockId === tailId;
+                // 드래그 규칙: free or tail 블록은 드래그 가능
+                const canDrag = block.connectedFrom == null || isTail;
+                return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
+              })}
 
-            <BlockGhost hint={dockHint} />
+              <BlockGhost hint={dockHint} />
+            </div>
           </div>
         </div>
         {/* 블록 삭제 드래그 영역 */}

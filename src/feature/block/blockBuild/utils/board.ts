@@ -1,5 +1,6 @@
 import { clamp } from '@/feature/home/utils/random';
 import { snapPoint } from './geometry';
+import type { Modifier } from '@dnd-kit/core';
 
 export type RectLike = { left: number; top: number; width: number; height: number };
 
@@ -58,3 +59,18 @@ export function clampInBoard(params: {
 
   return pos;
 }
+
+// 보드 내에서 포인트 제한 (줌 고려)
+export const scaleDragByZoom =
+  (zoom: number): Modifier =>
+  ({ transform, active }) => {
+    const type = active?.data.current?.type;
+
+    if (type !== 'blockEditor') return transform;
+
+    return {
+      ...transform,
+      x: transform.x / zoom,
+      y: transform.y / zoom,
+    };
+  };
