@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { LoginFormData } from '@/shared/utils/validationSchemas';
 import { useLoginForm } from '../hooks/useLoginForm';
+import { useLoginMutation } from '../hooks/useLoginMutation';
 import SocialLoginButton from '@/shared/components/Button/SocialLoginButton';
 import Button from '@/shared/components/Button/Button';
 import Input from '@/shared/components/Form/Input';
@@ -19,9 +21,20 @@ import XIcon from '@assets/icon-circle-x.svg?react';
  */
 
 export const LoginView = () => {
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const { mutate: loginMutation, isPending } = useLoginMutation({
+    onError: (_error, errorMessage) => {
+      setApiError(errorMessage);
+    },
+  });
+
   const onSubmit = (data: LoginFormData) => {
-    // TODO: 백엔드 API 연동
-    console.log('로그인 데이터:', data);
+    setApiError(null); // 에러 초기화
+    loginMutation({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   const handleSocialLogin = (provider: 'naver' | 'kakao' | 'google') => {
@@ -30,6 +43,8 @@ export const LoginView = () => {
   };
 
   const { canSubmit, submit, register, isSubmitting, inlineMessage } = useLoginForm(onSubmit);
+  const errorMessage = apiError || inlineMessage;
+  const isLoginPending = isPending || isSubmitting;
 
   return (
     <>
@@ -42,7 +57,7 @@ export const LoginView = () => {
             type="email"
             label="top"
             placeholder="이메일을 입력해주세요"
-            error={!!inlineMessage}
+            error={!!errorMessage}
           />
         </div>
 
@@ -54,9 +69,9 @@ export const LoginView = () => {
               type="password"
               label="top"
               placeholder="비밀번호를 입력해주세요"
-              error={!!inlineMessage}
+              error={!!errorMessage}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && canSubmit) {
+                if (e.key === 'Enter' && canSubmit && !isLoginPending) {
                   e.preventDefault();
                   submit();
                 }
@@ -69,10 +84,10 @@ export const LoginView = () => {
           </div>
 
           <div className="min-h-[44px]">
-            {inlineMessage ? (
+            {errorMessage ? (
               <span className="b6 text-negative px-[22px] flex items-center gap-2">
                 <IconBase icon={XIcon} width="17px" height="17px" fill="#FD7565" />
-                <p>{inlineMessage}</p>
+                <p>{errorMessage}</p>
               </span>
             ) : null}
           </div>
@@ -95,9 +110,9 @@ export const LoginView = () => {
 
         {/* 로그인 버튼 */}
         <Button
-          text="Vlock 쌓으러 가기"
+          text={isLoginPending ? '로그인 중...' : 'Vlock 쌓으러 가기'}
           type="submit"
-          disabled={!canSubmit || isSubmitting}
+          disabled={!canSubmit || isLoginPending}
           className="rounded-[10px]"
         />
       </form>
