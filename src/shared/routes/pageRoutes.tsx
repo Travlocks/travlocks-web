@@ -16,7 +16,16 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'block',
-        element: <lazyRoutes.BlockPage />,
+        children: [
+          {
+            index: true,
+            element: <lazyRoutes.BlockPage />,
+          },
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OnboardingPage />,
+          },
+        ],
       },
       {
         path: 'mypage',
