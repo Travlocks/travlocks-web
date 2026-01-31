@@ -4,12 +4,14 @@ import { type IconName } from '@/shared/ui/icon/registry';
 import { createPolygonBlockPath, type Connector, type Point } from './blockShape';
 import { BlockContent } from './BlockContent';
 import { BlockDurationBadge } from './BlockDurationBadge';
+import clsx from 'clsx';
 
 interface BlockProps {
   title: string;
   category: string;
   duration: string;
   icon?: IconName;
+  color?: string;
   className?: string;
   connections?: Connector[];
   points: Point[];
@@ -24,6 +26,7 @@ export const Block = ({
   category,
   duration,
   icon = 'food',
+  color = 'text-negative',
   className,
   connections = [],
   points,
@@ -72,7 +75,7 @@ export const Block = ({
     <div className={`relative ${className}`} style={{ width: totalWidth, height: totalHeight }}>
       {/* SVG Layer */}
       <svg
-        className="absolute top-0 left-0 w-full h-full overflow-visible drop-shadow-md text-negative"
+        className={clsx('absolute top-0 left-0 w-full h-full overflow-visible drop-shadow-md', color)}
         style={{ pointerEvents: 'none' }}>
         <path d={pathD} fill="currentColor" style={{ pointerEvents: 'auto' }} />
       </svg>
