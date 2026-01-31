@@ -1,8 +1,8 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
 import LogoAuth from '@assets/logo/logo-auth.svg?react';
 import type { AuthLayoutHeader } from './AuthLayout.type';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { AuthLayoutOutletCtx } from './AuthLayout.type';
 import { useAuth } from '@/shared/hooks/useAuth';
 
@@ -21,15 +21,19 @@ const DEFAULT_HEADER: AuthLayoutHeader = {
   showAuthNav: false,
 };
 
-const AuthLayout = () => {
+interface AuthLayoutProps {
+  memberRoutes?: boolean;
+}
+
+const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
   const location = useLocation();
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
-  const { requireGuest } = useAuth();
+  const { shouldRequireMember } = useAuth();
 
-  // 로그인 상태라면 홈 페이지로 이동
-  useEffect(() => {
-    requireGuest();
-  }, [requireGuest]);
+  // 멤버 전용 라우트
+  if (memberRoutes && shouldRequireMember) {
+    return <Navigate to="/" replace />;
+  }
 
   // 헤더 교체 함수
   const setAuthHeader = (next: AuthLayoutHeader) => {

@@ -1,13 +1,12 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useNavigate } from 'react-router-dom';
 import { LOCAL_STORAGE_KEY } from '../constants/key';
 
 export const useAuth = () => {
-  const { user, isAuthenticated, isLoading, actions } = useAuthStore(
+  const { isAuthenticated, isLoading, actions } = useAuthStore(
     useShallow((state) => ({
-      user: state.user,
       isAuthenticated: state.isAuthenticated,
       isLoading: state.isLoading,
       actions: state.actions,
@@ -15,11 +14,6 @@ export const useAuth = () => {
   );
 
   const navigate = useNavigate();
-
-  // 로그인 상태 초기화
-  useEffect(() => {
-    actions.initAuth();
-  }, [actions]);
 
   // 로그아웃
   const logout = useCallback(
@@ -60,12 +54,18 @@ export const useAuth = () => {
     [isLoading, isAuthenticated, navigate],
   );
 
+  // 인증이 필요한 페이지에서 리다이렉트가 필요한지 체크 (Navigate 컴포넌트용)
+  const shouldRequireAuth = !isLoading && !isAuthenticated;
+
+  // 게스트 전용 페이지에서 리다이렉트가 필요한지 체크 (Navigate 컴포넌트용)
+  const shouldRequireMember = !isLoading && isAuthenticated;
+
   return {
     // 상태
-    user,
     isAuthenticated,
     isLoading,
-    memberId: user?.memberId ?? null,
+    shouldRequireAuth,
+    shouldRequireMember,
     // 액션
     logout,
     getAccessToken,
@@ -73,6 +73,5 @@ export const useAuth = () => {
     requireGuest,
     initAuth: actions.initAuth,
     login: actions.login,
-    setUser: actions.setUser,
   };
 };

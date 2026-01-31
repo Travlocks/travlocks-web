@@ -1,21 +1,23 @@
 import Navbar from '@/shared/components/Navbar/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
-import { Suspense, useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Suspense, useState } from 'react';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
 import { useAuth } from '../hooks/useAuth';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
+  protectedRoutes?: boolean;
 }
 
-const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
+const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, requireAuth } = useAuth();
+  const { isAuthenticated, shouldRequireAuth } = useAuth();
   const isHomeRoute = location.pathname === '/';
+
   // 스플래시 표시 여부 저장
   const showSplashStorage = sessionStorage.getItem(SESSION_STORAGE_KEY.showSplash);
   const [showSplash, setShowSplash] = useState(showSplashStorage !== 'false');
@@ -25,7 +27,6 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
     setShowSplash(false);
     if (!showSplashStorage) {
       sessionStorage.setItem(SESSION_STORAGE_KEY.showSplash, 'false');
-      console.log('스플래시 완료 시 세션 스토리지에 표시 여부 저장');
     }
   };
 
@@ -33,12 +34,10 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const AUTH_PAGES = ['/login', '/signup', '/password'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
-  // 홈 페이지 접근 시 로그인 체크
-  useEffect(() => {
-    if (isHomeRoute && !showSplash) {
-      requireAuth();
-    }
-  }, [isHomeRoute, showSplash, requireAuth]);
+  // 모든 사용자는 로그인 후에 서비스 이용 가능
+  if (protectedRoutes && shouldRequireAuth && !showSplash) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
 
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">

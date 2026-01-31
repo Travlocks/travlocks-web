@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { postLogin } from '../apis/login';
 import { useAuth } from '@/shared/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { RequestLoginDto, ResponseLoginDto } from '../login.type';
 import type { AxiosError } from 'axios';
 import type { ErrorResponse } from '@/shared/types/error';
@@ -15,15 +15,20 @@ interface useLoginMutationOptions {
 export const useLoginMutation = (options?: useLoginMutationOptions) => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 진입 경로. 없으면 홈으로
+  const from = (location.state as { from?: string })?.from || '/';
 
   const mutation = useMutation<ResponseLoginDto, AxiosError<ErrorResponse>, RequestLoginDto>({
     mutationFn: postLogin,
     onSuccess: (data) => {
       if (data.isSuccess && data.data) {
-        const { memberId, accessToken, accessTokenExpiresAt } = data.data;
-        login(memberId, accessToken, Number(accessTokenExpiresAt));
+        const { accessToken } = data.data;
+        login(accessToken);
 
-        navigate('/');
+        // 진입 경로로 이동
+        navigate(from, { replace: true });
       }
 
       // 추가 옵션 처리
