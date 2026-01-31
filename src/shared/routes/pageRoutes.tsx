@@ -1,5 +1,6 @@
 import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import AuthLayout from '@/shared/layouts/auth/AuthLayout';
+import TestLayout from '@/shared/layouts/TestLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
@@ -22,7 +23,6 @@ export const routes: RouteObject[] = [
         element: <lazyRoutes.MyPage />,
       },
       { path: 'template', element: <lazyRoutes.TemplatePage /> },
-      { path: 'test', element: <TestPage /> },
     ],
   },
   {
@@ -44,6 +44,16 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.ResetPasswordPage />,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/test',
+    element: <TestLayout />,
+    children: [
+      {
+        index: true,
+        element: <TestPage />,
       },
     ],
   },
