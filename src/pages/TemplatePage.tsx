@@ -1,5 +1,9 @@
 const TemplatePage = () => {
-  return <div>템플릿 탐색 페이지</div>;
+  return (
+    <>
+      <h1>템플릿</h1>
+    </>
+  );
 };
 
 export default TemplatePage;
