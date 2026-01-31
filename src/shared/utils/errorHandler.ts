@@ -1,10 +1,10 @@
 import type { AxiosError } from 'axios';
-import type { ErrorResponse } from '../types/error';
+import type { ErrorLoginDto } from '@/feature/auth/login/login.type';
 
 // 로그인 에러 처리
-export const handleLoginError = (error: AxiosError<ErrorResponse>) => {
+export const handleLoginError = (error: AxiosError<ErrorLoginDto>) => {
   const status = error.response?.status;
-  const message = error.response?.data?.message;
+  const message = error.response?.data?.errorMessage;
 
   switch (status) {
     case 400:

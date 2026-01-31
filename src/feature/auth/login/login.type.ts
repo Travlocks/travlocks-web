@@ -1,4 +1,5 @@
-import type { CommonResponse } from '@/shared/types/common';
+import type { SuccessPayload } from '@/shared/types/common';
+import type { ErrorPayload } from '@/shared/types/error';
 
 // 로그인 요청 타입
 export type RequestLoginDto = {
@@ -6,15 +7,20 @@ export type RequestLoginDto = {
   password: string;
 };
 
-// 로그인 응답 타입
-export type ResponseLoginDto = CommonResponse<{
+export type Login = {
   memberId: number;
   accessToken: string;
-  accessTokenExpiresAt: number;
-}>;
+  accessTokenExpiresIn: number;
+};
 
-// 토큰 갱신 응답 타입
-export type ResponseRefreshTokenDto = CommonResponse<{
-  accessToken: string;
-  accessTokenExpiresAt: number;
-}>;
+// 로그인 성공 응답 타입
+export type ResponseLoginDto = SuccessPayload<Login>;
+
+// 로그인 에러 응답 타입
+export type ErrorLoginDto = ErrorPayload<Login>;
+
+// 토큰 갱신 성공 응답 타입
+export type ResponseRefreshTokenDto = SuccessPayload<Login>;
+
+// 토큰 갱신 에러 응답 타입
+export type ErrorRefreshTokenDto = ErrorPayload<Login>;

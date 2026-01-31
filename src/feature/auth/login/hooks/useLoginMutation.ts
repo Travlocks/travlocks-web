@@ -2,14 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import { postLogin } from '../apis/login';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { RequestLoginDto, ResponseLoginDto } from '../login.type';
+import type { RequestLoginDto, ResponseLoginDto, ErrorLoginDto } from '../login.type';
 import type { AxiosError } from 'axios';
-import type { ErrorResponse } from '@/shared/types/error';
 import { handleLoginError } from '@/shared/utils/errorHandler';
 
 interface useLoginMutationOptions {
   onSuccess?: (data: ResponseLoginDto) => void;
-  onError?: (error: AxiosError<ErrorResponse>, errorMessage: string) => void;
+  onError?: (error: AxiosError<ErrorLoginDto>, errorMessage: string) => void;
 }
 
 export const useLoginMutation = (options?: useLoginMutationOptions) => {
@@ -20,7 +19,7 @@ export const useLoginMutation = (options?: useLoginMutationOptions) => {
   // 진입 경로. 없으면 홈으로
   const from = (location.state as { from?: string })?.from || '/';
 
-  const mutation = useMutation<ResponseLoginDto, AxiosError<ErrorResponse>, RequestLoginDto>({
+  const mutation = useMutation<ResponseLoginDto, AxiosError<ErrorLoginDto>, RequestLoginDto>({
     mutationFn: postLogin,
     onSuccess: (data) => {
       if (data.isSuccess && data.data) {
@@ -34,7 +33,7 @@ export const useLoginMutation = (options?: useLoginMutationOptions) => {
       // 추가 옵션 처리
       options?.onSuccess?.(data);
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
+    onError: (error: AxiosError<ErrorLoginDto>) => {
       const errorMessage = handleLoginError(error);
       console.error(errorMessage);
 
