@@ -44,7 +44,6 @@ const BlockEditor = () => {
         {activeDrag?.type === 'blockSidebar' && <BlockItem item={activeDrag.block} />}
         {/* {activeDrag?.type === 'blockEditor' && (
           // TODO: 여기에 드래그하면서 보여지는 퍼즐 컴포넌트
-          // Use getBoundingBox(activeDrag.points) for width/height
         )} */}
       </DragOverlay>
     </DndContext>
