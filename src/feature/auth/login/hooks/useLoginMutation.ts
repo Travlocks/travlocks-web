@@ -16,8 +16,9 @@ export const useLoginMutation = (options?: useLoginMutationOptions) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 진입 경로. 없으면 홈으로
-  const from = (location.state as { from?: string })?.from || '/';
+  // 진입 경로. 없으면 현재 경로 아니면 홈
+  const searchParams = new URLSearchParams(location.search);
+  const from = (location.state as { from?: string })?.from || searchParams.get('from') || '/';
 
   const mutation = useMutation<ResponseLoginDto, AxiosError<ErrorLoginDto>, RequestLoginDto>({
     mutationFn: postLogin,
