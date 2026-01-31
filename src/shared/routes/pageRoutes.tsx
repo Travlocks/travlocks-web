@@ -39,11 +39,6 @@ export const routes: RouteObject[] = [
             path: 'signup',
             element: <lazyRoutes.SignupPage />,
           },
-        ],
-      },
-      {
-        element: <AuthLayout />,
-        children: [
           {
             path: 'password',
             element: <lazyRoutes.ResetPasswordPage />,
