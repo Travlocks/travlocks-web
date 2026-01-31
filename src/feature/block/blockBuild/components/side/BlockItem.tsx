@@ -23,7 +23,7 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {...listeners}
       {...attributes}
       className={clsx(
-        'relative w-full h-[84px] rounded-[10px] border border-gray-200 bg-base-color-6 flex items-center gap-3 p-3',
+        'relative w-full h-21 rounded-[10px] border border-gray-200 bg-base-color-6 flex items-center gap-3 p-3',
         'cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md',
         isDragging && 'opacity-0',
       )}>
@@ -47,9 +47,7 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {/* 텍스트 정보 */}
       <div className="flex flex-col items-start text-left">
         {/* 카테고리 */}
-        <span
-          className={blockItemStyles.smallText}
-          style={{ color: categoryColor[item.category as keyof typeof categoryColor] }}>
+        <span className={clsx(blockItemStyles.smallText, categoryColor[item.category as keyof typeof categoryColor])}>
           {item.category}
         </span>
 

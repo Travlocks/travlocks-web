@@ -5,7 +5,13 @@ export type DragType = 'blockSidebar' | 'blockEditor';
 // 현재 드래그 중인 블록 정보
 export type ActiveDrag =
   | { type: 'blockSidebar'; block: SidebarBlock }
-  | { type: 'blockEditor'; blockId: number; points: Block['points']; connectors: Block['connectors'] }
+  | {
+      type: 'blockEditor';
+      blockId: number;
+      points: Block['points'];
+      connectors: Block['connectors'];
+      color: Block['color'];
+    }
   | null;
 
 // 근처 블록 힌트 상태
@@ -15,6 +21,7 @@ export type DockHintState = {
   edgeIndex: number;
   x: number;
   y: number;
-  w: number;
-  h: number;
+  color: Block['color'];
+  points: Block['points'];
+  connectors: Block['connectors'];
 } | null;

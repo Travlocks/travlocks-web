@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import { type IconName } from '@/shared/ui/icon/registry';
-import { createPolygonBlockPath, type Connector, type Point } from './blockShape';
+import { type Connector, type Point, getBoundingBox, useBlockPath } from './blockShape';
 import { BlockContent } from './BlockContent';
 import { BlockDurationBadge } from './BlockDurationBadge';
 import clsx from 'clsx';
@@ -17,10 +17,6 @@ interface BlockProps {
   points: Point[];
 }
 
-const TAB_HEIGHT = 16;
-const TAB_WIDTH = 42;
-const RADIUS = 5;
-
 export const Block = ({
   title,
   category,
@@ -31,45 +27,30 @@ export const Block = ({
   connections = [],
   points,
 }: BlockProps) => {
-  const { totalWidth, totalHeight, contentTop, contentLeft, contentWidth, contentHeight, normalizedPoints } =
-    useMemo(() => {
-      if (!points || points.length === 0) {
-        return {
-          totalWidth: 0,
-          totalHeight: 0,
-          contentTop: 0,
-          contentLeft: 0,
-          contentWidth: 0,
-          contentHeight: 0,
-          normalizedPoints: [],
-        };
-      }
-      const xs = points.map((p) => p.x);
-      const ys = points.map((p) => p.y);
-      const minX = Math.min(...xs);
-      const maxX = Math.max(...xs);
-      const minY = Math.min(...ys);
-      const maxY = Math.max(...ys);
-
-      const w = maxX - minX;
-      const h = maxY - minY;
-
-      const normalized = points.map((p) => ({ x: p.x - minX, y: p.y - minY }));
-
+  const { totalWidth, totalHeight, contentTop, contentLeft, contentWidth, contentHeight } = useMemo(() => {
+    if (!points || points.length === 0) {
       return {
-        totalWidth: w,
-        totalHeight: h,
+        totalWidth: 0,
+        totalHeight: 0,
         contentTop: 0,
         contentLeft: 0,
-        contentWidth: w,
-        contentHeight: h,
-        normalizedPoints: normalized,
+        contentWidth: 0,
+        contentHeight: 0,
       };
-    }, [points]);
+    }
+    const { w, h } = getBoundingBox(points);
 
-  const pathD = useMemo(() => {
-    return createPolygonBlockPath(normalizedPoints, RADIUS, TAB_WIDTH, TAB_HEIGHT, connections);
-  }, [normalizedPoints, connections]);
+    return {
+      totalWidth: w,
+      totalHeight: h,
+      contentTop: 0,
+      contentLeft: 0,
+      contentWidth: w,
+      contentHeight: h,
+    };
+  }, [points]);
+
+  const pathD = useBlockPath(points, connections);
 
   return (
     <div className={`relative ${className}`} style={{ width: totalWidth, height: totalHeight }}>

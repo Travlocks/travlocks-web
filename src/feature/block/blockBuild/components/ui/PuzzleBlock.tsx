@@ -12,6 +12,7 @@ export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canD
       startY: block.y,
       points: block.points,
       connectors: block.connectors,
+      color: block.color,
     },
     disabled: !canDrag,
   });
@@ -38,6 +39,7 @@ export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canD
         duration={block.duration}
         points={block.points}
         connections={block.connectors}
+        color={block.color}
       />
     </div>
   );

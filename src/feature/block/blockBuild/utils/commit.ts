@@ -43,6 +43,7 @@ export function commitSidebarDrop(params: {
     category: tpl.category,
     duration: tpl.duration,
     imageUrl: tpl.imageUrl,
+    color: candidate.color,
     x: decision.x, // canSnap이면 스냅 위치, 아니면 candidate 위치
     y: decision.y,
     points: candidate.points,

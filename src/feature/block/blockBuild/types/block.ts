@@ -18,6 +18,7 @@ export type Block = {
   category: CategoryType;
   duration: string;
   imageUrl?: string;
+  color?: string;
   // 보드 위치
   x: number;
   y: number;

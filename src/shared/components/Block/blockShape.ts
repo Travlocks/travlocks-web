@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 export interface Point {
   x: number;
   y: number;
@@ -332,4 +334,25 @@ export const createPolygonBlockPath = (
   path += ` Q ${p0.x} ${p0.y} ${start0x} ${start0y} Z`;
 
   return path;
+};
+
+export const useBlockPath = (points: Point[], connectors: Connector[]) => {
+  const RADIUS = 5;
+  const TAB_WIDTH = 42;
+  const TAB_HEIGHT = 16;
+
+  return useMemo(() => {
+    if (!points || points.length === 0) return '';
+    const normalized = normalizePoints(points);
+    return createPolygonBlockPath(normalized, RADIUS, TAB_WIDTH, TAB_HEIGHT, connectors);
+  }, [points, connectors]);
+};
+
+export const normalizePoints = (points: Point[]): Point[] => {
+  if (points.length === 0) return [];
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  return points.map((p) => ({ x: p.x - minX, y: p.y - minY }));
 };

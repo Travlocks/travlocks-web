@@ -2,7 +2,6 @@ import type { Block } from '../types/block';
 import type { DockHintState } from '../types/drag';
 import type { Candidate } from './boardCandidate';
 import { snapToTail, type TailSnapResult } from './snapToTail';
-import { getBoundingBox } from '@/shared/components/Block/blockShape';
 
 // 스냅 결정 타입
 export type SnapDecision = {
@@ -56,15 +55,14 @@ export function buildDockHint(params: { candidate: Candidate; decision: SnapDeci
 
   if (!decision.canSnap || decision.edgeIndex == null || decision.targetId == null) return null;
 
-  const { w, h } = getBoundingBox(candidate.points);
-
   return {
     visible: true,
     targetId: decision.targetId,
     edgeIndex: decision.edgeIndex,
     x: decision.x,
     y: decision.y,
-    w,
-    h,
+    color: candidate.color,
+    points: candidate.points,
+    connectors: candidate.connectors,
   };
 }

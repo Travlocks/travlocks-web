@@ -51,8 +51,9 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
         const blockId = e.active.data.current?.blockId as number;
         const points = e.active.data.current?.points as Block['points'];
         const connectors = e.active.data.current?.connectors as Block['connectors'];
+        const color = e.active.data.current?.color as Block['color'];
         if (blockId && points && connectors) {
-          setActiveDrag({ type: 'blockEditor', blockId, points, connectors });
+          setActiveDrag({ type: 'blockEditor', blockId, points, connectors, color });
         }
 
         if (blockId !== null) {
