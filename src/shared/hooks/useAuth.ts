@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useNavigate } from 'react-router-dom';
-import { LOCAL_STORAGE_KEY } from '../constants/key';
 
 export const useAuth = () => {
   const { isAuthenticated, isLoading, actions } = useAuthStore(
@@ -24,11 +23,10 @@ export const useAuth = () => {
     [actions, navigate],
   );
 
-  // 액세스 토큰 가져오기
+  // 메모리에서 액세스 토큰 가져오기
   const getAccessToken = useCallback(() => {
-    const token = localStorage.getItem(LOCAL_STORAGE_KEY.accessToken);
-    return token ? JSON.parse(token) : null;
-  }, []);
+    return actions.getAccessToken();
+  }, [actions]);
 
   // 인증 필요 페이지 접근 제한
   const requireAuth = useCallback(

@@ -1,6 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { LOCAL_STORAGE_KEY } from '@/shared/constants/key';
 import { postRefreshToken } from '@/feature/auth/login/apis/login';
+import { useAuthStore } from '@/shared/stores/authStore';
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
@@ -27,10 +27,19 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+// 메모리 기반 토큰 가져오기
+const getAccessToken = (): string | null => {
+  return useAuthStore.getState().actions.getAccessToken();
+};
+
+// 메모리 기반 토큰 설정
+const setAccessToken = (token: string | null): void => {
+  useAuthStore.getState().actions.setAccessToken(token);
+};
+
 axiosInstance.interceptors.request.use(
   (config) => {
-    const item = localStorage.getItem(LOCAL_STORAGE_KEY.accessToken);
-    const token = item ? JSON.parse(item) : null;
+    const token = getAccessToken();
 
     if (token) {
       config.headers = config.headers || {};
@@ -72,7 +81,8 @@ axiosInstance.interceptors.response.use(
         const { data } = await postRefreshToken();
         const newAccessToken = data.accessToken;
 
-        localStorage.setItem(LOCAL_STORAGE_KEY.accessToken, JSON.stringify(newAccessToken));
+        // 메모리 기반 저장 (XSS 방지)
+        setAccessToken(newAccessToken);
 
         processQueue(null, newAccessToken);
 
@@ -80,7 +90,8 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.removeItem(LOCAL_STORAGE_KEY.accessToken);
+        setAccessToken(null);
+        useAuthStore.getState().actions.logout();
 
         window.location.href = '/login';
 
