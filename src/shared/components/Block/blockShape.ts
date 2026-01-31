@@ -47,6 +47,54 @@ export const convertToPolygonConnections = (connections: BlockConnections): Conn
   return polygonConnections;
 };
 
+const ALIGN_MARGIN = 30;
+
+/**
+ * 폴리곤의 특정 edge에 있는 커넥터의 중심점을 계산
+ * @param points - 폴리곤 꼭짓점 배열
+ * @param connector - 커넥터 정보 (edgeIndex, align)
+ * @param tabWidth - 탭의 너비
+ * @returns 커넥터 중심점 좌표
+ */
+export const getConnectorCenter = (points: Point[], connector: Connector, tabWidth: number): Point | null => {
+  if (points.length < 3) return null;
+
+  const { edgeIndex, align = 'center' } = connector;
+  if (edgeIndex < 0 || edgeIndex >= points.length) return null;
+
+  const p1 = points[edgeIndex];
+  const p2 = points[(edgeIndex + 1) % points.length];
+
+  // edge 방향 벡터
+  const vx = p2.x - p1.x;
+  const vy = p2.y - p1.y;
+  const edgeLength = Math.sqrt(vx * vx + vy * vy);
+
+  if (edgeLength === 0) return null;
+
+  // 정규화된 방향
+  const dx = vx / edgeLength;
+  const dy = vy / edgeLength;
+
+  // 탭 시작 위치 계산 (createPolygonBlockPath와 동일한 로직)
+  let tabStartDist: number;
+  if (align === 'start') {
+    tabStartDist = ALIGN_MARGIN;
+  } else if (align === 'end') {
+    tabStartDist = edgeLength - tabWidth - ALIGN_MARGIN;
+  } else {
+    tabStartDist = (edgeLength - tabWidth) / 2;
+  }
+
+  // 탭 중심까지의 거리
+  const tabCenterDist = tabStartDist + tabWidth / 2;
+
+  return {
+    x: p1.x + dx * tabCenterDist,
+    y: p1.y + dy * tabCenterDist,
+  };
+};
+
 export const createConnectorPath = (
   x: number,
   y: number,
@@ -156,7 +204,6 @@ export const createPolygonBlockPath = (
   if (points.length < 3) return '';
 
   let path = '';
-  const ALIGN_MARGIN = 30;
 
   // Map connectors to edges by index
   const connMap: Record<number, Connector> = {};
@@ -221,8 +268,6 @@ export const createPolygonBlockPath = (
 
   path += ` Q ${points[0].x} ${points[0].y} ${points[0].x + ((points[1].x - points[0].x) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius} ${points[0].y + ((points[1].y - points[0].y) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius}`;
 
-  path += ' Z';
-
   const p0 = points[0];
   const p1 = points[1];
   const v0x = p1.x - p0.x;
@@ -233,8 +278,6 @@ export const createPolygonBlockPath = (
   const start0x = p0.x + dx0 * radius;
   const start0y = p0.y + dy0 * radius;
 
-  // Replace the simple Z with the final corner
-  path = path.substring(0, path.length - 2); // remove " Z" if I added it above
   path += ` Q ${p0.x} ${p0.y} ${start0x} ${start0y} Z`;
 
   return path;

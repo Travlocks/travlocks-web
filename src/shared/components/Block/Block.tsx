@@ -82,7 +82,7 @@ export const Block = ({
 
       {/* Content Layer */}
       <div
-        className="absolute flex flex-col p-5 text-white"
+        className="absolute flex flex-col px-3 py-5 text-white"
         style={{
           top: contentTop,
           left: contentLeft,

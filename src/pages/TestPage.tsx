@@ -12,6 +12,7 @@ import { mockRecommendedTemplates } from '@/feature/template/template.data';
 import { mockPopularTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 
 const TestPage = () => {
   const schema = z.object({
@@ -49,6 +50,8 @@ const TestPage = () => {
 
   return (
     <>
+      <BlockEditor />
+
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>
 

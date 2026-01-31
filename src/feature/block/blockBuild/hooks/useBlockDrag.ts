@@ -9,7 +9,7 @@ import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
 // TODO: 여기서 퍼즐 시간 단위로 교체
-const DEFAULT_BLOCK = { w: 260, h: 64 };
+const DEFAULT_BLOCK = { w: 125, h: 125 };
 const GRID = 40;
 
 const START_ID = 0;
