@@ -71,10 +71,8 @@ axiosInstance.interceptors.response.use(
       try {
         const { data } = await postRefreshToken();
         const newAccessToken = data.accessToken;
-        const newAccessTokenExpiresAt = data.accessTokenExpiresAt;
 
         localStorage.setItem(LOCAL_STORAGE_KEY.accessToken, JSON.stringify(newAccessToken));
-        localStorage.setItem(LOCAL_STORAGE_KEY.accessTokenExpiresAt, JSON.stringify(newAccessTokenExpiresAt));
 
         processQueue(null, newAccessToken);
 
@@ -83,7 +81,6 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         localStorage.removeItem(LOCAL_STORAGE_KEY.accessToken);
-        localStorage.removeItem(LOCAL_STORAGE_KEY.memberId);
 
         window.location.href = '/login';
 

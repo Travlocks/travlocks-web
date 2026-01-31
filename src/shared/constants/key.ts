@@ -4,6 +4,4 @@ export const SESSION_STORAGE_KEY = {
 
 export const LOCAL_STORAGE_KEY = {
   accessToken: 'accessToken',
-  memberId: 'memberId',
-  accessTokenExpiresAt: 'accessTokenExpiresAt',
 };
