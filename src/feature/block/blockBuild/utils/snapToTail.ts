@@ -1,4 +1,5 @@
-import { type Point, type Connector, getConnectorCenter } from '@/shared/components/Block/blockShape';
+import { type Point, getConnectorCenter } from '@/shared/components/Block/blockShape';
+import type { Block } from '../types/block';
 
 export type TailSnapResult = {
   canSnap: boolean;
@@ -15,20 +16,11 @@ const dist = (a: Point, b: Point) => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
-export interface SnapBlock {
-  blockId: number;
-  x: number;
-  y: number;
-  points: Point[];
-  connectors: Connector[];
-}
+// Block에서 스냅 계산에 필요한 속성만 추출
+export type SnapBlock = Pick<Block, 'blockId' | 'x' | 'y' | 'points' | 'connectors'>;
 
-interface SnapCandidate {
-  x: number;
-  y: number;
-  points: Point[];
-  connectors: Connector[];
-}
+// 드래그 중인 블록 후보 (아직 blockId 없음)
+type SnapCandidate = Omit<SnapBlock, 'blockId'>;
 
 const DEFAULT_TAB_WIDTH = 42;
 

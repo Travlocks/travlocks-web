@@ -1,7 +1,6 @@
-export type CategoryType = '숙소' | '식당' | '카페' | '관광' | '문화' | '액티비티' | '투어' | '기타';
+import type { Connector, Point } from '@/shared/components/Block/blockShape';
 
-// 연결 선 방향
-export type ConnectorLine = 'top' | 'bottom' | 'left' | 'right';
+export type CategoryType = '숙소' | '식당' | '카페' | '관광' | '문화' | '액티비티' | '투어' | '기타';
 
 // 샘플 사이드바 데이터 타입
 export type SidebarBlock = {
@@ -22,13 +21,10 @@ export type Block = {
   // 보드 위치
   x: number;
   y: number;
-  w: number;
-  h: number;
-  // 커넥터 선
-  connectors?: {
-    input: ConnectorLine | null;
-    output: ConnectorLine | null;
-  } | null;
+  // 블록 모양 (폴리곤 포인트)
+  points: Point[];
+  // 커넥터 설정
+  connectors: Connector[];
   // 연결된 블록 ID
   connectedTo?: number | null;
   connectedFrom?: number | null;

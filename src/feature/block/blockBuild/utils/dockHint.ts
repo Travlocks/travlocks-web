@@ -2,16 +2,7 @@ import type { Block } from '../types/block';
 import type { DockHintState } from '../types/drag';
 import type { Candidate } from './boardCandidate';
 import { snapToTail, type TailSnapResult } from './snapToTail';
-import { createRectPoints, type Connector } from '@/shared/components/Block/blockShape';
-
-// 기본 커넥터 설정 (사각형 블록용)
-// edgeIndex: 0=top, 1=right, 2=bottom, 3=left
-const DEFAULT_CONNECTORS: Connector[] = [
-  { type: 'plug', edgeIndex: 0, align: 'center' },
-  { type: 'socket', edgeIndex: 1, align: 'end' },
-  { type: 'socket', edgeIndex: 2, align: 'start' },
-  { type: 'plug', edgeIndex: 3, align: 'end' },
-];
+import { getBoundingBox } from '@/shared/components/Block/blockShape';
 
 // 스냅 결정 타입
 export type SnapDecision = {
@@ -39,15 +30,15 @@ export function computeSnapDecision(params: {
     drag: {
       x: candidate.x,
       y: candidate.y,
-      points: createRectPoints(candidate.w, candidate.h),
-      connectors: DEFAULT_CONNECTORS,
+      points: candidate.points,
+      connectors: candidate.connectors,
     },
     tail: {
       blockId: tail.blockId,
       x: tail.x,
       y: tail.y,
-      points: createRectPoints(tail.w, tail.h),
-      connectors: DEFAULT_CONNECTORS,
+      points: tail.points,
+      connectors: tail.connectors,
     },
     threshold,
   });
@@ -65,13 +56,15 @@ export function buildDockHint(params: { candidate: Candidate; decision: SnapDeci
 
   if (!decision.canSnap || decision.edgeIndex == null || decision.targetId == null) return null;
 
+  const { w, h } = getBoundingBox(candidate.points);
+
   return {
     visible: true,
     targetId: decision.targetId,
     edgeIndex: decision.edgeIndex,
     x: decision.x,
     y: decision.y,
-    w: candidate.w,
-    h: candidate.h,
+    w,
+    h,
   };
 }

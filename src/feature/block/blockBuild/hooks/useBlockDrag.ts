@@ -49,11 +49,10 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
 
       if (type === 'blockEditor') {
         const blockId = e.active.data.current?.blockId as number;
-        const w = e.active.data.current?.w as number;
-        const h = e.active.data.current?.h as number;
+        const points = e.active.data.current?.points as Block['points'];
         const connectors = e.active.data.current?.connectors as Block['connectors'];
-        if (blockId && w && h) {
-          setActiveDrag({ type: 'blockEditor', blockId, w, h, connectors });
+        if (blockId && points && connectors) {
+          setActiveDrag({ type: 'blockEditor', blockId, points, connectors });
         }
 
         if (blockId !== null) {

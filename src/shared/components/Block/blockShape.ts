@@ -95,6 +95,25 @@ export const getConnectorCenter = (points: Point[], connector: Connector, tabWid
   };
 };
 
+// points 배열에서 bounding box 크기 계산
+export const getBoundingBox = (points: Point[]): { w: number; h: number } => {
+  if (points.length === 0) return { w: 0, h: 0 };
+
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+
+  for (const p of points) {
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+
+  return { w: maxX - minX, h: maxY - minY };
+};
+
 export const createConnectorPath = (
   x: number,
   y: number,

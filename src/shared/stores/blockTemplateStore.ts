@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Block } from '@/feature/block/blockBuild/types/block';
 import { removeBlock } from '@/feature/block/blockBuild/utils/commit';
+import { createRectPoints } from '@/shared/components/Block/blockShape';
 
 const START_ID = 0;
 
@@ -12,9 +13,8 @@ const START_BLOCK: Block = {
   duration: '',
   x: 44,
   y: 76,
-  w: 186,
-  h: 87,
-  connectors: { input: null, output: 'right' },
+  points: createRectPoints(186, 87),
+  connectors: [{ type: 'socket', edgeIndex: 1, align: 'center' }],
   connectedTo: null,
   connectedFrom: null,
 };

@@ -45,9 +45,8 @@ export function commitSidebarDrop(params: {
     imageUrl: tpl.imageUrl,
     x: decision.x, // canSnap이면 스냅 위치, 아니면 candidate 위치
     y: decision.y,
-    w: candidate.w,
-    h: candidate.h,
-    connectors: { input: null, output: null },
+    points: candidate.points,
+    connectors: candidate.connectors,
     connectedTo: null,
     connectedFrom: null,
   };
