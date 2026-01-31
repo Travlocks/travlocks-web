@@ -12,8 +12,8 @@ export const BlockContent = ({ icon, category, title }: BlockContentProps) => {
     <div className="flex items-center gap-2 mt-1">
       <AppIcon name={icon} width={30} height={30} />
       <div className="flex flex-col">
-        <span className="text-[12px] font-normal text-base-color-5">{category}</span>
-        <span className="leading-tight b5">{title}</span>
+        <span className="text-[12px] font-normal text-base-color-5 line-clamp-1">{category}</span>
+        <span className="leading-tight b5 line-clamp-1">{title}</span>
       </div>
     </div>
   );
