@@ -1,4 +1,9 @@
-import { type Point, getConnectorCenter } from '@/shared/components/Block/blockShape';
+import {
+  type Point,
+  getConnectorCenter,
+  getEdgeDirection,
+  areOppositeDirections,
+} from '@/shared/components/Block/blockShape';
 import type { Block } from '../types/block';
 
 export type TailSnapResult = {
@@ -50,6 +55,11 @@ export function snapToTail(params: {
   // 각 socket-plug 쌍에 대해 거리 계산
   for (const socket of tailSockets) {
     for (const plug of dragPlugs) {
+      // 엣지 방향이 서로 반대인지 확인
+      const socketDir = getEdgeDirection(tail.points, socket.edgeIndex);
+      const plugDir = getEdgeDirection(drag.points, plug.edgeIndex);
+      if (!socketDir || !plugDir || !areOppositeDirections(socketDir, plugDir)) continue;
+
       // tail 기준 socket 중심점 (절대 좌표)
       const socketLocal = getConnectorCenter(tail.points, socket, tabWidth);
       if (!socketLocal) continue;

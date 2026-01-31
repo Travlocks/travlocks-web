@@ -114,6 +114,38 @@ export const getBoundingBox = (points: Point[]): { w: number; h: number } => {
   return { w: maxX - minX, h: maxY - minY };
 };
 
+export type EdgeDirection = 'up' | 'down' | 'left' | 'right';
+
+// 엣지의 outward normal 방향 계산 (시계방향으로 엣지를 그린다는 것을 가정함; 90도 각도 도형만 전제)
+export const getEdgeDirection = (points: Point[], edgeIndex: number): EdgeDirection | null => {
+  if (points.length < 2 || edgeIndex < 0 || edgeIndex >= points.length) return null;
+
+  const p1 = points[edgeIndex];
+  const p2 = points[(edgeIndex + 1) % points.length];
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+
+  // dx 또는 dy 중 하나만 0이 아니어야 함
+  if (dy === 0 && dx > 0) return 'up';
+  if (dx === 0 && dy > 0) return 'right';
+  if (dy === 0 && dx < 0) return 'down';
+  if (dx === 0 && dy < 0) return 'left';
+
+  console.error('getEdgeDirection은 사각형-like 도형만 지원합니다.');
+  return null;
+};
+
+// 두 방향이 서로 반대인지 확인
+export const areOppositeDirections = (dir1: EdgeDirection, dir2: EdgeDirection): boolean => {
+  return (
+    (dir1 === 'up' && dir2 === 'down') ||
+    (dir1 === 'down' && dir2 === 'up') ||
+    (dir1 === 'left' && dir2 === 'right') ||
+    (dir1 === 'right' && dir2 === 'left')
+  );
+};
+
 export const createConnectorPath = (
   x: number,
   y: number,
