@@ -13,6 +13,7 @@ import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import MyPage from './MyPage';
+import SearchFilter from '@/feature/search/component/SearchFilter';
 
 const TestPage = () => {
   const schema = z.object({
@@ -177,6 +178,8 @@ const TestPage = () => {
       <div>
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
         <TemplateSwiper cards={mockPopularTemplates} />
+        <h1>✅ SearchFilter.tsx</h1>
+        <SearchFilter onChange={(value) => console.log(value)} />
       </div>
 
       <Footer />
