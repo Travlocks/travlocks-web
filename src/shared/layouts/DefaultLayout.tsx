@@ -35,7 +35,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   // 모든 사용자는 로그인 후에 서비스 이용 가능
-  if (protectedRoutes && shouldRequireAuth && !showSplash) {
+  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
@@ -49,10 +49,8 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
           mode="wait"
           onExitComplete={() => {
             // 스플래시 완료 시 로그인 상태에 따라 처리
-            if (isAuthenticated) {
-              navigate('/', { replace: true });
-            } else {
-              navigate('/login', { replace: true });
+            if (protectedRoutes && !isAuthenticated) {
+              navigate('/login', { replace: true, state: { from: location.pathname } });
             }
           }}>
           {showSplash && <SplashFlow key="splash" onDone={handleSplashDone} />}
