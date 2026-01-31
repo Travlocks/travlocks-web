@@ -10,5 +10,11 @@ export type RequestLoginDto = {
 export type ResponseLoginDto = CommonResponse<{
   memberId: number;
   accessToken: string;
-  refreshToken: string;
+  accessTokenExpiresAt: number;
+}>;
+
+// 토큰 갱신 응답 타입
+export type ResponseRefreshTokenDto = CommonResponse<{
+  accessToken: string;
+  accessTokenExpiresAt: number;
 }>;

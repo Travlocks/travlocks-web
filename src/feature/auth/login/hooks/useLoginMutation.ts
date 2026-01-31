@@ -20,8 +20,8 @@ export const useLoginMutation = (options?: useLoginMutationOptions) => {
     mutationFn: postLogin,
     onSuccess: (data) => {
       if (data.isSuccess && data.data) {
-        const { memberId, accessToken } = data.data;
-        login(memberId, accessToken);
+        const { memberId, accessToken, accessTokenExpiresAt } = data.data;
+        login(memberId, accessToken, Number(accessTokenExpiresAt));
 
         navigate('/');
       }

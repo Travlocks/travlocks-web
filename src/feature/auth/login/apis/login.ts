@@ -1,11 +1,11 @@
 import { axiosInstance } from '@/shared/apis/axios';
-import type { RequestLoginDto, ResponseLoginDto } from '../login.type';
+import type { RequestLoginDto, ResponseLoginDto, ResponseRefreshTokenDto } from '../login.type';
 
 // 로그인
-export const postLogin = async (data: RequestLoginDto): Promise<ResponseLoginDto> => {
+export const postLogin = async (body: RequestLoginDto): Promise<ResponseLoginDto> => {
   try {
-    const { data: response } = await axiosInstance.post<ResponseLoginDto>('/auth/login', data);
-    return response;
+    const { data } = await axiosInstance.post<ResponseLoginDto>('/auth/login', body);
+    return data;
   } catch (error) {
     console.error(error);
     throw error;
@@ -13,10 +13,10 @@ export const postLogin = async (data: RequestLoginDto): Promise<ResponseLoginDto
 };
 
 // 토큰 갱신
-export const postRefreshToken = async (): Promise<ResponseLoginDto> => {
+export const postRefreshToken = async (): Promise<ResponseRefreshTokenDto> => {
   try {
-    const { data: response } = await axiosInstance.post<ResponseLoginDto>('/auth/refresh');
-    return response;
+    const { data } = await axiosInstance.post<ResponseRefreshTokenDto>('/auth/refresh');
+    return data;
   } catch (error) {
     console.error(error);
     throw error;

@@ -1,10 +1,11 @@
 import Navbar from '@/shared/components/Navbar/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
+import { useAuth } from '../hooks/useAuth';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -13,6 +14,7 @@ interface DefaultLayoutProps {
 const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, requireAuth } = useAuth();
   const isHomeRoute = location.pathname === '/';
   // 스플래시 표시 여부 저장
   const showSplashStorage = sessionStorage.getItem(SESSION_STORAGE_KEY.showSplash);
@@ -31,6 +33,13 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
   const AUTH_PAGES = ['/login', '/signup', '/password'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
+  // 홈 페이지 접근 시 로그인 체크
+  useEffect(() => {
+    if (isHomeRoute && !showSplash) {
+      requireAuth();
+    }
+  }, [isHomeRoute, showSplash, requireAuth]);
+
   return (
     <div className="relative w-full min-h-dvh overflow-hidden">
       {/* 메인 배경 */}
@@ -40,7 +49,12 @@ const DefaultLayout = ({ showNavbar = true }: DefaultLayoutProps) => {
         <AnimatePresence
           mode="wait"
           onExitComplete={() => {
-            navigate('/login');
+            // 스플래시 완료 시 로그인 상태에 따라 처리
+            if (isAuthenticated) {
+              navigate('/', { replace: true });
+            } else {
+              navigate('/login', { replace: true });
+            }
           }}>
           {showSplash && <SplashFlow key="splash" onDone={handleSplashDone} />}
         </AnimatePresence>

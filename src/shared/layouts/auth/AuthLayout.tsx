@@ -2,8 +2,9 @@ import { Outlet, useLocation } from 'react-router-dom';
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
 import LogoAuth from '@assets/logo/logo-auth.svg?react';
 import type { AuthLayoutHeader } from './AuthLayout.type';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { AuthLayoutOutletCtx } from './AuthLayout.type';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 /**
  * 인증 관련 페이지(로그인, 회원가입, 비밀번호 재설정)에서 사용되는 공통 레이아웃
@@ -23,6 +24,12 @@ const DEFAULT_HEADER: AuthLayoutHeader = {
 const AuthLayout = () => {
   const location = useLocation();
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
+  const { requireGuest } = useAuth();
+
+  // 로그인 상태라면 홈 페이지로 이동
+  useEffect(() => {
+    requireGuest();
+  }, [requireGuest]);
 
   // 헤더 교체 함수
   const setAuthHeader = (next: AuthLayoutHeader) => {
