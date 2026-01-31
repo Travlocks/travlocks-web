@@ -13,10 +13,7 @@ const DEFAULT_BLOCK = { w: 125, h: 125 };
 const GRID = 40;
 
 const START_ID = 0;
-
 const SNAP_THRESHOLD = 67;
-const CONNECTOR_OFFSET = 0;
-const ALLOW_BOTTOM = true;
 
 interface UseBlockDragParams {
   puzzleBlocks: Block[];
@@ -97,8 +94,6 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       setDockHint(buildDockHint({ candidate, decision }));
@@ -144,8 +139,6 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       // 1) Sidebar -> Board 생성

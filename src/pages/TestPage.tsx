@@ -50,7 +50,9 @@ const TestPage = () => {
 
   return (
     <>
-      <BlockEditor />
+      <div className="w-screen h-screen">
+        <BlockEditor />
+      </div>
 
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>

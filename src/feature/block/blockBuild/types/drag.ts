@@ -1,5 +1,4 @@
 import type { Block, SidebarBlock } from './block';
-import type { DockSide } from '../utils/snapToTail';
 
 export type DragType = 'blockSidebar' | 'blockEditor';
 
@@ -13,7 +12,7 @@ export type ActiveDrag =
 export type DockHintState = {
   visible: boolean;
   targetId?: number;
-  side: DockSide;
+  edgeIndex: number;
   x: number;
   y: number;
   w: number;
