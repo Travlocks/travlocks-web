@@ -2,6 +2,11 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { postRefreshToken } from '@/feature/auth/login/apis/login';
 import { useAuthStore } from '@/shared/stores/authStore';
 
+// 토큰 갱신 로직 건너뛰기 플래그 타입
+export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  skipTokenRefresh?: boolean;
+}
+
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API_URL,
   withCredentials: true,
@@ -55,10 +60,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     // 오류 요청 원본 복사
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as CustomAxiosRequestConfig & { _retry?: boolean };
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url?.includes('/auth/login')) {
+      // 토큰 갱신 로직 건너뛰기 플래그
+      if (originalRequest.skipTokenRefresh) {
         return Promise.reject(error);
       }
 
