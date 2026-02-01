@@ -7,6 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
+import TemplateSwiper from '@/feature/template/TemplateSwiper';
+import { mockRecommendedTemplates } from '@/feature/template/template.data';
+import { mockPopularTemplates } from '@/feature/template/template.data';
 
 const TestPage = () => {
   const schema = z.object({
@@ -117,6 +120,16 @@ const TestPage = () => {
           <Alert text="인증 메일 전송됨" type="check" width={440} onClick={() => alert('재전송')}></Alert>
           <SingleButton text="제출" width={217} height={65} textSize={20} onClick={handleSubmit(onSubmit)} />
         </form>
+      </div>
+
+      <div>
+        <h1>✅ TemplateSection.tsx (Recommended by AI)</h1>
+        <TemplateSwiper cards={mockRecommendedTemplates} />
+      </div>
+
+      <div>
+        <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
+        <TemplateSwiper cards={mockPopularTemplates} />
       </div>
     </>
   );

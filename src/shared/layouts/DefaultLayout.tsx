@@ -40,7 +40,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   }
 
   return (
-    <div className="relative w-full min-h-dvh overflow-hidden">
+    <div className="relative w-full min-h-dvh overflow-hidden" aria-label="메인 레이아웃">
       {/* 메인 배경 */}
       {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-base bg-base-color-6" />}
       {/* 스플래시 플로우 */}

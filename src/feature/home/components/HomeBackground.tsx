@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react';
 import { Bubble } from './Bubble';
 import { buildBubbleSpecs, type BubbleSpec } from '../utils/bubbleLayout';
@@ -16,7 +17,6 @@ export function HomeBackground() {
     // 고정된 랜덤 시드
     const seed = 42;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     setBubbleSpecs(
       buildBubbleSpecs({
         seed,
@@ -29,7 +29,6 @@ export function HomeBackground() {
       }),
     );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     setPuzzleSpecs(
       buildPuzzleSpecs({
         seed,
