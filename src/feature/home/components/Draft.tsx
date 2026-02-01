@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import DraftCard from './DraftCard';
 
 const TEMPLATES = [
@@ -23,8 +24,8 @@ const Draft = () => {
       <div className="flex flex-col gap-[32px] max-w-[calc(589px*2+40px)] w-full">
         <h1 className="text-base-color-0 h1">최근 편집 초안</h1>
 
-        <div className="flex gap-[40px] flex-wrap justify-center">
-          {TEMPLATES.map((template) => (
+        <div className={clsx('flex gap-[40px] flex-wrap', TEMPLATES.length > 2 && 'justify-center')}>
+          {TEMPLATES.slice(0, 2).map((template) => (
             <DraftCard
               key={template.templateId}
               title={template.title}
