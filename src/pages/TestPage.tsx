@@ -8,11 +8,16 @@ import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
+<<<<<<< HEAD
 import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 import SideBar from '@/feature/main_page/SideBar';
+=======
+import { mockRecommendedTemplates } from '@/feature/template/template.data';
+import { mockPopularTemplates } from '@/feature/template/template.data';
+>>>>>>> 97bc274 (테스트 페이지에서 사이드바 제거)
 
 const TestPage = () => {
   const schema = z.object({
