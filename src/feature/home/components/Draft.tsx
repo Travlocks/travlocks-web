@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import DraftCard from './DraftCard';
+import DraftEmptyCard from './DraftEmptyCard';
 
 const TEMPLATES = [
   {
@@ -25,15 +26,19 @@ const Draft = () => {
         <h1 className="text-base-color-0 h1">최근 편집 초안</h1>
 
         <div className={clsx('flex gap-[40px] flex-wrap', TEMPLATES.length > 2 && 'justify-center')}>
-          {TEMPLATES.slice(0, 2).map((template) => (
-            <DraftCard
-              key={template.templateId}
-              title={template.title}
-              region={template.region}
-              progressRate={template.progressRate}
-              updatedAt={template.updatedAt}
-            />
-          ))}
+          {TEMPLATES.length === 0 ? (
+            <DraftEmptyCard />
+          ) : (
+            TEMPLATES.slice(0, 2).map((template) => (
+              <DraftCard
+                key={template.templateId}
+                title={template.title}
+                region={template.region}
+                progressRate={template.progressRate}
+                updatedAt={template.updatedAt}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>
