@@ -4,7 +4,7 @@ import StarIcon from '@assets/icon-star.svg?react';
 import TimeIcon from '@assets/icon-time.svg?react';
 import RemixIcon from '@assets/icon-remix.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 interface SideBarContentProps {
@@ -13,6 +13,20 @@ interface SideBarContentProps {
 }
 
 const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!mapRef.current || !window.kakao) return;
+
+    window.kakao.maps.load(() => {
+      const options = {
+        center: new window.kakao.maps.LatLng(35.1796, 129.0756), // TODO: 좌표
+        level: 5,
+      };
+      new window.kakao.maps.Map(mapRef.current!, options);
+    });
+  }, []);
+
   return (
     <div
       className={clsx(
@@ -115,8 +129,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
         {/* 지도 */}
         <div className="flex flex-col gap-4">
           <h3 className="h8 text-base-color-0">지도</h3>
-          {/* TODO: 지도 API */}
-          <div className="h-69.25 border border-base-color rounded-[5px] bg-base-color-4" />
+          <div ref={mapRef} className="h-69.25 border border-base-color rounded-[5px] bg-base-color-4" />
         </div>
 
         {/* 리믹스 하기 버튼 */}

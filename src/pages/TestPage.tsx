@@ -2,17 +2,17 @@ import Button from '@/shared/components/Button/Button';
 import DualButton from '@/shared/components/Button/DualButton';
 import RoundButton from '@/shared/components/Button/RoundButton';
 import SingleButton from '@/shared/components/Button/SingleButton';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
-import { mockRecommendedTemplates } from '@/feature/template/template.data';
-import { mockPopularTemplates } from '@/feature/template/template.data';
+import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import SideBar from '@/feature/main_page/SideBar';
 
 const TestPage = () => {
   const schema = z.object({
@@ -93,6 +93,8 @@ const TestPage = () => {
           />
         </div>
       </div>
+
+      <SideBar />
 
       <div className="flex flex-col gap-2">
         <h1>✅ Button.tsx</h1>
