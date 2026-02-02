@@ -15,6 +15,7 @@ interface BlockProps {
   className?: string;
   connections?: Connector[];
   points: Point[];
+  style?: React.CSSProperties;
 }
 
 export const Block = ({
@@ -26,6 +27,7 @@ export const Block = ({
   className,
   connections = [],
   points,
+  style,
 }: BlockProps) => {
   const { totalWidth, totalHeight, contentTop, contentLeft, contentWidth, contentHeight } = useMemo(() => {
     if (!points || points.length === 0) {
@@ -53,7 +55,7 @@ export const Block = ({
   const pathD = useBlockPath(points, connections);
 
   return (
-    <div className={`relative ${className}`} style={{ width: totalWidth, height: totalHeight }}>
+    <div className={`relative ${className}`} style={{ width: totalWidth, height: totalHeight, ...style }}>
       {/* SVG Layer */}
       <svg
         className={clsx('absolute top-0 left-0 w-full h-full overflow-visible drop-shadow-md', color)}

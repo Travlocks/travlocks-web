@@ -29,7 +29,7 @@ export default function PuzzleBlock({ block, canDrag = false, isOverlay = false,
   if (isOverlay) {
     return (
       <div
-        className="select-none cursor-grabbing shadow-xl"
+        className="select-none cursor-grabbing"
         style={{
           width: block.w * zoom,
           height: block.h * zoom,
@@ -41,12 +41,13 @@ export default function PuzzleBlock({ block, canDrag = false, isOverlay = false,
           points={block.points}
           connections={block.connectors}
           color={block.color}
+          style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
         />
       </div>
     );
   }
 
-  // 일반 모드 (캔버스 위 블록)
+  // 일반 모드 (캔버스 위 블록 - 컨테이너가 이미 scale(zoom) 적용됨)
   const dragProps = canDrag ? { ...listeners, ...attributes } : {};
 
   return (
