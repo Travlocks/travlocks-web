@@ -2,7 +2,15 @@ import { useDraggable } from '@dnd-kit/core';
 import type { Block as BlockData } from '../../types/block';
 import { Block } from '@/shared/components/Block/Block';
 
-export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canDrag: boolean }) {
+interface PuzzleBlockProps {
+  block: BlockData;
+  canDrag?: boolean;
+  isOverlay?: boolean;
+  zoom?: number;
+}
+
+export default function PuzzleBlock({ block, canDrag = false, isOverlay = false, zoom = 1 }: PuzzleBlockProps) {
+  // 오버레이 모드에서는 useDraggable 사용 안 함
   const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `editor:${block.blockId}`,
     data: {
@@ -14,9 +22,31 @@ export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canD
       connectors: block.connectors,
       color: block.color,
     },
-    disabled: !canDrag,
+    disabled: !canDrag || isOverlay,
   });
 
+  // 오버레이 모드
+  if (isOverlay) {
+    return (
+      <div
+        className="select-none cursor-grabbing shadow-xl"
+        style={{
+          width: block.w * zoom,
+          height: block.h * zoom,
+        }}>
+        <Block
+          title={block.name}
+          category={block.category}
+          duration={block.duration}
+          points={block.points}
+          connections={block.connectors}
+          color={block.color}
+        />
+      </div>
+    );
+  }
+
+  // 일반 모드 (캔버스 위 블록)
   const dragProps = canDrag ? { ...listeners, ...attributes } : {};
 
   return (
@@ -34,7 +64,6 @@ export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canD
         top: block.y,
         width: block.w,
         height: block.h,
-        // transform 제거 - DragOverlay 사용
       }}>
       <Block
         title={block.name}

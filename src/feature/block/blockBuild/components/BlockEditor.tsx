@@ -5,39 +5,8 @@ import { useBlockEditor } from '../hooks/useBlockEditor';
 import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
+import PuzzleBlock from './ui/PuzzleBlock';
 import { useState } from 'react';
-import type { Block } from '../types/block';
-
-// 에디터 블록 드래그 오버레이 (줌 적용된 크기로 표시)
-const EditorBlockOverlay = ({
-  blockId,
-  puzzleBlocks,
-  zoom,
-}: {
-  blockId: number;
-  puzzleBlocks: Block[];
-  zoom: number;
-}) => {
-  const block = puzzleBlocks.find((b) => b.blockId === blockId);
-  if (!block) return null;
-
-  return (
-    <div
-      className="rounded-xl p-4 shadow-xl bg-primary-color text-base-color-6 opacity-90"
-      style={{
-        width: block.w * zoom,
-        height: block.h * zoom,
-        cursor: 'grabbing',
-      }}>
-      <div className="font-semibold" style={{ fontSize: 14 * zoom }}>
-        {block.name}
-      </div>
-      <div style={{ fontSize: 12 * zoom }} className="opacity-90">
-        {block.category} · {block.duration}
-      </div>
-    </div>
-  );
-};
 
 const BlockEditor = () => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
@@ -78,9 +47,11 @@ const BlockEditor = () => {
 
       <DragOverlay dropAnimation={null}>
         {activeDrag?.type === 'blockSidebar' && <BlockItem item={activeDrag.block} />}
-        {activeDrag?.type === 'blockEditor' && (
-          <EditorBlockOverlay blockId={activeDrag.blockId} puzzleBlocks={puzzleBlocks} zoom={zoom} />
-        )}
+        {activeDrag?.type === 'blockEditor' &&
+          (() => {
+            const block = puzzleBlocks.find((b) => b.blockId === activeDrag.blockId);
+            return block ? <PuzzleBlock block={block} isOverlay zoom={zoom} /> : null;
+          })()}
       </DragOverlay>
     </DndContext>
   );
