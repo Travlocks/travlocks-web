@@ -10,6 +10,9 @@ import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
 import { mockRecommendedTemplates } from '@/feature/template/template.data';
 import { mockPopularTemplates } from '@/feature/template/template.data';
+import { Block } from '@/shared/components/Block/Block';
+import { createRectPoints } from '@/shared/components/Block/blockShape';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 
 const TestPage = () => {
   const schema = z.object({
@@ -47,6 +50,50 @@ const TestPage = () => {
 
   return (
     <>
+      <div className="w-screen h-screen">
+        <BlockEditor />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <h1>✅ Block.tsx</h1>
+
+        <div className="flex gap-6">
+          <Block
+            category="식당"
+            title="향라식당"
+            duration="2시간"
+            points={[
+              { x: 0, y: 0 },
+              { x: 160, y: 0 },
+              { x: 160, y: 160 },
+              { x: 320, y: 160 },
+              { x: 320, y: 320 },
+              { x: 0, y: 320 },
+            ]}
+            connections={[
+              { edgeIndex: 0, type: 'plug', align: 'start' },
+              { edgeIndex: 3, type: 'socket', align: 'end' },
+              { edgeIndex: 4, type: 'socket', align: 'start' },
+              { edgeIndex: 5, type: 'plug', align: 'end' },
+            ]}
+          />
+
+          <Block
+            category=""
+            title="향라식당"
+            duration="1시간"
+            color="text-positive"
+            points={createRectPoints(150, 300)}
+            connections={[
+              { edgeIndex: 0, type: 'plug', align: 'start' },
+              { edgeIndex: 1, type: 'socket', align: 'end' },
+              { edgeIndex: 2, type: 'socket', align: 'start' },
+              { edgeIndex: 3, type: 'plug', align: 'end' },
+            ]}
+          />
+        </div>
+      </div>
+
       <div className="flex flex-col gap-2">
         <h1>✅ Button.tsx</h1>
         <Button text="Vlock 쌓으러 가기" />

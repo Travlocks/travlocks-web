@@ -1,8 +1,26 @@
 import type { DragMoveEvent, DragEndEvent } from '@dnd-kit/core';
 import type { DragType } from '../types/drag';
 import { calcBoardPointFromActiveRect } from './board';
+import type { Connector, Point } from '@/shared/components/Block/blockShape';
+import { createRectPoints, getBoundingBox } from '@/shared/components/Block/blockShape';
+import { categoryColor } from '../components/side/block-styles';
+import { type CategoryType } from '../types/block';
 
-export type Candidate = { x: number; y: number; w: number; h: number };
+export type Candidate = {
+  x: number;
+  y: number;
+  points: Point[];
+  connectors: Connector[];
+  color?: string;
+};
+
+// 기본 커넥터 설정 (사각형 블록용)
+const DEFAULT_CONNECTORS: Connector[] = [
+  { type: 'plug', edgeIndex: 0, align: 'start' },
+  { type: 'socket', edgeIndex: 1, align: 'start' },
+  { type: 'socket', edgeIndex: 2, align: 'start' },
+  { type: 'plug', edgeIndex: 3, align: 'end' },
+];
 
 export function calcCandidate(params: {
   e: DragMoveEvent | DragEndEvent;
@@ -21,40 +39,44 @@ export function calcCandidate(params: {
 
   // Sidebar에서 드래그 중일 때
   if (type === 'blockSidebar') {
-    return {
-      ...calcBoardPointFromActiveRect({
-        boardEl,
-        activeRect,
-        w: defaultSize.w,
-        h: defaultSize.h,
-        zoom,
-        pad,
-        grid,
-      }),
-      w: defaultSize.w,
-      h: defaultSize.h,
-    };
+    const w = defaultSize.w;
+    const h = defaultSize.h;
+    const points = createRectPoints(w, h);
+    const { x, y } = calcBoardPointFromActiveRect({
+      boardEl,
+      activeRect,
+      w,
+      h,
+      zoom,
+      pad,
+      grid,
+    });
+
+    const category = e.active.data.current?.item?.category as CategoryType | undefined;
+    const color = category ? categoryColor[category as keyof typeof categoryColor] : undefined;
+
+    return { x, y, points, connectors: DEFAULT_CONNECTORS, color };
   }
 
   // Editor 블록 이동 중일 때
   if (type === 'blockEditor') {
-    const { w, h } = e.active.data.current || {};
-    const blockW = w ?? defaultSize.w;
-    const blockH = h ?? defaultSize.h;
+    const points = e.active.data.current?.points as Point[] | undefined;
+    const connectors = e.active.data.current?.connectors as Connector[] | undefined;
+    const color = e.active.data.current?.color as string | undefined;
+    if (!points || !connectors) return null;
 
-    return {
-      ...calcBoardPointFromActiveRect({
-        boardEl,
-        activeRect,
-        w: blockW,
-        h: blockH,
-        zoom,
-        pad,
-        grid,
-      }),
-      w: blockW,
-      h: blockH,
-    };
+    const { w, h } = getBoundingBox(points);
+    const { x, y } = calcBoardPointFromActiveRect({
+      boardEl,
+      activeRect,
+      w,
+      h,
+      zoom,
+      pad,
+      grid,
+    });
+
+    return { x, y, points, connectors, color };
   }
 
   return null;

@@ -8,12 +8,10 @@ import { commitEditorDrop, commitSidebarDrop, detachTail } from '../utils/commit
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
-const DEFAULT_BLOCK = { w: 260, h: 64 };
+const DEFAULT_BLOCK = { w: 125, h: 125 };
 const GRID = 40;
 const START_ID = 0;
 const SNAP_THRESHOLD = 67;
-const CONNECTOR_OFFSET = 0;
-const ALLOW_BOTTOM = true;
 
 interface UseBlockDragParams {
   puzzleBlocks: Block[];
@@ -72,9 +70,9 @@ export const useBlockDrag = ({
           setActiveDrag({
             type: 'blockEditor',
             blockId,
-            w: targetBlock.w,
-            h: targetBlock.h,
+            points: targetBlock.points,
             connectors: targetBlock.connectors,
+            color: targetBlock.color,
           });
 
           updateBlocksByDay((prev) => {
@@ -114,8 +112,6 @@ export const useBlockDrag = ({
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       setDockHint(buildDockHint({ candidate, decision }));
@@ -155,8 +151,6 @@ export const useBlockDrag = ({
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       if (type === 'blockSidebar') {

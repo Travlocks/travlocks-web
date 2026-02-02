@@ -1,0 +1,358 @@
+import { useMemo } from 'react';
+
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export type ConnectorType = 'plug' | 'socket';
+export type ConnectorDirection = 'top' | 'right' | 'bottom' | 'left';
+export type ConnectorAlignment = 'start' | 'center' | 'end';
+
+export interface Connector {
+  type: ConnectorType;
+  edgeIndex: number;
+  align?: ConnectorAlignment;
+}
+
+// 편의를 위해서 폴리곤을 사각형으로 표현하는 경우 사용함
+export interface DirectionalConnector {
+  type: ConnectorType;
+  direction: ConnectorDirection;
+  align?: ConnectorAlignment;
+}
+
+export type BlockConnector = Connector | DirectionalConnector;
+export type BlockConnections = BlockConnector[];
+
+export const convertToPolygonConnections = (connections: BlockConnections): Connector[] => {
+  const polygonConnections: Connector[] = [];
+  connections.forEach((c) => {
+    if ('edgeIndex' in c) {
+      polygonConnections.push(c);
+    } else {
+      let edgeIndex = -1;
+      if (c.direction === 'top') edgeIndex = 0;
+      else if (c.direction === 'right') edgeIndex = 1;
+      else if (c.direction === 'bottom') edgeIndex = 2;
+      else if (c.direction === 'left') edgeIndex = 3;
+
+      if (edgeIndex !== -1) {
+        polygonConnections.push({
+          type: c.type,
+          align: c.align,
+          edgeIndex,
+        });
+      }
+    }
+  });
+  return polygonConnections;
+};
+
+const ALIGN_MARGIN = 30;
+
+/**
+ * 폴리곤의 특정 edge에 있는 커넥터의 중심점을 계산
+ * @param points - 폴리곤 꼭짓점 배열
+ * @param connector - 커넥터 정보 (edgeIndex, align)
+ * @param tabWidth - 탭의 너비
+ * @returns 커넥터 중심점 좌표
+ */
+export const getConnectorCenter = (points: Point[], connector: Connector, tabWidth: number): Point | null => {
+  if (points.length < 3) return null;
+
+  const { edgeIndex, align = 'center' } = connector;
+  if (edgeIndex < 0 || edgeIndex >= points.length) return null;
+
+  const p1 = points[edgeIndex];
+  const p2 = points[(edgeIndex + 1) % points.length];
+
+  // edge 방향 벡터
+  const vx = p2.x - p1.x;
+  const vy = p2.y - p1.y;
+  const edgeLength = Math.sqrt(vx * vx + vy * vy);
+
+  if (edgeLength === 0) return null;
+
+  // 정규화된 방향
+  const dx = vx / edgeLength;
+  const dy = vy / edgeLength;
+
+  // 탭 시작 위치 계산 (createPolygonBlockPath와 동일한 로직)
+  let tabStartDist: number;
+  if (align === 'start') {
+    tabStartDist = ALIGN_MARGIN;
+  } else if (align === 'end') {
+    tabStartDist = edgeLength - tabWidth - ALIGN_MARGIN;
+  } else {
+    tabStartDist = (edgeLength - tabWidth) / 2;
+  }
+
+  // 탭 중심까지의 거리
+  const tabCenterDist = tabStartDist + tabWidth / 2;
+
+  return {
+    x: p1.x + dx * tabCenterDist,
+    y: p1.y + dy * tabCenterDist,
+  };
+};
+
+// points 배열에서 bounding box 크기 계산
+export const getBoundingBox = (points: Point[]): { w: number; h: number } => {
+  if (points.length === 0) return { w: 0, h: 0 };
+
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+
+  for (const p of points) {
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+
+  return { w: maxX - minX, h: maxY - minY };
+};
+
+export type EdgeDirection = 'up' | 'down' | 'left' | 'right';
+
+// 엣지의 outward normal 방향 계산 (시계방향으로 엣지를 그린다는 것을 가정함; 90도 각도 도형만 전제)
+export const getEdgeDirection = (points: Point[], edgeIndex: number): EdgeDirection | null => {
+  if (points.length < 2 || edgeIndex < 0 || edgeIndex >= points.length) return null;
+
+  const p1 = points[edgeIndex];
+  const p2 = points[(edgeIndex + 1) % points.length];
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+
+  // dx 또는 dy 중 하나만 0이 아니어야 함
+  if (dy === 0 && dx > 0) return 'up';
+  if (dx === 0 && dy > 0) return 'right';
+  if (dy === 0 && dx < 0) return 'down';
+  if (dx === 0 && dy < 0) return 'left';
+
+  console.error('getEdgeDirection은 사각형-like 도형만 지원합니다.');
+  return null;
+};
+
+// 두 방향이 서로 반대인지 확인
+export const areOppositeDirections = (dir1: EdgeDirection, dir2: EdgeDirection): boolean => {
+  return (
+    (dir1 === 'up' && dir2 === 'down') ||
+    (dir1 === 'down' && dir2 === 'up') ||
+    (dir1 === 'left' && dir2 === 'right') ||
+    (dir1 === 'right' && dir2 === 'left')
+  );
+};
+
+export const createConnectorPath = (
+  x: number,
+  y: number,
+  tabWidth: number,
+  tabHeight: number,
+  type: ConnectorType,
+  direction: ConnectorDirection,
+  inset: number = 5,
+): string => {
+  const isPlug = type === 'plug';
+
+  // Coordinate System for Connector:
+  //
+  //       nx,ny
+  //         ^
+  //         |
+  //   Start *------> dx,dy
+  //         |
+  //       (Inside Block)
+  let dx = 0,
+    dy = 0;
+  let nx = 0,
+    ny = 0;
+
+  if (direction === 'top') {
+    dx = 1;
+    ny = -1;
+  } else if (direction === 'right') {
+    dy = 1;
+    nx = 1;
+  } else if (direction === 'bottom') {
+    dx = -1;
+    ny = 1;
+  } else if (direction === 'left') {
+    dy = -1;
+    nx = -1;
+  }
+
+  const scale = isPlug ? 1 : -1;
+  const vx = nx * scale;
+  const vy = ny * scale;
+
+  const r = inset;
+  const br = inset;
+
+  /*
+   *      P2/C2--------C3/P5    (Top Edge)
+   *      /                \
+   *     /                  \
+   *   P1/C1              P6/C4
+   *   |                      |
+   *   * (Start)              * (Dest)
+   */
+
+  const p1x = x + dx * br + vx * br;
+  const p1y = y + dy * br + vy * br;
+
+  const c1x = x + dx * br;
+  const c1y = y + dy * br;
+
+  const p2x = x + dx * br + vx * (tabHeight - r);
+  const p2y = y + dy * br + vy * (tabHeight - r);
+
+  const c2x = x + dx * br + vx * tabHeight;
+  const c2y = y + dy * br + vy * tabHeight;
+
+  const p3x = x + dx * (br + r) + vx * tabHeight;
+  const p3y = y + dy * (br + r) + vy * tabHeight;
+
+  const p4x = x + dx * (tabWidth - br - r) + vx * tabHeight;
+  const p4y = y + dy * (tabWidth - br - r) + vy * tabHeight;
+
+  const c3x = x + dx * (tabWidth - br) + vx * tabHeight;
+  const c3y = y + dy * (tabWidth - br) + vy * tabHeight;
+
+  const p5x = x + dx * (tabWidth - br) + vx * (tabHeight - r);
+  const p5y = y + dy * (tabWidth - br) + vy * (tabHeight - r);
+
+  const p6x = x + dx * (tabWidth - br) + vx * br;
+  const p6y = y + dy * (tabWidth - br) + vy * br;
+
+  const c4x = x + dx * (tabWidth - br);
+  const c4y = y + dy * (tabWidth - br);
+
+  const destX = x + dx * tabWidth;
+  const destY = y + dy * tabWidth;
+
+  return ` Q ${c1x} ${c1y} ${p1x} ${p1y} L ${p2x} ${p2y} Q ${c2x} ${c2y} ${p3x} ${p3y} L ${p4x} ${p4y} Q ${c3x} ${c3y} ${p5x} ${p5y} L ${p6x} ${p6y} Q ${c4x} ${c4y} ${destX} ${destY}`;
+};
+
+export const createRectPoints = (width: number, height: number, startX: number = 0, startY: number = 0): Point[] => {
+  return [
+    { x: startX, y: startY },
+    { x: startX + width, y: startY },
+    { x: startX + width, y: startY + height },
+    { x: startX, y: startY + height },
+  ];
+};
+
+export const createPolygonBlockPath = (
+  points: Point[],
+  radius: number,
+  tabWidth: number,
+  tabHeight: number,
+  connections: Connector[],
+): string => {
+  if (points.length < 3) return '';
+
+  let path = '';
+
+  // Map connectors to edges by index
+  const connMap: Record<number, Connector> = {};
+  connections.forEach((c) => {
+    connMap[c.edgeIndex] = c;
+  });
+
+  const len = points.length;
+
+  for (let i = 0; i < len; i++) {
+    const p1 = points[i];
+    const p2 = points[(i + 1) % len];
+
+    // Vector P1->P2
+    const vx = p2.x - p1.x;
+    const vy = p2.y - p1.y;
+    const dist = Math.sqrt(vx * vx + vy * vy);
+
+    // Normalized direction
+    const dx = vx / dist;
+    const dy = vy / dist;
+
+    let direction: ConnectorDirection = 'top';
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx > 0 ? 'top' : 'bottom';
+    } else {
+      direction = dy > 0 ? 'right' : 'left';
+    }
+
+    const startX = p1.x + dx * radius;
+    const startY = p1.y + dy * radius;
+
+    const endX = p2.x - dx * radius;
+    const endY = p2.y - dy * radius;
+
+    if (i === 0) {
+      path += `M ${startX} ${startY}`;
+    } else {
+      path += ` Q ${p1.x} ${p1.y} ${startX} ${startY}`;
+    }
+
+    const conn = connMap[i];
+    if (conn) {
+      let tabStartDist = 0;
+
+      if (conn.align === 'start') tabStartDist = ALIGN_MARGIN;
+      else if (conn.align === 'end') tabStartDist = dist - tabWidth - ALIGN_MARGIN;
+      else tabStartDist = (dist - tabWidth) / 2;
+
+      const tx = p1.x + dx * tabStartDist;
+      const ty = p1.y + dy * tabStartDist;
+
+      path += ` L ${tx} ${ty}`;
+
+      path += createConnectorPath(tx, ty, tabWidth, tabHeight, conn.type, direction, radius);
+
+      path += ` L ${endX} ${endY}`;
+    } else {
+      path += ` L ${endX} ${endY}`;
+    }
+  }
+
+  path += ` Q ${points[0].x} ${points[0].y} ${points[0].x + ((points[1].x - points[0].x) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius} ${points[0].y + ((points[1].y - points[0].y) / Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)) * radius}`;
+
+  const p0 = points[0];
+  const p1 = points[1];
+  const v0x = p1.x - p0.x;
+  const v0y = p1.y - p0.y;
+  const d0 = Math.sqrt(v0x * v0x + v0y * v0y);
+  const dx0 = v0x / d0;
+  const dy0 = v0y / d0;
+  const start0x = p0.x + dx0 * radius;
+  const start0y = p0.y + dy0 * radius;
+
+  path += ` Q ${p0.x} ${p0.y} ${start0x} ${start0y} Z`;
+
+  return path;
+};
+
+export const useBlockPath = (points: Point[], connectors: Connector[]) => {
+  const RADIUS = 5;
+  const TAB_WIDTH = 42;
+  const TAB_HEIGHT = 16;
+
+  return useMemo(() => {
+    if (!points || points.length === 0) return '';
+    const normalized = normalizePoints(points);
+    return createPolygonBlockPath(normalized, RADIUS, TAB_WIDTH, TAB_HEIGHT, connectors);
+  }, [points, connectors]);
+};
+
+export const normalizePoints = (points: Point[]): Point[] => {
+  if (points.length === 0) return [];
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  return points.map((p) => ({ x: p.x - minX, y: p.y - minY }));
+};

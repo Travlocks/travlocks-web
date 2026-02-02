@@ -2,6 +2,7 @@ import type { Block, SidebarBlock } from '../types/block';
 import type { Candidate } from './boardCandidate';
 import type { SnapDecision } from './dockHint';
 import { getTailIdFromBlocks } from './path';
+import { getBoundingBox } from '@/shared/components/Block/blockShape';
 
 export function detachTail(params: { blocks: Block[]; startId: number; movingId: number }): Block[] {
   const { blocks, startId, movingId } = params;
@@ -37,6 +38,8 @@ export function commitSidebarDrop(params: {
   // 중복 금지
   if (blocks.some((b) => b.blockId === tpl.id)) return blocks;
 
+  const { w, h } = getBoundingBox(candidate.points);
+
   const newBlock: Block = {
     blockId: tpl.id,
     name: tpl.name,
@@ -45,9 +48,11 @@ export function commitSidebarDrop(params: {
     imageUrl: tpl.imageUrl,
     x: decision.x,
     y: decision.y,
-    w: candidate.w,
-    h: candidate.h,
-    connectors: { input: null, output: null },
+    w,
+    h,
+    points: candidate.points,
+    connectors: candidate.connectors,
+    color: candidate.color,
     connectedTo: null,
     connectedFrom: null,
   };
