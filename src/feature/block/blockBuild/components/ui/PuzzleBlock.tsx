@@ -1,7 +1,8 @@
 import { useDraggable } from '@dnd-kit/core';
-import type { Block } from '../../types/block';
+import type { Block as BlockData } from '../../types/block';
+import { Block } from '@/shared/components/Block/Block';
 
-export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag: boolean }) {
+export default function PuzzleBlock({ block, canDrag }: { block: BlockData; canDrag: boolean }) {
   const { setNodeRef, listeners, attributes, transform, isDragging } = useDraggable({
     id: `editor:${block.blockId}`,
     data: {
@@ -9,9 +10,9 @@ export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag:
       blockId: block.blockId,
       startX: block.x,
       startY: block.y,
-      w: block.w,
-      h: block.h,
+      points: block.points,
       connectors: block.connectors,
+      color: block.color,
     },
     disabled: !canDrag,
   });
@@ -30,17 +31,16 @@ export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag:
       style={{
         left: block.x,
         top: block.y,
-        width: block.w,
-        height: block.h,
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
       }}>
-      {/* TODO: 여기서 퍼즐 SVG 컴포넌트로 교체 */}
-      <div className="w-full h-full rounded-xl bg-primary-color text-base-color-6 p-4">
-        <div className="font-semibold">{block.name}</div>
-        <div className="text-xs opacity-90">
-          {block.category} · {block.duration}
-        </div>
-      </div>
+      <Block
+        title={block.name}
+        category={block.category}
+        duration={block.duration}
+        points={block.points}
+        connections={block.connectors}
+        color={block.color}
+      />
     </div>
   );
 }

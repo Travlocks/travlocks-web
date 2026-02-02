@@ -9,14 +9,11 @@ import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 
 // TODO: 여기서 퍼즐 시간 단위로 교체
-const DEFAULT_BLOCK = { w: 260, h: 64 };
+const DEFAULT_BLOCK = { w: 125, h: 125 };
 const GRID = 40;
 
 const START_ID = 0;
-
 const SNAP_THRESHOLD = 67;
-const CONNECTOR_OFFSET = 0;
-const ALLOW_BOTTOM = true;
 
 interface UseBlockDragParams {
   puzzleBlocks: Block[];
@@ -52,11 +49,11 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
 
       if (type === 'blockEditor') {
         const blockId = e.active.data.current?.blockId as number;
-        const w = e.active.data.current?.w as number;
-        const h = e.active.data.current?.h as number;
+        const points = e.active.data.current?.points as Block['points'];
         const connectors = e.active.data.current?.connectors as Block['connectors'];
-        if (blockId && w && h) {
-          setActiveDrag({ type: 'blockEditor', blockId, w, h, connectors });
+        const color = e.active.data.current?.color as Block['color'];
+        if (blockId && points && connectors) {
+          setActiveDrag({ type: 'blockEditor', blockId, points, connectors, color });
         }
 
         if (blockId !== null) {
@@ -97,8 +94,6 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       setDockHint(buildDockHint({ candidate, decision }));
@@ -144,8 +139,6 @@ export const useBlockDrag = ({ puzzleBlocks, currentDay, updateBlocksByDay, remo
         candidate,
         tail,
         threshold: SNAP_THRESHOLD,
-        connectorOffset: CONNECTOR_OFFSET,
-        allowBottom: ALLOW_BOTTOM,
       });
 
       // 1) Sidebar -> Board 생성
