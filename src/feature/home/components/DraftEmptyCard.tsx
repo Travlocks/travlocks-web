@@ -4,7 +4,7 @@ import PuzzleIcon from '@assets/draft/icon-draft-puzzle.svg?react';
 
 const DraftEmptyCard = () => {
   return (
-    <div className="group ax-w-[1218px] w-full h-[452px] rounded-[30px] border-base-color bg-white flex flex-col justify-center items-center gap-[28px] relative overflow-hidden">
+    <div className="group max-w-[1218px] w-full h-[452px] rounded-[30px] border-base-color bg-white flex flex-col justify-center items-center gap-[28px] relative overflow-hidden">
       <Character />
 
       <div className="flex flex-col gap-[8px] text-center">
