@@ -61,6 +61,9 @@ export function snapToTail(params: {
     if (!best || d < best.d) best = { side, d, x, y };
   }
 
-  if (!best) return { canSnap: false, side: null, x: drag.x, y: drag.y, targetId: null };
+  if (!best) {
+    return { canSnap: false, side: null, x: drag.x, y: drag.y, targetId: null };
+  }
+
   return { canSnap: true, side: best.side, x: best.x, y: best.y, targetId: tail.blockId };
 }

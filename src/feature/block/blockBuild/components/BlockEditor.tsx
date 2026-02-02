@@ -6,20 +6,56 @@ import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import { useState } from 'react';
-import { scaleDragByZoom } from '../utils/board';
+import type { Block } from '../types/block';
+
+// 에디터 블록 드래그 오버레이 (줌 적용된 크기로 표시)
+const EditorBlockOverlay = ({
+  blockId,
+  puzzleBlocks,
+  zoom,
+}: {
+  blockId: number;
+  puzzleBlocks: Block[];
+  zoom: number;
+}) => {
+  const block = puzzleBlocks.find((b) => b.blockId === blockId);
+  if (!block) return null;
+
+  return (
+    <div
+      className="rounded-xl p-4 shadow-xl bg-primary-color text-base-color-6 opacity-90"
+      style={{
+        width: block.w * zoom,
+        height: block.h * zoom,
+        cursor: 'grabbing',
+      }}>
+      <div className="font-semibold" style={{ fontSize: 14 * zoom }}>
+        {block.name}
+      </div>
+      <div style={{ fontSize: 12 * zoom }} className="opacity-90">
+        {block.category} · {block.duration}
+      </div>
+    </div>
+  );
+};
 
 const BlockEditor = () => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
+  const PAD = 2000;
+
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
     puzzleBlocks,
     currentDay,
     updateBlocksByDay: editorActions.updateBlocksByDay,
     removeById: editorActions.removeById,
+    zoom,
+    pad: PAD,
   });
 
   return (
-    <DndContext sensors={sensors} modifiers={[scaleDragByZoom(zoom)]} {...handlers}>
+    // modifier 제거: 모든 좌표 계산은 calcCandidate에서 일관되게 처리
+    <DndContext sensors={sensors} {...handlers}>
       <div className="flex h-full w-full overflow-hidden">
         {/* 사이드바 */}
         <aside className="w-[302px] h-full shrink-0 relative z-above">
@@ -42,12 +78,9 @@ const BlockEditor = () => {
 
       <DragOverlay dropAnimation={null}>
         {activeDrag?.type === 'blockSidebar' && <BlockItem item={activeDrag.block} />}
-        {/* {activeDrag?.type === 'blockEditor' && (
-          // TODO: 여기에 드래그하면서 보여지는 퍼즐 컴포넌트
-          <div
-            className="rounded-xl p-4 shadow-xl opacity-90"
-            style={{ width: activeDrag.w, height: activeDrag.h }}></div>
-        )} */}
+        {activeDrag?.type === 'blockEditor' && (
+          <EditorBlockOverlay blockId={activeDrag.blockId} puzzleBlocks={puzzleBlocks} zoom={zoom} />
+        )}
       </DragOverlay>
     </DndContext>
   );

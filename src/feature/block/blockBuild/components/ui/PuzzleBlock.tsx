@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import type { Block } from '../../types/block';
 
 export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag: boolean }) {
-  const { setNodeRef, listeners, attributes, transform, isDragging } = useDraggable({
+  const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `editor:${block.blockId}`,
     data: {
       type: 'blockEditor',
@@ -25,14 +25,15 @@ export default function PuzzleBlock({ block, canDrag }: { block: Block; canDrag:
       {...dragProps}
       className={[
         'absolute select-none cursor-grab active:cursor-grabbing',
-        isDragging ? 'z-50 opacity-80' : 'z-10',
+        // 드래그 중일 때 완전히 숨김 - DragOverlay가 대신 표시됨
+        isDragging ? 'opacity-0 pointer-events-none' : 'z-10',
       ].join(' ')}
       style={{
         left: block.x,
         top: block.y,
         width: block.w,
         height: block.h,
-        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        // transform 제거 - DragOverlay 사용
       }}>
       {/* TODO: 여기서 퍼즐 SVG 컴포넌트로 교체 */}
       <div className="w-full h-full rounded-xl bg-primary-color text-base-color-6 p-4">

@@ -43,7 +43,7 @@ export function commitSidebarDrop(params: {
     category: tpl.category,
     duration: tpl.duration,
     imageUrl: tpl.imageUrl,
-    x: decision.x, // canSnap이면 스냅 위치, 아니면 candidate 위치
+    x: decision.x,
     y: decision.y,
     w: candidate.w,
     h: candidate.h,
@@ -88,12 +88,15 @@ export function commitEditorDrop(params: {
   const moving = blocks.find((b) => b.blockId === movingId);
   if (!moving) return blocks;
 
+  const newX = decision.canSnap ? decision.x : candidate.x;
+  const newY = decision.canSnap ? decision.y : candidate.y;
+
   let next = blocks.map((b) =>
     b.blockId === movingId
       ? {
           ...b,
-          x: decision.canSnap ? decision.x : candidate.x,
-          y: decision.canSnap ? decision.y : candidate.y,
+          x: newX,
+          y: newY,
         }
       : b,
   );
