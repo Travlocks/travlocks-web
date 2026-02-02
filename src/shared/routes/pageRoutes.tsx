@@ -8,7 +8,7 @@ import TestPage from '@/pages/TestPage';
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <DefaultLayout />,
+    element: <DefaultLayout protectedRoutes />,
     children: [
       {
         index: true,
@@ -38,7 +38,7 @@ export const routes: RouteObject[] = [
     element: <DefaultLayout showNavbar={false} />,
     children: [
       {
-        element: <AuthLayout />,
+        element: <AuthLayout memberRoutes />,
         children: [
           {
             path: 'login',

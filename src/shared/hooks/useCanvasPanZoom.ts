@@ -1,6 +1,8 @@
 import { clamp } from '@/feature/home/utils/random';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
+type InitialScroll = { left: number; top: number } | ((ctx: { zoom: number }) => { left: number; top: number });
+
 type Options = {
   zoom: number;
   onZoomChange: (zoom: number) => void;
@@ -11,6 +13,8 @@ type Options = {
   enableSpacePan?: boolean;
   enableBackgroundPan?: boolean;
   panIgnoreSelector?: string; // 패닝 무시할 요소 선택자 ('data-pan-ignore')
+  initialScroll?: InitialScroll; // 초기 스크롤 위치
+  runInitialScrollOnce?: boolean;
 };
 
 export function useCanvasPanZoom(options: Options = { zoom: 1, onZoomChange: () => {} }) {
@@ -24,10 +28,18 @@ export function useCanvasPanZoom(options: Options = { zoom: 1, onZoomChange: () 
     enableSpacePan = true,
     enableBackgroundPan = true,
     panIgnoreSelector = '[data-pan-ignore]',
+    initialScroll,
+    runInitialScrollOnce = true,
   } = options;
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
+
   const zoomRef = useRef(zoom);
+  // 줌 값 참조 동기화
+  useEffect(() => {
+    zoomRef.current = zoom;
+  }, [zoom]);
+
   const panRef = useRef({
     active: false,
     startX: 0,
@@ -36,8 +48,25 @@ export function useCanvasPanZoom(options: Options = { zoom: 1, onZoomChange: () 
     startTop: 0,
     pointerId: -1,
   });
+  // 초기 스크롤 위치 초기화 여부
+  const viewInitRef = useRef(false);
 
   const pendingScrollRef = useRef<{ left: number; top: number } | null>(null);
+  // 초기 스크롤 위치 초기화 핸들러
+  useLayoutEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    if (!initialScroll) return;
+
+    if (runInitialScrollOnce && viewInitRef.current) return;
+
+    const v = typeof initialScroll === 'function' ? initialScroll({ zoom }) : initialScroll;
+
+    el.scrollLeft = v.left;
+    el.scrollTop = v.top;
+
+    viewInitRef.current = true;
+  }, [initialScroll, runInitialScrollOnce, zoom]);
 
   const [spaceDown, setSpaceDown] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
