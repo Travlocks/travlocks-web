@@ -17,7 +17,7 @@ export const DropdownStyle = {
     clsx('w-[11px] h-[7px]', 'transition-transform duration-300 ease-in-out', isOpen ? 'rotate-180' : 'rotate-0'),
 
   menu: clsx(
-    'w-full p-[14px_20px] absolute top-[calc(100% + 8px)] left-0 z-dropdown',
+    'w-full p-[20px_14px] absolute top-[calc(100% + 8px)] left-0 z-dropdown',
     'flex flex-col gap-[10px]',
     'border rounded-[20px] border-base-color bg-base-color-6',
   ),

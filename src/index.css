@@ -264,13 +264,13 @@
 
   /* 그라데이션 보더 트릭 (배경이 단색일 때만 사용 가능) */
   .border-gradient-focus {
-    border: 1px solid var(--color-base-color-6);
+    border: 1px solid var(--color-base-color);
     transition: all 0.3s ease;
   }
 
   .border-gradient-focus:focus {
     border-color: transparent;
-    background-image: linear-gradient(var(--color-base-color-6), var(--color-base-color-6)), var(--gradient-hover);
+    background-image: linear-gradient(#ffffff, #ffffff), var(--gradient-hover);
     background-origin: border-box;
     background-clip: padding-box, border-box;
     outline: none;
