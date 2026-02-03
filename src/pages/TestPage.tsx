@@ -15,6 +15,7 @@ import type { FilterState } from '@/feature/search/types/searchTemplate.types';
 import { useState } from 'react';
 import SortDropDown from '@/feature/search/component/SortDropDown';
 import SearchBar from '@/feature/search/component/SearchBar';
+import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -212,6 +213,11 @@ const TestPage = () => {
       <div>
         <h1>✅ SearchBar.tsx</h1>
         <SearchBar onSearch={(keyword) => console.log(keyword)} />
+      </div>
+
+      <div>
+        <h1>✅ PageNavigation.tsx</h1>
+        <PageNavigation currentPage={1} totalPages={10} onPageChange={(page) => console.log(page)} />
       </div>
     </>
   );
