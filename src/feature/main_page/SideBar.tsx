@@ -54,16 +54,11 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
         </div>
 
         {/* 프로필 카드 */}
-        <div className="flex gap-2.5 p-4.5 border border-base-color rounded-[5px] bg-base-color-5">
-          <div className="w-15 h-15 rounded-full overflow-hidden">
+        <div className="flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5">
+          <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img src={ProfileImageUrl} alt="profile" className="w-full h-full object-cover" />
           </div>
-          <div className="flex flex-col gap-1 justify-center">
-            <span className="b5 text-base-color-0">@먹잘알</span>
-            <span className="b6 text-base-color-1 leading-tight">
-              부산의 다양한 놀거리, 먹을거리, 즐길거리에 대해 올리고 있어요~
-            </span>
-          </div>
+          <span className="h9 text-base-color-0">@먹잘알</span>
         </div>
 
         {/* 통계 카드 */}
