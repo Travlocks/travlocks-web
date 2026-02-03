@@ -17,6 +17,7 @@ import SearchFilter from '@/feature/search/component/SearchFilter/SearchFilter';
 import type { FilterState } from '@/feature/search/types/searchTemplate.types';
 import { useState } from 'react';
 import SortDropDown from '@/feature/search/component/SortDropDown';
+import SearchBar from '@/feature/search/component/SearchBar';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -205,6 +206,11 @@ const TestPage = () => {
       <div>
         <h1>✅ SortDropDown.tsx</h1>
         <SortDropDown value="rating" onChange={(value) => console.log(value)} />
+      </div>
+
+      <div>
+        <h1>✅ SearchBar.tsx</h1>
+        <SearchBar onSearch={(keyword) => console.log(keyword)} />
       </div>
     </>
   );
