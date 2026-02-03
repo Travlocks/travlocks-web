@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import BlockTooltip from '../ui/BlockTooltip';
 
 export type TabType = '인기' | '카테고리' | '생성';
 
@@ -26,9 +25,6 @@ const BlockTabs = ({ activeTab, onTabChange }: Props) => {
               )}>
               {tab}
             </button>
-
-            {/* 일단 "생성" 탭에만 툴팁 표시 (Hover) */}
-            {tab === '생성' && <BlockTooltip textKey="생성" className="group-hover:opacity-100 opacity-0" />}
           </div>
         ))}
       </div>
