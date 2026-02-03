@@ -1,4 +1,4 @@
-import LocationIcon from '@assets/icon-location.svg?react';
+import PinIcon from '@assets/icon-pin.svg?react';
 import ProfileImageUrl from '@assets/GNB/mask-group.svg?url';
 import StarIcon from '@assets/icon-star.svg?react';
 import TimeIcon from '@assets/icon-time.svg?react';
@@ -46,7 +46,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
           <span className="h8 text-primary-color">템플릿 이름</span>
           <h1 className="h2 text-base-color-0">부산 푸드투어</h1>
           <div className="flex items-center gap-2 text-base-color-2 b3">
-            <LocationIcon />
+            <PinIcon />
             <span>부산</span>
             <span>·</span>
             <span>2025.12.23 ~ 2025.12.24</span>
