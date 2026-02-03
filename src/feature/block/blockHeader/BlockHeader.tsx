@@ -32,7 +32,7 @@ const BlockHeader = () => {
   const [selectedId, setSelectedId] = useState(1);
 
   return (
-    <div className="border-b border-base-color py-[21px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
+    <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
       <section className="relative flex gap-[20px] items-center">
         <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
 
