@@ -10,12 +10,15 @@ import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
 import { mockRecommendedTemplates } from '@/feature/template/template.data';
 import { mockPopularTemplates } from '@/feature/template/template.data';
-import SearchFilter from '@/feature/search/component/SearchFilter';
+import SearchFilter from '@/feature/search/component/SearchFilter/SearchFilter';
 import type { FilterState } from '@/feature/search/types/searchTemplate.types';
 import { useState } from 'react';
 import SortDropDown from '@/feature/search/component/SortDropDown';
 import SearchBar from '@/feature/search/component/SearchBar';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import { Block } from '@/shared/components/Block/Block';
+import { createRectPoints } from '@/shared/components/Block/blockShape';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
