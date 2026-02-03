@@ -42,7 +42,7 @@ const BlockHeader = () => {
               key={button.id}
               onClick={() => setSelectedId(button.id)}
               className={clsx(
-                'py-[4px] px-[15px] h8 text-[14px] cursor-pointer rounded-[5px]',
+                'py-[4px] px-[15px] h8 text-[14px] cursor-pointer rounded-[5px] transition-all',
                 selectedId === button.id ? 'bg-white text-primary-color' : 'bg-base-color-4 text-base-color-3',
               )}>
               {button.text}
