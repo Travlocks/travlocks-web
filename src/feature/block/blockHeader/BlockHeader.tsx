@@ -2,6 +2,7 @@ import SaveIcon from '@assets/block/icon-save.svg?react';
 import ShareIcon from '@assets/block/icon-share.svg?react';
 import clsx from 'clsx';
 import { useState } from 'react';
+import BlockTooltip from '../blockBuild/components/ui/BlockTooltip';
 
 const VISIBILITY = [
   {
@@ -31,9 +32,9 @@ const BlockHeader = () => {
   const [selectedId, setSelectedId] = useState(1);
 
   return (
-    <div className="border-b border-base-color py-[21px] pl-[23px] pr-[32px] flex justify-between items-center">
-      <section className="flex gap-[20px] items-center">
-        <p className="py-[4px] px-[10px] h6">1205 제주여행</p>
+    <div className="border-b border-base-color py-[21px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
+      <section className="relative flex gap-[20px] items-center">
+        <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
 
         <div className="px-[6px] py-[6px] flex gap-[6px] items-center rounded-[5px] bg-base-color-4">
           {VISIBILITY.map((button) => (
@@ -48,6 +49,8 @@ const BlockHeader = () => {
             </button>
           ))}
         </div>
+
+        <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" />
       </section>
 
       <section className="flex gap-[25px]">
