@@ -13,6 +13,7 @@ import { mockPopularTemplates } from '@/feature/template/template.data';
 import SearchFilter from '@/feature/search/component/SearchFilter';
 import type { FilterState } from '@/feature/search/types/searchTemplate.types';
 import { useState } from 'react';
+import SortDropDown from '@/feature/search/component/SortDropDown';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -184,6 +185,9 @@ const TestPage = () => {
       <div>
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
         <TemplateSwiper cards={mockPopularTemplates} />
+      </div>
+
+      <div>
         <h1>✅ SearchFilter.tsx</h1>
         <SearchFilter
           filters={filters}
@@ -197,6 +201,11 @@ const TestPage = () => {
             })
           }
         />
+      </div>
+
+      <div>
+        <h1>✅ SortDropDown.tsx</h1>
+        <SortDropDown value="rating" onChange={(value) => console.log(value)} />
       </div>
     </>
   );
