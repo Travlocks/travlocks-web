@@ -45,7 +45,7 @@ const SearchResultCards = ({
   // 로딩 중
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
         {Array.from({ length: 9 }).map((_, index) => (
           <TemplateCardSkeleton key={index} />
         ))}
@@ -65,9 +65,9 @@ const SearchResultCards = ({
 
   // 정상: 카드 리스트 + 페이지네이션
   return (
-    <div>
+    <div className="flex flex-col gap-[80px]">
       {/* 템플릿 카드 그리드 (3x3) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
         {data.templates.map((template) => (
           <TemplateCard key={template.templateId} template={template} onClick={onTemplateClick} />
         ))}
