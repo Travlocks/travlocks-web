@@ -9,9 +9,10 @@ interface FilterSectionProps<T extends number | string> {
   items: Array<{ id: T; label: string }>;
   selectedItems: T[];
   isOpen: boolean;
-  hasTwoColumns: boolean;
+  hasTwoColumns?: boolean;
   onToggle: () => void;
   onItemChange: (id: T, checked: boolean) => void;
+  isLast?: boolean;
 }
 
 const FilterSection = <T extends number | string>({
@@ -19,9 +20,10 @@ const FilterSection = <T extends number | string>({
   items,
   selectedItems,
   isOpen,
-  hasTwoColumns,
+  hasTwoColumns = false,
   onToggle,
   onItemChange,
+  isLast = false,
 }: FilterSectionProps<T>) => {
   return (
     <Fragment>
@@ -62,9 +64,14 @@ const FilterSection = <T extends number | string>({
       </div>
 
       {/* 구분선 */}
-      <div
-        className={clsx(SearchFilterStyle.line, isOpen ? SearchFilterStyle.lineVisible : SearchFilterStyle.lineHidden)}
-      />
+      {!isLast && (
+        <div
+          className={clsx(
+            SearchFilterStyle.line,
+            isOpen ? SearchFilterStyle.lineVisible : SearchFilterStyle.lineHidden,
+          )}
+        />
+      )}
     </Fragment>
   );
 };
