@@ -36,9 +36,9 @@ const DraftCard = ({ title, region, progressRate, updatedAt }: DraftCardProps) =
         </div>
 
         {/* 진행선 */}
-        <div className="group h-[10px] rounded-full bg-base-color relative">
+        <div className="group h-[10px] rounded-full bg-base-color relative overflow-hidden">
           <div
-            className="absolute bg-primary-color inset-0 rounded-full group-hover:animate-[fadeIn_1.2s_ease-in-out]"
+            className="absolute bg-primary-color inset-0 rounded-full group-hover:animate-progressFill origin-left"
             style={{ width: `${progressRate}%` }}></div>
         </div>
       </div>
