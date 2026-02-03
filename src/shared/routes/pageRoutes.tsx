@@ -31,7 +31,6 @@ export const routes: RouteObject[] = [
         path: 'mypage',
         element: <lazyRoutes.MyPage />,
       },
-      { path: 'template', element: <lazyRoutes.TemplatePage /> },
     ],
   },
   {
@@ -73,6 +72,10 @@ export const routes: RouteObject[] = [
       {
         index: true,
         element: <TestPage />,
+      },
+      {
+        path: 'template',
+        element: <lazyRoutes.TemplatePage />,
       },
     ],
   },
