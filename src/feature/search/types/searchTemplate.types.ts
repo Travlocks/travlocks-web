@@ -16,8 +16,8 @@ export const SORT_OPTIONS: Record<SortOption, string> = {
 
 // 템플릿 탐색 API 요청 파라미터 (수정 가능성 높음)
 export interface SearchTemplateParams {
-  keywords?: string;
-  destinationCity?: number[];
+  keyword?: string;
+  region?: number[];
   trip?: {
     days: number;
     nights: number;
@@ -39,13 +39,13 @@ export interface FilterState {
 
 // 필터 태그 타입
 export interface FilterTag {
-  type: 'region' | 'tripDuration' | 'travelThmem' | 'transportType';
+  type: 'region' | 'tripDuration' | 'travelTheme' | 'transportType';
   id: number;
   label: string;
 }
 
 // 템플릿 검색 API 응답 타입 (수정 가능성 높음)
-export interface TemplateSearchResponseDTO {
+export interface SearchTemplateResponseDTO {
   templates: Template[];
   pagination: {
     currentPage: number;

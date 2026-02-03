@@ -8,14 +8,23 @@ import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
-import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
+import { mockRecommendedTemplates } from '@/feature/template/template.data';
+import { mockPopularTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
-import Footer from '@/shared/components/Footer/Footer';
-import MyPage from './MyPage';
-import SearchFilter from '@/feature/search/component/SearchFilter';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import SearchFilter from '@/feature/search/component/SearchFilter/SearchFilter';
+import type { FilterState } from '@/feature/search/types/searchTemplate.types';
+import { useState } from 'react';
 
 const TestPage = () => {
+  const [filters, setFilters] = useState<FilterState>({
+    regions: [],
+    tripDurations: [],
+    travelThemes: [],
+    transportTypes: [],
+  });
+
   const schema = z.object({
     email: z.string().email({ message: '올바르지 않은 이메일' }),
     email2: z.string().email({ message: '가입되지 않은 이메일 주소입니다' }),
@@ -51,10 +60,6 @@ const TestPage = () => {
 
   return (
     <>
-      <div>
-        <MyPage />
-      </div>
-
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>
 
@@ -179,10 +184,19 @@ const TestPage = () => {
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
         <TemplateSwiper cards={mockPopularTemplates} />
         <h1>✅ SearchFilter.tsx</h1>
-        <SearchFilter onChange={(value) => console.log(value)} />
+        <SearchFilter
+          filters={filters}
+          onFilterChange={setFilters}
+          onReset={() =>
+            setFilters({
+              regions: [],
+              tripDurations: [],
+              travelThemes: [],
+              transportTypes: [],
+            })
+          }
+        />
       </div>
-
-      <Footer />
     </>
   );
 };
