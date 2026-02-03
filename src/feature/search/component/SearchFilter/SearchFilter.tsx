@@ -145,7 +145,6 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
           isOpen={openSections.duration}
           onToggle={() => handleSectionToggle('duration')}
           onItemChange={handleTripDurationChange}
-          hasTwoColumns={false}
         />
       </div>
 
@@ -157,7 +156,6 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
           isOpen={openSections.theme}
           onToggle={() => handleSectionToggle('theme')}
           onItemChange={handleTravelThemeChange}
-          hasTwoColumns={false}
         />
       </div>
 
@@ -169,7 +167,7 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
           isOpen={openSections.transport}
           onToggle={() => handleSectionToggle('transport')}
           onItemChange={handleTransportTypeChange}
-          hasTwoColumns={false}
+          isLast={true}
         />
       </div>
     </div>
