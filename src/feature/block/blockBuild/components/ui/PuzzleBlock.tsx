@@ -28,12 +28,7 @@ export default function PuzzleBlock({ block, canDrag = false, isOverlay = false,
   // 오버레이 모드
   if (isOverlay) {
     return (
-      <div
-        className="select-none cursor-grabbing"
-        style={{
-          width: block.w * zoom,
-          height: block.h * zoom,
-        }}>
+      <div className="select-none cursor-grabbing">
         <Block
           title={block.name}
           category={block.category}
