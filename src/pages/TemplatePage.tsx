@@ -2,8 +2,8 @@ import TemplateContent from '@/feature/search/TemplateContent';
 
 const TemplatePage = () => {
   return (
-    <div className="px-[120px]">
-      <div className="w-full max-w-[1440px] mx-auto">
+    <div>
+      <div className="w-full max-w-[1920px] mx-auto">
         <TemplateContent />
       </div>
     </div>
