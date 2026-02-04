@@ -79,56 +79,45 @@ function create1HourShape(): BlockShapeConfig {
 }
 
 /**
- * 2-3시간 블록: 140x250 세로 블록 (Image #3 - 2시간)
- * 단순 사각형 - 이미지 기준 세로로 긴 직사각형
+ * 2-3시간 공통 블록: 140x250 세로 블록
+ */
+function createVerticalRectangleShape(): BlockShapeConfig {
+  const w = 140;
+  const h = 250;
+
+  const points: Point[] = [
+    { x: 0, y: 0 },
+    { x: w, y: 0 },
+    { x: w, y: h },
+    { x: 0, y: h },
+  ];
+
+  const connectors: Connector[] = [
+    { type: 'plug', edgeIndex: 0, align: 'start' },
+    { type: 'socket', edgeIndex: 1, align: 'end' },
+    { type: 'socket', edgeIndex: 2, align: 'start' },
+    { type: 'plug', edgeIndex: 3, align: 'end' },
+  ];
+
+  return { w, h, points, connectors };
+}
+
+/**
+ * 2시간 블록: 140x250 세로 블록
  */
 function create2HourShape(): BlockShapeConfig {
-  const w = 140;
-  const h = 250;
-
-  const points: Point[] = [
-    { x: 0, y: 0 },
-    { x: w, y: 0 },
-    { x: w, y: h },
-    { x: 0, y: h },
-  ];
-
-  const connectors: Connector[] = [
-    { type: 'plug', edgeIndex: 0, align: 'start' },
-    { type: 'socket', edgeIndex: 1, align: 'end' },
-    { type: 'socket', edgeIndex: 2, align: 'start' },
-    { type: 'plug', edgeIndex: 3, align: 'end' },
-  ];
-
-  return { w, h, points, connectors };
+  return createVerticalRectangleShape();
 }
 
 /**
- * 3시간 블록: 140x250 (2-3시간과 동일한 모양)
+ * 3시간 블록: 140x250 세로 블록
  */
 function create3HourShape(): BlockShapeConfig {
-  const w = 140;
-  const h = 250;
-
-  const points: Point[] = [
-    { x: 0, y: 0 },
-    { x: w, y: 0 },
-    { x: w, y: h },
-    { x: 0, y: h },
-  ];
-
-  const connectors: Connector[] = [
-    { type: 'plug', edgeIndex: 0, align: 'start' },
-    { type: 'socket', edgeIndex: 1, align: 'end' },
-    { type: 'socket', edgeIndex: 2, align: 'start' },
-    { type: 'plug', edgeIndex: 3, align: 'end' },
-  ];
-
-  return { w, h, points, connectors };
+  return createVerticalRectangleShape();
 }
 
 /**
- * 4시간 이상 블록: 265x250 L자형 (Image #2 - 4시간)
+ * 4시간 이상 블록: 265x250 L자형 (4시간)
  * L자 형태: 상단 왼쪽 사각형 + 하단 오른쪽으로 확장
  */
 function create4PlusHourShape(): BlockShapeConfig {
@@ -155,7 +144,7 @@ function create4PlusHourShape(): BlockShapeConfig {
 }
 
 /**
- * 숙소 블록: 390x250 매우 큰 L자형 (Image #1 - 숙소)
+ * 숙소 블록: 390x250 매우 큰 L자형 (숙소)
  * L자 형태: 상단 왼쪽 사각형 + 하단 오른쪽으로 확장 + 하단 왼쪽 모서리
  */
 function createAccommodationShape(): BlockShapeConfig {
