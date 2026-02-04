@@ -1,6 +1,7 @@
 import { templateCardStyles } from './styles/TemplateCard.styles';
 import clsx from 'clsx';
 import RemixIcon from '@/shared/assets/template/icon-remix.svg?react';
+import SingleButton from '@/shared/components/Button/SingleButton';
 
 const TemplateCardSkeleton = () => {
   return (
@@ -24,12 +25,16 @@ const TemplateCardSkeleton = () => {
               <div className="bg-gradient-color-skeleton w-[170px] h-[21px] rounded-[6px]" />
             </div>
 
-            <button className={templateCardStyles.button(false)}>
-              <span className={templateCardStyles.buttonIcon}>
-                <RemixIcon />
-              </span>
-              리믹스 하기
-            </button>
+            <SingleButton
+              text="리믹스 하기"
+              width={387}
+              height={45}
+              textSize={18}
+              variant="white"
+              className={templateCardStyles.button(false)}
+              icon={<RemixIcon className={templateCardStyles.buttonIcon} />}
+              iconPosition="left"
+            />
           </div>
         </div>
       </div>
