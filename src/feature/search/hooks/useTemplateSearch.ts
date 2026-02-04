@@ -6,6 +6,7 @@ import type {
   SearchTemplateResponseDTO,
 } from '@/feature/search/types/searchTemplate.types';
 import { TRANSPORT_TYPE_MAP } from '@/shared/constants/transportType';
+import { TRIP_DURATION_MAP } from '@/shared/constants/tripDuration';
 
 /**
  * 템플릿 탐색 API를 호출하는 함수
@@ -67,9 +68,10 @@ function buildParams(keyword: string, filters: FilterState, sort: SortOption, pa
 
   // 여행기간 (첫 번째 선택값 사용)
   if (filters.tripDurations.length > 0) {
+    const tripDuration = TRIP_DURATION_MAP[filters.tripDurations[0]];
     params.trip = {
-      days: filters.tripDurations[0],
-      nights: filters.tripDurations[0] - 1,
+      days: tripDuration.trip.days,
+      nights: tripDuration.trip.nights,
     };
   }
 
