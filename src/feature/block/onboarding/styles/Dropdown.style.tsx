@@ -58,6 +58,7 @@ export const DropdownStyles = {
     'flex flex-row gap-[8px] justify-center items-center',
     'rounded-[20px] bg-primary-color',
     'text-base-color-6 h9',
+    'whitespace-nowrap flex-shrink-0',
     'z-sticky',
   ),
 };

@@ -322,4 +322,17 @@
     background-clip: padding-box, border-box;
     outline: none;
   }
+
+  /* 스크롤바 숨기기 (모든 브라우저 지원) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+  }
 }

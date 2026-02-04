@@ -129,9 +129,7 @@ const TemplateContent = () => {
 
         {/* 필터 태그, 정렬 옵션 영역 */}
         <section className="flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center gap-[24px]">
-            <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
-          </div>
+          <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
           <div className="flex justify-end">
             <SortDropDown value={sort} onChange={handleSortChange} />
           </div>
