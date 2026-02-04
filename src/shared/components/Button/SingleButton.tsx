@@ -41,6 +41,7 @@ export interface SingleButtonProps {
   className?: string;
   icon?: ReactNode;
   iconPosition?: 'left' | 'right';
+  iconSize?: string;
   gap?: string;
 }
 
@@ -69,6 +70,7 @@ const SingleButton = ({
   className,
   icon,
   iconPosition = 'left',
+  iconSize = 'w-[16px] h-[16px]',
   gap = 'gap-[10px]',
 }: SingleButtonProps) => {
   const backgroundClass = bg ?? VARIANT_BG[variant];
@@ -88,9 +90,9 @@ const SingleButton = ({
         className,
       )}
       style={{ maxWidth: width, height }}>
-      {icon && iconPosition === 'left' && <span className="flex items-center">{icon}</span>}
+      {icon && iconPosition === 'left' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
       {text}
-      {icon && iconPosition === 'right' && <span className="flex items-center">{icon}</span>}
+      {icon && iconPosition === 'right' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
     </button>
   );
 };
