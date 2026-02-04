@@ -2,6 +2,13 @@ import SingleButton from '@/shared/components/Button/SingleButton';
 import ArrowRightIcon from '@/shared/assets/icon-arrow-right-with-bar.svg?react';
 import MascotSadIcon from '@/shared/assets/mascot-sad.svg?react';
 
+/**
+ * 검색 결과가 없을 때 표시되는 컴포넌트
+ *
+ * @remarks
+ * - 선택한 필터 조건에 맞는 템플릿이 없을 때 표시됩니다.
+ * - 마스코트 아이콘과 함께 안내 메시지를 보여줍니다.
+ */
 const EmptyResult = () => {
   return (
     <>
@@ -15,6 +22,7 @@ const EmptyResult = () => {
           <p className="b3 text-base-color-2">다른 조건으로 검색해보세요.</p>
         </div>
 
+        {/* CTA 버튼 클릭 시 이동 경로 확인 후 연결 예정 */}
         <SingleButton
           text="여행 조립하러 떠나기"
           textSize={20}

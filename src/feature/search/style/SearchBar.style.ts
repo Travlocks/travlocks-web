@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 export const SearchBarStyles = {
-  container: 'relative  max-w-[1130px] flex items-center justify-center',
+  container: 'relative w-full max-w-[1130px] flex items-center justify-center',
 
   searchIconWrapper: 'w-[30px] absolute left-[40px] top-1/2 -translate-y-1/2 pointer-events-none',
 

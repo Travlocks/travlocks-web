@@ -7,12 +7,26 @@ import ErrorResult from '@/feature/search/component/ResultSection/ErrorResult';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
 import type { SearchTemplateResponseDTO } from '@/feature/search/types/searchTemplate.types';
 
+/**
+ * 검색 결과 카드 컴포넌트의 Props
+ */
 interface SearchResultCardsProps {
+  /** API 로딩 중 여부 */
   isLoading: boolean;
+
+  /** API 에러 발생 여부 */
   isError: boolean;
+
+  /** API 응답 데이터 */
   data?: SearchTemplateResponseDTO;
+
+  /** 현재 페이지 번호 */
   currentPage: number;
+
+  /** 페이지 변경 시 호출되는 콜백 함수 */
   onPageChange: (page: number) => void;
+
+  /** 템플릿 카드 클릭 시 호출되는 콜백 함수 */
   onTemplateClick?: (templateId: number) => void;
 }
 
