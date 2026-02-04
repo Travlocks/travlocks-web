@@ -10,7 +10,7 @@ import Profile from '@assets/Navbar/profile-happy.svg?react';
 const MENU = [
   { id: 1, label: '홈', to: '/' },
   { id: 2, label: '템플릿 탐색', to: '/template' },
-  { id: 3, label: '블록 쌓기', to: '/block' },
+  { id: 3, label: '블록 쌓기', to: '/block/onboarding' },
 ];
 
 const Navbar = () => {
