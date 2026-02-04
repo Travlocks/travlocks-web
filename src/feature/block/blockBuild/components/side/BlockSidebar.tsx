@@ -3,6 +3,7 @@ import BlockCreateButton from '../button/BlockCreateButton';
 import BlockTabs, { type TabType } from './BlockTabs';
 import BlockItem from './BlockItem';
 import BlockSearchInput from './BlockSearchInput';
+import BlockCategoryButtons from './BlockCategoryButtons';
 import { useBlockSearch } from '../../hooks/useBlockSearch';
 import type { SidebarBlock } from '../../types/block';
 interface BlockSidebarProps {
@@ -28,7 +29,16 @@ const BlockSidebar = ({ items }: BlockSidebarProps) => {
           </div>
         );
       case '카테고리':
-        return <div>카테고리</div>;
+        return (
+          <>
+            <BlockCategoryButtons />
+            <div className="flex flex-col gap-3">
+              {items.map((item) => (
+                <BlockItem key={item.id} item={item} />
+              ))}
+            </div>
+          </>
+        );
       case '생성':
         return (
           <div className="flex flex-col gap-3">
