@@ -8,10 +8,8 @@ interface FilterTagsProps {
 }
 
 const FilterTags = ({ tags, onRemove }: FilterTagsProps) => {
-  if (tags.length === 0) return null;
-
   return (
-    <div>
+    <div className="flex-1 flex flex-row items-center gap-[24px] overflow-x-auto flex-nowrap scrollbar-hide">
       {tags.map((tag) => (
         <div key={tag.id} className={TagStyle.tag}>
           <span>{tag.label}</span>
