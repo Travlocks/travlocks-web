@@ -110,48 +110,59 @@ const TemplateContent = () => {
   }, []);
 
   return (
-    <div className="relative">
-      <div className="w-full flex flex-col gap-[40px]">
-        {/* 검색 영역 */}
-        <section className="flex justify-center items-center">
-          <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요? " />
-        </section>
+    <div className="w-full flex flex-col gap-[40px]">
+      {/* 검색 영역 */}
+      <section className="flex justify-center items-center">
+        <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요? " />
+      </section>
 
-        {/* 전체보기 버튼 */}
-        <section className="flex justify-start bg-base-color-6 p-[10px] pb-[11px]">
+      {/* 전체보기 버튼 */}
+      <section className="w-full flex justify-center bg-base-color-6 p-[10px] pb-[11px]">
+        <div className="w-[1130px]">
           <button
             type="button"
             onClick={handleResetAll}
             className="h4 text-base-color-2 underline decoration-[8px] underline-offset-[10px] cursor-pointer">
             전체 보기
           </button>
-        </section>
+        </div>
+      </section>
 
-        {/* 필터 태그, 정렬 옵션 영역 */}
-        <section className="flex flex-row items-center justify-between">
-          <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
-          <div className="flex justify-end">
-            <SortDropDown value={sort} onChange={handleSortChange} />
-          </div>
-        </section>
+      {/* 메인 레이아웃: 3-column (왼쪽 사이드 + 메인 컨텐츠 + 오른쪽 사이드) */}
+      <div className="flex justify-center px-[40px]">
+        <div className="flex gap-[30px] w-full max-w-[1860px]">
+          {/* 왼쪽 사이드 패널: SearchFilter (sticky) */}
+          <aside className="w-[300px] flex-shrink-0 sticky top-[40px] h-fit">
+            <SearchFilter filters={filters} onFilterChange={handleFilterChange} onReset={handleFilterReset} />
+          </aside>
 
-        {/* 검색 결과 */}
-        <section>
-          <SearchResultCards
-            isLoading={isLoading}
-            isError={isError}
-            data={data}
-            currentPage={page}
-            onPageChange={handlePageChange}
-            onTemplateClick={handleTemplateClick}
-          />
-        </section>
+          {/* 메인 컨텐츠 영역 (1200px 고정) */}
+          <main className="flex-1 max-w-[1200px] flex flex-col gap-[40px]">
+            {/* 필터 태그, 정렬 옵션 영역 */}
+            <section className="flex flex-row items-center justify-between">
+              <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
+              <div className="flex justify-end">
+                <SortDropDown value={sort} onChange={handleSortChange} />
+              </div>
+            </section>
+
+            {/* 검색 결과 */}
+            <section>
+              <SearchResultCards
+                isLoading={isLoading}
+                isError={isError}
+                data={data}
+                currentPage={page}
+                onPageChange={handlePageChange}
+                onTemplateClick={handleTemplateClick}
+              />
+            </section>
+          </main>
+
+          {/* 오른쪽 사이드 패널 (나중에 사용) */}
+          <aside className="w-[300px] flex-shrink-0">{/* 추후 컨텐츠 추가 예정 */}</aside>
+        </div>
       </div>
-
-      {/* 검색 필터 */}
-      <aside className="absolute top-[500px] left-[calc(100% - 600px)] z-dropdown">
-        <SearchFilter filters={filters} onFilterChange={handleFilterChange} onReset={handleFilterReset} />
-      </aside>
     </div>
   );
 };
