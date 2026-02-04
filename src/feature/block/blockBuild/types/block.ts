@@ -22,6 +22,8 @@ export type Block = {
   // 보드 위치
   x: number;
   y: number;
+  w: number;
+  h: number;
   // 블록 모양 (폴리곤 포인트)
   points: Point[];
   // 커넥터 설정

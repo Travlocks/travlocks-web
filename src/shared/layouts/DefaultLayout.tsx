@@ -34,6 +34,11 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   const AUTH_PAGES = ['/login', '/signup', '/password'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
+  // 다른 url로 들어오면 스플래시
+  if (showSplash && !isHomeRoute && !isAuthPage) {
+    return <Navigate to="/" replace />;
+  }
+
   // 모든 사용자는 로그인 후에 서비스 이용 가능
   if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
