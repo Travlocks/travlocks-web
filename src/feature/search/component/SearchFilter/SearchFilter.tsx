@@ -7,12 +7,31 @@ import { TRAVEL_THEME, type TravleThemeId } from '@/shared/constants/travelTheme
 import { TRANSPORT_TYPE, type TransportTypeId } from '@/shared/constants/transportType';
 import type { FilterState } from '../../types/searchTemplate.types';
 
+/**
+ * 검색 필터 컴포넌트의 Props
+ */
 interface SearchFilterProps {
+  /** 현재 필터 상태 */
   filters: FilterState;
+
+  /** 필터 변경 시 호출되는 콜백 함수 */
   onFilterChange: (filters: FilterState) => void;
+
+  /** 필터 초기화 시 호출되는 콜백 함수 */
   onReset: () => void;
 }
 
+/**
+ * 템플릿 탐색 페이지의 검색 필터 컴포넌트
+ *
+ * @remarks
+ * - 여행지, 여행 기간, 여행 테마, 이동 수단의 4가지 필터 섹션을 제공합니다.
+ * - 각 섹션은 토글하여 펼치거나 접을 수 있습니다.
+ * - 초기화 버튼으로 모든 필터를 한 번에 제거할 수 있습니다.
+ * - 다중 선택이 가능하며, 선택 상태는 체크박스로 표시됩니다.
+ *
+ * @param props - SearchFilterProps
+ */
 const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) => {
   const [openSections, setOpenSections] = useState({
     region: true,

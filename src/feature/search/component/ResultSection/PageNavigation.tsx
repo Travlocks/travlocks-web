@@ -2,9 +2,17 @@ import ArrowLeftIcon from '@/shared/assets/icon-arrow-left.svg?react';
 import ArrowRightIcon from '@/shared/assets/icon-arrow-right.svg?react';
 import { pageNavigationStyle } from '@/feature/search/style/PageNavigation.style';
 
+/**
+ * 페이지네이션 컴포넌트의 Props
+ */
 interface PageNavigationProps {
+  /** 현재 페이지 번호 (1부터 시작) */
   currentPage: number;
+
+  /** 전체 페이지 수 */
   totalPages: number;
+
+  /** 페이지 변경 시 호출되는 콜백 함수 */
   onPageChange: (page: number) => void;
 }
 
