@@ -10,15 +10,15 @@ import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
 import { mockRecommendedTemplates } from '@/feature/template/template.data';
 import { mockPopularTemplates } from '@/feature/template/template.data';
-import { Block } from '@/shared/components/Block/Block';
-import { createRectPoints } from '@/shared/components/Block/blockShape';
-import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 import SearchFilter from '@/feature/search/component/SearchFilter/SearchFilter';
 import type { FilterState } from '@/feature/search/types/searchTemplate.types';
 import { useState } from 'react';
 import SortDropDown from '@/feature/search/component/SortDropDown';
 import SearchBar from '@/feature/search/component/SearchBar';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
+import { Block } from '@/shared/components/Block/Block';
+import { createRectPoints } from '@/shared/components/Block/blockShape';
+import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -67,26 +67,6 @@ const TestPage = () => {
         <h1>✅ Block.tsx</h1>
 
         <div className="flex gap-6">
-          <Block
-            category="식당"
-            title="향라식당"
-            duration="2시간"
-            points={[
-              { x: 0, y: 0 },
-              { x: 160, y: 0 },
-              { x: 160, y: 160 },
-              { x: 320, y: 160 },
-              { x: 320, y: 320 },
-              { x: 0, y: 320 },
-            ]}
-            connections={[
-              { edgeIndex: 0, type: 'plug', align: 'start' },
-              { edgeIndex: 3, type: 'socket', align: 'end' },
-              { edgeIndex: 4, type: 'socket', align: 'start' },
-              { edgeIndex: 5, type: 'plug', align: 'end' },
-            ]}
-          />
-
           <Block
             category=""
             title="향라식당"
@@ -217,6 +197,11 @@ const TestPage = () => {
       <div>
         <h1>✅ PageNavigation.tsx</h1>
         <PageNavigation currentPage={1} totalPages={10} onPageChange={(page) => console.log(page)} />
+      </div>
+
+      <div>
+        <h1>✅ TemplateCardSkeleton.tsx</h1>
+        <TemplateCardSkeleton />
       </div>
     </>
   );

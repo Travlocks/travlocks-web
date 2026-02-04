@@ -39,14 +39,16 @@ interface TemplateCardProps {
 const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
   return (
     <div className={templateCardStyles.wrapper()}>
-      <div className={templateCardStyles.container}>
+      <div className={templateCardStyles.container()}>
         {/* 썸네일 */}
         <div className={templateCardStyles.imageContainer}>
-          <img className={templateCardStyles.image} src={template.coverImageUrl} alt={template.title} />
+          <img className={templateCardStyles.image()} src={template.coverImageUrl} alt={template.title} />
         </div>
 
         {/* 여행 테마 태그 */}
-        <div className={templateCardStyles.travelTheme} style={{ backgroundColor: THEME_COLORS[template.travelTheme] }}>
+        <div
+          className={templateCardStyles.travelTheme()}
+          style={{ backgroundColor: THEME_COLORS[template.travelTheme] }}>
           {template.travelTheme}
         </div>
 
@@ -82,7 +84,7 @@ const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
               )}
             </div>
 
-            <button className={templateCardStyles.button} onClick={() => onClick?.(template.templateId)}>
+            <button className={templateCardStyles.button()} onClick={() => onClick?.(template.templateId)}>
               {template.type === 'popular' && (
                 <span className={templateCardStyles.buttonIcon}>
                   <RemixIcon />
