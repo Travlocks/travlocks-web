@@ -1,5 +1,3 @@
-// components/card/TemplateCardSection.tsx
-
 import TemplateCard from '@/feature/template/TemplateCard';
 import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
 import EmptyResult from '@/feature/search/component/ResultSection/EmptyResult';
@@ -46,7 +44,6 @@ interface SearchResultCardsProps {
  * @param props.currentPage - 현재 페이지 번호
  * @param props.onPageChange - 페이지 변경 시 호출되는 콜백
  * @param props.onTemplateClick - 템플릿 카드 클릭 시 호출되는 콜백
- * @param props.onRetry - 에러 발생 시 재시도 콜백
  */
 const SearchResultCards = ({
   isLoading,
