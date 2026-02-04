@@ -19,6 +19,7 @@ import PageNavigation from '@/feature/search/component/ResultSection/PageNavigat
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
+import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
 
 const TestPage = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -221,6 +222,11 @@ const TestPage = () => {
       <div>
         <h1>✅ PageNavigation.tsx</h1>
         <PageNavigation currentPage={1} totalPages={10} onPageChange={(page) => console.log(page)} />
+      </div>
+
+      <div>
+        <h1>✅ TemplateCardSkeleton.tsx</h1>
+        <TemplateCardSkeleton />
       </div>
     </>
   );

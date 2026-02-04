@@ -53,6 +53,7 @@
 
   --background-image-gradient-color-background: linear-gradient(180deg, #9fcdff 0%, #e1f7fb 50%, #ffffff 100%);
   --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
+  --background-image-gradient-color-skeleton: linear-gradient(90deg, #f9fafb 0%, #d9d9d9 127%);
   --gradient-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
 
   /* 페이드 인/아웃 애니메이션 */
