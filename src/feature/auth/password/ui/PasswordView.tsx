@@ -1,21 +1,22 @@
 import Input from '@/shared/components/Form/Input';
 import { useResetPasswordForm } from '../hooks/useResetPasswordForm';
-import type { ResetPasswordFormData } from '@/shared/utils/validationSchemas';
 import Button from '@/shared/components/Button/Button';
 import Alert from '@/shared/components/Form/Alert';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import type { Step } from '@/pages/ResetPasswordPage';
 import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+import type { ResetPasswordFormData } from '@/shared/utils/validationSchemas';
 
 type Props = {
   step: Step;
-  onSendMail: (email: string) => Promise<void>;
+  onSendMail: () => void;
 };
 
 const PasswordView = ({ step, onSendMail }: Props) => {
   const onSubmitResetPassword = async (data: ResetPasswordFormData) => {
-    await onSendMail(data.email);
+    onSendMail();
+    console.log(data);
   };
 
   const { register, canSubmit, isSubmitting, inlineMessage, submit } = useResetPasswordForm(onSubmitResetPassword);
@@ -24,22 +25,20 @@ const PasswordView = ({ step, onSendMail }: Props) => {
     const { buttonText } = AUTH_HEADER.password.sent;
 
     return (
-      <div className="flex flex-col">
-        <Link to="/login">
-          <Button text={buttonText} showIcon={true} className="rounded-[10px]" />
-        </Link>
-      </div>
+      <Link to="/login" className="w-full">
+        <Button text={buttonText} showIcon className="w-full rounded-[10px]" />
+      </Link>
     );
   }
 
   return (
     <>
       <form onSubmit={submit}>
-        <Input register={register('email')} label="left" type="email" placeholder="your@email.com" />
+        <Input register={register('email')} label="left" type="email" placeholder="your@email.com" width={500} />
         {inlineMessage && <Alert type="alert" text={inlineMessage} className="mt-2.5" />}
         <Button
           type="submit"
-          text="비밀번호 재설정 링크 전송"
+          text={AUTH_HEADER.password.request.buttonText}
           disabled={!canSubmit || isSubmitting}
           className="rounded-[10px] mt-10"
         />

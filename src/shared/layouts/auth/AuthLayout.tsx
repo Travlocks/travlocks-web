@@ -65,7 +65,7 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
           <LogoAuth className="w-[367px] h-[89px]" />
         </div>
 
-        {subtitle && <p className="h2 text-[23px] text-black text-center mb-[23px] whitespace-pre-wrap">{subtitle}</p>}
+        {subtitle && <p className="h2 text-[23px] text-black text-center mb-5 whitespace-pre-wrap">{subtitle}</p>}
         {/* 카피 문구 */}
         {description && (
           <p className="b2 text-base-color-1 text-center font-normal whitespace-pre-wrap">{description}</p>

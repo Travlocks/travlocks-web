@@ -1,32 +1,22 @@
 import PasswordView from '@/feature/auth/password/ui/PasswordView';
-import { useAuthLayoutHeader } from '@/shared/layouts/auth/useAuthLayoutHeader';
-import { useLayoutEffect, useState } from 'react';
-import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+import { useState } from 'react';
+import { usePasswordHeader } from '@/feature/auth/password/hooks/usePasswordHeader';
 
-export type Step = 'form' | 'sent';
+export type Step = 'form' | 'sent' | 'reset' | 'success';
 
 const ResetPasswordPage = () => {
-  const { setAuthHeader, resetAuthHeader } = useAuthLayoutHeader();
   const [step, setStep] = useState<Step>('form');
 
-  useLayoutEffect(() => {
-    if (step === 'sent') {
-      setAuthHeader(AUTH_HEADER.password.sent);
-    } else {
-      setAuthHeader(AUTH_HEADER.password.request);
-    }
-    return () => resetAuthHeader();
-  }, [step, setAuthHeader, resetAuthHeader]);
+  usePasswordHeader(step);
 
-  const onSendMail = async (email: string) => {
-    // TODO: API 호출
-    console.log(email);
+  const onSendMail = () => {
+    console.log('onSendMail');
     setStep('sent');
   };
 
   return (
-    <div className="mt-13 max-w-[440px] mx-auto">
-      <PasswordView step={step} onSendMail={onSendMail} />
+    <div className="mt-13 max-w-[500px] mx-auto">
+      <PasswordView step={step} onSendMail={() => onSendMail()} />
     </div>
   );
 };

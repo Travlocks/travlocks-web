@@ -17,7 +17,7 @@ const CLOUD_POS = {
 
 const imgBase = 'absolute w-auto h-auto max-w-none select-none pointer-events-none';
 
-const AUTH_PAGES = ['/login', '/signup', '/password'];
+const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset'];
 const MainBg = ({ isFixed }: MainBgProps) => {
   const location = useLocation();
 

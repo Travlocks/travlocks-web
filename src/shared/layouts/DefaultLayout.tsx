@@ -31,7 +31,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   };
 
   // 인증 페이지 목록
-  const AUTH_PAGES = ['/login', '/signup', '/password'];
+  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   // 다른 url로 들어오면 스플래시

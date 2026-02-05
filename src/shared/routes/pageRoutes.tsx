@@ -52,6 +52,10 @@ export const routes: RouteObject[] = [
             path: 'password',
             element: <lazyRoutes.ResetPasswordPage />,
           },
+          {
+            path: 'password-reset',
+            element: <lazyRoutes.PasswordResetConfirmPage />,
+          },
         ],
       },
     ],
