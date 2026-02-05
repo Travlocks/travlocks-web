@@ -10,7 +10,7 @@ import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
 import { type SetStateAction, useState } from 'react';
-import { getDescendants } from '../utils/path';
+import { getDescendantBlocks, getDescendants } from '../utils/path';
 
 interface BlockEditorProps {
   level: Level;
@@ -73,21 +73,6 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
             if (!block) return null;
 
             // 자손 블록들 조회
-            const getDescendantBlocks = (blocks: typeof puzzleBlocks, blockId: number) => {
-              const result: typeof puzzleBlocks = [];
-              let curId: number | null | undefined = blocks.find((b) => b.blockId === blockId)?.connectedTo;
-              while (curId != null) {
-                const descendant = blocks.find((b) => b.blockId === curId);
-                if (descendant) {
-                  result.push(descendant);
-                  curId = descendant.connectedTo;
-                } else {
-                  break;
-                }
-              }
-              return result;
-            };
-
             const descendants = getDescendantBlocks(puzzleBlocks, activeDrag.blockId);
             const allBlocks = [block, ...descendants];
 
