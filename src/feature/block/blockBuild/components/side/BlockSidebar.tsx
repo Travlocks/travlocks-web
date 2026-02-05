@@ -2,6 +2,8 @@ import { useState } from 'react';
 import BlockCreateButton from '../button/BlockCreateButton';
 import BlockTabs, { type TabType } from './BlockTabs';
 import BlockItem from './BlockItem';
+import BlockSearchInput from './BlockSearchInput';
+import { useBlockSearch } from '../../hooks/useBlockSearch';
 import type { SidebarBlock } from '../../types/block';
 interface BlockSidebarProps {
   items: SidebarBlock[];
@@ -9,6 +11,11 @@ interface BlockSidebarProps {
 
 const BlockSidebar = ({ items }: BlockSidebarProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
+
+  const { inputProps } = useBlockSearch({
+    activeTab,
+    delay: 300,
+  });
 
   const content = () => {
     switch (activeTab) {
@@ -39,6 +46,17 @@ const BlockSidebar = ({ items }: BlockSidebarProps) => {
 
       {/* 탭 영역 (별도 컴포넌트) */}
       <BlockTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* 검색 인풋 */}
+      <div className="px-6 pb-4">
+        <BlockSearchInput
+          activeTab={activeTab}
+          onSearch={() => {
+            console.log('검색');
+          }}
+          {...inputProps}
+        />
+      </div>
 
       {/* 탭별 컨텐츠 */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>

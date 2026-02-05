@@ -25,5 +25,30 @@ export default defineConfig({
       { find: '@utils', replacement: '/src/shared/utils' },
     ],
   },
+  // proxy 설정
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://api.travlocks.kro.kr',
+        changeOrigin: true,
+        secure: true,
+        cookiePathRewrite: { '*': '/' },
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            if (req.headers.cookie) proxyReq.setHeader('Cookie', req.headers.cookie);
+            if (req.headers.authorization) proxyReq.setHeader('Authorization', req.headers.authorization);
+            console.log('Proxy Req:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, _req, res) => {
+            const setCookies = proxyRes.headers['set-cookie'];
+            if (setCookies) {
+              res.setHeader('Set-Cookie', setCookies);
+              console.log('Set-Cookie forwarded!');
+            }
+          });
+        },
+      },
+    },
+  },
   assetsInclude: ['**/*.lottie'],
 });
