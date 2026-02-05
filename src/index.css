@@ -57,6 +57,13 @@
   --animate-fade-in: fadeIn 1000ms ease-out forwards;
   --animate-fade-out: fadeOut 1000ms ease-out forwards;
   --animate-ticket-fall: ticketFall 2000ms ease-out forwards;
+  --animate-overlay-fade-in: fadeIn 200ms ease-out forwards;
+  --animate-overlay-fade-out: fadeOut 200ms ease-out forwards;
+  --animate-slide-in-from-right: slideInFromRight 300ms ease-out forwards;
+  --animate-slide-out-to-right: slideOutToRight 300ms ease-out forwards;
+
+  /* 진행선 애니메이션 */
+  --animate-progressFill: progressFill 900ms ease-out forwards;
 
   @keyframes fadeIn {
     from {
@@ -88,6 +95,33 @@
     100% {
       transform: translate(37px, calc(100% + 100px)) rotate(-7.89deg);
       opacity: 0;
+    }
+  }
+
+  @keyframes progressFill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutToRight {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
     }
   }
 

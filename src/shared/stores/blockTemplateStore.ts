@@ -13,6 +13,8 @@ const START_BLOCK: Block = {
   duration: '',
   x: 44,
   y: 76,
+  w: 186,
+  h: 87,
   points: createRectPoints(186, 87),
   connectors: [{ type: 'socket', edgeIndex: 1, align: 'center' }],
   connectedTo: null,
@@ -127,8 +129,16 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
       },
     }),
     {
-      // TODO: 나중에 partialize/version/migrate 등 추가 설정 가능
       name: `block-template-store`,
+      version: 2, // Block 타입에 w, h, points, connectors 추가됨
+      migrate: () => {
+        // 이전 버전 데이터는 새 구조와 호환되지 않으므로 초기화
+        return {
+          templateId: null,
+          currentDay: 1,
+          blocksByDay: createDefaultBlocksByDayRecord(),
+        };
+      },
     },
   ),
 );

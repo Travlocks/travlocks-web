@@ -2,17 +2,16 @@ import Button from '@/shared/components/Button/Button';
 import DualButton from '@/shared/components/Button/DualButton';
 import RoundButton from '@/shared/components/Button/RoundButton';
 import SingleButton from '@/shared/components/Button/SingleButton';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import TemplateSwiper from '@/feature/template/TemplateSwiper';
-import { mockRecommendedTemplates } from '@/feature/template/template.data';
-import { mockPopularTemplates } from '@/feature/template/template.data';
+import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
-import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import Footer from '@/shared/components/Footer/Footer';
 
 const TestPage = () => {
   const schema = z.object({
@@ -50,10 +49,6 @@ const TestPage = () => {
 
   return (
     <>
-      <div className="w-screen h-screen">
-        <BlockEditor />
-      </div>
-
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>
 
@@ -178,6 +173,8 @@ const TestPage = () => {
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
         <TemplateSwiper cards={mockPopularTemplates} />
       </div>
+
+      <Footer />
     </>
   );
 };

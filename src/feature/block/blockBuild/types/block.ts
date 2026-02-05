@@ -1,6 +1,6 @@
 import type { Connector, Point } from '@/shared/components/Block/blockShape';
 
-export type CategoryType = '숙소' | '식당' | '카페' | '관광' | '문화' | '액티비티' | '투어' | '기타';
+export type CategoryType = '숙소' | '식당' | '카페' | '쇼핑' | '관광' | '문화' | '액티비티' | '투어' | '기타';
 
 // 샘플 사이드바 데이터 타입
 export type SidebarBlock = {
@@ -22,6 +22,8 @@ export type Block = {
   // 보드 위치
   x: number;
   y: number;
+  w: number;
+  h: number;
   // 블록 모양 (폴리곤 포인트)
   points: Point[];
   // 커넥터 설정

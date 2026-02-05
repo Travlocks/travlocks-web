@@ -1,10 +1,11 @@
 import type { DragMoveEvent, DragEndEvent } from '@dnd-kit/core';
 import type { DragType } from '../types/drag';
+import { calcBoardPointFromActiveRect } from './board';
 import type { Connector, Point } from '@/shared/components/Block/blockShape';
-import { createRectPoints, getBoundingBox } from '@/shared/components/Block/blockShape';
-import { calcBoardPointFromActiveRect, clampInBoard, getActiveRect } from './board';
+import { getBoundingBox } from '@/shared/components/Block/blockShape';
 import { categoryColor } from '../components/side/block-styles';
 import { type CategoryType } from '../types/block';
+import { getBlockShapeByDuration } from './blockShapeByDuration';
 
 export type Candidate = {
   x: number;
@@ -14,57 +15,63 @@ export type Candidate = {
   color?: string;
 };
 
-// 기본 커넥터 설정 (사각형 블록용)
-const DEFAULT_CONNECTORS: Connector[] = [
-  { type: 'plug', edgeIndex: 0, align: 'start' },
-  { type: 'socket', edgeIndex: 1, align: 'start' },
-  { type: 'socket', edgeIndex: 2, align: 'start' },
-  { type: 'plug', edgeIndex: 3, align: 'end' },
-];
-
 export function calcCandidate(params: {
   e: DragMoveEvent | DragEndEvent;
   boardEl: HTMLDivElement;
   defaultSize: { w: number; h: number };
   grid: number;
+  zoom: number;
+  pad: number;
 }): Candidate | null {
-  const { e, boardEl, defaultSize, grid } = params;
+  const { e, boardEl, grid, zoom, pad } = params;
   const type = e.active.data.current?.type as DragType | undefined;
 
-  // Sidebar에서 드래그 중일 때 스냅 프리뷰
+  // translated rect를 사용하여 현재 드래그 중인 요소의 실제 화면 위치 계산
+  const activeRect = e.active.rect.current.translated;
+  if (!activeRect) return null;
+
+  // Sidebar에서 드래그 중일 때
   if (type === 'blockSidebar') {
-    const activeRect = getActiveRect(e.active.rect);
-    if (!activeRect) return null;
-
-    const w = defaultSize.w;
-    const h = defaultSize.h;
-    const points = createRectPoints(w, h);
-    const { x, y } = calcBoardPointFromActiveRect({ boardEl, activeRect, w, h, grid });
-
     const category = e.active.data.current?.item?.category as CategoryType | undefined;
+    const duration = e.active.data.current?.item?.duration as string | undefined;
+
+    // 시간별 블록 모양 생성
+    const shapeConfig = getBlockShapeByDuration(duration || '1시간', category || '기타');
+    const { w, h, points, connectors } = shapeConfig;
+
+    const { x, y } = calcBoardPointFromActiveRect({
+      boardEl,
+      activeRect,
+      w,
+      h,
+      zoom,
+      pad,
+      grid,
+    });
+
     const color = category ? categoryColor[category as keyof typeof categoryColor] : undefined;
 
-    return { x, y, points, connectors: DEFAULT_CONNECTORS, color };
+    return { x, y, points, connectors, color };
   }
 
-  // Editor 블록 이동 중일 때 스냅 프리뷰
+  // Editor 블록 이동 중일 때
   if (type === 'blockEditor') {
-    const startX = e.active.data.current?.startX as number | undefined;
-    const startY = e.active.data.current?.startY as number | undefined;
     const points = e.active.data.current?.points as Point[] | undefined;
     const connectors = e.active.data.current?.connectors as Connector[] | undefined;
     const color = e.active.data.current?.color as string | undefined;
-    if (startX == null || startY == null || !points || !connectors) return null;
+    if (!points || !connectors) return null;
 
     const { w, h } = getBoundingBox(points);
-    const { x, y } = clampInBoard({
+    const { x, y } = calcBoardPointFromActiveRect({
       boardEl,
-      x: startX + e.delta.x,
-      y: startY + e.delta.y,
+      activeRect,
       w,
       h,
+      zoom,
+      pad,
       grid,
     });
+
     return { x, y, points, connectors, color };
   }
 
