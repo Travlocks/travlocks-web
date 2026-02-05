@@ -8,7 +8,6 @@ import { usePasswordConfirmForm } from '../hooks/useResetPasswordForm';
 import type { PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
 import Button from '@/shared/components/Button/Button';
 import { Link } from 'react-router-dom';
-// import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
 type Props = {

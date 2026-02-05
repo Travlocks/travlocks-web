@@ -29,9 +29,10 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
   const location = useLocation();
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
   const { shouldRequireMember } = useAuth();
+  const isPasswordResetRoute = location.pathname === '/password-reset';
 
   // 멤버 전용 라우트
-  if (memberRoutes && shouldRequireMember) {
+  if (memberRoutes && shouldRequireMember && !isPasswordResetRoute) {
     return <Navigate to="/" replace />;
   }
 
