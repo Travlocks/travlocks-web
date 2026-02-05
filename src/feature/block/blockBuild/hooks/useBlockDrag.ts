@@ -225,7 +225,6 @@ export const useBlockDrag = ({
             tpl: item,
             candidate,
             decision,
-            startId: START_ID,
           }),
         }));
       }
