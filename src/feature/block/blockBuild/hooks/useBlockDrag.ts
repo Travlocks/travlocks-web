@@ -117,8 +117,8 @@ export const useBlockDrag = ({
       const candidate = calcCandidate({ e, boardEl, defaultSize: DEFAULT_BLOCK, grid: GRID, zoom: currentZoom, pad });
       if (!candidate) return;
 
-      // 스냅 가능한 대상: socket이 비어있는 블록들
-      const targets = currentBlocks.filter((b) => b.connectedTo == null && b.blockId !== START_ID);
+      // 스냅 가능한 대상: socket이 비어있는 블록들 (시작 블록 포함)
+      const targets = currentBlocks.filter((b) => b.connectedTo == null);
 
       const decision = computeSnapDecision({
         candidate,
@@ -205,9 +205,8 @@ export const useBlockDrag = ({
       const movingId = type === 'blockEditor' ? (e.active.data.current?.blockId as number | undefined) : undefined;
       const excludeIds =
         movingId != null ? new Set([movingId, ...getDescendants(currentBlocks, movingId)]) : new Set<number>();
-      const targets = currentBlocks.filter(
-        (b) => b.connectedTo == null && b.blockId !== START_ID && !excludeIds.has(b.blockId),
-      );
+
+      const targets = currentBlocks.filter((b) => b.connectedTo == null && !excludeIds.has(b.blockId));
 
       const decision = computeSnapDecision({
         candidate,

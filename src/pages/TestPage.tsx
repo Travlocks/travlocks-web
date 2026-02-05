@@ -53,11 +53,8 @@ const TestPage = () => {
 
   return (
     <>
-      <div className="w-full h-125">
-        <BlockEditor
-          level={'timeline'}
-          setLevel={() => {}}
-        />
+      <div className="w-full h-screen">
+        <BlockEditor level={'timeline'} setLevel={() => {}} />
       </div>
 
       <div className="flex flex-col gap-4">
