@@ -40,7 +40,7 @@ export function HomeBackground() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-hide overflow-hidden">
+    <div className="pointer-events-none sticky min-h-[calc(100dvh-109px)] inset-0 z-hide overflow-hidden">
       {bubbleSpecs.map((b) => (
         <Bubble key={b.id} {...b} />
       ))}
