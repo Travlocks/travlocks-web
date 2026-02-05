@@ -31,6 +31,7 @@ interface BlockEditorContentProps {
   onDayChange: (day: number) => void;
   zoom: number;
   onZoomChange: (zoom: number) => void;
+  draggingBlockIds?: number[];
 }
 
 const BlockEditorContent = ({
@@ -41,6 +42,7 @@ const BlockEditorContent = ({
   onDayChange,
   zoom,
   onZoomChange,
+  draggingBlockIds = [],
 }: BlockEditorContentProps) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
@@ -126,9 +128,9 @@ const BlockEditorContent = ({
                   if (isStart) {
                     return <BlockStartNode key={block.blockId} block={block} />;
                   }
-                  // 모든 블록 드래그 가능 (START 제외)
-                  const canDrag = true;
-                  return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
+                  // 드래그 중인 블록과 자손들은 숨김 (DOM에서 유지하여 위치 점프 방지)
+                  const isHidden = draggingBlockIds.includes(block.blockId);
+                  return <PuzzleBlock key={block.blockId} block={block} canDrag isHidden={isHidden} />;
                 })}
 
                 <BlockGhost hint={dockHint} />

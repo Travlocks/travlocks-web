@@ -6,10 +6,11 @@ import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
-import { useState, type SetStateAction } from 'react';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
+import { type SetStateAction, useState } from 'react';
+import { getDescendants } from '../utils/path';
 
 interface BlockEditorProps {
   level: Level;
@@ -39,7 +40,6 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
           <BlockSidebar items={MOCK_BLOCKS} />
         </aside>
 
-        {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
           {/* 처음 렌더링 시 타임라인 */}
           {level === 'timeline' && <BlockTimeLine setLevel={setLevel} />}
@@ -54,6 +54,11 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
                 onDayChange={editorActions.setDay}
                 zoom={zoom}
                 onZoomChange={setZoom}
+                draggingBlockIds={
+                  activeDrag?.type === 'blockEditor'
+                    ? [activeDrag.blockId, ...getDescendants(puzzleBlocks, activeDrag.blockId)]
+                    : []
+                }
               />
             </div>
           )}
