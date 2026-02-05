@@ -35,9 +35,9 @@ export const Footer = () => {
                 <h3 className="b5 font-medium text-base-color-3">FRONT-END DEVELOPER</h3>
                 <div className="flex flex-wrap gap-3">
                   <span className="b6 font-light text-base-color-1">김진효(Lead)</span>
-                  <span className="b6 font-light text-base-color-1">황무원</span>
-                  <span className="b6 font-light text-base-color-1">조성민</span>
                   <span className="b6 font-light text-base-color-1">정윤철</span>
+                  <span className="b6 font-light text-base-color-1">조성민</span>
+                  <span className="b6 font-light text-base-color-1">황무원</span>
                 </div>
               </div>
             </div>
@@ -65,11 +65,11 @@ export const Footer = () => {
                 <h3 className="b5 font-medium text-base-color-3">BACK-END DEVELOPER</h3>
                 <div className="flex flex-wrap gap-3">
                   <span className="b6 font-light text-base-color-1">권형미(Lead)</span>
-                  <span className="b6 font-light text-base-color-1">김도현</span>
-                  <span className="b6 font-light text-base-color-1">장수현</span>
-                  <span className="b6 font-light text-base-color-1">김예린</span>
-                  <span className="b6 font-light text-base-color-1">전다인</span>
                   <span className="b6 font-light text-base-color-1">권도희</span>
+                  <span className="b6 font-light text-base-color-1">김도현</span>
+                  <span className="b6 font-light text-base-color-1">김예린</span>
+                  <span className="b6 font-light text-base-color-1">장수현</span>
+                  <span className="b6 font-light text-base-color-1">전다인</span>
                 </div>
               </div>
             </div>
