@@ -7,6 +7,7 @@ import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import { useState } from 'react';
 import { scaleDragByZoom } from '../utils/board';
+import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 
 const BlockEditor = () => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
@@ -28,6 +29,9 @@ const BlockEditor = () => {
 
         {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
+          {/* 처음 렌더링 시 타임라인 */}
+          <BlockTimeLine />
+
           <BlockEditorContent
             boardRef={boardRef}
             puzzleBlocks={puzzleBlocks}
