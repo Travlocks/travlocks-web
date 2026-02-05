@@ -44,3 +44,15 @@ export function detachTailFromBlocks(blocks: Block[], startId: number) {
 
   return { nextBlocks, detachedId: oldTailId, newTailId };
 }
+
+// 특정 블록 아래로 연결된 모든 자손 블록 ID 조회
+export function getDescendants(blocks: Block[], blockId: number): number[] {
+  const byId = new Map(blocks.map((b) => [b.blockId, b]));
+  const descendants: number[] = [];
+  let cur = byId.get(blockId)?.connectedTo;
+  while (cur != null) {
+    descendants.push(cur);
+    cur = byId.get(cur)?.connectedTo;
+  }
+  return descendants;
+}

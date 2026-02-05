@@ -8,7 +8,6 @@ import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
 import BlockGhost from '../ui/BlockGhost';
 import BlockStartNode from '../ui/BlockStartNode';
-import { getTailIdFromBlocks } from '../../utils/path';
 // import BlockTrash from './BlockTrash';
 import BlockUndoRedo from './BlockUndoRedo';
 import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
@@ -71,8 +70,6 @@ const BlockEditorContent = ({
     [setNodeRef, boardRef, viewportRef],
   );
 
-  const tailId = getTailIdFromBlocks(puzzleBlocks, START_ID) ?? START_ID;
-
   return (
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
       {/* 1. 상단 헤더 */}
@@ -129,9 +126,8 @@ const BlockEditorContent = ({
                   if (isStart) {
                     return <BlockStartNode key={block.blockId} block={block} />;
                   }
-                  const isTail = block.blockId === tailId;
-                  // 드래그 규칙: free or tail 블록은 드래그 가능
-                  const canDrag = block.connectedFrom == null || isTail;
+                  // 모든 블록 드래그 가능 (START 제외)
+                  const canDrag = true;
                   return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
                 })}
 

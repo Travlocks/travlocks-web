@@ -65,7 +65,55 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
         {activeDrag?.type === 'blockEditor' &&
           (() => {
             const block = puzzleBlocks.find((b) => b.blockId === activeDrag.blockId);
-            return block ? <PuzzleBlock block={block} isOverlay zoom={zoom} /> : null;
+            if (!block) return null;
+
+            // 자손 블록들 조회
+            const getDescendantBlocks = (blocks: typeof puzzleBlocks, blockId: number) => {
+              const result: typeof puzzleBlocks = [];
+              let curId: number | null | undefined = blocks.find((b) => b.blockId === blockId)?.connectedTo;
+              while (curId != null) {
+                const descendant = blocks.find((b) => b.blockId === curId);
+                if (descendant) {
+                  result.push(descendant);
+                  curId = descendant.connectedTo;
+                } else {
+                  break;
+                }
+              }
+              return result;
+            };
+
+            const descendants = getDescendantBlocks(puzzleBlocks, activeDrag.blockId);
+            const allBlocks = [block, ...descendants];
+
+            // 바운딩 박스 계산
+            const minX = Math.min(...allBlocks.map((b) => b.x));
+            const minY = Math.min(...allBlocks.map((b) => b.y));
+            const maxX = Math.max(...allBlocks.map((b) => b.x + b.w));
+            const maxY = Math.max(...allBlocks.map((b) => b.y + b.h));
+
+            return (
+              <div
+                className="relative"
+                style={{
+                  width: (maxX - minX) * zoom,
+                  height: (maxY - minY) * zoom,
+                }}>
+                {allBlocks.map((b) => (
+                  <div
+                    key={b.blockId}
+                    className="absolute"
+                    style={{
+                      left: (b.x - minX) * zoom,
+                      top: (b.y - minY) * zoom,
+                      transform: `scale(${zoom})`,
+                      transformOrigin: 'top left',
+                    }}>
+                    <PuzzleBlock block={b} isOverlay />
+                  </div>
+                ))}
+              </div>
+            );
           })()}
         {activeDrag?.type === 'blockTimeline' && <BlockItemUI item={activeDrag.block} />}
       </DragOverlay>
