@@ -1,7 +1,7 @@
 import PasswordView from '@/feature/auth/password/ui/PasswordView';
 import { useState } from 'react';
 import { usePasswordHeader } from '@/feature/auth/password/hooks/usePasswordHeader';
-import { postPasswordResetLink } from '@/feature/auth/password/apis/passwordReset';
+import { usePasswordResetLink } from '@/feature/auth/password/hooks/usePasswordResetLink';
 
 export type Step = 'form' | 'sent' | 'reset' | 'success';
 
@@ -10,14 +10,17 @@ const ResetPasswordPage = () => {
 
   usePasswordHeader(step);
 
-  const onSendMail = async (email: string) => {
-    try {
-      await postPasswordResetLink({ email });
+  const { resetPasswordLink } = usePasswordResetLink({
+    onSuccess: () => {
       setStep('sent');
-    } catch (error) {
-      console.error('비밀번호 재설정 링크 전송 실패:', error);
-      // TODO: 에러 처리 (토스트 메시지 등)
-    }
+    },
+    onError: (_error, errorMessage) => {
+      console.error('비밀번호 재설정 링크 전송 실패:', errorMessage);
+    },
+  });
+
+  const onSendMail = async (email: string) => {
+    resetPasswordLink({ email });
   };
 
   return (
