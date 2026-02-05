@@ -2,7 +2,6 @@ import SaveIcon from '@assets/block/icon-save.svg?react';
 import ShareIcon from '@assets/block/icon-share.svg?react';
 import clsx from 'clsx';
 import { useState } from 'react';
-import BlockTooltip from '../blockBuild/components/ui/BlockTooltip';
 
 const VISIBILITY = [
   {
@@ -50,7 +49,7 @@ const BlockHeader = () => {
           ))}
         </div>
 
-        <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" />
+        {/* <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" /> */}
       </section>
 
       <section className="flex gap-[25px]">
