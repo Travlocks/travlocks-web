@@ -76,7 +76,7 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
     const excistCities = [...selectedCities];
 
     // 최대 2개의 도시까지만 선택 가능
-    if (excistCities.length < 2) {
+    if (excistCities.length < 2 && !excistCities.includes(city)) {
       newCities = [...excistCities, city];
     } else {
       return;
