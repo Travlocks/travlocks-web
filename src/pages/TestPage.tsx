@@ -18,16 +18,9 @@ import SearchBar from '@/feature/search/component/SearchBar';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
-import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
+import Footer from '@/shared/components/Footer/Footer';
 
 const TestPage = () => {
-  const [filters, setFilters] = useState<FilterState>({
-    regions: [],
-    tripDurations: [],
-    travelThemes: [],
-    transportTypes: [],
-  });
-
   const schema = z.object({
     email: z.string().email({ message: '올바르지 않은 이메일' }),
     email2: z.string().email({ message: '가입되지 않은 이메일 주소입니다' }),
@@ -168,41 +161,7 @@ const TestPage = () => {
         <TemplateSwiper cards={mockPopularTemplates} />
       </div>
 
-      <div>
-        <h1>✅ SearchFilter.tsx</h1>
-        <SearchFilter
-          filters={filters}
-          onFilterChange={setFilters}
-          onReset={() =>
-            setFilters({
-              regions: [],
-              tripDurations: [],
-              travelThemes: [],
-              transportTypes: [],
-            })
-          }
-        />
-      </div>
-
-      <div>
-        <h1>✅ SortDropDown.tsx</h1>
-        <SortDropDown value="rating" onChange={(value) => console.log(value)} />
-      </div>
-
-      <div>
-        <h1>✅ SearchBar.tsx</h1>
-        <SearchBar onSearch={(keyword) => console.log(keyword)} />
-      </div>
-
-      <div>
-        <h1>✅ PageNavigation.tsx</h1>
-        <PageNavigation currentPage={1} totalPages={10} onPageChange={(page) => console.log(page)} />
-      </div>
-
-      <div>
-        <h1>✅ TemplateCardSkeleton.tsx</h1>
-        <TemplateCardSkeleton />
-      </div>
+      <Footer />
     </>
   );
 };
