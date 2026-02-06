@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { TRIP_DURATION, type TripDuration } from '@/shared/constants/tripDuration';
 import DropdownIcon from '@/shared/assets/icon-arrow-down.svg?react';
-import { DropdownStyles } from '../styles/Dropdown.style';
+import { DropdownStyle } from '../styles/Dropdown.style';
 import clsx from 'clsx';
 
 const PLACEHOLDER_TEXT = '여행기간 선택';
@@ -55,19 +55,19 @@ const TripDurationDropdown = ({ onSelect }: TripDurationDropdownProps) => {
 
   return (
     <div ref={dropdownRef} className="relative w-full">
-      <div className={clsx(DropdownStyles.inputField, 'justify-between')} onClick={handleToggle}>
-        <span className={selectedDuration ? DropdownStyles.selectedText : DropdownStyles.placeholder}>
+      <div className={clsx(DropdownStyle.inputField, 'justify-between')} onClick={handleToggle}>
+        <span className={selectedDuration ? DropdownStyle.selectedText : DropdownStyle.placeholder}>
           {selectedDuration?.label || PLACEHOLDER_TEXT}
         </span>
-        <DropdownIcon className={DropdownStyles.dorpdownIcon(isOpen)} />
+        <DropdownIcon className={DropdownStyle.dorpdownIcon(isOpen)} />
       </div>
 
       {isOpen && (
-        <div className={DropdownStyles.dropdownContainer}>
+        <div className={DropdownStyle.dropdownContainer}>
           {TRIP_DURATION.map((duration) => (
             <div
               key={duration.id}
-              className={DropdownStyles.menuItem(selectedDuration?.id === duration.id)}
+              className={DropdownStyle.menuItem(selectedDuration?.id === duration.id)}
               onClick={() => handleSelect(duration)}>
               <span>{duration.label}</span>
             </div>

@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import DestinationCityDropdown from '../components/DestinationCityDrodown';
-import TripDurationDropdown from '../components/TripDurationDropdown';
-import TransportTypeSelector from '../components/TransportTypeSelector';
-import TravelThemeSelector from '../components/TravelThemeSelector';
+import DestinationCityDropdown from './components/DestinationCityDrodown';
+import TripDurationDropdown from './components/TripDurationDropdown';
+import TransportTypeSelector from './components/TransportTypeSelector';
+import TravelThemeSelector from './components/TravelThemeSelector';
 import type { DestinationCityId } from '@/shared/constants/destinationCity';
 import type { TripDuration } from '@/shared/constants/tripDuration';
 import type { TransportTypeKey } from '@/shared/constants/transportType';
 import type { TravleThemeId } from '@/shared/constants/travelTheme';
-import { OnboardingWidgetStyles } from '../styles/OnboardingWidget.style';
+import { OnboardingWidgetStyle } from './styles/OnboardingWidget.style';
 
 /**
  * 온보딩 위젯에서 서버로 전송할 요청 DTO 타입입니다.
@@ -70,9 +70,9 @@ const OnboardingWidget = () => {
     <div className="flex flex-col gap-[45px]">
       <div className="flex flex-col gap-[45px]">
         {/* 여행지 선택 섹션 */}
-        <div className={OnboardingWidgetStyles.componentsWrapper}>
+        <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div className="flex">
-            <span className={OnboardingWidgetStyles.headerText}>
+            <span className={OnboardingWidgetStyle.headerText}>
               여행지 선택<span className="text-primary-color">(최대 2개)</span>
             </span>
           </div>
@@ -80,17 +80,17 @@ const OnboardingWidget = () => {
         </div>
 
         {/* 여행 기간 선택 섹션 */}
-        <div className={OnboardingWidgetStyles.componentsWrapper}>
+        <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div>
-            <span className={OnboardingWidgetStyles.headerText}>여행 기간 선택</span>
+            <span className={OnboardingWidgetStyle.headerText}>여행 기간 선택</span>
           </div>
           <TripDurationDropdown onSelect={setSelectedTripDuration} />
         </div>
 
         {/* 교통 수단 선택 섹션 */}
-        <div className={OnboardingWidgetStyles.componentsWrapper}>
+        <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div>
-            <span className={OnboardingWidgetStyles.headerText}>
+            <span className={OnboardingWidgetStyle.headerText}>
               교통 수단 선택<span className="text-primary-color">(복수 선택 가능)</span>
             </span>
           </div>
@@ -98,9 +98,9 @@ const OnboardingWidget = () => {
         </div>
 
         {/* 여행 테마 선택 섹션 */}
-        <div className={OnboardingWidgetStyles.componentsWrapper}>
+        <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div>
-            <span className={OnboardingWidgetStyles.headerText}>
+            <span className={OnboardingWidgetStyle.headerText}>
               여행 테마 선택<span className="text-primary-color">(최대 3개)</span>
             </span>
           </div>
@@ -113,9 +113,9 @@ const OnboardingWidget = () => {
         <button
           onClick={handleSubmit}
           disabled={!isValid}
-          className={clsx(OnboardingWidgetStyles.submitButton, {
-            [OnboardingWidgetStyles.submitButtonDisabled]: !isValid,
-            [OnboardingWidgetStyles.submitButtonAbled]: isValid,
+          className={clsx(OnboardingWidgetStyle.submitButton, {
+            [OnboardingWidgetStyle.submitButtonDisabled]: !isValid,
+            [OnboardingWidgetStyle.submitButtonAbled]: isValid,
           })}>
           설정 완료
         </button>
