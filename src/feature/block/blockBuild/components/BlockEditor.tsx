@@ -40,15 +40,17 @@ const BlockEditor = () => {
           {level === 'timeline' && <BlockTimeLine setLevel={setLevel} />}
 
           {level === 'editor' && (
-            <BlockEditorContent
-              boardRef={boardRef}
-              puzzleBlocks={puzzleBlocks}
-              dockHint={dockHint}
-              currentDay={currentDay}
-              onDayChange={editorActions.setDay}
-              zoom={zoom}
-              onZoomChange={setZoom}
-            />
+            <div className="h-[1091px]">
+              <BlockEditorContent
+                boardRef={boardRef}
+                puzzleBlocks={puzzleBlocks}
+                dockHint={dockHint}
+                currentDay={currentDay}
+                onDayChange={editorActions.setDay}
+                zoom={zoom}
+                onZoomChange={setZoom}
+              />
+            </div>
           )}
         </main>
       </div>

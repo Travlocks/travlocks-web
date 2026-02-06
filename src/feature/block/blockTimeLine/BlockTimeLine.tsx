@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useBlockEditor } from '../blockBuild/hooks/useBlockEditor';
 import DayCard from './components/DayCard';
+import RecommendCard from './components/RecommendCard';
 
 const TravelData = {
   destinationCityIds: [301, 302],
@@ -26,11 +27,13 @@ const BlockTimeLine = ({ setLevel }: BlockTimeLineProps) => {
         <p className="h4">Timeline</p>
       </div>
 
-      <div className="py-[65px] px-[49px] flex gap-[40px] overflow-scroll h-full">
+      <div className="py-[65px] px-[49px] flex gap-[40px] overflow-scroll">
         {Array.from({ length: days }, (_, i) => (
           <DayCard key={i} day={i + 1} items={blocksByDay[i + 1]} onClick={() => setLevel('editor')} />
         ))}
       </div>
+
+      <RecommendCard />
     </div>
   );
 };
