@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export const DropdownStyles = {
+export const DropdownStyle = {
   inputField: clsx(
     'h-[53px] w-full p-[16px]',
     'inline-flex items-center',

@@ -1,6 +1,6 @@
 import type { Template } from '@/feature/template/template.types';
 import { THEME_COLORS } from './template.constants';
-import { TemplateCardStyles } from './styles/TemplateCard.styles';
+import { TemplateCardStyle } from './styles/TemplateCard.styles';
 import RemixIcon from '@/shared/assets/template/icon-remix.svg?react';
 import StarIcon from '@/shared/assets/template/icon-star.svg?react';
 import PinIcon from '@/shared/assets/template/icon-pin.svg?react';
@@ -39,48 +39,48 @@ interface TemplateCardProps {
  */
 const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
   return (
-    <div className={TemplateCardStyles.wrapper()}>
-      <div className={TemplateCardStyles.container()}>
+    <div className={TemplateCardStyle.wrapper()}>
+      <div className={TemplateCardStyle.container()}>
         {/* 썸네일 */}
-        <div className={TemplateCardStyles.imageContainer}>
-          <img className={TemplateCardStyles.image()} src={template.coverImageUrl} alt={template.title} />
+        <div className={TemplateCardStyle.imageContainer}>
+          <img className={TemplateCardStyle.image()} src={template.coverImageUrl} alt={template.title} />
         </div>
 
         {/* 여행 테마 태그 */}
         <div
-          className={TemplateCardStyles.travelTheme()}
+          className={TemplateCardStyle.travelTheme()}
           style={{ backgroundColor: THEME_COLORS[template.travelTheme] }}>
           {template.travelTheme}
         </div>
 
         {/* 템플릿 정보 */}
-        <div className={TemplateCardStyles.content}>
+        <div className={TemplateCardStyle.content}>
           {/* 상단 영역(제목, 부제목) */}
-          <div className={TemplateCardStyles.topSection}>
-            <p className={TemplateCardStyles.title}>{template.title}</p>
-            <p className={TemplateCardStyles.subtitle}>
+          <div className={TemplateCardStyle.topSection}>
+            <p className={TemplateCardStyle.title}>{template.title}</p>
+            <p className={TemplateCardStyle.subtitle}>
               {template.type === 'recommended' ? template.description : <span>@{template.authorName}</span>}
             </p>
           </div>
 
           {/* 하단 영역(메타 정보, 버튼) */}
-          <div className={TemplateCardStyles.bottomSection}>
-            <div className={TemplateCardStyles.metadata}>
+          <div className={TemplateCardStyle.bottomSection}>
+            <div className={TemplateCardStyle.metadata}>
               {template.type === 'recommended' ? (
                 <>
-                  <span className={TemplateCardStyles.metadataItem}>
-                    <PinIcon className={TemplateCardStyles.pinIcon} />
+                  <span className={TemplateCardStyle.metadataItem}>
+                    <PinIcon className={TemplateCardStyle.pinIcon} />
                     {template.region}
                   </span>
-                  <span className={TemplateCardStyles.metadataItem}>{template.tripDays}</span>
+                  <span className={TemplateCardStyle.metadataItem}>{template.tripDays}</span>
                 </>
               ) : (
                 <>
-                  <span className={TemplateCardStyles.metadataItem}>
-                    <StarIcon className={TemplateCardStyles.starIcon} />
+                  <span className={TemplateCardStyle.metadataItem}>
+                    <StarIcon className={TemplateCardStyle.starIcon} />
                     {template.avgRating}
                   </span>
-                  <span className={TemplateCardStyles.metadataItem}>즐겨찾는 여행자 {template.remixCount}명</span>
+                  <span className={TemplateCardStyle.metadataItem}>즐겨찾는 여행자 {template.remixCount}명</span>
                 </>
               )}
             </div>
@@ -92,8 +92,8 @@ const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
               textSize={18}
               variant="white"
               onClick={() => onClick?.(template.templateId)}
-              className={TemplateCardStyles.button()}
-              icon={template.type === 'popular' ? <RemixIcon className={TemplateCardStyles.buttonIcon} /> : undefined}
+              className={TemplateCardStyle.button()}
+              icon={template.type === 'popular' ? <RemixIcon className={TemplateCardStyle.buttonIcon} /> : undefined}
               iconPosition="left"
             />
           </div>

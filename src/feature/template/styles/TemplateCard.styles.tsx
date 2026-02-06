@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export const TemplateCardStyles = {
+export const TemplateCardStyle = {
   //Wrapper
   wrapper: (canHover: boolean = true) =>
     clsx(

@@ -1,6 +1,6 @@
 import ArrowLeftIcon from '@/shared/assets/icon-arrow-left.svg?react';
 import ArrowRightIcon from '@/shared/assets/icon-arrow-right.svg?react';
-import { pageNavigationStyle } from '@/feature/search/style/PageNavigation.style';
+import { PageNavigationStyle } from '@/feature/search/style/PageNavigation.style';
 
 /**
  * 페이지네이션 컴포넌트의 Props
@@ -54,13 +54,13 @@ const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigatio
   }
 
   return (
-    <nav className={pageNavigationStyle.container}>
+    <nav className={PageNavigationStyle.container}>
       {/* 이전 버튼 */}
       <button
         type="button"
         onClick={handlePrevious}
         disabled={isFirstPage}
-        className={pageNavigationStyle.arrowButton(isFirstPage)}
+        className={PageNavigationStyle.arrowButton(isFirstPage)}
         aria-label="이전 페이지">
         <ArrowLeftIcon className="w-5 h-5" />
       </button>
@@ -71,7 +71,7 @@ const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigatio
           key={page}
           type="button"
           onClick={() => onPageChange(page)}
-          className={pageNavigationStyle.pageButton(page === currentPage)}
+          className={PageNavigationStyle.pageButton(page === currentPage)}
           aria-label={`${page}페이지`}
           aria-current={page === currentPage ? 'page' : undefined}>
           {page}
@@ -83,7 +83,7 @@ const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigatio
         type="button"
         onClick={handleNext}
         disabled={isLastPage}
-        className={pageNavigationStyle.arrowButton(isLastPage)}
+        className={PageNavigationStyle.arrowButton(isLastPage)}
         aria-label="다음 페이지">
         <ArrowRightIcon className="w-5 h-5" />
       </button>

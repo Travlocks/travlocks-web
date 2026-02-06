@@ -1,4 +1,4 @@
-export const OnboardingWidgetStyles = {
+export const OnboardingWidgetStyle = {
   componentsWrapper: 'flex flex-col gap-[12px]',
 
   headerText: 'h9 text-base-color-0',
