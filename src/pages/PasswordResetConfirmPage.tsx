@@ -54,8 +54,8 @@ const PasswordResetConfirmPage = () => {
 
     resetPassword({
       token: token,
-      password: data.password,
-      newPassword: data.passwordCheck,
+      newPassword: data.password,
+      newPasswordConfirm: data.passwordCheck,
     });
   };
 

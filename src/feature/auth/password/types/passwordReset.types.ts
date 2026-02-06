@@ -9,8 +9,8 @@ export type RequestPasswordResetLinkDto = {
 // 비밀번호 재설정 요청 타입
 export type RequestPasswordResetDto = {
   token: string;
-  password: string;
   newPassword: string;
+  newPasswordConfirm: string;
 };
 
 // 비밀번호 재설정 링크 전송 성공 응답
