@@ -7,6 +7,7 @@ import type {
 } from '@/feature/search/types/searchTemplate.types';
 import { TRANSPORT_TYPE_MAP } from '@/shared/constants/transportType';
 import { TRIP_DURATION_MAP } from '@/shared/constants/tripDuration';
+import { QUERY_KEY } from '@/shared/constants/key';
 
 /**
  * 템플릿 탐색 API를 호출하는 함수
@@ -107,7 +108,7 @@ function buildParams(keyword: string, filters: FilterState, sort: SortOption, pa
 export function useTemplateSearch(keyword: string, filters: FilterState, sort: SortOption, page: number) {
   const params = buildParams(keyword, filters, sort, page);
   return useQuery({
-    queryKey: ['template-search', keyword, filters, sort, page],
+    queryKey: [QUERY_KEY.templateSearch, keyword, filters, sort, page],
     queryFn: () => fetchTemplates(params),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
