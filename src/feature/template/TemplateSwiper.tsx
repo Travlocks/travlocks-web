@@ -3,7 +3,7 @@ import type { EmblaOptionsType } from 'embla-carousel';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import TemplateCard from './TemplateCard';
 import type { Template } from './template.types';
-import { templateSwiperStyles } from './styles/TemplateSwiperStyles';
+import { TemplateSwiperStyles } from './styles/TemplateSwiperStyles';
 
 // Props of TemplateSwiper
 interface TemplateSwiperProps {
@@ -42,10 +42,10 @@ const TemplateSwiper = ({ cards }: TemplateSwiperProps) => {
     <div className="w-full flex flex-col items-center">
       <div className="w-full">
         {/* Embla Carousel 컨테이너 */}
-        <div className={templateSwiperStyles.embla} ref={emblaRef}>
-          <div className={templateSwiperStyles.container}>
+        <div className={TemplateSwiperStyles.embla} ref={emblaRef}>
+          <div className={TemplateSwiperStyles.container}>
             {cards.map((card) => (
-              <div key={card.templateId} className={templateSwiperStyles.slide}>
+              <div key={card.templateId} className={TemplateSwiperStyles.slide}>
                 <TemplateCard template={card} />
               </div>
             ))}
