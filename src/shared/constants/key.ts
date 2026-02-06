@@ -5,3 +5,7 @@ export const SESSION_STORAGE_KEY = {
 export const LOCAL_STORAGE_KEY = {
   accessToken: 'accessToken',
 };
+
+export const QUERY_KEY = {
+  verifyResetToken: 'verifyResetToken',
+};
