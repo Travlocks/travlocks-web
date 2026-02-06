@@ -91,7 +91,7 @@ const OnboardingWidget = () => {
         <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div>
             <span className={OnboardingWidgetStyle.headerText}>
-              교통 수단 선택<span className="text-primary-color">(복수 선택 가능)</span>
+              교통 수단 선택<span className="text-primary-color">(최대 1개)</span>
             </span>
           </div>
           <TransportTypeSelector onSelect={setSelectedTransportTypes} />
@@ -101,7 +101,7 @@ const OnboardingWidget = () => {
         <div className={OnboardingWidgetStyle.componentsWrapper}>
           <div>
             <span className={OnboardingWidgetStyle.headerText}>
-              여행 테마 선택<span className="text-primary-color">(최대 3개)</span>
+              여행 테마 선택<span className="text-primary-color">(최대 1개)</span>
             </span>
           </div>
           <TravelThemeSelector onSelect={setSelectedTravelThemeIds} />

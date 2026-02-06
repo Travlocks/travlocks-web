@@ -96,6 +96,17 @@ export const routes: RouteObject[] = [
           },
         ],
       },
+      {
+        element: (
+          <FeatureLayout subtitle="나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!" title="블록 쌓기" />
+        ),
+        children: [
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OnboardingPage />,
+          },
+        ],
+      },
     ],
   },
 ];
