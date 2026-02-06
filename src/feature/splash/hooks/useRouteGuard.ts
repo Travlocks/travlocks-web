@@ -1,7 +1,7 @@
-import { useLocation } from 'react-router-dom';
-import { useSplashState } from './useSplashState';
-import { useMatches } from 'react-router-dom';
+import { useLocation, useMatches } from 'react-router-dom';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { useSplashStore } from '@/shared/stores/splashStore';
+import { useShallow } from 'zustand/react/shallow';
 
 interface RouteHandle {
   skipSplash?: boolean;
@@ -10,9 +10,17 @@ interface RouteHandle {
 
 export const useRouteGuard = (protectedRoutes: boolean) => {
   const location = useLocation();
-  const { showSplash, handleSplashDone, handleSplashReset, hasSeenSplash, setShowSplash } = useSplashState();
   const { isAuthenticated, shouldRequireAuth } = useAuth();
   const matches = useMatches();
+
+  // store에서 상태 읽기
+  const { showSplash, hasSeenSplash, isAnimating } = useSplashStore(
+    useShallow((state) => ({
+      showSplash: state.showSplash,
+      hasSeenSplash: state.hasSeenSplash,
+      isAnimating: state.isAnimating,
+    })),
+  );
 
   // 현재 라우트의 플래그 조회 (handle)
   const routeFlags = matches.reduce<RouteHandle>(
@@ -29,6 +37,10 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
   const isHomeRoute = location.pathname === '/';
 
   const getRedirect = () => {
+    if (isAnimating) {
+      return null;
+    }
+
     // 스플래시 안본상태 + 인증 페이지 접근시
     if (!hasSeenSplash && isAuthPage && !routeFlags.skipSplash) {
       return '/';
@@ -42,6 +54,7 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
     if (hasSeenSplash && protectedRoutes && shouldRequireAuth && !routeFlags.skipSessionGate) {
       return '/login';
     }
+    return null;
   };
 
   return {
@@ -49,10 +62,8 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
     showSplash,
     isHomeRoute,
     isAuthenticated,
-    handleSplashDone,
-    handleSplashReset,
     hasSeenSplash,
-    setShowSplash,
+    isAnimating,
     redirectTo: getRedirect(),
   };
 };

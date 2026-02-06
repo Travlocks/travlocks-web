@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { useRouteGuard } from '@feature/splash/hooks/useRouteGuard';
-import { useSplashState } from '@/feature/splash/hooks/useSplashState';
+import { useSplashStore } from '@/shared/stores/splashStore';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -13,7 +13,7 @@ interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLayoutProps) => {
-  const { handleSplashDone } = useSplashState();
+  const { completeSplash, setIsAnimating } = useSplashStore((state) => state.actions);
 
   const { showSplash, isAuthPage, isHomeRoute, redirectTo } = useRouteGuard(protectedRoutes);
 
@@ -24,6 +24,16 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
     return <Navigate to={redirectTo} replace />;
   }
 
+  // 스플래시 애니메이션 시작 핸들러
+  const handleSplashStart = () => {
+    setIsAnimating(true);
+  };
+
+  // 스플래시 애니메이션 완료 핸들러
+  const handleSplashDone = () => {
+    completeSplash();
+  };
+
   return (
     <div className="relative w-full min-h-dvh overflow-hidden" aria-label="메인 레이아웃">
       {/* 메인 배경 */}
@@ -31,7 +41,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
       {/* 스플래시 플로우 */}
       {isHomeRoute && (
         <AnimatePresence mode="wait">
-          {showSplash && <SplashFlow key="splash" onDone={handleSplashDone} />}
+          {showSplash && <SplashFlow key="splash" onStart={handleSplashStart} onDone={handleSplashDone} />}
         </AnimatePresence>
       )}
       {/* 스플래시 완료 후 메인 콘텐츠 렌더링 */}
