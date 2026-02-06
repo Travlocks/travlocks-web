@@ -1,21 +1,31 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import PasswordResetView from '@/feature/auth/password/ui/PasswordResetConfirmView';
+import PasswordResetConfirmView from '@/feature/auth/password/ui/PasswordResetConfirmView';
 import type { Step } from './ResetPasswordPage';
 import { usePasswordHeader } from '@/feature/auth/password/hooks/usePasswordHeader';
 import type { PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
 import { useVerifyResetToken } from '@/feature/auth/password/hooks/useVerifyResetToken';
+import { usePasswordReset } from '@/feature/auth/password/hooks/usePasswordReset';
 
 const PasswordResetConfirmPage = () => {
-  const [step] = useState<Step>('reset');
+  const [step, setStep] = useState<Step>('reset');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   usePasswordHeader(step);
 
   const token = searchParams.get('token') || searchParams.get('resetToken');
-
+  // 토큰 검증
   const { data, error, isPending: isVerifying } = useVerifyResetToken(token);
+  // 비밀번호 재설정
+  const { resetPassword, isPending } = usePasswordReset({
+    onSuccess: () => {
+      setStep('success');
+    },
+    onError: (_error, errorMessage) => {
+      console.error('비밀번호 재설정 실패:', errorMessage);
+    },
+  });
 
   // 토큰 검증 결과 처리
   useEffect(() => {
@@ -39,8 +49,14 @@ const PasswordResetConfirmPage = () => {
   }, [data, error, token, navigate]);
 
   const handleSubmit = (data: PasswordConfirmFormData) => {
-    // TODO: 비밀번호 재설정 API 연동
-    console.log('reset password submit', data);
+    if (isPending) return;
+    if (!token) return;
+
+    resetPassword({
+      token: token,
+      password: data.password,
+      newPassword: data.passwordCheck,
+    });
   };
 
   // 토큰이 없거나 검증 중이거나 에러가 있으면 로딩 표시
@@ -50,7 +66,7 @@ const PasswordResetConfirmPage = () => {
 
   return (
     <div className="mt-13 max-w-[500px] mx-auto">
-      <PasswordResetView step={step} onSubmitResetPassword={handleSubmit} />
+      <PasswordResetConfirmView step={step} onSubmitResetPassword={handleSubmit} />
     </div>
   );
 };

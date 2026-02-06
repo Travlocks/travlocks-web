@@ -22,9 +22,21 @@ const ERRORS = [
   },
 ];
 
-const PasswordResetView = ({ onSubmitResetPassword }: Props) => {
+const PasswordResetConfirmView = ({ step, onSubmitResetPassword }: Props) => {
   const { register, submit, canSubmit, errors, dirtyFields, isLengthValid, isCombinationValid } =
     usePasswordConfirmForm(onSubmitResetPassword);
+
+  // 비밀번호 재설정 성공 시 비밀번호 입력 폼 렌더링
+  if (step === 'success') {
+    return (
+      <>
+        <div className="flex flex-col gap-[8px]">
+          <p className="b1 text-base-color-0">비밀번호 재설정이 완료되었습니다.</p>
+          <Button type="button" text="로그인으로 돌아가기" showIcon={false} className="mt-10 rounded-[10px]" />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -103,4 +115,4 @@ const PasswordResetView = ({ onSubmitResetPassword }: Props) => {
   );
 };
 
-export default PasswordResetView;
+export default PasswordResetConfirmView;
