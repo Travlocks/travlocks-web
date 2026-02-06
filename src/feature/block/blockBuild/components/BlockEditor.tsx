@@ -13,6 +13,7 @@ import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 const BlockEditor = () => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
+  const [level, setLevel] = useState<'timeline' | 'editor'>('timeline');
   const PAD = 2000;
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
@@ -36,17 +37,19 @@ const BlockEditor = () => {
         {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
           {/* 처음 렌더링 시 타임라인 */}
-          <BlockTimeLine />
+          {level === 'timeline' && <BlockTimeLine setLevel={setLevel} />}
 
-          <BlockEditorContent
-            boardRef={boardRef}
-            puzzleBlocks={puzzleBlocks}
-            dockHint={dockHint}
-            currentDay={currentDay}
-            onDayChange={editorActions.setDay}
-            zoom={zoom}
-            onZoomChange={setZoom}
-          />
+          {level === 'editor' && (
+            <BlockEditorContent
+              boardRef={boardRef}
+              puzzleBlocks={puzzleBlocks}
+              dockHint={dockHint}
+              currentDay={currentDay}
+              onDayChange={editorActions.setDay}
+              zoom={zoom}
+              onZoomChange={setZoom}
+            />
+          )}
         </main>
       </div>
 

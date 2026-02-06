@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import { useBlockEditor } from '../blockBuild/hooks/useBlockEditor';
 import DayCard from './components/DayCard';
 
@@ -11,7 +12,11 @@ const TravelData = {
   travelThemeIds: [1, 2, 3],
 };
 
-const BlockTimeLine = () => {
+interface BlockTimeLineProps {
+  setLevel: Dispatch<SetStateAction<'timeline' | 'editor'>>;
+}
+
+const BlockTimeLine = ({ setLevel }: BlockTimeLineProps) => {
   const { days } = TravelData.trip; // 여행 일수
   const { blocksByDay } = useBlockEditor(); // 날짜별 블록
 
@@ -23,7 +28,7 @@ const BlockTimeLine = () => {
 
       <div className="py-[65px] px-[49px] flex gap-[40px] overflow-scroll h-full">
         {Array.from({ length: days }, (_, i) => (
-          <DayCard key={i} day={i + 1} items={blocksByDay[i + 1]} />
+          <DayCard key={i} day={i + 1} items={blocksByDay[i + 1]} onClick={() => setLevel('editor')} />
         ))}
       </div>
     </div>

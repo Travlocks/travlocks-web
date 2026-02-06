@@ -7,9 +7,10 @@ import TimeLineBlockItem from './TimeLineBlockItem';
 interface DayCardProps {
   day: number;
   items: Block[];
+  onClick: () => void;
 }
 
-const DayCard = ({ day, items }: DayCardProps) => {
+const DayCard = ({ day, items, onClick }: DayCardProps) => {
   const { isOver, setNodeRef } = useDroppable({
     id: `timeline-${day}`,
   });
@@ -21,8 +22,9 @@ const DayCard = ({ day, items }: DayCardProps) => {
     <SortableContext items={items.map((b) => b.blockId)} strategy={verticalListSortingStrategy}>
       <div
         ref={setNodeRef}
+        onClick={onClick}
         className={clsx(
-          'w-[288px] shrink-0 p-[22px] pt-[28px] min-h-[191px] h-max rounded-[20px] border border-base-color',
+          'w-[288px] shrink-0 p-[22px] pt-[28px] min-h-[191px] h-max rounded-[20px] border border-base-color cursor-pointer',
           isSidebarDragging && isOver ? 'bg-[rgba(60,78,244,0.10)] border-primary-color' : 'bg-white',
         )}>
         <div className="flex flex-col gap-[28px] justify-center">
@@ -35,15 +37,17 @@ const DayCard = ({ day, items }: DayCardProps) => {
                   ? 'bg-primary-color text-white'
                   : 'bg-[rgba(60,78,244,0.10)] text-primary-color',
               )}>
-              {items.length} Vlocks
+              {items.filter((item) => item.name !== 'START').length} Vlocks
             </div>
           </div>
 
-          {items.map((item) => (
-            <div key={item.blockId}>
-              <TimeLineBlockItem key={item.blockId} block={item} day={day} />
-            </div>
-          ))}
+          {items
+            .filter((item) => item.name !== 'START')
+            .map((item) => (
+              <div key={item.blockId}>
+                <TimeLineBlockItem key={item.blockId} block={item} day={day} />
+              </div>
+            ))}
 
           <div
             className={clsx(
