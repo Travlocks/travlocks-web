@@ -24,7 +24,7 @@ const ProfileHeader = ({ className }: ProfileHeaderProps) => {
         </div>
       </div>
 
-      <button className="flex items-center gap-x-1.5 px-6 py-3 border border-base-color-3 rounded-full text-base-color-1 h6 hover:bg-base-color-4 transition-colors">
+      <button className="flex items-center gap-x-1.5 px-6 py-3 border border-base-color rounded-full text-base-color-1 h6 hover:bg-base-color-4 transition-colors">
         <SettingsIcon />
         계정 설정
       </button>

@@ -14,7 +14,7 @@ const StatusCard = ({ icon, label, count, onClick, className }: StatusCardProps)
   return (
     <div
       className={clsx(
-        'flex flex-col flex-1 bg-base-color-6 border border-base-color-3 rounded-[10px] p-8 shadow-sm hover:shadow-md cursor-pointer justify-between',
+        'flex flex-col flex-1 bg-base-color-6 border border-base-color rounded-[10px] p-8 shadow-sm hover:shadow-md cursor-pointer justify-between',
         className,
       )}
       onClick={onClick}>

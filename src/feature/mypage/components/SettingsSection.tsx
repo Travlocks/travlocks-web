@@ -55,7 +55,7 @@ const SettingsSection = ({
     <div className={clsx('flex flex-col gap-7', className)}>
       <SectionHeader title="설정" />
 
-      <div className="p-9 bg-base-color-6 border border-base-color-3 rounded-[10px]">
+      <div className="p-9 bg-base-color-6 border border-base-color rounded-[10px]">
         {/* Profile Edit Form Section */}
         <h3 className="h4 text-base-color-0 mb-8">프로필 편집</h3>
 

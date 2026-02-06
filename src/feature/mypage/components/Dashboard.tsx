@@ -80,7 +80,7 @@ const Dashboard = () => {
         <StatusCard icon={<StarIcon />} label="즐겨찾기" count={12} />
       </div>
 
-      <div className="mt-12">
+      <div className="mt-20">
         <SectionHeader title="최근 활동" />
       </div>
 
@@ -98,7 +98,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-20">
         <SettingsSection
           initialNickname="디모"
           email="your@email.com"

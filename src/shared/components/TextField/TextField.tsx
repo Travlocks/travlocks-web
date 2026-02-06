@@ -51,8 +51,11 @@ const TextField = ({ label, error, helperText, onClear, register, className, id,
           className={clsx(
             'peer w-full text-[18px] px-4 py-4.25 rounded-[5px] border outline-none transition-all',
             'placeholder-[#9CA3AF]', // 디자인 시스템에서 base-color 다시 확인
-            error ? 'border-negative' : 'border-base-color-3 bg-base-color-6 focus:border-primary-color',
-            props.disabled && 'bg-base-color-4 cursor-not-allowed text-base-color-1',
+            error
+              ? 'border-negative'
+              : props.disabled
+                ? 'border-base-color bg-base-color-4 cursor-not-allowed text-base-color-3'
+                : 'border-base-color bg-base-color-6 focus:border-primary-color',
             'h-15',
             onClear && 'pr-12',
           )}

@@ -12,6 +12,7 @@ import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/templa
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
+import MyPage from './MyPage';
 
 const TestPage = () => {
   const schema = z.object({
@@ -49,6 +50,10 @@ const TestPage = () => {
 
   return (
     <>
+      <div>
+        <MyPage />
+      </div>
+
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>
 

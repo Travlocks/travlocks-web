@@ -18,7 +18,7 @@ const StyleCard = ({ icon, label, isSelected = false, onClick, className }: Styl
         'flex flex-col items-center justify-center gap-1.25 w-full h-[159px] px-11.5 py-5 rounded-[10px] border transition-all cursor-pointer',
         isSelected
           ? 'border-primary-color bg-primary-color/5'
-          : 'border-base-color-3 bg-base-color-6 hover:border-base-color-2',
+          : 'border-base-color bg-base-color-6 hover:border-base-color-2',
         className,
       )}>
       <div className="w-8 h-8 rounded-[10px] bg-base-color-4 flex items-center justify-center">
