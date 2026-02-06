@@ -10,7 +10,7 @@ interface TimeLineBlockItemProps {
 
 const TimeLineBlockItem = ({ block, day }: TimeLineBlockItemProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: block.blockId,
+    id: `${block.blockId}-${day}`,
     data: {
       type: 'blockTimeline',
       day,

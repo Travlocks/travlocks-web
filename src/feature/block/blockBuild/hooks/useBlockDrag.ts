@@ -150,8 +150,8 @@ export const useBlockDrag = ({
         updateBlocksByDay((prev) => {
           const items = prev[day];
 
-          const oldIdx = items.findIndex((b) => b.blockId === e.active.id);
-          const newIDx = items.findIndex((b) => b.blockId === overId);
+          const oldIdx = items.findIndex((b) => `${b.blockId}-${day}` === e.active.id);
+          const newIDx = items.findIndex((b) => `${b.blockId}-${day}` === overId);
 
           return {
             ...prev,
