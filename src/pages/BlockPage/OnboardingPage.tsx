@@ -1,4 +1,4 @@
-import OnboardingWidget from '@/feature/block/onboarding/widgets/OnboardingWidget';
+import OnboardingWidget from '@/feature/block/onboarding/OnboardingWidget';
 
 const OnboardingPage = () => {
   return (

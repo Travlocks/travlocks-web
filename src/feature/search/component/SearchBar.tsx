@@ -27,7 +27,7 @@ interface SearchBarProps {
 const SearchBar = ({ onSearch, placeholder = '입력해주세요.' }: SearchBarProps) => {
   const { inputProps, debouncedValue } = useDebouncedInputProps({
     delay: 300,
-    submit: () => { },
+    submit: () => {},
   });
 
   useEffect(() => {
