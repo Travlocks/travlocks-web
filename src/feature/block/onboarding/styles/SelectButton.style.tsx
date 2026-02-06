@@ -1,7 +1,7 @@
 // src/shared/components/SelectButton.style.tsx
 import { clsx } from 'clsx';
 
-export const SelectButtonStyles = {
+export const SelectButtonStyle = {
   Root: (isSelected?: boolean) =>
     clsx(
       'inline-flex flex-col items-center justify-center',

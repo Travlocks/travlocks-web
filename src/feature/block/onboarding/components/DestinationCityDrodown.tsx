@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { REGIONS, type Region, type DestinationCity, type DestinationCityId } from '@/shared/constants/destinationCity';
-import { DropdownStyles } from '../styles/Dropdown.style';
+import { DropdownStyle } from '../styles/Dropdown.style';
 import BackIcon from '@/shared/assets/icon-arrow-left.svg?react';
 import PinIcon from '@/shared/assets/icon-pin.svg?react';
 import DeleteIcon from '@/shared/assets/icon-x.svg?react';
@@ -96,22 +96,22 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
   return (
     <div ref={dropdownRef} className="relative w-full">
       {/* 인풋/태그 영역 */}
-      <div className={clsx(DropdownStyles.inputField, 'gap-[12px]')} onClick={handleToggle}>
+      <div className={clsx(DropdownStyle.inputField, 'gap-[12px]')} onClick={handleToggle}>
         {selectedCities.length === 0 && (
           <>
             <PinIcon />
-            <span className={DropdownStyles.placeholder}>{PLACEHOLDER_TEXT}</span>
+            <span className={DropdownStyle.placeholder}>{PLACEHOLDER_TEXT}</span>
           </>
         )}
         {selectedCities.length > 0 && (
           <div className="flex flex-row gap-[12px] flex-wrap">
             {selectedCities.map((city) => (
-              <div key={city.id} className={DropdownStyles.tag} onClick={(e) => e.stopPropagation()}>
+              <div key={city.id} className={DropdownStyle.tag} onClick={(e) => e.stopPropagation()}>
                 {' '}
                 {/* 태그 클릭 시 인풋 영역 클릭 이벤트 방지 */}
                 <span>{city.name.korean}</span>
-                <div className={DropdownStyles.deleteIconWrapper} onClick={() => handleDeleteCity(city.id)}>
-                  <DeleteIcon className={DropdownStyles.deleteIcon} />
+                <div className={DropdownStyle.deleteIconWrapper} onClick={() => handleDeleteCity(city.id)}>
+                  <DeleteIcon className={DropdownStyle.deleteIcon} />
                 </div>
               </div>
             ))}
@@ -121,16 +121,16 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
 
       {/* 드롭다운 메뉴 */}
       {isOpen && (
-        <div className={clsx(DropdownStyles.dropdownContainer, 'p-[25px_36px]')}>
+        <div className={clsx(DropdownStyle.dropdownContainer, 'p-[25px_36px]')}>
           {/* 권역 선택 영역 */}
           {!selectedRegion && (
             <div className="flex flex-col gap-[12px]">
-              <div className={DropdownStyles.header}>
+              <div className={DropdownStyle.header}>
                 <span>추천 여행지</span>
               </div>
               <div className="flex flex-row flex-wrap gap-[20px]">
                 {REGIONS.map((region) => (
-                  <button key={region.id} className={DropdownStyles.button} onClick={() => handleRegionClick(region)}>
+                  <button key={region.id} className={DropdownStyle.button} onClick={() => handleRegionClick(region)}>
                     {region.name.korean}
                   </button>
                 ))}
@@ -141,16 +141,16 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
           {/* 도시 선택 영역 */}
           {selectedRegion && (
             <div className="flex flex-col gap-[12px]">
-              <div className={DropdownStyles.header}>
-                <div onClick={handleBackToRegions} className={DropdownStyles.backIconWrapper}>
-                  <BackIcon className={DropdownStyles.backIcon} />
+              <div className={DropdownStyle.header}>
+                <div onClick={handleBackToRegions} className={DropdownStyle.backIconWrapper}>
+                  <BackIcon className={DropdownStyle.backIcon} />
                 </div>
                 <span>{selectedRegion.name.korean}</span>
               </div>
 
               <div className="flex flex-row flex-wrap gap-[20px]">
                 {selectedRegion.cities.map((city) => (
-                  <button key={city.id} className={DropdownStyles.button} onClick={() => handleCitySelect(city)}>
+                  <button key={city.id} className={DropdownStyle.button} onClick={() => handleCitySelect(city)}>
                     {city.name.korean}
                   </button>
                 ))}

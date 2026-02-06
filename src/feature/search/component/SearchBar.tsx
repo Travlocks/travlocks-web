@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDebouncedInputProps } from '@/shared/hooks/useDebouncedInput';
 import SearchIcon from '@/shared/assets/icon-search.svg?react';
-import { SearchBarStyles } from '@feature/search/style/SearchBar.style';
+import { SearchBarStyle } from '@feature/search/style/SearchBar.style';
 
 /**
  * 템플릿 검색바 컴포넌트의 Props
@@ -27,7 +27,7 @@ interface SearchBarProps {
 const SearchBar = ({ onSearch, placeholder = '입력해주세요.' }: SearchBarProps) => {
   const { inputProps, debouncedValue } = useDebouncedInputProps({
     delay: 300,
-    submit: () => {},
+    submit: () => { },
   });
 
   useEffect(() => {
@@ -35,11 +35,11 @@ const SearchBar = ({ onSearch, placeholder = '입력해주세요.' }: SearchBarP
   }, [debouncedValue]);
 
   return (
-    <div className={SearchBarStyles.container}>
-      <div className={SearchBarStyles.searchIconWrapper}>
-        <SearchIcon className={SearchBarStyles.searchIcon} />
+    <div className={SearchBarStyle.container}>
+      <div className={SearchBarStyle.searchIconWrapper}>
+        <SearchIcon className={SearchBarStyle.searchIcon} />
       </div>
-      <input type="text" {...inputProps} placeholder={placeholder} className={SearchBarStyles.input} />
+      <input type="text" {...inputProps} placeholder={placeholder} className={SearchBarStyle.input} />
     </div>
   );
 };
