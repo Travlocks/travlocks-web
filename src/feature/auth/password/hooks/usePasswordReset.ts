@@ -11,7 +11,7 @@ export const usePasswordReset = (options?: UsePasswordResetOptions) => {
   const mutation = useMutation<PasswordResetSuccessResponse, Error, RequestPasswordResetDto>({
     mutationFn: postPasswordReset,
     onSuccess: (data) => {
-      console.log(data);
+      options?.onSuccess?.(data);
     },
     onError: (error: Error) => {
       const errorMessage = error.message;

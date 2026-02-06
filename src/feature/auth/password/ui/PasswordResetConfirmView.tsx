@@ -8,6 +8,7 @@ import type { PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
 import Button from '@/shared/components/Button/Button';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
 
 type Props = {
   step: Step;
@@ -22,21 +23,25 @@ const ERRORS = [
   },
 ];
 
-const PasswordResetConfirmView = ({ step, onSubmitResetPassword }: Props) => {
+// 비밀번호 재설정 성공 UI
+const PasswordResetSuccessView = () => {
+  const { buttonText } = AUTH_HEADER.password.success;
+
+  return (
+    <Link to="/login" className="w-full">
+      <Button text={buttonText} showIcon className="w-full rounded-[10px]" />
+    </Link>
+  );
+};
+
+// 비밀번호 재설정 폼 UI
+const PasswordResetFormView = ({
+  onSubmitResetPassword,
+}: {
+  onSubmitResetPassword: (data: PasswordConfirmFormData) => void;
+}) => {
   const { register, submit, canSubmit, errors, dirtyFields, isLengthValid, isCombinationValid } =
     usePasswordConfirmForm(onSubmitResetPassword);
-
-  // 비밀번호 재설정 성공 시 비밀번호 입력 폼 렌더링
-  if (step === 'success') {
-    return (
-      <>
-        <div className="flex flex-col gap-[8px]">
-          <p className="b1 text-base-color-0">비밀번호 재설정이 완료되었습니다.</p>
-          <Button type="button" text="로그인으로 돌아가기" showIcon={false} className="mt-10 rounded-[10px]" />
-        </div>
-      </>
-    );
-  }
 
   return (
     <>
@@ -102,17 +107,25 @@ const PasswordResetConfirmView = ({ step, onSubmitResetPassword }: Props) => {
         <Button
           type="submit"
           disabled={!canSubmit}
-          text="비밀번호 재설정"
+          text={AUTH_HEADER.password.reset.buttonText}
           showIcon={false}
           className="mt-10 rounded-[10px]"
         />
-        <Link to="/login" className="flex justify-center items-center gap-2.5 mt-5">
-          <AppIcon name="arrow" className="rotate-180 text-base-color-1" size={16} />
-          <p className="b4 text-base-color-1">로그인으로 돌아가기</p>
-        </Link>
       </form>
+      <Link to="/login" className="flex justify-center items-center gap-2.5 mt-5">
+        <AppIcon name="arrow" className="rotate-180 text-base-color-1" size={16} />
+        <p className="b4 text-base-color-1">로그인으로 돌아가기</p>
+      </Link>
     </>
   );
+};
+
+const PasswordResetConfirmView = ({ step, onSubmitResetPassword }: Props) => {
+  if (step === 'success') {
+    return <PasswordResetSuccessView />;
+  }
+
+  return <PasswordResetFormView onSubmitResetPassword={onSubmitResetPassword} />;
 };
 
 export default PasswordResetConfirmView;
