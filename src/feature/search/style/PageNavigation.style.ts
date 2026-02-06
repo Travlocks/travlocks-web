@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export const pageNavigationStyle = {
+export const PageNavigationStyle = {
   container: 'flex items-center justify-center gap-[16px]',
 
   arrowButton: (cannotRender: boolean) =>
