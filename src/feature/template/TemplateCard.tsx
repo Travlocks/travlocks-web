@@ -4,6 +4,7 @@ import { templateCardStyles } from './styles/TemplateCard.styles';
 import RemixIcon from '@/shared/assets/template/icon-remix.svg?react';
 import StarIcon from '@/shared/assets/template/icon-star.svg?react';
 import PinIcon from '@/shared/assets/template/icon-pin.svg?react';
+import SingleButton from '@/shared/components/Button/SingleButton';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -39,14 +40,16 @@ interface TemplateCardProps {
 const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
   return (
     <div className={templateCardStyles.wrapper()}>
-      <div className={templateCardStyles.container}>
+      <div className={templateCardStyles.container()}>
         {/* 썸네일 */}
         <div className={templateCardStyles.imageContainer}>
-          <img className={templateCardStyles.image} src={template.coverImageUrl} alt={template.title} />
+          <img className={templateCardStyles.image()} src={template.coverImageUrl} alt={template.title} />
         </div>
 
         {/* 여행 테마 태그 */}
-        <div className={templateCardStyles.travelTheme} style={{ backgroundColor: THEME_COLORS[template.travelTheme] }}>
+        <div
+          className={templateCardStyles.travelTheme()}
+          style={{ backgroundColor: THEME_COLORS[template.travelTheme] }}>
           {template.travelTheme}
         </div>
 
@@ -82,14 +85,17 @@ const TemplateCard = ({ template, onClick }: TemplateCardProps) => {
               )}
             </div>
 
-            <button className={templateCardStyles.button} onClick={() => onClick?.(template.templateId)}>
-              {template.type === 'popular' && (
-                <span className={templateCardStyles.buttonIcon}>
-                  <RemixIcon />
-                </span>
-              )}
-              {template.type === 'recommended' ? '이 템플릿 사용하기' : '리믹스 하기'}
-            </button>
+            <SingleButton
+              text={template.type === 'recommended' ? '이 템플릿 사용하기' : '리믹스 하기'}
+              width={387}
+              height={45}
+              textSize={18}
+              variant="white"
+              onClick={() => onClick?.(template.templateId)}
+              className={templateCardStyles.button()}
+              icon={template.type === 'popular' ? <RemixIcon className={templateCardStyles.buttonIcon} /> : undefined}
+              iconPosition="left"
+            />
           </div>
         </div>
       </div>
