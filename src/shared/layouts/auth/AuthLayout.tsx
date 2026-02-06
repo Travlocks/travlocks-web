@@ -29,10 +29,11 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
   const location = useLocation();
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
   const { shouldRequireMember } = useAuth();
-  const isPasswordResetRoute = location.pathname === '/password-reset';
+
+  console.log('AuthLayout 렌더링', { memberRoutes, path: location.pathname });
 
   // 멤버 전용 라우트
-  if (memberRoutes && shouldRequireMember && !isPasswordResetRoute) {
+  if (memberRoutes && shouldRequireMember) {
     return <Navigate to="/" replace />;
   }
 

@@ -2,10 +2,15 @@ import Navbar from '@/shared/components/Navbar/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
 import { Suspense, useState } from 'react';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useMatches, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
 import { useAuth } from '../hooks/useAuth';
+
+interface RouteHandle {
+  skipSplash?: boolean;
+  skipSessionGate?: boolean;
+}
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -17,10 +22,26 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   const navigate = useNavigate();
   const { isAuthenticated, shouldRequireAuth } = useAuth();
   const isHomeRoute = location.pathname === '/';
+  const matches = useMatches();
+
+  const { skipSplash, skipSessionGate } = matches.reduce<RouteHandle>(
+    (acc, m) => ({
+      skipSplash: acc.skipSplash || (m.handle as RouteHandle)?.skipSplash || false,
+      skipSessionGate: acc.skipSessionGate || (m.handle as RouteHandle)?.skipSessionGate || false,
+    }),
+    { skipSplash: false, skipSessionGate: false },
+  );
 
   // 스플래시 표시 여부 저장
   const showSplashStorage = sessionStorage.getItem(SESSION_STORAGE_KEY.showSplash);
-  const [showSplash, setShowSplash] = useState(showSplashStorage !== 'false');
+  const [showSplash, setShowSplash] = useState(() => {
+    // skipSplash가 있으면 초기값부터 false로 설정하고 세션 스토리지 업데이트
+    if (skipSplash) {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.showSplash, 'false');
+      return false;
+    }
+    return showSplashStorage !== 'false';
+  });
 
   // 스플래시 완료 시 세션 스토리지에 표시 여부 저장
   const handleSplashDone = () => {
@@ -35,12 +56,12 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   // 다른 url로 들어오면 스플래시
-  if (showSplash && !isHomeRoute && !isAuthPage) {
+  if (showSplash && !isAuthPage && !skipSplash) {
     return <Navigate to="/" replace />;
   }
 
   // 모든 사용자는 로그인 후에 서비스 이용 가능
-  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
+  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute && !skipSessionGate) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 

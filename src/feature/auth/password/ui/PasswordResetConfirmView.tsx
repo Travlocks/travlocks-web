@@ -1,6 +1,5 @@
 import type { Step } from '@/pages/ResetPasswordPage';
 import Input from '@/shared/components/Form/Input';
-import { usePasswordHeader } from '../hooks/usePasswordHeader';
 import clsx from 'clsx';
 import CheckIcon from '@assets/icon-check-password.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
@@ -23,9 +22,7 @@ const ERRORS = [
   },
 ];
 
-const PasswordResetView = ({ step, onSubmitResetPassword }: Props) => {
-  const { buttonText } = usePasswordHeader(step);
-
+const PasswordResetView = ({ onSubmitResetPassword }: Props) => {
   const { register, submit, canSubmit, errors, dirtyFields, isLengthValid, isCombinationValid } =
     usePasswordConfirmForm(onSubmitResetPassword);
 
@@ -93,7 +90,7 @@ const PasswordResetView = ({ step, onSubmitResetPassword }: Props) => {
         <Button
           type="submit"
           disabled={!canSubmit}
-          text={buttonText}
+          text="비밀번호 재설정"
           showIcon={false}
           className="mt-10 rounded-[10px]"
         />

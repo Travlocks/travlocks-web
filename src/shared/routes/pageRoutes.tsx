@@ -48,17 +48,23 @@ export const routes: RouteObject[] = [
             path: 'signup',
             element: <lazyRoutes.SignupPage />,
           },
+        ],
+      },
+      {
+        element: <AuthLayout />,
+        children: [
           {
             path: 'password',
             element: <lazyRoutes.ResetPasswordPage />,
           },
+          {
+            path: 'password-reset',
+            element: <lazyRoutes.PasswordResetConfirmPage />,
+            handle: { skipSplash: true, skipSessionGate: true },
+          },
         ],
       },
     ],
-  },
-  {
-    path: 'password-reset',
-    element: <lazyRoutes.PasswordResetConfirmPage />,
   },
   {
     path: '/test',
