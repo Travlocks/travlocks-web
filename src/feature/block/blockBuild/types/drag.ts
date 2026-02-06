@@ -1,6 +1,6 @@
 import type { Block, SidebarBlock } from './block';
 
-export type DragType = 'blockSidebar' | 'blockEditor';
+export type DragType = 'blockSidebar' | 'blockEditor' | 'blockTimeline';
 
 // 현재 드래그 중인 블록 정보
 export type ActiveDrag =
@@ -11,6 +11,10 @@ export type ActiveDrag =
       points: Block['points'];
       connectors: Block['connectors'];
       color: Block['color'];
+    }
+  | {
+      type: 'blockTimeline';
+      block: SidebarBlock;
     }
   | null;
 

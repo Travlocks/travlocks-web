@@ -1,10 +1,11 @@
+import { useBlockEditor } from '../blockBuild/hooks/useBlockEditor';
 import DayCard from './components/DayCard';
 
 const TravelData = {
   destinationCityIds: [301, 302],
   trip: {
-    days: 3,
-    nights: 2,
+    days: 5,
+    nights: 4,
   },
   transportTypes: ['WALK', 'TRANSIT'],
   travelThemeIds: [1, 2, 3],
@@ -12,6 +13,7 @@ const TravelData = {
 
 const BlockTimeLine = () => {
   const { days } = TravelData.trip; // 여행 일수
+  const { blocksByDay } = useBlockEditor(); // 날짜별 블록
 
   return (
     <div className="relative w-full h-full bg-[#F8FAFC]">
@@ -21,7 +23,7 @@ const BlockTimeLine = () => {
 
       <div className="py-[65px] px-[49px] flex gap-[40px] overflow-scroll h-full">
         {Array.from({ length: days }, (_, i) => (
-          <DayCard key={i} day={i + 1} />
+          <DayCard key={i} day={i + 1} items={blocksByDay[i + 1]} />
         ))}
       </div>
     </div>

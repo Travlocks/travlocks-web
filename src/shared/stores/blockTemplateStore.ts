@@ -40,8 +40,8 @@ type BlockTemplateActions = {
 // TODO: 필드명 Days 범위 추가 시 동적 수정 필요
 function createDefaultBlocksByDayRecord(): Record<number, Block[]> {
   return {
-    1: [START_BLOCK],
-    2: [START_BLOCK],
+    1: [],
+    2: [],
     3: [START_BLOCK],
     4: [START_BLOCK],
     5: [START_BLOCK],

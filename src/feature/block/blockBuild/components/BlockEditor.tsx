@@ -8,6 +8,7 @@ import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
 import { useState } from 'react';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
+import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 
 const BlockEditor = () => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
@@ -56,6 +57,7 @@ const BlockEditor = () => {
             const block = puzzleBlocks.find((b) => b.blockId === activeDrag.blockId);
             return block ? <PuzzleBlock block={block} isOverlay zoom={zoom} /> : null;
           })()}
+        {activeDrag?.type === 'blockTimeline' && <BlockItemUI item={activeDrag.block} />}
       </DragOverlay>
     </DndContext>
   );
