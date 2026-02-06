@@ -1,7 +1,10 @@
+import clsx from 'clsx';
+import { useState, type SetStateAction } from 'react';
+
+import type { Level } from '../blockBuild/types/level';
 import SaveIcon from '@assets/block/icon-save.svg?react';
 import ShareIcon from '@assets/block/icon-share.svg?react';
-import clsx from 'clsx';
-import { useState } from 'react';
+import LeftIcon from '@assets/splash/icon-arrow.svg?react';
 
 const VISIBILITY = [
   {
@@ -27,14 +30,37 @@ const ACTIONS = [
   },
 ];
 
-const BlockHeader = () => {
+interface BlockHeaderProps {
+  level: Level;
+  setLevel: React.Dispatch<SetStateAction<Level>>;
+}
+
+const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
 
   return (
     <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
       <section className="relative flex gap-[20px] items-center">
-        <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
+        {/* 이전 버튼 및 여행 제목 */}
+        <div className="flex gap-[8px]">
+          <div
+            onClick={() => {
+              if (level === 'editor') {
+                setLevel('timeline');
+              } else {
+                setLevel('editor');
+              }
+            }}
+            className={clsx(
+              'rounded-[10px] size-[36px] flex justify-center items-center cursor-pointer transition',
+              level === 'timeline' ? 'bg-base-color-3' : 'bg-primary-color',
+            )}>
+            <LeftIcon className="text-white rotate-180" />
+          </div>
+          <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
+        </div>
 
+        {/* 전체 공개 및 나만 보기 버튼 */}
         <div className="px-[6px] py-[6px] flex gap-[6px] items-center rounded-[5px] bg-base-color-4">
           {VISIBILITY.map((button) => (
             <button
@@ -52,6 +78,7 @@ const BlockHeader = () => {
         {/* <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" /> */}
       </section>
 
+      {/* 저장 및 공유하기 버튼 */}
       <section className="flex gap-[25px]">
         {ACTIONS.map((action) => (
           <button

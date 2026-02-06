@@ -6,14 +6,19 @@ import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
-import { useState } from 'react';
+import { useState, type SetStateAction } from 'react';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
+import type { Level } from '../types/level';
 
-const BlockEditor = () => {
+interface BlockEditorProps {
+  level: Level;
+  setLevel: React.Dispatch<SetStateAction<Level>>;
+}
+
+const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
-  const [level, setLevel] = useState<'timeline' | 'editor'>('timeline');
   const PAD = 2000;
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
