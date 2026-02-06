@@ -17,6 +17,9 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
 
   const { showSplash, isAuthPage, isHomeRoute, redirectTo } = useRouteGuard(protectedRoutes);
 
+  // 스플래시 완료 전 홈 페이지 접근 시 블로킹
+  const shouldBlockForSplash = isHomeRoute && showSplash;
+
   if (redirectTo) {
     return <Navigate to={redirectTo} replace />;
   }
@@ -32,7 +35,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
         </AnimatePresence>
       )}
       {/* 스플래시 완료 후 메인 콘텐츠 렌더링 */}
-      {!showSplash && (
+      {!shouldBlockForSplash && (
         <div className="relative z-content">
           {showNavbar && <Navbar />}
 

@@ -15,7 +15,7 @@ export const useSplashState = () => {
   // 스플래시 완료 시 상태 업데이트
   const handleSplashDone = () => {
     setShowSplash(false);
-    sessionStorage.setItem(SESSION_STORAGE_KEY.showSplash, 'true');
+    sessionStorage.setItem(SESSION_STORAGE_KEY.showSplash, 'false');
   };
 
   // 스플래시 리셋 시 상태 업데이트
