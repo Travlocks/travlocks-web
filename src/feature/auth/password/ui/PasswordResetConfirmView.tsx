@@ -9,6 +9,8 @@ import Button from '@/shared/components/Button/Button';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+import { useSplashState } from '@/feature/splash/hooks/useSplashState';
+import { useEffect } from 'react';
 
 type Props = {
   step: Step;
@@ -25,7 +27,13 @@ const ERRORS = [
 
 // 비밀번호 재설정 성공 UI
 const PasswordResetSuccessView = () => {
+  const { handleSplashDone } = useSplashState();
   const { buttonText } = AUTH_HEADER.password.success;
+
+  // 비밀번호 재설정 성공 시 스플래시 완료 처리
+  useEffect(() => {
+    handleSplashDone();
+  }, [handleSplashDone]);
 
   return (
     <Link to="/login" className="w-full">
