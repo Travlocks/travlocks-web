@@ -7,6 +7,7 @@ import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
+import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
@@ -24,6 +25,8 @@ const Email = ({ setLevel }: StepProps) => {
   const [hasRetry, setHasRetry] = useState(false);
   const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
   const [showModal, setShowModal] = useState(false);
+
+  const { mutate: mutatePostEmailVerification } = usePostEmailVerification(); // 이메일 인증 코드 발송
 
   const email = watch('email');
   const code = watch('code');
@@ -151,6 +154,7 @@ const Email = ({ setLevel }: StepProps) => {
         </p>
       )}
 
+      {/* 처음 진입 시 이메일 입력할 때 버튼 (이전/다음) */}
       {step === 1 && (
         <>
           <DualButton
@@ -163,7 +167,10 @@ const Email = ({ setLevel }: StepProps) => {
             right={{
               text: '다음',
               disabled: !email || !!errors.email,
-              onClick: () => setStep(2),
+              onClick: () => {
+                mutatePostEmailVerification({ email });
+                setStep(2);
+              },
             }}
             width={215}
             height={64}
@@ -173,6 +180,7 @@ const Email = ({ setLevel }: StepProps) => {
         </>
       )}
 
+      {/* 이메일 인증 번호 발송 후 나오는 버튼 (이전,인증 완료) */}
       {step === 2 && (
         <>
           <DualButton
