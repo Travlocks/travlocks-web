@@ -27,9 +27,7 @@ const TemplateHeader = () => {
         </div>
       </div>
 
-      <div className="flex justify-center absolute inset-0 mx-auto">
-        <DotLottieReact src={TemplateAnimation} loop autoplay className="mx-auto absolute inset-0" />
-      </div>
+      <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0" />
 
       <PuzzleIcon className="absolute bottom-[-33px] left-[61px] size-[80px] rotate-190" />
       <PuzzleIcon className="absolute top-[103px] right-[338px] size-[80px] rotate-60" />
