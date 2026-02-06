@@ -2,9 +2,10 @@ import type { DragMoveEvent, DragEndEvent } from '@dnd-kit/core';
 import type { DragType } from '../types/drag';
 import { calcBoardPointFromActiveRect } from './board';
 import type { Connector, Point } from '@/shared/components/Block/blockShape';
-import { createRectPoints, getBoundingBox } from '@/shared/components/Block/blockShape';
+import { getBoundingBox } from '@/shared/components/Block/blockShape';
 import { categoryColor } from '../components/side/block-styles';
 import { type CategoryType } from '../types/block';
+import { getBlockShapeByDuration } from './blockShapeByDuration';
 
 export type Candidate = {
   x: number;
@@ -14,14 +15,6 @@ export type Candidate = {
   color?: string;
 };
 
-// 기본 커넥터 설정 (사각형 블록용)
-const DEFAULT_CONNECTORS: Connector[] = [
-  { type: 'plug', edgeIndex: 0, align: 'start' },
-  { type: 'socket', edgeIndex: 1, align: 'start' },
-  { type: 'socket', edgeIndex: 2, align: 'start' },
-  { type: 'plug', edgeIndex: 3, align: 'end' },
-];
-
 export function calcCandidate(params: {
   e: DragMoveEvent | DragEndEvent;
   boardEl: HTMLDivElement;
@@ -30,7 +23,7 @@ export function calcCandidate(params: {
   zoom: number;
   pad: number;
 }): Candidate | null {
-  const { e, boardEl, defaultSize, grid, zoom, pad } = params;
+  const { e, boardEl, grid, zoom, pad } = params;
   const type = e.active.data.current?.type as DragType | undefined;
 
   // translated rect를 사용하여 현재 드래그 중인 요소의 실제 화면 위치 계산
@@ -39,9 +32,13 @@ export function calcCandidate(params: {
 
   // Sidebar에서 드래그 중일 때
   if (type === 'blockSidebar') {
-    const w = defaultSize.w;
-    const h = defaultSize.h;
-    const points = createRectPoints(w, h);
+    const category = e.active.data.current?.item?.category as CategoryType | undefined;
+    const duration = e.active.data.current?.item?.duration as string | undefined;
+
+    // 시간별 블록 모양 생성
+    const shapeConfig = getBlockShapeByDuration(duration || '1시간', category || '기타');
+    const { w, h, points, connectors } = shapeConfig;
+
     const { x, y } = calcBoardPointFromActiveRect({
       boardEl,
       activeRect,
@@ -52,10 +49,9 @@ export function calcCandidate(params: {
       grid,
     });
 
-    const category = e.active.data.current?.item?.category as CategoryType | undefined;
     const color = category ? categoryColor[category as keyof typeof categoryColor] : undefined;
 
-    return { x, y, points, connectors: DEFAULT_CONNECTORS, color };
+    return { x, y, points, connectors, color };
   }
 
   // Editor 블록 이동 중일 때

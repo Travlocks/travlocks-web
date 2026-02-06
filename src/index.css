@@ -62,6 +62,9 @@
   --animate-slide-in-from-right: slideInFromRight 300ms ease-out forwards;
   --animate-slide-out-to-right: slideOutToRight 300ms ease-out forwards;
 
+  /* 진행선 애니메이션 */
+  --animate-progressFill: progressFill 900ms ease-out forwards;
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -92,6 +95,15 @@
     100% {
       transform: translate(37px, calc(100% + 100px)) rotate(-7.89deg);
       opacity: 0;
+    }
+  }
+
+  @keyframes progressFill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
     }
   }
 
