@@ -32,7 +32,7 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
   );
 
   // 현재 경로 분석
-  const AUTH_PAGES = ['/login', '/signup', '/password'];
+  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
   const isHomeRoute = location.pathname === '/';
 
