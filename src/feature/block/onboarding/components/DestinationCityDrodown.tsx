@@ -12,7 +12,7 @@ interface DestinationCityDropdownProps {
   /**
    * 선택된 여행 도시 ID 목록이 변경될 때 호출되는 콜백입니다.
    *
-   * @param destinationCityIds 현재 선택된 도시 ID 배열입니다.
+   * @param onSelect 선택된 여행 도시 ID 목록이 변경될 때 호출되는 콜백입니다.
    */
   onSelect?: (destinationCityIds: DestinationCityId[]) => void;
 }
@@ -75,6 +75,7 @@ const DestinationCityDropdown = ({ onSelect }: DestinationCityDropdownProps) => 
     let newCities: DestinationCity[] = [];
     const excistCities = [...selectedCities];
 
+    // 최대 2개의 도시까지만 선택 가능
     if (excistCities.length < 2) {
       newCities = [...excistCities, city];
     } else {
