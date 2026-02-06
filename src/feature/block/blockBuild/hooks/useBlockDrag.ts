@@ -175,12 +175,19 @@ export const useBlockDrag = ({
           const item = e.active.data.current?.item as SidebarBlock | undefined;
           if (!item) return;
 
-          const newBlock = convertSidebarToBlock(item);
+          updateBlocksByDay((prev) => {
+            const block = prev[day] ?? [];
 
-          updateBlocksByDay((prev) => ({
-            ...prev,
-            [day]: [...(prev[day] ?? []), newBlock],
-          }));
+            const isExist = block.some((b) => b.blockId === item.id);
+            if (isExist) return prev; // 똑같은 블럭 추가하면 무시
+
+            const newBlock = convertSidebarToBlock(item);
+
+            return {
+              ...prev,
+              [day]: [...block, newBlock],
+            };
+          });
         }
 
         return;
