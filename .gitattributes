@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-# Enforce LF for all text files
-* text=auto eol=lf
-
-# Explicitly set EOL for common source files
-*.tsx text eol=lf
-*.ts text eol=lf
-*.js text eol=lf
-*.jsx text eol=lf
-*.json text eol=lf
-*.md text eol=lf
-*.css text eol=lf
-=======
 # Handle line endings automatically for files detected as text 
 # and leave binary files untouched.
 * text=auto
@@ -26,4 +13,3 @@
 *.scss text eol=lf
 *.html text eol=lf
 *.md text eol=lf
->>>>>>> eed9cf2 (Chore: 줄바꿈 설정(LF) 표준화를 위한 .gitattributes 추가)

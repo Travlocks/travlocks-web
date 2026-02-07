@@ -3,6 +3,7 @@ import BlockEditorContent from './main/BlockEditorContent';
 import { MOCK_BLOCKS } from '../mock';
 import { useBlockEditor } from '../hooks/useBlockEditor';
 import { useBlockDrag } from '../hooks/useBlockDrag';
+import { useBlockSync } from '../hooks/useBlockSync';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
@@ -21,6 +22,9 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
   const PAD = 2000;
+
+  // 서버 동기화 (디바운스 + 롤백)
+  useBlockSync();
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
     puzzleBlocks,
