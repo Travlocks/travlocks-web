@@ -12,7 +12,7 @@ import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/templa
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
-import MyPage from './MyPage';
+import MyPage from '@/pages/MyPage/MyPage';
 
 const TestPage = () => {
   const schema = z.object({
