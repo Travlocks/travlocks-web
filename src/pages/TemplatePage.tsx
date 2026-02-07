@@ -1,7 +1,9 @@
+import TemplateHeader from '@/feature/template-search/components/TemplateHeader';
+
 const TemplatePage = () => {
   return (
     <>
-      <h1>템플릿</h1>
+      <TemplateHeader />
     </>
   );
 };
