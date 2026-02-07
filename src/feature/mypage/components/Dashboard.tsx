@@ -7,6 +7,7 @@ import SectionHeader from './SectionHeader';
 import SettingsSection from './SettingsSection';
 import StatusCard from './StatusCard';
 import { useMyPageQuery } from '../hooks/useMyPageQuery';
+import { useFavoriteMutation } from '../hooks/useFavoriteMutation';
 import type { VlockDto, CreatedTemplateDto } from '../types/mypage.type';
 
 // Vlock을 ActivityList 형식으로 변환
@@ -32,10 +33,13 @@ const formatTemplateForActivity = (template: CreatedTemplateDto) => ({
 
 const Dashboard = () => {
   const { data: myPageData, isLoading, isError } = useMyPageQuery();
+  const { toggleFavorite } = useFavoriteMutation();
 
-  // TODO: /templates/{templateId}/favorite
   const handleToggleFavorite = (id: string) => {
-    console.log('Toggle favorite for template:', id);
+    const template = myPageData?.recent.createdTemplates.find((t) => t.templateId === Number(id));
+    if (template) {
+      toggleFavorite(template.templateId, template.isFavorite);
+    }
   };
 
   if (isLoading) {
