@@ -1,11 +1,12 @@
 import Input from '@/shared/components/Form/Input';
-import { useResetPasswordForm, type ResetEmailFormData } from '../hooks/useResetPasswordForm';
+import { useResetPasswordForm } from '../hooks/useResetPasswordForm';
 import Button from '@/shared/components/Button/Button';
 import Alert from '@/shared/components/Form/Alert';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import type { Step } from '@/pages/ResetPasswordPage';
 import { AUTH_HEADER } from '@/shared/layouts/auth/authHeaderPresets';
+import type { ResetPasswordFormData } from '@/shared/utils/validationSchemas';
 
 type Props = {
   step: Step;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const PasswordView = ({ step, onSendMail }: Props) => {
-  const onSubmitResetPassword = async (data: ResetEmailFormData) => {
+  const onSubmitResetPassword = async (data: ResetPasswordFormData) => {
     await onSendMail(data.email);
   };
 

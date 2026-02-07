@@ -1,24 +1,23 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
 import { useEffect } from 'react';
-import { passwordConfirmSchema, type PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
-
-const emailSchema = z.object({
-  email: z.string().trim().email('이메일 형식이 올바르지 않습니다.'),
-});
-
-export type ResetEmailFormData = z.infer<typeof emailSchema>;
+import {
+  passwordConfirmSchema,
+  type PasswordConfirmFormData,
+  resetPasswordSchema,
+  type ResetPasswordFormData,
+} from '@/shared/utils/validationSchemas';
+import { useEmailValidationWithValues } from '@/shared/hooks/useEmailValidation';
 
 // 이메일 전송 폼
-export function useResetPasswordForm(onSubmitResetPassword: (data: ResetEmailFormData) => void) {
+export function useResetPasswordForm(onSubmitResetPassword: (data: ResetPasswordFormData) => void) {
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<ResetEmailFormData>({
-    resolver: zodResolver(emailSchema),
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -26,13 +25,26 @@ export function useResetPasswordForm(onSubmitResetPassword: (data: ResetEmailFor
   });
 
   const email = (useWatch({ control, name: 'email' }) ?? '') as string;
+  const trimmedEmail = email.trim();
   const emailOk = !errors.email;
-  const hasEmail = email.trim().length > 0;
+  const hasEmail = trimmedEmail.length > 0;
 
-  const canSubmit = hasEmail && emailOk && !isSubmitting;
+  // 이메일 존재 검증 (비밀번호 재설정 모드)
+  // useFormContext를 사용하지 않으므로 직접 값 전달
+  const { emailExistsMessage, isCheckingEmail, canProceed } = useEmailValidationWithValues({
+    email: trimmedEmail,
+    emailOk,
+    mode: 'reset',
+  });
+
+  // 인라인 메시지: 폼 에러 또는 이메일 존재 검증 에러
+  const inlineMessage =
+    trimmedEmail.length === 0 ? null : errors.email?.message ? String(errors.email.message) : emailExistsMessage;
+
+  // 제출 가능 여부: 이메일 유효 + 존재 검증 통과 + 제출 중 아님
+  const canSubmit = hasEmail && emailOk && !isSubmitting && !isCheckingEmail && canProceed;
+
   const submit = handleSubmit(onSubmitResetPassword);
-
-  const inlineMessage = email.trim().length === 0 ? null : errors.email?.message ? String(errors.email.message) : null;
 
   return { canSubmit, submit, register, isSubmitting, inlineMessage };
 }

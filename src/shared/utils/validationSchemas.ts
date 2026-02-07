@@ -1,17 +1,20 @@
 import { z } from 'zod';
 
+// 공통 이메일 스키마
+export const emailSchema = z.object({
+  email: z.string().trim().email('이메일 형식이 올바르지 않습니다.'),
+});
+
 // 로그인 폼 유효성 검사 스키마
 export const loginSchema = z.object({
-  email: z.string().trim().email('이메일 형식이 올바르지 않습니다.'),
+  email: emailSchema.shape.email,
   password: z.string(),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 // 비밀번호 재설정 - 이메일 입력 스키마
-export const resetPasswordSchema = z.object({
-  email: z.string().trim().email('이메일 형식이 올바르지 않습니다.'),
-});
+export const resetPasswordSchema = emailSchema;
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
