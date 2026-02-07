@@ -9,8 +9,8 @@ const TemplateHeader = () => {
   const [search, setSearch] = useState<string>('');
 
   return (
-    <div className="relative bg-base-color-5 flex flex-col justify-center h-[483px] w-full relative z-10 px-[20px]">
-      <div className="flex flex-col items-center gap-[60px] relative z-10">
+    <div className="relative bg-base-color-5 flex flex-col justify-center h-[483px] w-full z-above px-[20px]">
+      <div className="flex flex-col items-center gap-[60px] relative z-above">
         <div className="flex flex-col items-center gap-[40px] text-center">
           <p className="text-base-color-1 h5">다른 여행자들의 블록을 탐색하고 내 블록으로 리믹스해요!</p>
           <h1 className="text-[60px] font-[600] leading-[60px]">템플릿 탐색</h1>
@@ -22,16 +22,16 @@ const TemplateHeader = () => {
             placeholder="어디로 떠나고 싶으신가요?"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="outline-none placeholder-['Pretendard'] placeholder:font-base-color-3 placeholder:text-[30px] placeholder:font-medium text-[30px] leading-[36px]"
+            className="outline-none placeholder:font-['Pretendard'] placeholder:text-base-color-3 placeholder:text-[30px] placeholder:font-medium text-[30px] leading-[36px]"
           />
         </div>
       </div>
 
-      <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0" />
+      <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0 pointer-events-none" />
 
-      <PuzzleIcon className="absolute bottom-[-33px] left-[61px] size-[80px] rotate-190" />
-      <PuzzleIcon className="absolute top-[103px] right-[338px] size-[80px] rotate-60" />
-      <PuzzleIcon className="absolute top-[219px] right-[28px] size-[130px] rotate-10" />
+      <PuzzleIcon className="absolute bottom-[-33px] left-[61px] size-[80px] rotate-[190deg]" />
+      <PuzzleIcon className="absolute top-[103px] right-[338px] size-[80px] rotate-[60deg]" />
+      <PuzzleIcon className="absolute top-[219px] right-[28px] size-[130px] rotate-[10deg]" />
     </div>
   );
 };
