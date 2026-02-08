@@ -1,12 +1,16 @@
 import { axiosInstance } from '@/shared/apis/axios';
-import type { RequestPasswordDto, PasswordSuccessResponse, PasswordResponse } from '../types/password.types';
+import type { EmailExistsResponse, EmailExistsSuccessResponse } from '../types/emailExists';
 import { extractErrorMessage, isErrorResponse, isSuccessResponse } from '@/shared/utils/apiErrorHandler';
 
-// 비밀번호 변경 요청 - 마이페이지
-export const postPassword = async (data: RequestPasswordDto): Promise<PasswordSuccessResponse> => {
-  let responseData: PasswordResponse;
+// 이메일 존재 여부 조회
+export const getEmailExists = async (email: string): Promise<EmailExistsSuccessResponse> => {
+  let responseData: EmailExistsResponse;
   try {
-    ({ data: responseData } = await axiosInstance.patch<PasswordResponse>('members/me/password', data));
+    ({ data: responseData } = await axiosInstance.get<EmailExistsResponse>('/members/email/exists', {
+      params: {
+        email,
+      },
+    }));
   } catch (error) {
     throw new Error(extractErrorMessage(error, '일시적인 오류가 발생했습니다. 다시 시도해주세요'));
   }

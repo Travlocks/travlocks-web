@@ -1,25 +1,30 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postPassword } from '../apis/password.api';
-import type { ResponsePasswordDto } from '../types/password.types';
+import type { PasswordSuccessResponse } from '../types/password.types';
 import type { AxiosError } from 'axios';
+import { QUERY_KEY } from '@/shared/constants/key';
 
-interface UseUpdatePasswordProps {
-  onSuccess: (data: ResponsePasswordDto) => void;
-  onError: (error: AxiosError) => void;
+interface UseUpdatePasswordOptions {
+  onSuccess: (data: PasswordSuccessResponse) => void;
+  onError: (error: AxiosError, errorMessage: string) => void;
 }
 
-// TODO: 머지되면 수정 (임시훅)
-export const useUpdatePassword = ({ onSuccess, onError }: UseUpdatePasswordProps) => {
+export const useUpdatePassword = (options?: UseUpdatePasswordOptions) => {
   const queryClient = useQueryClient();
   const { mutate: updatePassword, isPending } = useMutation({
     mutationFn: postPassword,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['member'] });
-      onSuccess(data);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.member] });
+      options?.onSuccess?.(data);
     },
     onError: (error: AxiosError<unknown>) => {
-      onError(error);
+      const errorMessage = error.message;
+      options?.onError?.(error, errorMessage);
     },
   });
-  return { updatePassword, isPending };
+
+  return {
+    updatePassword,
+    isPending,
+  };
 };
