@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import TextField from '@/shared/components/TextField/TextField';
 import DeleteAccountModal from './DeleteAccountModal';
+import { useWithdrawalAccount } from '../hooks/useWithdrawalAccount';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
 const DeleteAccountSection = () => {
   const [reason, setReason] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const { withdrawalAccount } = useWithdrawalAccount();
+
   const handleDelete = () => {
-    // TODO: 계정 삭제 API 연동
+    withdrawalAccount({ reason: reason.trim() });
     setShowModal(false);
   };
 
@@ -15,9 +19,7 @@ const DeleteAccountSection = () => {
     <>
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-[10px]">
-          <div className="rounded-full bg-negative size-[17px] text-center text-[14px] font-normal tracking-[-0.15px] text-white">
-            <p className="translate-y-[-2px]">!</p>
-          </div>
+          <AppIcon name="alert" width="17px" height="17px" fill="#FD7565" />
           <p className="text-negative b4 font-normal">계정 삭제 시 모든 데이터가 영구적으로 삭제됩니다</p>
         </div>
 
@@ -35,7 +37,7 @@ const DeleteAccountSection = () => {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="h9 px-14 py-3.5 bg-negative text-base-color-6 rounded-[10px] cursor-pointer hover:opacity-90 transition-all">
+              className="h9 px-14 py-4 bg-negative text-base-color-6 rounded-[10px] cursor-pointer hover:opacity-90 transition-all">
               계정 삭제
             </button>
           </div>

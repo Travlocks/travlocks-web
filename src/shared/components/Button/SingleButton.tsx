@@ -30,7 +30,7 @@ export interface SingleButtonProps {
   textSize?: number;
   type?: 'button' | 'submit';
   bg?: string;
-  variant?: 'primary' | 'white';
+  variant?: 'primary' | 'white' | 'negative';
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
@@ -40,6 +40,7 @@ export interface SingleButtonProps {
 const VARIANT_BG: Record<NonNullable<SingleButtonProps['variant']>, string> = {
   primary: 'bg-primary-color text-base-color-6 border-primary-color',
   white: 'bg-text-base-color-6 text-base-color-0 border-base-color-3',
+  negative: 'bg-negative text-base-color-6 border-negative',
 };
 
 // 글씨 크기 별 스타일

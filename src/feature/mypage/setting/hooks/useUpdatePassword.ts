@@ -1,23 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postPassword } from '../apis/password.api';
-import type { PasswordSuccessResponse } from '../types/password.types';
-import type { AxiosError } from 'axios';
+import type { PasswordSuccessResponse, RequestPasswordDto } from '../types/password.types';
 import { QUERY_KEY } from '@/shared/constants/key';
 
 interface UseUpdatePasswordOptions {
   onSuccess: (data: PasswordSuccessResponse) => void;
-  onError: (error: AxiosError, errorMessage: string) => void;
+  onError: (error: Error, errorMessage: string) => void;
 }
 
 export const useUpdatePassword = (options?: UseUpdatePasswordOptions) => {
   const queryClient = useQueryClient();
-  const { mutate: updatePassword, isPending } = useMutation({
+  const { mutate: updatePassword, isPending } = useMutation<PasswordSuccessResponse, Error, RequestPasswordDto>({
     mutationFn: postPassword,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.member] });
       options?.onSuccess?.(data);
     },
-    onError: (error: AxiosError<unknown>) => {
+    onError: (error: Error) => {
       const errorMessage = error.message;
       options?.onError?.(error, errorMessage);
     },

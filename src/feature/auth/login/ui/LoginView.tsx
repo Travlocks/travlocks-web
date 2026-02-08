@@ -6,8 +6,7 @@ import SocialLoginButton from '@/shared/components/Button/SocialLoginButton';
 import Button from '@/shared/components/Button/Button';
 import Input from '@/shared/components/Form/Input';
 import { Link } from 'react-router-dom';
-import { IconBase } from '@/shared/ui/icon/IconBase';
-import XIcon from '@assets/icon-circle-x.svg?react';
+import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
 /**
  * 로그인 페이지 컴포넌트
@@ -86,7 +85,7 @@ export const LoginView = () => {
           <div className="min-h-[44px]">
             {errorMessage ? (
               <span className="b6 text-negative px-[22px] flex items-center gap-2">
-                <IconBase icon={XIcon} width="17px" height="17px" fill="#FD7565" />
+                <AppIcon name="alert" width="17px" height="17px" fill="#FD7565" />
                 <p>{errorMessage}</p>
               </span>
             ) : null}

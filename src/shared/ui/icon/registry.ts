@@ -3,6 +3,7 @@ import Clock from '@/feature/block/blockBuild/assets/edit-icon-clock.svg?react';
 import DragHandle from '@/shared/assets/icon-drag-handle.svg?react';
 import Food from '@/shared/assets/preference/icon-preference-food.svg?react';
 import X from '@/shared/assets/icon-x.svg?react';
+import AlertIcon from '@/shared/assets/icon-alert.svg?react';
 
 export const iconRegistry = {
   arrow: Arrow,
@@ -10,6 +11,7 @@ export const iconRegistry = {
   dragHandle: DragHandle,
   food: Food,
   x: X,
+  alert: AlertIcon,
 } as const;
 
 export type IconName = keyof typeof iconRegistry;
