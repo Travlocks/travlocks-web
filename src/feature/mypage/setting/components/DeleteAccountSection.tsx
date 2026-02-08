@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import TextField from '@/shared/components/TextField/TextField';
-import DeleteAccountModal from './DeleteAccountModal';
 import { useWithdrawalAccount } from '../hooks/useWithdrawalAccount';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
+import AccountModal from '../../components/AccountModal';
 
 const DeleteAccountSection = () => {
   const [reason, setReason] = useState('');
@@ -43,9 +43,9 @@ const DeleteAccountSection = () => {
           </div>
         </div>
       </div>
-
-      {/* 회원 삭제 모달  TODO: 모달 컴포넌트 추가 후 수정 */}
-      {showModal && <DeleteAccountModal onCancel={() => setShowModal(false)} onConfirm={handleDelete} />}
+      {showModal && (
+        <AccountModal modalType="withdrawal" onCancel={() => setShowModal(false)} onConfirm={handleDelete} />
+      )}
     </>
   );
 };
