@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import TextField from '@/shared/components/TextField/TextField';
 import DeleteAccountModal from './DeleteAccountModal';
 
 const DeleteAccountSection = () => {
@@ -21,18 +22,20 @@ const DeleteAccountSection = () => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <label className="t2 font-light text-base-color-0">탈퇴 사유</label>
-          <div className="flex gap-7.5 items-center">
-            <input
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="계정을 삭제하시려는 이유를 알려주세요"
-              className="flex-1 b4 font-light px-[18px] py-[16px] rounded-[5px] border border-base-color bg-base-color-6 placeholder:text-base-color-3 outline-none h-[55px]"
-            />
+          <div className="flex gap-7.5 items-end">
+            <div className="flex-1">
+              <TextField
+                label="탈퇴 사유"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="계정을 삭제하시려는 이유를 알려주세요"
+                onClear={() => setReason('')}
+              />
+            </div>
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="h9 px-14 py-3.5 bg-negative text-base-color-6  rounded-[10px] cursor-pointer hover:opacity-90 transition-all">
+              className="h9 px-14 py-3.5 bg-negative text-base-color-6 rounded-[10px] cursor-pointer hover:opacity-90 transition-all">
               계정 삭제
             </button>
           </div>
