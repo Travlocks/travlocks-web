@@ -20,7 +20,7 @@ export function useResetPasswordForm(onSubmitResetPassword: (data: ResetPassword
   const emailOk = !errors.email;
   const hasEmail = email.trim().length > 0;
 
-  // 이메일과 비밀번호 값이 모두 입력되었는지 확인
+  // 이메일 입력되었는지 확인
   const canSubmit = hasEmail && emailOk && !isSubmitting;
   const submit = handleSubmit(onSubmitResetPassword);
 

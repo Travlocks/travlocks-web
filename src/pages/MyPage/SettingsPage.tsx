@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import ArrowLeftIcon from '@assets/icon-arrow-left.svg?react';
+import ArrowRightIcon from '@assets/icon-arrow-right.svg?react';
 import SettingCard from '@/feature/mypage/setting/components/SettingCard';
 import PasswordSection from '@/feature/mypage/setting/components/PasswordSection';
 import NotificationSection from '@/feature/mypage/setting/components/NotificationSection';
@@ -11,7 +11,7 @@ const SettingsPage = () => {
     <div className="bg-[#F8FAFC] min-h-dvh px-92 py-12">
       {/* 뒤로가기 */}
       <Link to="/mypage" className="flex items-center gap-[15px] mb-8">
-        <ArrowLeftIcon className="size-[11px] text-base-color-1" />
+        <ArrowRightIcon className="text-base-color-1 rotate-180" fill="#4A5569" />
         <span className="b2 font-light text-base-color-1">마이페이지로 돌아가기</span>
       </Link>
 

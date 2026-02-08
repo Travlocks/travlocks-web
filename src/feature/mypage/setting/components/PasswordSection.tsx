@@ -5,17 +5,14 @@ import clsx from 'clsx';
 import Input from '@/shared/components/Form/Input';
 import CheckIcon from '@assets/icon-check-password.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
+import { PASSWORD_VALIDATION_RULES } from '@/shared/utils/validationSchemas';
+import { useUpdatePassword } from '../hooks/useUpdatePassword';
 
 interface PasswordFormData {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
 }
-
-const VALIDATION_RULES = [
-  { id: 1, label: '최소 8자 이상' },
-  { id: 2, label: '영문 + 숫자 포함' },
-];
 
 const PasswordSection = () => {
   const methods = useForm<PasswordFormData>({
@@ -30,9 +27,20 @@ const PasswordSection = () => {
   const {
     register,
     watch,
-    formState: { errors, dirtyFields },
+    formState: { errors },
     trigger,
   } = methods;
+
+  const { updatePassword } = useUpdatePassword({
+    onSuccess: () => {
+      // TODO: 비밀번호 변경 성공 시 처리
+      console.log('비밀번호 변경 성공');
+    },
+    onError: (error) => {
+      // TODO: 비밀번호 변경 실패 시 처리
+      console.error(error);
+    },
+  });
 
   const newPassword = watch('newPassword');
   const confirmPassword = watch('confirmPassword');
@@ -52,7 +60,10 @@ const PasswordSection = () => {
     !!newPassword && !!confirmPassword && !errors.confirmPassword && isLengthValid && isCombinationValid;
 
   const handleSubmit = methods.handleSubmit((_data) => {
-    // TODO: 비밀번호 변경 API 연동
+    updatePassword({
+      currentPassword: _data.currentPassword,
+      newPassword: _data.newPassword,
+    });
   });
 
   return (
@@ -86,27 +97,22 @@ const PasswordSection = () => {
 
           {/* 비밀번호 유효성 검사 */}
           <div className="flex flex-col gap-1 mt-1">
-            {VALIDATION_RULES.map((rule) => (
-              <div
-                key={rule.id}
-                className={clsx(
-                  'flex gap-[10px] items-center b4 font-normal ml-[15px]',
-                  !dirtyFields.newPassword && 'text-base-color-2',
-                  dirtyFields.newPassword &&
-                    ((rule.id === 1 ? isLengthValid : isCombinationValid) ? 'text-positive' : 'text-negative'),
-                )}>
-                <div className="size-[19px] flex items-center justify-center">
-                  {!dirtyFields.newPassword && <CheckIcon />}
-                  {dirtyFields.newPassword &&
-                    ((rule.id === 1 ? isLengthValid : isCombinationValid) ? (
-                      <CheckIcon />
-                    ) : (
-                      <XIcon className="object-cover" />
-                    ))}
+            {PASSWORD_VALIDATION_RULES.map((rule) => {
+              const isValid = rule.id === 1 ? isLengthValid : isCombinationValid;
+              return (
+                <div
+                  key={rule.id}
+                  className={clsx(
+                    'flex gap-[10px] items-center b4 font-normal ml-[15px]',
+                    isValid ? 'text-positive' : 'text-negative',
+                  )}>
+                  <div className="size-[19px] flex items-center justify-center">
+                    {isValid ? <CheckIcon /> : <XIcon className="object-cover" />}
+                  </div>
+                  <p>{rule.label}</p>
                 </div>
-                <p>{rule.label}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
