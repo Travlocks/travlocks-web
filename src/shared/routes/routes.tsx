@@ -4,6 +4,7 @@ export const lazyRoutes = {
   /** 로그인 관련 페이지 */
   LoginPage: React.lazy(() => import('../../pages/LoginPage')),
   SignupPage: React.lazy(() => import('../../pages/SignupPage')),
+  PasswordResetConfirmPage: React.lazy(() => import('../../pages/PasswordResetConfirmPage')),
 
   /** 홈 페이지 */
   HomePage: React.lazy(() => import('../../pages/HomePage')),
