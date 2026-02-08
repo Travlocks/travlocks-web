@@ -13,6 +13,7 @@ import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import MyPage from './MyPage';
+import Loading from '@/shared/components/Exception/Loading';
 
 const TestPage = () => {
   const schema = z.object({
@@ -178,6 +179,8 @@ const TestPage = () => {
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
         <TemplateSwiper cards={mockPopularTemplates} />
       </div>
+
+      <Loading fullScreen={true} />
 
       <Footer />
     </>

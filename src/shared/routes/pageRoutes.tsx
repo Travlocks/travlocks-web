@@ -4,11 +4,13 @@ import TestLayout from '@/shared/layouts/TestLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
+import NotFoundPage from '@/shared/components/Exception/NotFoundPage';
 
 export const routes: RouteObject[] = [
   {
     path: '/',
     element: <DefaultLayout protectedRoutes />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true,
