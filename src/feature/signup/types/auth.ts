@@ -23,3 +23,12 @@ export type ResponseEmailVerificationConfirmDto = SuccessPayload<{
 export type RequestEmailVerificationResnedDto = Omit<RequestEmailVerificationConfirmDto, 'code'>;
 
 export type ResponseEmailVerificationResendDto = SuccessPayload<null>;
+
+// 닉네임 중복 검사
+export type RequestNicknameDto = {
+  nickname: string;
+};
+
+export type ResponseNicknameDto = SuccessPayload<{
+  exists: boolean;
+}>;
