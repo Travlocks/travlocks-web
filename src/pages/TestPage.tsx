@@ -14,8 +14,6 @@ import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import TextField from '@/shared/components/TextField/TextField';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
-import type { Level } from '@/feature/block/blockBuild/types/level';
-import type { SetStateAction } from 'react';
 
 const TestPage = () => {
   const schema = z.object({
