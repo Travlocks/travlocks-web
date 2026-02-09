@@ -1,13 +1,22 @@
 {
-  "extends": ["stylelint-config-standard"],
-  "plugins": ["stylelint-order"],
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "plugins": [
+    "stylelint-order"
+  ],
   "overrides": [
     {
-      "files": ["*.css"],
+      "files": [
+        "*.css"
+      ],
       "customSyntax": "postcss"
     },
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
       "customSyntax": "@stylelint/postcss-css-in-js"
     }
   ],
@@ -15,10 +24,17 @@
     "declaration-empty-line-before": [
       "never",
       {
-        "ignore": ["first-nested", "after-comment", "inside-single-line-block"]
+        "ignore": [
+          "first-nested",
+          "after-comment",
+          "inside-single-line-block"
+        ]
       }
     ],
-    "order/order": ["custom-properties", "declarations"],
+    "order/order": [
+      "custom-properties",
+      "declarations"
+    ],
     "order/properties-order": [
       {
         "groupName": "Layout",
@@ -43,18 +59,51 @@
         "groupName": "Box",
         "emptyLineBefore": "always",
         "noEmptyLineBetween": true,
-        "properties": ["width", "height", "margin", "padding", "border"]
+        "properties": [
+          "width",
+          "height",
+          "margin",
+          "padding",
+          "border"
+        ]
       },
       {
         "groupName": "Typography",
         "emptyLineBefore": "always",
         "noEmptyLineBetween": true,
-        "properties": ["color", "font", "font-size", "font-weight", "line-height", "text-align"]
+        "properties": [
+          "color",
+          "font",
+          "font-size",
+          "font-weight",
+          "line-height",
+          "text-align"
+        ]
       }
     ],
     "no-empty-source": null,
     "block-no-empty": null,
     "color-hex-length": "short",
-    "max-nesting-depth": [2, { "ignore": ["blockless-at-rules"] }]
+    "max-nesting-depth": [
+      2,
+      {
+        "ignore": [
+          "blockless-at-rules"
+        ]
+      }
+    ],
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "theme",
+          "utility",
+          "layer",
+          "tailwind",
+          "apply",
+          "config"
+        ]
+      }
+    ]
   }
 }

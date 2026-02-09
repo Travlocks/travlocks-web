@@ -54,6 +54,8 @@
 
   --background-image-gradient-color-background: linear-gradient(180deg, #9fcdff 0%, #e1f7fb 50%, #ffffff 100%);
   --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
+  --background-image-gradient-color-skeleton: linear-gradient(90deg, #f9fafb 0%, #d9d9d9 127%);
+  --gradient-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
 
   /* 페이드 인/아웃 애니메이션 */
   --animate-fade-in: fadeIn 1000ms ease-out forwards;
@@ -305,5 +307,32 @@
 
   .z-modal {
     z-index: var(--z-modal);
+  }
+
+  /* 그라데이션 보더 트릭 (배경이 단색일 때만 사용 가능) */
+  .border-gradient-focus {
+    border: 1px solid var(--color-base-color);
+    transition: all 0.3s ease;
+  }
+
+  .border-gradient-focus:focus {
+    border-color: transparent;
+    background-image: linear-gradient(#ffffff, #ffffff), var(--gradient-hover);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    outline: none;
+  }
+
+  /* 스크롤바 숨기기 (모든 브라우저 지원) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
   }
 }
