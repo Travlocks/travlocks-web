@@ -8,7 +8,6 @@ import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
 import BlockGhost from '../ui/BlockGhost';
 import BlockStartNode from '../ui/BlockStartNode';
-import { getTailIdFromBlocks } from '../../utils/path';
 // import BlockTrash from './BlockTrash';
 import BlockUndoRedo from './BlockUndoRedo';
 import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
@@ -32,6 +31,7 @@ interface BlockEditorContentProps {
   onDayChange: (day: number) => void;
   zoom: number;
   onZoomChange: (zoom: number) => void;
+  draggingBlockIds?: number[];
 }
 
 const BlockEditorContent = ({
@@ -42,6 +42,7 @@ const BlockEditorContent = ({
   onDayChange,
   zoom,
   onZoomChange,
+  draggingBlockIds = [],
 }: BlockEditorContentProps) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
@@ -70,8 +71,6 @@ const BlockEditorContent = ({
     },
     [setNodeRef, boardRef, viewportRef],
   );
-
-  const tailId = getTailIdFromBlocks(puzzleBlocks, START_ID) ?? START_ID;
 
   return (
     <div className="relative flex flex-col w-full h-full bg-[#F8FAFC]">
@@ -129,10 +128,9 @@ const BlockEditorContent = ({
                   if (isStart) {
                     return <BlockStartNode key={block.blockId} block={block} />;
                   }
-                  const isTail = block.blockId === tailId;
-                  // 드래그 규칙: free or tail 블록은 드래그 가능
-                  const canDrag = block.connectedFrom == null || isTail;
-                  return <PuzzleBlock key={block.blockId} block={block} canDrag={canDrag} />;
+                  // 드래그 중인 블록과 자손들은 숨김 (DOM에서 유지하여 위치 점프 방지)
+                  const isHidden = draggingBlockIds.includes(block.blockId);
+                  return <PuzzleBlock key={block.blockId} block={block} canDrag isHidden={isHidden} />;
                 })}
 
                 <BlockGhost hint={dockHint} />

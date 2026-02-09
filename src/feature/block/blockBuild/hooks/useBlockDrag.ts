@@ -3,8 +3,8 @@ import { useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import type { Block, SidebarBlock } from '../types/block';
 import type { ActiveDrag, DockHintState, DragType } from '../types/drag';
-import { getTailIdFromBlocks } from '../utils/path';
-import { commitEditorDrop, commitSidebarDrop, detachTail } from '../utils/commit';
+import { getDescendants } from '../utils/path';
+import { commitEditorDrop, commitSidebarDrop, detachBlock } from '../utils/commit';
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -81,7 +81,7 @@ export const useBlockDrag = ({
             const blocksForDay = prev[currentDay] ?? [];
             return {
               ...prev,
-              [currentDay]: detachTail({ blocks: blocksForDay, startId: START_ID, movingId: blockId }),
+              [currentDay]: detachBlock({ blocks: blocksForDay, startId: START_ID, movingId: blockId }),
             };
           });
         }
@@ -117,12 +117,12 @@ export const useBlockDrag = ({
       const candidate = calcCandidate({ e, boardEl, defaultSize: DEFAULT_BLOCK, grid: GRID, zoom: currentZoom, pad });
       if (!candidate) return;
 
-      const tailId = getTailIdFromBlocks(currentBlocks, START_ID) ?? START_ID;
-      const tail = currentBlocks.find((b) => b.blockId === tailId) ?? null;
+      // 스냅 가능한 대상: socket이 비어있는 블록들 (시작 블록 포함)
+      const targets = currentBlocks.filter((b) => b.connectedTo == null);
 
       const decision = computeSnapDecision({
         candidate,
-        tail,
+        targets,
         threshold: SNAP_THRESHOLD,
       });
 
@@ -201,12 +201,16 @@ export const useBlockDrag = ({
       const candidate = calcCandidate({ e, boardEl, defaultSize: DEFAULT_BLOCK, grid: GRID, zoom: currentZoom, pad });
       if (!candidate) return;
 
-      const tailId = getTailIdFromBlocks(currentBlocks, START_ID) ?? START_ID;
-      const tail = currentBlocks.find((b) => b.blockId === tailId) ?? null;
+      // 스냅 가능한 대상 계산 (드래그 중인 블록과 그 자손 제외)
+      const movingId = type === 'blockEditor' ? (e.active.data.current?.blockId as number | undefined) : undefined;
+      const excludeIds =
+        movingId != null ? new Set([movingId, ...getDescendants(currentBlocks, movingId)]) : new Set<number>();
+
+      const targets = currentBlocks.filter((b) => b.connectedTo == null && !excludeIds.has(b.blockId));
 
       const decision = computeSnapDecision({
         candidate,
-        tail,
+        targets,
         threshold: SNAP_THRESHOLD,
       });
 
@@ -221,7 +225,6 @@ export const useBlockDrag = ({
             tpl: item,
             candidate,
             decision,
-            startId: START_ID,
           }),
         }));
       }

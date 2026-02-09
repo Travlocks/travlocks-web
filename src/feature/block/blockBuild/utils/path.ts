@@ -44,3 +44,25 @@ export function detachTailFromBlocks(blocks: Block[], startId: number) {
 
   return { nextBlocks, detachedId: oldTailId, newTailId };
 }
+
+// 특정 블록 아래로 연결된 모든 자손 블록 객체 조회
+export function getDescendantBlocks(blocks: Block[], blockId: number): Block[] {
+  const byId = new Map(blocks.map((b) => [b.blockId, b]));
+  const descendants: Block[] = [];
+  let cur = byId.get(blockId)?.connectedTo;
+  while (cur != null) {
+    const block = byId.get(cur);
+    if (block) {
+      descendants.push(block);
+      cur = block.connectedTo;
+    } else {
+      break;
+    }
+  }
+  return descendants;
+}
+
+// 특정 블록 아래로 연결된 모든 자손 블록 ID 조회
+export function getDescendants(blocks: Block[], blockId: number): number[] {
+  return getDescendantBlocks(blocks, blockId).map((b) => b.blockId);
+}

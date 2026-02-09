@@ -13,6 +13,9 @@ import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import TextField from '@/shared/components/TextField/TextField';
+import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import type { Level } from '@/feature/block/blockBuild/types/level';
+import type { SetStateAction } from 'react';
 
 const TestPage = () => {
   const schema = z.object({
@@ -50,6 +53,10 @@ const TestPage = () => {
 
   return (
     <>
+      <div className="w-full h-screen">
+        <BlockEditor level={'timeline'} setLevel={() => {}} />
+      </div>
+
       <div className="flex flex-col gap-4">
         <h1>✅ Block.tsx</h1>
 

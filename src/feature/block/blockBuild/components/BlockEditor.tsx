@@ -6,10 +6,11 @@ import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
-import { useState, type SetStateAction } from 'react';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
+import { type SetStateAction, useState } from 'react';
+import { getDescendantBlocks, getDescendants } from '../utils/path';
 
 interface BlockEditorProps {
   level: Level;
@@ -39,7 +40,6 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
           <BlockSidebar items={MOCK_BLOCKS} />
         </aside>
 
-        {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
           {/* 처음 렌더링 시 타임라인 */}
           {level === 'timeline' && <BlockTimeLine setLevel={setLevel} />}
@@ -54,6 +54,11 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
                 onDayChange={editorActions.setDay}
                 zoom={zoom}
                 onZoomChange={setZoom}
+                draggingBlockIds={
+                  activeDrag?.type === 'blockEditor'
+                    ? [activeDrag.blockId, ...getDescendants(puzzleBlocks, activeDrag.blockId)]
+                    : []
+                }
               />
             </div>
           )}
@@ -65,7 +70,40 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
         {activeDrag?.type === 'blockEditor' &&
           (() => {
             const block = puzzleBlocks.find((b) => b.blockId === activeDrag.blockId);
-            return block ? <PuzzleBlock block={block} isOverlay zoom={zoom} /> : null;
+            if (!block) return null;
+
+            // 자손 블록들 조회
+            const descendants = getDescendantBlocks(puzzleBlocks, activeDrag.blockId);
+            const allBlocks = [block, ...descendants];
+
+            // 바운딩 박스 계산
+            const minX = Math.min(...allBlocks.map((b) => b.x));
+            const minY = Math.min(...allBlocks.map((b) => b.y));
+            const maxX = Math.max(...allBlocks.map((b) => b.x + b.w));
+            const maxY = Math.max(...allBlocks.map((b) => b.y + b.h));
+
+            return (
+              <div
+                className="relative"
+                style={{
+                  width: (maxX - minX) * zoom,
+                  height: (maxY - minY) * zoom,
+                }}>
+                {allBlocks.map((b) => (
+                  <div
+                    key={b.blockId}
+                    className="absolute"
+                    style={{
+                      left: (b.x - minX) * zoom,
+                      top: (b.y - minY) * zoom,
+                      transform: `scale(${zoom})`,
+                      transformOrigin: 'top left',
+                    }}>
+                    <PuzzleBlock block={b} isOverlay />
+                  </div>
+                ))}
+              </div>
+            );
           })()}
         {activeDrag?.type === 'blockTimeline' && <BlockItemUI item={activeDrag.block} />}
       </DragOverlay>
