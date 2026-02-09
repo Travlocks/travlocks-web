@@ -18,3 +18,8 @@ export type RequestEmailVerificationConfirmDto = {
 export type ResponseEmailVerificationConfirmDto = SuccessPayload<{
   signupToken?: string;
 } | null>;
+
+// 이메일 인증 코드 재발송
+export type RequestEmailVerificationResnedDto = Omit<RequestEmailVerificationConfirmDto, 'code'>;
+
+export type ResponseEmailVerificationResendDto = SuccessPayload<null>;

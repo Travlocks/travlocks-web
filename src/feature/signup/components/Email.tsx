@@ -9,6 +9,7 @@ import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
 import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
 import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVerificationConfirm';
+import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerificationResend';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
@@ -28,7 +29,8 @@ const Email = ({ setLevel }: StepProps) => {
   const [showModal, setShowModal] = useState(false);
 
   const { mutate: mutatePostEmailVerification } = usePostEmailVerification(); // 이메일 인증 코드 발송
-  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm();
+  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm(); // 이메일 인증 코드 확인
+  const { mutate: mutatePostEmailVerificationResned } = usePostEmailVerificationResend(); // 이메일 인증 코드 재발송
 
   const email = watch('email');
   const code = watch('code');
@@ -52,6 +54,8 @@ const Email = ({ setLevel }: StepProps) => {
     setHasTriedResend(true);
     setHasRetry(false);
     setHasTriedVerify(false);
+
+    mutatePostEmailVerificationResned({ verificationId });
 
     handleTimer();
   };
