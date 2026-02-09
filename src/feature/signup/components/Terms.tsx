@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { useFormContext } from 'react-hook-form';
 
 import type { StepProps } from './SignupView';
+import type { FormFields } from '../types/schema';
+
 import Button from '@/shared/components/Button/Button';
 import Checkbox from '@/shared/components/Form/Checkbox';
 import TermsModal from './TermsModal';
@@ -13,53 +16,51 @@ const TERMS = [
     key: 'service',
     label: '서비스 이용약관',
     required: true,
+    policyId: 1,
   },
   {
     key: 'privacy',
     label: '개인정보 처리방침',
     required: true,
+    policyId: 2,
   },
   {
     key: 'marketing',
     label: '마케팅 정보 수신 동의',
     required: false,
+    policyId: 3,
   },
 ] as const;
 
 export type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
 
-export type Agreements = Record<TermKey, boolean> & {
-  all: boolean;
-};
-
-const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
+const Terms = ({ setLevel }: StepProps) => {
+  const { setValue, watch } = useFormContext<FormFields>();
+  const consents = watch('consents');
   const [modalType, setModalType] = useState<TermKey | null>(null);
 
-  const isRequired = agreements.service && agreements.privacy; // 필수 조건
+  const allChecked = consents.every((consents) => consents.agreed); // 전체동의했는지
+  const isRequired =
+    consents.find((content) => content.policyId === 1)?.agreed &&
+    consents.find((content) => content.policyId === 2)?.agreed; // 필수 조건
+
+  const term = TERMS.find((t) => t.key === modalType);
+  const checked = consents.find((c) => c.policyId === term?.policyId)?.agreed; // 각 항목의 체크 여부
 
   // 전체 동의 선택한 경우
   const handleAllChange = (checked: boolean) => {
-    setAgreements({
-      service: checked,
-      privacy: checked,
-      marketing: checked,
-      all: checked,
-    });
+    setValue(
+      'consents',
+      consents.map((content) => ({ ...content, agreed: checked })),
+    );
   };
 
   // 개별 약관 변경 로직
-  const handleItemChange = (key: TermKey, checked: boolean) => {
-    setAgreements((prev) => {
-      const next = {
-        ...prev,
-        [key]: checked,
-      };
-
-      return {
-        ...next,
-        all: next.service && next.privacy && next.marketing,
-      };
-    });
+  const handleItemChange = (policyId: number, checked: boolean) => {
+    setValue(
+      'consents',
+      consents.map((content) => (content.policyId === policyId ? { ...content, agreed: checked } : content)),
+    );
   };
 
   return (
@@ -67,7 +68,7 @@ const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
       <p className="text-base-color-2 b3 mt-[8px]">트래블록스 서비스 이용을 위해 약관 동의가 필요합니다</p>
 
       {/* 전체 동의 */}
-      <Checkbox text="전체 동의" outline={true} checked={agreements.all} onChange={handleAllChange} />
+      <Checkbox text="전체 동의" outline={true} checked={allChecked} onChange={handleAllChange} />
 
       {/* 개별 약관 */}
       <div className="flex flex-col my-[8px] gap-[24px]">
@@ -83,8 +84,8 @@ const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
                 </div>
               }
               outline={false}
-              checked={agreements[term.key]}
-              onChange={(checked) => handleItemChange(term.key, checked)}
+              checked={!!consents.find((c) => c.policyId === term.policyId)?.agreed}
+              onChange={(checked) => handleItemChange(term.policyId, checked)}
               className="w-max pr-0"
             />
             <ArrowIcon className="cursor-pointer" onClick={() => setModalType(term.key)} />
@@ -92,12 +93,12 @@ const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
         ))}
       </div>
 
-      {modalType && (
+      {modalType && term && (
         <TermsModal
           type={modalType}
           onClose={() => setModalType(null)}
-          onChange={(checked) => handleItemChange(modalType, checked)}
-          agreements={agreements[modalType]}
+          onChange={(checked) => handleItemChange(term?.policyId, checked)}
+          agreements={!!checked}
         />
       )}
 
