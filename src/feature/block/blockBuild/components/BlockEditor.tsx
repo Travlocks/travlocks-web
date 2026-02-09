@@ -6,9 +6,17 @@ import { useBlockDrag } from '../hooks/useBlockDrag';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import BlockItem from './side/BlockItem';
 import PuzzleBlock from './ui/PuzzleBlock';
-import { useState } from 'react';
+import { useState, type SetStateAction } from 'react';
+import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
+import BlockItemUI from '@/shared/components/Block/BlockItemUI';
+import type { Level } from '../types/level';
 
-const BlockEditor = () => {
+interface BlockEditorProps {
+  level: Level;
+  setLevel: React.Dispatch<SetStateAction<Level>>;
+}
+
+const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
   const PAD = 2000;
@@ -33,15 +41,22 @@ const BlockEditor = () => {
 
         {/* 메인 영역 */}
         <main className="flex-1 h-full min-w-0">
-          <BlockEditorContent
-            boardRef={boardRef}
-            puzzleBlocks={puzzleBlocks}
-            dockHint={dockHint}
-            currentDay={currentDay}
-            onDayChange={editorActions.setDay}
-            zoom={zoom}
-            onZoomChange={setZoom}
-          />
+          {/* 처음 렌더링 시 타임라인 */}
+          {level === 'timeline' && <BlockTimeLine setLevel={setLevel} />}
+
+          {level === 'editor' && (
+            <div className="h-[1091px]">
+              <BlockEditorContent
+                boardRef={boardRef}
+                puzzleBlocks={puzzleBlocks}
+                dockHint={dockHint}
+                currentDay={currentDay}
+                onDayChange={editorActions.setDay}
+                zoom={zoom}
+                onZoomChange={setZoom}
+              />
+            </div>
+          )}
         </main>
       </div>
 
@@ -52,6 +67,7 @@ const BlockEditor = () => {
             const block = puzzleBlocks.find((b) => b.blockId === activeDrag.blockId);
             return block ? <PuzzleBlock block={block} isOverlay zoom={zoom} /> : null;
           })()}
+        {activeDrag?.type === 'blockTimeline' && <BlockItemUI item={activeDrag.block} />}
       </DragOverlay>
     </DndContext>
   );
