@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 
 /**
  * 단일 버튼으로 사용되는 버튼 컴포넌트입니다.
@@ -15,10 +16,14 @@ import clsx from 'clsx';
  * @param {'primary' | 'white'} variant -- 버튼 기본 배경 스타일, 기본 타입은 primary입니다.
  * @param {boolean} disabled -- 버튼 비활성화 여부
  * @param {function} onClick -- 버튼 클릭 시 실행될 함수
+ * @param {ReactNode} icon -- 버튼에 표시될 아이콘 (옵션)
+ * @param {'left' | 'right'} iconPosition -- 아이콘 위치, 기본값은 left입니다.
+ * @param {string} gap -- 아이콘과 텍스트 사이 간격 (Tailwind gap 클래스), 기본값은 gap-[10px]입니다.
 
  *
  * @example
  * <SingleButton text="변경사항 저장" width={217} height={65} textSize={20} />
+ * <SingleButton text="리믹스 하기" width={387} height={45} textSize={18} icon={<RemixIcon />} />
  *
  * @author 김진효
  * **/
@@ -34,6 +39,10 @@ export interface SingleButtonProps {
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
+  icon?: ReactNode;
+  iconPosition?: 'left' | 'right';
+  iconSize?: string;
+  gap?: string;
 }
 
 // variant별 기본 배경 (bg 넘기면 무시됨)
@@ -60,6 +69,10 @@ const SingleButton = ({
   disabled,
   onClick,
   className,
+  icon,
+  iconPosition = 'left',
+  iconSize = 'w-[16px] h-[16px]',
+  gap = 'gap-[10px]',
 }: SingleButtonProps) => {
   const backgroundClass = bg ?? VARIANT_BG[variant];
   const textSizeClass = TEXT_SIZE[textSize];
@@ -74,10 +87,13 @@ const SingleButton = ({
         disabled ? 'cursor-not-allowed bg-base-color-3!' : 'cursor-pointer border',
         backgroundClass,
         textSizeClass,
+        icon && gap,
         className,
       )}
       style={{ maxWidth: width, height }}>
+      {icon && iconPosition === 'left' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
       {text}
+      {icon && iconPosition === 'right' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
     </button>
   );
 };

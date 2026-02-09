@@ -1,4 +1,4 @@
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, type UseFormRegisterReturn } from 'react-hook-form';
 import { useState } from 'react';
 import clsx from 'clsx';
 
@@ -8,18 +8,26 @@ import XIcon from '@assets/icon-x.svg?react';
 import { PASSWORD_VALIDATION_RULES, type PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
 import { usePasswordConfirmForm } from '@/feature/auth/password/hooks/useResetPasswordForm';
 import { useUpdatePassword } from '../hooks/useUpdatePassword';
+import SingleButton from '@/shared/components/Button/SingleButton';
+import { toast } from '@/shared/stores/toastStore';
 
 const PasswordSection = () => {
   const [currentPassword, setCurrentPassword] = useState('');
+  const currentPasswordRegister: UseFormRegisterReturn = {
+    name: 'currentPassword',
+    onChange: async (e) => {
+      setCurrentPassword(e.target.value);
+    },
+    onBlur: async () => {},
+    ref: () => {},
+  };
 
   const { updatePassword, isPending } = useUpdatePassword({
     onSuccess: () => {
-      // TODO: 비밀번호 변경 성공 시 처리
-      console.log('비밀번호 변경 성공');
+      toast.success('수정이 완료되었습니다', 'bottom-center');
     },
     onError: (error) => {
-      // TODO: 비밀번호 변경 실패 시 처리
-      console.error(error);
+      toast.error(error.message, 'top-center');
     },
   });
 
@@ -43,14 +51,13 @@ const PasswordSection = () => {
         {/* 현재 비밀번호 */}
         <div className="flex flex-col gap-3">
           <label className="t2 font-light text-base-color-0">현재 비밀번호</label>
-          <input
+          <Input
+            register={currentPasswordRegister}
             type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            placeholder="기존 비밀번호를 입력하세요."
+            label="left"
+            placeholder="비밀번호를 입력해주세요."
             autoComplete="current-password"
-            className="b4 w-full py-[16px] px-[18px] h-[55px] rounded-[10px] border border-base-color-3 bg-base-color-6 placeholder:font-Pretendard placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none focus:border-primary-color"
-            style={{ maxWidth: 1130 }}
+            width={1130}
           />
         </div>
         {/* 새 비밀번호 */}
@@ -94,7 +101,7 @@ const PasswordSection = () => {
               register={register('passwordCheck')}
               type="password"
               label="left"
-              placeholder="비밀번호를 확인해주세요."
+              placeholder="새로운 비밀번호를 재입력해주세요."
               autoComplete="new-password"
               width={1130}
               error={!!errors.passwordCheck?.message}
@@ -114,16 +121,14 @@ const PasswordSection = () => {
 
         {/* 변경사항 저장 버튼 */}
         <div className="flex justify-end mt-4">
-          <button
-            type="submit"
+          <SingleButton
+            text="변경사항 저장"
+            width={217}
+            height={65}
+            textSize={20}
             disabled={!canSubmit}
-            className={clsx(
-              'h9 px-8 h-[50px] text-base-color-6 rounded-[10px] cursor-pointer transition-all',
-              'bg-primary-color hover:opacity-90',
-              'disabled:bg-base-color-3 disabled:cursor-not-allowed',
-            )}>
-            변경사항 저장
-          </button>
+            onClick={submit}
+          />
         </div>
       </form>
     </FormProvider>

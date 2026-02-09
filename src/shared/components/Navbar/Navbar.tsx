@@ -19,7 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="relative bg-white flex justify-center px-8 z-header">
+    <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
       <div className="flex items-center h-[109px] py-[20px] max-w-[1248px] w-full">
         <Logo className="self-start cursor-pointer" onClick={() => navigate('/')} />
 

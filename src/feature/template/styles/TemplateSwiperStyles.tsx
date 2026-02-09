@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export const templateSwiperStyles = {
+export const TemplateSwiperStyle = {
   // Embla viewport (중앙 정렬을 위해 mx-auto 추가)
   embla: 'max-w-[1920px] mx-auto overflow-hidden py-[30px]',
 
