@@ -32,4 +32,20 @@ export interface MyPage {
   recent: RecentDto;
 }
 
+export interface RequestUpdateMyProfileDto {
+  nickname: string;
+  introduction: string;
+  preferredTravelStyleIds: number[];
+  preferredTravelThemeIds: number[];
+}
+
+export interface UpdatedMyProfile {
+  memberId: number;
+  nickname: string;
+  introduction: string;
+  preferredTravelStyleIds: number[];
+  preferredTravelThemeIds: number[];
+}
+
 export type ResponseMyPageDto = SuccessPayload<MyPage>;
+export type ResponseUpdateMyProfileDto = SuccessPayload<UpdatedMyProfile>;

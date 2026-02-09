@@ -2,12 +2,15 @@ import PuzzleIcon from '@/shared/assets/icon-puzzle.svg?react';
 import StarIcon from '@/shared/assets/icon-star.svg?react';
 import TemplateIcon from '@/shared/assets/icon-template.svg?react';
 import ActivityList from './ActivityList';
+import type { InterestTheme } from './InterestThemeSection';
 import ProfileHeader from './ProfileHeader';
 import SectionHeader from './SectionHeader';
 import SettingsSection from './SettingsSection';
 import StatusCard from './StatusCard';
+import type { TravelStyle } from './TravelStyleSection';
 import { useMyPageQuery } from '../hooks/useMyPageQuery';
 import { useFavoriteMutation } from '../hooks/useFavoriteMutation';
+import { useUpdateMyProfileMutation } from '../hooks/useUpdateMyProfileMutation';
 import type { VlockDto, CreatedTemplateDto } from '../types/mypage.type';
 
 // Vlock을 ActivityList 형식으로 변환
@@ -31,15 +34,90 @@ const formatTemplateForActivity = (template: CreatedTemplateDto) => ({
   isFavorite: template.isFavorite,
 });
 
+const TRAVEL_STYLE_TO_ID: Record<TravelStyle, number> = {
+  free: 1,
+  healing: 2,
+  food: 3,
+  other: 4,
+  activity: 5,
+  accommodation: 6,
+};
+
+const TRAVEL_STYLE_ID_TO_KEY: Partial<Record<number, TravelStyle>> = {
+  1: 'free',
+  2: 'healing',
+  3: 'food',
+  4: 'other',
+  5: 'activity',
+  6: 'accommodation',
+};
+
+const INTEREST_THEME_TO_ID: Record<InterestTheme, number> = {
+  nature: 1,
+  culture: 2,
+  food: 3,
+  healing: 4,
+  activity: 5,
+  local: 6,
+};
+
+const INTEREST_THEME_ID_TO_KEY: Partial<Record<number, InterestTheme>> = {
+  1: 'nature',
+  2: 'culture',
+  3: 'food',
+  4: 'healing',
+  5: 'activity',
+  6: 'local',
+};
+
+const toTravelStyleKeys = (styleIds: number[]): TravelStyle[] => {
+  return styleIds
+    .map((styleId) => TRAVEL_STYLE_ID_TO_KEY[styleId])
+    .filter((style): style is TravelStyle => style !== undefined);
+};
+
+const toInterestThemeKeys = (themeIds: number[]): InterestTheme[] => {
+  return themeIds
+    .map((themeId) => INTEREST_THEME_ID_TO_KEY[themeId])
+    .filter((theme): theme is InterestTheme => theme !== undefined);
+};
+
+const toTravelStyleIds = (styles: TravelStyle[]): number[] => {
+  return [...new Set(styles.map((style) => TRAVEL_STYLE_TO_ID[style]))];
+};
+
+const toInterestThemeIds = (themes: InterestTheme[]): number[] => {
+  return [...new Set(themes.map((theme) => INTEREST_THEME_TO_ID[theme]))];
+};
+
 const Dashboard = () => {
   const { data: myPageData, isLoading, isError } = useMyPageQuery();
   const { toggleFavorite } = useFavoriteMutation();
+  const { updateMyProfile, isPending: isProfileUpdating } = useUpdateMyProfileMutation({
+    onError: (error) => {
+      console.error('Failed to save settings:', error);
+    },
+  });
 
   const handleToggleFavorite = (id: string) => {
     const template = myPageData?.recent.createdTemplates.find((t) => t.templateId === Number(id));
     if (template) {
       toggleFavorite(template.templateId, template.isFavorite);
     }
+  };
+
+  const handleSaveSettings = (data: {
+    nickname: string;
+    bio: string;
+    travelStyles: TravelStyle[];
+    interestThemes: InterestTheme[];
+  }) => {
+    updateMyProfile({
+      nickname: data.nickname,
+      introduction: data.bio,
+      preferredTravelStyleIds: toTravelStyleIds(data.travelStyles),
+      preferredTravelThemeIds: toInterestThemeIds(data.interestThemes),
+    });
   };
 
   if (isLoading) {
@@ -54,7 +132,7 @@ const Dashboard = () => {
 
   return (
     <div className="px-6 py-12">
-      <ProfileHeader />
+      <ProfileHeader nickname={myPageData.nickname} introduction={myPageData.introduction} />
       <div className="flex gap-5">
         <StatusCard icon={<PuzzleIcon />} label="Vlocks" count={myPageData.counts.vlockCount} />
         <StatusCard icon={<TemplateIcon />} label="템플릿" count={myPageData.counts.templateCount} />
@@ -84,7 +162,10 @@ const Dashboard = () => {
           initialNickname={myPageData.nickname}
           email="your@email.com"
           initialBio={myPageData.introduction || ''}
-          onSave={(data) => console.log('Settings saved:', data)}
+          initialTravelStyles={toTravelStyleKeys(myPageData.preferredTravelStyleIds)}
+          initialInterestThemes={toInterestThemeKeys(myPageData.preferredTravelThemeIds)}
+          isSaving={isProfileUpdating}
+          onSave={handleSaveSettings}
         />
       </div>
     </div>

@@ -2,10 +2,12 @@ import SettingsIcon from '@/shared/assets/icon-settings.svg?react';
 import clsx from 'clsx';
 
 interface ProfileHeaderProps {
+  nickname: string;
+  introduction?: string | null;
   className?: string;
 }
 
-const ProfileHeader = ({ className }: ProfileHeaderProps) => {
+const ProfileHeader = ({ nickname, introduction, className }: ProfileHeaderProps) => {
   return (
     <div className={clsx('flex items-start justify-between w-full mb-12', className)}>
       <div className="flex items-center gap-8">
@@ -19,8 +21,8 @@ const ProfileHeader = ({ className }: ProfileHeaderProps) => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h1 className="h1 text-base-color-0">유저 닉네임</h1>
-          <p className="h5 text-base-color-2">한줄소개 내용이 이곳에 들어갑니다</p>
+          <h1 className="h1 text-base-color-0">{nickname}</h1>
+          <p className="h5 text-base-color-2">{introduction || '소개가 없습니다.'}</p>
         </div>
       </div>
 
