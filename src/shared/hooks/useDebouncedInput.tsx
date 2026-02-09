@@ -70,6 +70,12 @@ export function useDebouncedInputProps({ delay = 300, submit }: useDebouncedInpu
     submit();
   };
 
+  // 입력값 초기화 함수
+  const reset = () => {
+    setValue('');
+    setDebouncedValue('');
+  };
+
   return {
     inputProps: {
       value,
@@ -77,5 +83,6 @@ export function useDebouncedInputProps({ delay = 300, submit }: useDebouncedInpu
     },
     debouncedValue,
     onSubmit,
+    reset,
   };
 }

@@ -12,15 +12,12 @@ import { useEffect } from 'react';
 const Nickname = ({ setLevel }: StepProps) => {
   const {
     register,
-    watch,
     setError,
     clearErrors,
     formState: { errors },
   } = useFormContext<FormFields>();
 
-  const nickname = watch('nickname', '');
-
-  const { inputProps, debouncedValue, onSubmit } = useDebouncedInputProps({
+  const { inputProps, debouncedValue, onSubmit, reset } = useDebouncedInputProps({
     submit: () => {
       if (!data?.data.exists) {
         setLevel(4);
@@ -58,6 +55,10 @@ const Nickname = ({ setLevel }: StepProps) => {
           placeholder="닉네임 (한글, 영문 2자 이상 ~ 10자 이하)"
           error={!!errors.nickname?.message}
           hasCancel={true}
+          onCancel={() => {
+            reset();
+            clearErrors('nickname');
+          }}
           {...inputProps}
         />
 
@@ -76,7 +77,7 @@ const Nickname = ({ setLevel }: StepProps) => {
           right={{
             text: '다음',
             onClick: handleOnClickNext,
-            disabled: !nickname || !!errors.nickname,
+            disabled: !debouncedValue || !data || data?.data.exists,
           }}
           width={215}
           height={64}
