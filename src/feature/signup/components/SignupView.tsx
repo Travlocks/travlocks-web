@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { schema, type FormFields } from '../types/schema';
-import Terms, { type Agreements } from './Terms';
+import Terms from './Terms';
 import Email from './Email';
 import Password from './Password';
 import Nickname from './Nickname';
@@ -15,8 +15,6 @@ import CompleteModal from './CompleteModal';
 
 export interface StepProps {
   setLevel: React.Dispatch<React.SetStateAction<number>>;
-  agreements: Agreements;
-  setAgreements: React.Dispatch<React.SetStateAction<Agreements>>;
 }
 
 const STEPS = [
@@ -30,13 +28,6 @@ const STEPS = [
 const SignupView = () => {
   const [level, setLevel] = useState<number>(0); // 현재 단계
 
-  const [agreements, setAgreements] = useState<Agreements>({
-    service: false, // 서비스 이용약관
-    privacy: false, // 개인정보 처리방침
-    marketing: false, // 마케팅 정보 수신 동의
-    all: false, // 전체 동의
-  });
-
   const methods = useForm<FormFields>({
     defaultValues: {
       email: '',
@@ -44,6 +35,11 @@ const SignupView = () => {
       password: '',
       passwordCheck: '',
       nickname: '',
+      consents: [
+        { policyId: 1, agreed: false },
+        { policyId: 2, agreed: false },
+        { policyId: 3, agreed: false },
+      ],
     },
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -84,9 +80,7 @@ const SignupView = () => {
                   <span>{title}</span>
 
                   {/* 각 단계별 컴포넌트 */}
-                  {level === id && (
-                    <Component setLevel={setLevel} agreements={agreements} setAgreements={setAgreements} />
-                  )}
+                  {level === id && <Component setLevel={setLevel} />}
                 </div>
               </div>
             ))}

@@ -1,70 +1,16 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { useFormContext } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 
 import type { StepProps } from './SignupView';
 import DualButton from '@/shared/components/Button/DualButton';
+import usePostSignup from '../hooks/mutations/usePostSignup';
+import type { FormFields } from '../types/schema';
+import { SIGNUP_KEY } from '../constants/key';
 
-import Nature from '@assets/preference/icon-preference-nature.svg?react';
-import Culture from '@assets/preference/icon-preference-culture.svg?react';
-import Food from '@assets/preference/icon-preference-food.svg?react';
-import Healing from '@assets/preference/icon-preference-healing.svg?react';
-import Activity from '@assets/preference/icon-preference-activity.svg?react';
-import Local from '@assets/preference/icon-preference-local.svg?react';
-
-import Free from '@assets/preference/icon-preference-style-free.svg?react';
-import Plan from '@assets/preference/icon-preference-style-plan.svg?react';
-import Schedule from '@assets/preference/icon-preference-style-schedule.svg?react';
-import Efficiency from '@assets/preference/icon-preference-style-efficiency.svg?react';
-import Improvise from '@assets/preference/icon-preference-style-imporvise.svg?react';
-import Stay from '@assets/preference/icon-preference-style-stay.svg?react';
-
-const THEMES = [
-  {
-    id: 1,
-    label: '자연',
-    icon: <Nature className="group-hover:text-white" />,
-    text: '자연 속 풍경과 여유',
-  },
-  { id: 2, label: '문화', icon: <Culture className="group-hover:text-white" />, text: '역사와 문화 경험' },
-  { id: 3, label: '맛집', icon: <Food className="group-hover:text-white" />, text: '현지 음식 즐기기' },
-  { id: 4, label: '힐링', icon: <Healing className="group-hover:text-white" />, text: '쉼과 재충전' },
-  { id: 5, label: '액티비티', icon: <Activity className="group-hover:text-white" />, text: '체험과 활동 중심' },
-  { id: 6, label: '로컬', icon: <Local className="group-hover:text-white" />, text: '동네와 시장 탐방' },
-];
-
-const STYLES = [
-  {
-    id: 1,
-    label: '자유 계획형',
-    icon: <Free className="group-hover:text-white" />,
-    text: '일정은 유연하게, 내 방식대로',
-  },
-  {
-    id: 2,
-    label: '계획 충실형',
-    icon: <Plan className="group-hover:text-white" />,
-    text: '출발 전 일정과 동선을 꼼꼼히',
-  },
-  {
-    id: 3,
-    label: '느긋한 일정형',
-    icon: <Schedule className="group-hover:text-white" />,
-    text: '여유 있게 머무는 여행',
-  },
-  {
-    id: 4,
-    label: '효율 중시형',
-    icon: <Efficiency className="group-hover:text-white" />,
-    text: '시간과 동선을 고려한 이동',
-  },
-  {
-    id: 5,
-    label: '즉흥 탐색형',
-    icon: <Improvise className="group-hover:text-white" />,
-    text: '현장에서 발견하는 여행',
-  },
-  { id: 6, label: '숙소 중심형', icon: <Stay className="group-hover:text-white" />, text: '머무는 시간이 중요한 여행' },
-];
+import { THEMES } from '../data/preferencs';
+import { STYLES } from '../data/styles';
 
 const Preference = ({ setLevel }: StepProps) => {
   const [selected, setSelected] = useState<{
@@ -75,6 +21,23 @@ const Preference = ({ setLevel }: StepProps) => {
     style: [],
   }); // 선택된 취향 저장
   const [preferenceLevel, setPreferenceLevel] = useState<'theme' | 'style'>('theme'); // 여행 테마 및 여행 스타일 단계
+
+  const { watch } = useFormContext<FormFields>();
+  const queryClienet = useQueryClient();
+
+  // 서버로 전송할 값
+  const signupToken = watch('signupToken');
+  const email = watch('email');
+  const password = watch('password');
+  const nickname = watch('nickname');
+  const consents = watch('consents');
+
+  const { mutate } = usePostSignup({
+    onSuccess: (data) => {
+      queryClienet.setQueryData(SIGNUP_KEY.signup, data);
+      setLevel(5);
+    },
+  }); // 최종 회원가입
 
   const handleSelect = (level: 'theme' | 'style', id: number) => {
     setSelected((prev) => {
@@ -97,6 +60,18 @@ const Preference = ({ setLevel }: StepProps) => {
         ...prev,
         [level]: [...current, id],
       };
+    });
+  };
+
+  const handleSubmit = () => {
+    mutate({
+      signupToken,
+      email,
+      password,
+      nickname,
+      consents,
+      preferredTravelStyleIds: selected.style,
+      preferredTravelThemeIds: selected.theme,
     });
   };
 
@@ -165,7 +140,7 @@ const Preference = ({ setLevel }: StepProps) => {
             if (preferenceLevel === 'theme') {
               setPreferenceLevel('style');
             } else {
-              setLevel(5);
+              handleSubmit();
             }
           },
         }}
