@@ -1,5 +1,4 @@
 import type { ComponentType, SVGProps } from 'react';
-
 import TransportationWalkingIcon from '@shared/assets/travel-onboarding/transportation-walking.svg?react';
 import TransportationPublicIcon from '@shared/assets/travel-onboarding/transportation-public.svg?react';
 import TransportationCarIcon from '@shared/assets/travel-onboarding/transportation-car.svg?react';

@@ -45,23 +45,35 @@
   --color-base-color-4: #f3f4f6;
   --color-base-color-5: #f9fafb;
   --color-base-color-6: #ffffff;
-  --color-base-color: #d9d9d9; /* 테두리 색상으로 주요 사용 */
+  --color-base-color: #d9d9d9;
+  /* 테두리 색상으로 주요 사용 */
 
   --color-positive: #48d592;
   --color-negative: #fd7565;
+  --color-negative-alertbox-fill: #fd75651a;
 
   --background-image-gradient-color-background: linear-gradient(180deg, #9fcdff 0%, #e1f7fb 50%, #ffffff 100%);
   --background-image-gradient-color-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
+  --background-image-gradient-color-skeleton: linear-gradient(90deg, #f9fafb 0%, #d9d9d9 127%);
+  --gradient-hover: linear-gradient(274deg, #3c4ef4 -3.2%, #00ccff 110.11%);
 
   /* 페이드 인/아웃 애니메이션 */
   --animate-fade-in: fadeIn 1000ms ease-out forwards;
   --animate-fade-out: fadeOut 1000ms ease-out forwards;
   --animate-ticket-fall: ticketFall 2000ms ease-out forwards;
+  --animate-overlay-fade-in: fadeIn 200ms ease-out forwards;
+  --animate-overlay-fade-out: fadeOut 200ms ease-out forwards;
+  --animate-slide-in-from-right: slideInFromRight 300ms ease-out forwards;
+  --animate-slide-out-to-right: slideOutToRight 300ms ease-out forwards;
+
+  /* 진행선 애니메이션 */
+  --animate-progressFill: progressFill 900ms ease-out forwards;
 
   @keyframes fadeIn {
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -71,6 +83,7 @@
     from {
       opacity: 1;
     }
+
     to {
       opacity: 0;
     }
@@ -81,13 +94,45 @@
       transform: translateY(0);
       opacity: 1;
     }
+
     30% {
       transform: translate(20px, 60px) rotate(-7.89deg);
       opacity: 1;
     }
+
     100% {
       transform: translate(37px, calc(100% + 100px)) rotate(-7.89deg);
       opacity: 0;
+    }
+  }
+
+  @keyframes progressFill {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutToRight {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(100%);
     }
   }
 
@@ -213,37 +258,80 @@
     font-weight: 400;
     line-height: normal;
   }
+
+  /* 호환성으로 남겨둠 */
+  .t2 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+  }
 }
 
 @layer utilities {
   .z-base {
     z-index: var(--z-base);
   }
+
   .z-above {
     z-index: var(--z-above);
   }
+
   .z-content {
     z-index: var(--z-content);
   }
+
   .z-tooltip {
     z-index: var(--z-tooltip);
   }
+
   .z-dropdown {
     z-index: var(--z-dropdown);
   }
+
   .z-sticky {
     z-index: var(--z-sticky);
   }
+
   .z-header {
     z-index: var(--z-header);
   }
+
   .z-modal-backdrop {
     z-index: var(--z-modal-backdrop);
   }
+
   .z-sidebar {
     z-index: var(--z-sidebar);
   }
+
   .z-modal {
     z-index: var(--z-modal);
+  }
+
+  /* 그라데이션 보더 트릭 (배경이 단색일 때만 사용 가능) */
+  .border-gradient-focus {
+    border: 1px solid var(--color-base-color);
+    transition: all 0.3s ease;
+  }
+
+  .border-gradient-focus:focus {
+    border-color: transparent;
+    background-image: linear-gradient(#ffffff, #ffffff), var(--gradient-hover);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    outline: none;
+  }
+
+  /* 스크롤바 숨기기 (모든 브라우저 지원) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
   }
 }

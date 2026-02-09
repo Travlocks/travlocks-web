@@ -1,8 +1,9 @@
-import z from 'zod';
+import { z } from 'zod';
+import { emailSchema } from '@/shared/utils/validationSchemas';
 
 export const schema = z
   .object({
-    email: z.string().email({ message: '올바르지 않은 이메일 형식입니다.' }),
+    email: emailSchema.shape.email,
     code: z.string(),
     password: z
       .string()

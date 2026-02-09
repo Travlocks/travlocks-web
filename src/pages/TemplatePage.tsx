@@ -1,8 +1,12 @@
+import TemplateContent from '@/feature/search/TemplateContent';
+
 const TemplatePage = () => {
   return (
-    <>
-      <h1>템플릿</h1>
-    </>
+    <div>
+      <div className="w-full max-w-[1920px] mx-auto">
+        <TemplateContent />
+      </div>
+    </div>
   );
 };
 
