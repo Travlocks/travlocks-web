@@ -7,20 +7,26 @@ import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
+
 import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
 import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVerificationConfirm';
 import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerificationResend';
+import handleMutationSuccess from '../utils/handleMutationSuccess';
+import handleMutationError from '../utils/handleMutationError';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
     register,
     watch,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useFormContext<FormFields>();
 
   const [step, setStep] = useState<number>(1); // step 1: 이메일, step2: 인증번호
   const [timeLeft, setTimeLeft] = useState<number>(300); // 5분 타이머
+  const [showTimer, setShowTimer] = useState<boolean>(false);
   const [timerKey, setTimerKey] = useState(0);
 
   const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
@@ -49,15 +55,86 @@ const Email = ({ setLevel }: StepProps) => {
     setValue('code', ''); // 입력란 비우기
   };
 
+  // 이메일 인증 (이메일 입력 후 다음 버튼 누를 때 실행되는 함수)
+  const handleSubmitEmail = () => {
+    mutatePostEmailVerification(
+      { email },
+      {
+        onSuccess: (res) => {
+          const result = handleMutationSuccess(res, 'send');
+
+          if (result?.verificationId) {
+            setValue('verificationId', result.verificationId);
+            setStep(2); // 인증 코드 발송 후 코드 입력 레벨로 이동함
+            setShowTimer(true);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setError('email', { message });
+          }
+        },
+      },
+    );
+  };
+
   // 인증 메일 재전송
   const handleResend = () => {
-    setHasTriedResend(true);
-    setHasRetry(false);
-    setHasTriedVerify(false);
+    setHasTriedVerify(false); // 재전송 누른 즉시 에러 메시지는 사라지도록
+    setHasTriedResend(false); // 재전송 누르면 안내 문구 사라지도록
+    setHasRetry(true);
+    setShowTimer(false);
 
-    mutatePostEmailVerificationResned({ verificationId });
+    setValue('code', '');
 
-    handleTimer();
+    mutatePostEmailVerificationResned(
+      { verificationId },
+      {
+        onSuccess: (res) => {
+          if (res.isSuccess) {
+            setHasTriedResend(true);
+            setHasRetry(false);
+
+            handleTimer();
+            setShowTimer(true);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setHasTriedVerify(true);
+            setError('code', { message });
+          }
+        },
+      },
+    );
+  };
+
+  // 인증 코드 확인 (인증 완료 버튼 클릭 시 실행)
+  const handleConfirmCode = () => {
+    setHasTriedVerify(true);
+    setHasRetry(true);
+
+    mutatePostEmailVerificationConfirm(
+      { verificationId, code },
+      {
+        onSuccess: (res) => {
+          const result = handleMutationSuccess(res, 'confirm');
+
+          if (result?.signupToken) {
+            setValue('signupToken', result.signupToken);
+            setLevel(2);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setError('code', { message });
+          }
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -123,7 +200,7 @@ const Email = ({ setLevel }: StepProps) => {
                 />
 
                 {/* 타이머 */}
-                {step === 2 && (
+                {step === 2 && showTimer && (
                   <p className="absolute top-1/2 -translate-y-1/2 right-[24px] text-negative text-[16px] font-[400] leading-[15px]">
                     {formatTime(timeLeft)}
                   </p>
@@ -136,7 +213,7 @@ const Email = ({ setLevel }: StepProps) => {
                   <Alert
                     text={
                       <div className="flex justify-between flex-1">
-                        <p>인증코드가 올바르지 않습니다</p>
+                        <p>{errors.code?.message}</p>
                         <p onClick={handleResend} className="underline cursor-pointer">
                           재전송
                         </p>
@@ -166,24 +243,17 @@ const Email = ({ setLevel }: StepProps) => {
             left={{
               text: '이전',
               variant: 'white',
-              onClick: () => setLevel(0),
+              onClick: () => {
+                setLevel(0);
+                setValue('email', '');
+                clearErrors('email');
+              },
               className: 'border-base-color!',
             }}
             right={{
               text: '다음',
               disabled: !email || !!errors.email,
-              onClick: () => {
-                mutatePostEmailVerification(
-                  { email },
-                  {
-                    onSuccess: (res) => {
-                      const verificationId = res.data.verificationId;
-                      setValue('verificationId', verificationId);
-                    },
-                  },
-                );
-                setStep(2);
-              },
+              onClick: handleSubmitEmail,
             }}
             width={215}
             height={64}
@@ -210,27 +280,7 @@ const Email = ({ setLevel }: StepProps) => {
               text: '인증 완료',
               disabled: hasTriedVerify || code?.length < 6,
               type: 'button',
-              onClick: () => {
-                setHasTriedVerify(true);
-                setHasRetry(true);
-
-                mutatePostEmailVerificationConfirm(
-                  { verificationId, code },
-                  {
-                    onSuccess: (res) => {
-                      const signupToken = res.data?.signupToken;
-                      if (!signupToken) return;
-
-                      setValue('signupToken', signupToken);
-                      setLevel(2);
-                    },
-                    onError: (error) => {
-                      // 인증 실패한 경우
-                      console.log(error);
-                    },
-                  },
-                );
-              },
+              onClick: handleConfirmCode,
             }}
             width={215}
             height={64}
