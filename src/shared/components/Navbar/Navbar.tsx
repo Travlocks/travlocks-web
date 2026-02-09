@@ -10,6 +10,7 @@ import NavbarMenuModal from './NavbarMenuModal';
 import AccountModal from '@/feature/mypage/components/AccountModal';
 import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
 import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
+import NavbarNotificationModal from './NavbarNotificationModal';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -24,6 +25,7 @@ const Navbar = () => {
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
+  const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
 
   const { mutate } = usePostLogout(); // 로그아웃
   const { data } = useGetMyPage(); // 내 정보 조회
@@ -63,9 +65,13 @@ const Navbar = () => {
           ))}
 
           <div className="flex items-center gap-[15px] ml-[26px]">
-            <div className="size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
+            <div
+              onClick={() => setShowNotificationModal(true)}
+              className="relative size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
               {!alarm && <AlarmOff className="self-start cursor-pointer" />}
               {alarm && <AlarmOn className="self-start cursor-pointer" />}
+
+              {showNotificationModal && <NavbarNotificationModal setShowNotificationModal={setShowNotificationModal} />}
             </div>
 
             <div
