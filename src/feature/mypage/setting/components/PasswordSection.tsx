@@ -27,7 +27,7 @@ const PasswordSection = () => {
       toast.success('수정이 완료되었습니다', 'bottom-center');
     },
     onError: (error) => {
-      toast.error(error.message, 'top-center');
+      toast.error(error.message, 'bottom-center');
     },
   });
 
