@@ -29,8 +29,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        assetFileNames: (assestInfo) => {
-          if (assestInfo.name?.endsWith('.lottie')) {
+        assetFileNames: (assetsInfo) => {
+          if (assetsInfo.name?.endsWith('.lottie')) {
             return 'assets/[name]-[hash][extname]';
           }
           return 'assets/[name]-[hash][extname]';
