@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import CheckIcon from '@assets/icon-check-password.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
 import { usePasswordConfirmForm } from '../hooks/useResetPasswordForm';
-import type { PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
+import { PASSWORD_VALIDATION_RULES, type PasswordConfirmFormData } from '@/shared/utils/validationSchemas';
 import Button from '@/shared/components/Button/Button';
 import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
@@ -16,14 +16,6 @@ type Props = {
   step: Step;
   onSubmitResetPassword: (data: PasswordConfirmFormData) => void;
 };
-
-const ERRORS = [
-  { id: 1, error: '최소 8자 이상' },
-  {
-    id: 2,
-    error: '영문 + 숫자 포함',
-  },
-];
 
 // 비밀번호 재설정 성공 UI
 const PasswordResetSuccessView = () => {
@@ -66,7 +58,7 @@ const PasswordResetFormView = ({
           />
 
           {/* 비밀번호 유효성 검사 */}
-          {ERRORS.map((error) => (
+          {PASSWORD_VALIDATION_RULES.map((error) => (
             <div
               key={error.id}
               className={clsx(
@@ -85,7 +77,7 @@ const PasswordResetFormView = ({
                   ))}
               </div>
 
-              <p>{error.error}</p>
+              <p>{error.label}</p>
             </div>
           ))}
 

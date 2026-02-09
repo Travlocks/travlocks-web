@@ -1,7 +1,7 @@
 import React, { useId } from 'react';
 import clsx from 'clsx';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import AlertIcon from '@assets/icon-alert.svg?react';
+import { AppIcon } from '@shared/ui/icon/AppIcon';
 import CancelIcon from '@assets/icon-cancel.svg?react';
 
 /**
@@ -74,7 +74,7 @@ const TextField = ({ label, error, helperText, onClear, register, className, id,
 
       {error && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-[5px] bg-negative-alertbox-fill">
-          <AlertIcon className="w-4.25 h-4.25 shrink-0" />
+          <AppIcon name="alert" className="w-4.25 h-4.25 shrink-0" color="#fd7565" />
           <span className="b2 text-negative">{error}</span>
         </div>
       )}

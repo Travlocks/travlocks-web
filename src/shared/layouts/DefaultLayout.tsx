@@ -1,11 +1,11 @@
 import Navbar from '@/shared/components/Navbar/Navbar';
 import MainBg from '@components/MainBg';
 import SplashFlow from '@/feature/splash/SplashFlow';
-import { Suspense } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Suspense, useState } from 'react';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
-import { useRouteGuard } from '@feature/splash/hooks/useRouteGuard';
-import { useSplashStore } from '@/shared/stores/splashStore';
+import { SESSION_STORAGE_KEY } from '@constants/key';
+import { useAuth } from '../hooks/useAuth';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -13,26 +13,36 @@ interface DefaultLayoutProps {
 }
 
 const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLayoutProps) => {
-  const { completeSplash, setIsAnimating } = useSplashStore((state) => state.actions);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, shouldRequireAuth } = useAuth();
+  const isHomeRoute = location.pathname === '/';
 
-  const { showSplash, isAuthPage, isHomeRoute, redirectTo } = useRouteGuard(protectedRoutes);
+  // 스플래시 표시 여부 저장
+  const showSplashStorage = sessionStorage.getItem(SESSION_STORAGE_KEY.showSplash);
+  const [showSplash, setShowSplash] = useState(showSplashStorage !== 'false');
 
-  // 스플래시 완료 전 홈 페이지 접근 시 블로킹
-  const shouldBlockForSplash = isHomeRoute && showSplash;
+  // 스플래시 완료 시 세션 스토리지에 표시 여부 저장
+  const handleSplashDone = () => {
+    setShowSplash(false);
+    if (!showSplashStorage) {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.showSplash, 'false');
+    }
+  };
 
-  if (redirectTo) {
-    return <Navigate to={redirectTo} replace />;
+  // 인증 페이지 목록
+  const AUTH_PAGES = ['/login', '/signup', '/password'];
+  const isAuthPage = AUTH_PAGES.includes(location.pathname);
+
+  // 다른 url로 들어오면 스플래시
+  if (showSplash && !isHomeRoute && !isAuthPage) {
+    return <Navigate to="/" replace />;
   }
 
-  // 스플래시 애니메이션 시작 핸들러
-  const handleSplashStart = () => {
-    setIsAnimating(true);
-  };
-
-  // 스플래시 애니메이션 완료 핸들러
-  const handleSplashDone = () => {
-    completeSplash();
-  };
+  // 모든 사용자는 로그인 후에 서비스 이용 가능
+  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
 
   return (
     <div className="relative w-full min-h-dvh overflow-hidden" aria-label="메인 레이아웃">
@@ -40,12 +50,19 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
       {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-base bg-base-color-6" />}
       {/* 스플래시 플로우 */}
       {isHomeRoute && (
-        <AnimatePresence mode="wait">
-          {showSplash && <SplashFlow key="splash" onStart={handleSplashStart} onDone={handleSplashDone} />}
+        <AnimatePresence
+          mode="wait"
+          onExitComplete={() => {
+            // 스플래시 완료 시 로그인 상태에 따라 처리
+            if (protectedRoutes && !isAuthenticated) {
+              navigate('/login', { replace: true, state: { from: location.pathname } });
+            }
+          }}>
+          {showSplash && <SplashFlow key="splash" onDone={handleSplashDone} />}
         </AnimatePresence>
       )}
       {/* 스플래시 완료 후 메인 콘텐츠 렌더링 */}
-      {!shouldBlockForSplash && (
+      {!showSplash && (
         <div className="relative z-content">
           {showNavbar && <Navbar />}
 

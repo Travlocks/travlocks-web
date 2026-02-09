@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import SettingsIcon from '@/shared/assets/icon-settings.svg?react';
 import clsx from 'clsx';
 
@@ -24,10 +25,12 @@ const ProfileHeader = ({ className }: ProfileHeaderProps) => {
         </div>
       </div>
 
-      <button className="flex items-center gap-1.25 px-6.25 py-3.25 border border-base-color rounded-[10px] text-base-color-2 h6 hover:bg-base-color-4 transition-colors mt-13">
+      <Link
+        to="/mypage/settings"
+        className="flex items-center gap-1.25 px-6.25 py-3.25 border border-base-color rounded-[10px] text-base-color-2 h6 hover:bg-base-color-4 transition-colors mt-13">
         <SettingsIcon />
         계정 설정
-      </button>
+      </Link>
     </div>
   );
 };

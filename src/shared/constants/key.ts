@@ -9,5 +9,6 @@ export const LOCAL_STORAGE_KEY = {
 export const QUERY_KEY = {
   verifyResetToken: 'verifyResetToken',
   emailExists: 'emailExists',
+  member: 'member',
   templateSearch: 'template-search',
 };
