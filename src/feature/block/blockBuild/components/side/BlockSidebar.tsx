@@ -12,35 +12,70 @@ import { toSidebarBlock } from '../../utils/blockMapper';
 
 const BlockSidebar = () => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
 
   const { inputProps } = useBlockSearch({
     activeTab,
     delay: 300,
   });
 
-  // TODO: cityId 받으면 그거 사용
-  // 임시로 첫 번째 cityId만 사용 하드코딩
   const { data: regionsData } = useRegions();
-  const cityId = useMemo(() => {
+
+  // 모든 도시를 배열로 수집
+  const allCities = useMemo(() => {
     const regions = regionsData?.data?.regions ?? [];
+    const cities: Array<{ cityId: number; cityName: string; regionName: string }> = [];
+
     for (const region of regions) {
-      if (region.cities.length > 0) {
-        return region.cities[0].cityId;
+      for (const city of region.cities) {
+        cities.push({
+          cityId: city.cityId,
+          cityName: city.cityName,
+          regionName: region.regionName,
+        });
       }
     }
-    return 0;
+
+    return cities;
   }, [regionsData]);
+
+  // 첫 번째 cityId
+  const firstCityId = useMemo(() => {
+    return allCities.length > 0 ? allCities[0].cityId : 0;
+  }, [allCities]);
+
+  // 선택된 cityId
+  const [selectedCityId, setSelectedCityId] = useState<number>(firstCityId);
+
+  // allCities가 업데이트되면 첫 번째 cityId로 설정
+  if (allCities.length > 0 && !allCities.some((city) => city.cityId === selectedCityId)) {
+    setSelectedCityId(firstCityId);
+  }
 
   // 카테고리 목록
   const { data: categoriesData } = useCategories();
-  const categories = categoriesData?.data?.categories ?? [];
+  const categories = useMemo(() => categoriesData?.data?.categories ?? [], [categoriesData]);
+
+  // 첫 카테고리 자동 선택
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(() => {
+    const initialCategories = categoriesData?.data?.categories ?? [];
+    return initialCategories.length > 0 ? initialCategories[0].id : null;
+  });
+
+  // 카테고리 목록이 로드되면 첫 번째 카테고리로 설정
+  const firstCategoryId = useMemo(() => {
+    return categories.length > 0 ? categories[0].id : null;
+  }, [categories]);
+
+  // selectedCategoryId가 null이고 카테고리가 있으면 첫 번째 카테고리로 설정
+  if (selectedCategoryId === null && firstCategoryId !== null) {
+    setSelectedCategoryId(firstCategoryId);
+  }
 
   // 탭별 블록 조회
-  const { data: popularData } = usePopularBlocks({ cityId });
-  const { data: createdData } = useCreatedBlocks({ cityId });
+  const { data: popularData } = usePopularBlocks({ cityId: selectedCityId });
+  const { data: createdData } = useCreatedBlocks({ cityId: selectedCityId });
   const { data: categoryData } = useBlocksByCategory({
-    cityId,
+    cityId: selectedCityId,
     categoryId: selectedCategoryId ?? 0,
   });
 
@@ -48,11 +83,6 @@ const BlockSidebar = () => {
   const popularBlocks = useMemo(() => (popularData?.data ?? []).map(toSidebarBlock), [popularData]);
   const createdBlocks = useMemo(() => (createdData?.data ?? []).map(toSidebarBlock), [createdData]);
   const categoryBlocks = useMemo(() => (categoryData?.data ?? []).map(toSidebarBlock), [categoryData]);
-
-  // 첫 카테고리 자동 선택
-  if (categories.length > 0 && selectedCategoryId === null) {
-    setSelectedCategoryId(categories[0].id);
-  }
 
   const content = () => {
     switch (activeTab) {
