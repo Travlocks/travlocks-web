@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDebouncedInputProps } from '@/shared/hooks/useDebouncedInput';
 import SearchIcon from '@/shared/assets/icon-search.svg?react';
 import { SearchBarStyle } from '@feature/search/style/SearchBar.style';
