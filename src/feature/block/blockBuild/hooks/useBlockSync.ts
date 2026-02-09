@@ -36,7 +36,6 @@ export const useBlockSync = () => {
   const pendingOpsRef = useRef<PendingOperation[]>([]);
 
   // 현재 day의 블록 목록
-  const currentBlocks = blocksByDay[currentDay] ?? [];
 
   /**
    * 이전 상태와 현재 상태를 비교하여 변경된 블록을 찾음
@@ -132,6 +131,7 @@ export const useBlockSync = () => {
    * 블록 변경 감지 및 디바운스 처리
    */
   useEffect(() => {
+    const currentBlocks = blocksByDay[currentDay] ?? [];
     const changes = detectChanges(previousBlocksRef.current, currentBlocks);
 
     if (changes.length > 0) {
@@ -156,7 +156,7 @@ export const useBlockSync = () => {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [currentBlocks, detectChanges, syncToServer]);
+  }, [blocksByDay, currentDay, detectChanges, syncToServer]);
 
   // 컴포넌트 언마운트 시 즉시 동기화
   useEffect(() => {
