@@ -154,7 +154,6 @@
 }
 
 @layer base {
-
   html,
   body {
     font-family: 'Pretendard';
@@ -307,6 +306,10 @@
 
   .z-modal {
     z-index: var(--z-modal);
+  }
+
+  .z-toast {
+    z-index: var(--z-toast);
   }
 
   /* 그라데이션 보더 트릭 (배경이 단색일 때만 사용 가능) */

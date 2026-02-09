@@ -87,7 +87,7 @@ const Terms = ({ setLevel, agreements, setAgreements }: StepProps) => {
               onChange={(checked) => handleItemChange(term.key, checked)}
               className="w-max pr-0"
             />
-            <ArrowIcon className="cursor-pointer" onClick={() => setModalType(term.key)} />
+            <ArrowIcon className="cursor-pointer" fill="#4A5569" onClick={() => setModalType(term.key)} />
           </div>
         ))}
       </div>

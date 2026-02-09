@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from '@routes/pageRoutes';
 import { useEffect } from 'react';
 import { useAuthStore } from './shared/stores/authStore';
+import ToastContainer from './shared/components/Toast/Toast';
 
 export const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <ToastContainer />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

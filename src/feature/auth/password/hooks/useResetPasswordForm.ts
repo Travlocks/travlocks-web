@@ -51,13 +51,7 @@ export function useResetPasswordForm(onSubmitResetPassword: (data: ResetPassword
 
 // 비밀번호 재설정 폼
 export function usePasswordConfirmForm(onSubmit: (data: PasswordConfirmFormData) => void) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, dirtyFields, isSubmitting },
-    trigger,
-  } = useForm<PasswordConfirmFormData>({
+  const methods = useForm<PasswordConfirmFormData>({
     resolver: zodResolver(passwordConfirmSchema),
     mode: 'onChange',
     defaultValues: {
@@ -65,6 +59,15 @@ export function usePasswordConfirmForm(onSubmit: (data: PasswordConfirmFormData)
       passwordCheck: '',
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, dirtyFields, isSubmitting },
+    trigger,
+    control,
+  } = methods;
 
   const password = watch('password') ?? '';
   const passwordCheck = watch('passwordCheck') ?? '';
@@ -87,6 +90,7 @@ export function usePasswordConfirmForm(onSubmit: (data: PasswordConfirmFormData)
   const submit = handleSubmit(onSubmit);
 
   return {
+    ...methods,
     register,
     submit,
     isSubmitting,
@@ -97,5 +101,6 @@ export function usePasswordConfirmForm(onSubmit: (data: PasswordConfirmFormData)
     passwordCheck,
     isLengthValid,
     isCombinationValid,
+    control,
   };
 }

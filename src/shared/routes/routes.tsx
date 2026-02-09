@@ -4,6 +4,7 @@ export const lazyRoutes = {
   /** 로그인 관련 페이지 */
   LoginPage: React.lazy(() => import('../../pages/LoginPage')),
   SignupPage: React.lazy(() => import('../../pages/SignupPage')),
+  ResetPasswordPage: React.lazy(() => import('../../pages/ResetPasswordPage')),
   PasswordResetConfirmPage: React.lazy(() => import('../../pages/PasswordResetConfirmPage')),
 
   /** 홈 페이지 */
@@ -17,6 +18,6 @@ export const lazyRoutes = {
   TemplatePage: React.lazy(() => import('../../pages/TemplatePage')),
 
   /** 마이페이지 */
-  MyPage: React.lazy(() => import('../../pages/MyPage')),
-  ResetPasswordPage: React.lazy(() => import('../../pages/ResetPasswordPage')),
+  MyPage: React.lazy(() => import('../../pages/MyPage/MyPage')),
+  SettingsPage: React.lazy(() => import('../../pages/MyPage/SettingsPage')),
 };

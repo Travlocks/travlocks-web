@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 
-import CheckIcon from '@assets/icon-check.svg?react';
-import AlertIcon from '@assets/icon-alert.svg?react';
+import { AppIcon } from '@shared/ui/icon/AppIcon';
 
 /**
  * 에러 메시지 및 안내 메시지를 표시하는 컴포넌트입니다.
@@ -27,7 +26,12 @@ interface AlertProps {
 }
 
 const Alert = ({ text, type, width, onClick, className }: AlertProps) => {
-  const Icon = type === 'check' ? CheckIcon : AlertIcon;
+  const Icon =
+    type === 'check' ? (
+      <AppIcon name="check" width="24px" height="24px" />
+    ) : (
+      <AppIcon name="alert" width="24px" height="24px" color="#fd7565" />
+    );
 
   return (
     <div
@@ -39,7 +43,7 @@ const Alert = ({ text, type, width, onClick, className }: AlertProps) => {
         className,
       )}
       style={{ maxWidth: width }}>
-      <Icon />
+      {Icon}
 
       {/* 에러 메시지인 경우 */}
       {type === 'alert' && text}
