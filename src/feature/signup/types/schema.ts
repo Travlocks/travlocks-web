@@ -13,6 +13,7 @@ export const schema = z
       .string()
       .min(2, { message: '닉네임은 2자 이상 ~ 10자 이하로 입력해주세요' })
       .max(10, { message: '닉네임은 2자 이상 ~ 10자 이하로 입력해주세요' }),
+    verificationId: z.string(),
   })
   .refine((data) => data.password === data.passwordCheck, {
     message: '비밀번호가 일치하지 않습니다',

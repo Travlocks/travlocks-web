@@ -8,3 +8,13 @@ export type RequestEmailVerifiacationDto = {
 export type ResponseEmailVerificationDto = SuccessPayload<{
   verificationId: string;
 }>;
+
+// 이메일 인증 코드 확인
+export type RequestEmailVerificationConfirmDto = {
+  verificationId: string;
+  code: string;
+};
+
+export type ResponseEmailVerificationConfirmDto = SuccessPayload<{
+  signupToken?: string;
+} | null>;

@@ -8,6 +8,7 @@ import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
 import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
+import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVerificationConfirm';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
@@ -27,11 +28,11 @@ const Email = ({ setLevel }: StepProps) => {
   const [showModal, setShowModal] = useState(false);
 
   const { mutate: mutatePostEmailVerification } = usePostEmailVerification(); // 이메일 인증 코드 발송
+  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm();
 
   const email = watch('email');
   const code = watch('code');
-
-  const isCodeError = code !== '123123'; // TODO: 이메일 인증 코드 맞는지 확인하는 로직 필요
+  const verificationId = watch('verificationId');
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -114,7 +115,7 @@ const Email = ({ setLevel }: StepProps) => {
                   label="left"
                   placeholder="인증코드를 입력하세요"
                   maxLength={6}
-                  error={hasTriedVerify && isCodeError}
+                  error={hasTriedVerify}
                 />
 
                 {/* 타이머 */}
@@ -126,7 +127,7 @@ const Email = ({ setLevel }: StepProps) => {
               </div>
 
               {/* 인증코드 틀렸을 때 */}
-              {hasTriedVerify && isCodeError && (
+              {hasTriedVerify && (
                 <div>
                   <Alert
                     text={
@@ -168,7 +169,15 @@ const Email = ({ setLevel }: StepProps) => {
               text: '다음',
               disabled: !email || !!errors.email,
               onClick: () => {
-                mutatePostEmailVerification({ email });
+                mutatePostEmailVerification(
+                  { email },
+                  {
+                    onSuccess: (res) => {
+                      const verificationId = res.data.verificationId;
+                      setValue('verificationId', verificationId);
+                    },
+                  },
+                );
                 setStep(2);
               },
             }}
@@ -195,14 +204,24 @@ const Email = ({ setLevel }: StepProps) => {
             }}
             right={{
               text: '인증 완료',
-              disabled: (hasTriedVerify && isCodeError) || code?.length < 6,
+              disabled: hasTriedVerify || code?.length < 6,
+              type: 'button',
               onClick: () => {
                 setHasTriedVerify(true);
                 setHasRetry(true);
 
-                if (!isCodeError) {
-                  setLevel(2);
-                }
+                mutatePostEmailVerificationConfirm(
+                  { verificationId, code },
+                  {
+                    onSuccess: () => {
+                      setLevel(2);
+                    },
+                    onError: (error) => {
+                      // 인증 실패한 경우
+                      console.log(error);
+                    },
+                  },
+                );
               },
             }}
             width={215}
