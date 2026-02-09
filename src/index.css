@@ -163,6 +163,11 @@
 }
 
 @layer components {
+  .loading-backdrop {
+    background-color: rgba(74, 85, 105, 0.6);
+    backdrop-filter: blur(1.5px);
+  }
+
   .h1 {
     font-size: 46px;
     font-weight: 600;
