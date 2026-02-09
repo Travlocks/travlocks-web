@@ -217,7 +217,11 @@ const Email = ({ setLevel }: StepProps) => {
                 mutatePostEmailVerificationConfirm(
                   { verificationId, code },
                   {
-                    onSuccess: () => {
+                    onSuccess: (res) => {
+                      const signupToken = res.data?.signupToken;
+                      if (!signupToken) return;
+
+                      setValue('signupToken', signupToken);
                       setLevel(2);
                     },
                     onError: (error) => {

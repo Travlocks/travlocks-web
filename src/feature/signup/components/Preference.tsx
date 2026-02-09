@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { useFormContext } from 'react-hook-form';
 
 import type { StepProps } from './SignupView';
 import DualButton from '@/shared/components/Button/DualButton';
+import usePostSignup from '../hooks/mutations/usePostSignup';
+import type { FormFields } from '../types/schema';
 
 import Nature from '@assets/preference/icon-preference-nature.svg?react';
 import Culture from '@assets/preference/icon-preference-culture.svg?react';
@@ -76,6 +79,17 @@ const Preference = ({ setLevel }: StepProps) => {
   }); // 선택된 취향 저장
   const [preferenceLevel, setPreferenceLevel] = useState<'theme' | 'style'>('theme'); // 여행 테마 및 여행 스타일 단계
 
+  const { watch } = useFormContext<FormFields>();
+
+  // 서버로 전송할 값
+  const signupToken = watch('signupToken');
+  const email = watch('email');
+  const password = watch('password');
+  const nickname = watch('nickname');
+  const consents = watch('consents');
+
+  const { mutate } = usePostSignup(); // 최종 회원가입
+
   const handleSelect = (level: 'theme' | 'style', id: number) => {
     setSelected((prev) => {
       const current = prev[level];
@@ -97,6 +111,18 @@ const Preference = ({ setLevel }: StepProps) => {
         ...prev,
         [level]: [...current, id],
       };
+    });
+  };
+
+  const handleSubmit = () => {
+    mutate({
+      signupToken,
+      email,
+      password,
+      nickname,
+      consents,
+      preferredTravelStyleIds: selected.theme,
+      preferredTravelThemeIds: selected.style,
     });
   };
 
@@ -165,6 +191,7 @@ const Preference = ({ setLevel }: StepProps) => {
             if (preferenceLevel === 'theme') {
               setPreferenceLevel('style');
             } else {
+              handleSubmit();
               setLevel(5);
             }
           },

@@ -4,6 +4,7 @@ import type {
   RequestEmailVerificationConfirmDto,
   RequestEmailVerificationResnedDto,
   RequestNicknameDto,
+  RequestSignupDto,
   ResponseEmailVerificationConfirmDto,
   ResponseEmailVerificationDto,
   ResponseEmailVerificationResendDto,
@@ -42,6 +43,13 @@ export const getIsNicknameExists = async ({ nickname }: RequestNicknameDto): Pro
   const { data } = await axiosInstance.get(`/members/nickname/exists`, {
     params: { nickname },
   });
+
+  return data;
+};
+
+// 최종 회원가입
+export const postSignup = async (body: RequestSignupDto) => {
+  const { data } = await axiosInstance.post('/members/signup', body);
 
   return data;
 };
