@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface NavbarMenuModalProps {
   setShowMenu: React.Dispatch<SetStateAction<boolean>>;
+  setShowLogoutModal: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const NavbarMenuModal = ({ setShowMenu }: NavbarMenuModalProps) => {
+const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal }: NavbarMenuModalProps) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -44,33 +45,39 @@ const NavbarMenuModal = ({ setShowMenu }: NavbarMenuModalProps) => {
   }, [setShowMenu]);
 
   return (
-    <div
-      ref={modalRef}
-      className="absolute z-modal right-0 top-[85px] bg-white rounded-[30px] w-[307px] shadow-[0_1px_20px_0_rgba(0,0,0,0.10)] px-[27px] pt-[27px] pb-[16px]">
-      <div className="flex gap-[16px] items-center pb-[18px] border-b border-base-color">
-        <Profile className="size-[60px]" />
-        <div className="flex flex-col gap-[4px]">
-          <p className="t2">유저닉네임</p>
-          <p className="b4 text-base-color-1">your@email.com</p>
+    <>
+      <div
+        ref={modalRef}
+        className="absolute z-modal right-0 top-[85px] bg-white rounded-[30px] w-[307px] shadow-[0_1px_20px_0_rgba(0,0,0,0.10)] px-[27px] pt-[27px] pb-[16px]">
+        <div className="flex gap-[16px] items-center pb-[18px] border-b border-base-color">
+          <Profile className="size-[60px]" />
+          <div className="flex flex-col gap-[4px]">
+            <p className="t2">유저닉네임</p>
+            <p className="b4 text-base-color-1">your@email.com</p>
+          </div>
+        </div>
+
+        <div>
+          {TABS.map((tab) => (
+            <div
+              key={tab.id}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMenu(false);
+                tab.onClick();
+
+                if (tab.id === 2) {
+                  setShowLogoutModal(true);
+                }
+              }}
+              className="py-[16px] px-[5px] flex items-center gap-[16px] text-base-color-2 hover:text-base-color-1">
+              {tab.icon}
+              <p className="b3">{tab.label}</p>
+            </div>
+          ))}
         </div>
       </div>
-
-      <div>
-        {TABS.map((tab) => (
-          <div
-            key={tab.id}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowMenu(false);
-              tab.onClick();
-            }}
-            className="py-[16px] px-[5px] flex items-center gap-[16px] text-base-color-2 hover:text-base-color-1">
-            {tab.icon}
-            <p className="b3">{tab.label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 

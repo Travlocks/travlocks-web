@@ -8,6 +8,7 @@ import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
 import Profile from '@assets/Navbar/profile-happy.svg?react';
 import { useState } from 'react';
 import NavbarMenuModal from './NavbarMenuModal';
+import AccountModal from '@/feature/mypage/components/AccountModal';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -21,6 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
 
   return (
     <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
@@ -61,11 +63,21 @@ const Navbar = () => {
               <Profile className="size-[40px]" />
               <p className="base-color-0 b3">유저닉네임</p>
 
-              {showMenu && <NavbarMenuModal setShowMenu={setShowMenu} />}
+              {showMenu && <NavbarMenuModal setShowMenu={setShowMenu} setShowLogoutModal={setShowLogoutModal} />}
             </div>
           </div>
         </div>
       </div>
+
+      {showLogoutModal && (
+        <AccountModal
+          modalType="logout"
+          onCancel={() => {
+            setShowLogoutModal(false);
+          }}
+          onConfirm={() => {}}
+        />
+      )}
     </nav>
   );
 };
