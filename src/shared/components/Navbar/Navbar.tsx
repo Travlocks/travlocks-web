@@ -9,6 +9,7 @@ import Profile from '@assets/Navbar/profile-happy.svg?react';
 import { useState } from 'react';
 import NavbarMenuModal from './NavbarMenuModal';
 import AccountModal from '@/feature/mypage/components/AccountModal';
+import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -23,6 +24,17 @@ const Navbar = () => {
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
+
+  const { mutate } = usePostLogout(); // 로그아웃
+
+  const handleLogout = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        setShowLogoutModal(false);
+        window.location.href = '/login';
+      },
+    });
+  };
 
   return (
     <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
@@ -75,7 +87,7 @@ const Navbar = () => {
           onCancel={() => {
             setShowLogoutModal(false);
           }}
-          onConfirm={() => {}}
+          onConfirm={handleLogout}
         />
       )}
     </nav>
