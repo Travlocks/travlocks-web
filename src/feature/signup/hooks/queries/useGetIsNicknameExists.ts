@@ -6,6 +6,7 @@ function useGetIsNicknameExists({ nickname }: RequestNicknameDto) {
   return useQuery({
     queryKey: ['nickname-exists', nickname],
     queryFn: () => getIsNicknameExists({ nickname }),
+    enabled: nickname.length > 0,
   });
 }
 
