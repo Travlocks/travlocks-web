@@ -9,13 +9,14 @@ import type {
   ResponseEmailVerificationDto,
   ResponseEmailVerificationResendDto,
   ResponseNicknameDto,
+  ResponseSignupDto,
 } from '../types/auth';
 
 // 이메일 인증 코드 발송
 export const postEmailVerificationDto = async (
   email: RequestEmailVerifiacationDto,
 ): Promise<ResponseEmailVerificationDto> => {
-  const { data } = await axiosInstance.post('auth/email-verification', email);
+  const { data } = await axiosInstance.post('/auth/email-verification', email);
 
   return data;
 };
@@ -48,7 +49,7 @@ export const getIsNicknameExists = async ({ nickname }: RequestNicknameDto): Pro
 };
 
 // 최종 회원가입
-export const postSignup = async (body: RequestSignupDto) => {
+export const postSignup = async (body: RequestSignupDto): Promise<ResponseSignupDto> => {
   const { data } = await axiosInstance.post('/members/signup', body);
 
   return data;
