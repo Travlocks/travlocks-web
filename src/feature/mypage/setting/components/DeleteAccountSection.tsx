@@ -43,7 +43,9 @@ const DeleteAccountSection = () => {
           </div>
         </div>
       </div>
-      {showModal && <AccountModal modalType="complete" onCancel={() => setShowModal(false)} onConfirm={handleDelete} />}
+      {showModal && (
+        <AccountModal modalType="withdrawal" onCancel={() => setShowModal(false)} onConfirm={handleDelete} />
+      )}
     </>
   );
 };
