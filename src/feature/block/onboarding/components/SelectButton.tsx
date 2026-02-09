@@ -1,4 +1,4 @@
-import { SelectButtonStyles } from '@/feature/block/onboarding/styles/SelectButton.style';
+import { SelectButtonStyle } from '@/feature/block/onboarding/styles/SelectButton.style';
 import type { SelectButtonProps } from '@/feature/block/onboarding/types/selectButtonTypes';
 
 /**
@@ -38,13 +38,13 @@ export const SelectButton = (props: SelectButtonProps) => {
   };
 
   return (
-    <button type="button" onClick={handleClick} className={SelectButtonStyles.Root(isSelected)}>
+    <button type="button" onClick={handleClick} className={SelectButtonStyle.Root(isSelected)}>
       {/* 아이콘 박스 */}
-      <div className={SelectButtonStyles.IconWrapper(isSelected)}>
-        <Icon className={SelectButtonStyles.Icon(isSelected)} />
+      <div className={SelectButtonStyle.IconWrapper(isSelected)}>
+        <Icon className={SelectButtonStyle.Icon(isSelected)} />
       </div>
 
-      <span className={SelectButtonStyles.Label(isSelected)}>{item.name.korean}</span>
+      <span className={SelectButtonStyle.Label(isSelected)}>{item.name.korean}</span>
     </button>
   );
 };

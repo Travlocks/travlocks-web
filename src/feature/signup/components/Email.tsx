@@ -7,6 +7,7 @@ import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
+import { useEmailValidation } from '@/shared/hooks/useEmailValidation';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
@@ -27,6 +28,9 @@ const Email = ({ setLevel }: StepProps) => {
 
   const email = watch('email');
   const code = watch('code');
+
+  // 이메일 존재 검증 (회원가입 모드)
+  const { emailExistsMessage, isCheckingEmail, canProceed } = useEmailValidation({ mode: 'signup' });
 
   const isCodeError = code !== '123123'; // TODO: 이메일 인증 코드 맞는지 확인하는 로직 필요
 
@@ -87,6 +91,8 @@ const Email = ({ setLevel }: StepProps) => {
         <div className="absolute top-[61px] w-full">
           {/* 이메일 유효성 검사 */}
           {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
+          {/* 이메일 존재 검증 에러 메시지 */}
+          {emailExistsMessage && <Alert text={emailExistsMessage} type="alert"></Alert>}
 
           {step === 2 && (
             <div className="flex flex-col gap-[8px] justify-between">
@@ -162,7 +168,7 @@ const Email = ({ setLevel }: StepProps) => {
             }}
             right={{
               text: '다음',
-              disabled: !email || !!errors.email,
+              disabled: !email || !!errors.email || !!emailExistsMessage || isCheckingEmail || !canProceed,
               onClick: () => setStep(2),
             }}
             width={215}
