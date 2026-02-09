@@ -3,7 +3,7 @@ import SearchIcon from '../../assets/icon-search.svg?react';
 
 interface BlockSearchInputProps {
   activeTab: TabType;
-  onSearch: (query: string, tab: TabType) => void;
+  onSearch?: (query: string, tab: TabType) => void;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;

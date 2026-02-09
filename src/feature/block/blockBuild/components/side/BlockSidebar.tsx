@@ -9,11 +9,13 @@ import { useRegions } from '../../hooks/queries/useRegions';
 import { useCategories } from '../../hooks/queries/useCategories';
 import { usePopularBlocks, useCreatedBlocks, useBlocksByCategory } from '../../hooks/queries/useBlockList';
 import { toSidebarBlock } from '../../utils/blockMapper';
+import { filterCategoryBlocks } from '../../utils/blockFilter';
+import EmptyBlockMessage from '../ui/EmplyBlockMessage';
 
 const BlockSidebar = () => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
 
-  const { inputProps } = useBlockSearch({
+  const { inputProps, debouncedValue } = useBlockSearch({
     activeTab,
     delay: 300,
   });
@@ -79,10 +81,21 @@ const BlockSidebar = () => {
     categoryId: selectedCategoryId ?? 0,
   });
 
-  // 사이드바 필드 데이터 가공
-  const popularBlocks = useMemo(() => (popularData?.data ?? []).map(toSidebarBlock), [popularData]);
-  const createdBlocks = useMemo(() => (createdData?.data ?? []).map(toSidebarBlock), [createdData]);
-  const categoryBlocks = useMemo(() => (categoryData?.data ?? []).map(toSidebarBlock), [categoryData]);
+  // 서버 원본 데이터 검색 필터링
+  const popularBlocks = useMemo(
+    () => filterCategoryBlocks(popularData?.data ?? [], debouncedValue).map(toSidebarBlock),
+    [popularData, debouncedValue],
+  );
+  const createdBlocks = useMemo(
+    () => filterCategoryBlocks(createdData?.data ?? [], debouncedValue).map(toSidebarBlock),
+    [createdData, debouncedValue],
+  );
+  const categoryBlocks = useMemo(
+    () => filterCategoryBlocks(categoryData?.data ?? [], debouncedValue).map(toSidebarBlock),
+    [categoryData, debouncedValue],
+  );
+
+  const isSearching = debouncedValue.trim().length > 0;
 
   const content = () => {
     switch (activeTab) {
@@ -92,7 +105,7 @@ const BlockSidebar = () => {
             {popularBlocks.length > 0 ? (
               popularBlocks.map((item) => <BlockItem key={item.id} item={item} />)
             ) : (
-              <p className="text-center text-base-color-2 py-4">인기 블록이 없습니다</p>
+              <EmptyBlockMessage isSearching={isSearching} emptyMessage="인기 블록이 없습니다" />
             )}
           </div>
         );
@@ -108,7 +121,7 @@ const BlockSidebar = () => {
               {categoryBlocks.length > 0 ? (
                 categoryBlocks.map((item) => <BlockItem key={item.id} item={item} />)
               ) : (
-                <p className="text-center text-base-color-2 py-4">블록이 없습니다</p>
+                <EmptyBlockMessage isSearching={isSearching} emptyMessage="블록이 없습니다" />
               )}
             </div>
           </>
@@ -116,8 +129,12 @@ const BlockSidebar = () => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            {createdBlocks.length > 0 ? createdBlocks.map((item) => <BlockItem key={item.id} item={item} />) : null}
             <BlockCreateButton />
+            {createdBlocks.length > 0 ? (
+              createdBlocks.map((item) => <BlockItem key={item.id} item={item} />)
+            ) : isSearching ? (
+              <EmptyBlockMessage isSearching={isSearching} emptyMessage="검색 결과가 없습니다" />
+            ) : null}
           </div>
         );
     }
@@ -134,13 +151,7 @@ const BlockSidebar = () => {
 
       {/* 검색 인풋 */}
       <div className="px-6 pb-4">
-        <BlockSearchInput
-          activeTab={activeTab}
-          onSearch={() => {
-            console.log('검색');
-          }}
-          {...inputProps}
-        />
+        <BlockSearchInput activeTab={activeTab} {...inputProps} />
       </div>
 
       {/* 탭별 컨텐츠 */}
