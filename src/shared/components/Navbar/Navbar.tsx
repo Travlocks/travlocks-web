@@ -6,6 +6,8 @@ import Puzzle from '@assets/Navbar/icon-puzzle.svg?react';
 import AlarmOn from '@assets/Navbar/icon-alarm-on.svg?react';
 import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
 import Profile from '@assets/Navbar/profile-happy.svg?react';
+import { useState } from 'react';
+import NavbarMenuModal from './NavbarMenuModal';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -17,6 +19,8 @@ const Navbar = () => {
   const alarm = false; // Todo: 추후 api 연결 시 수정
 
   const navigate = useNavigate();
+
+  const [showMenu, setShowMenu] = useState<boolean>(false);
 
   return (
     <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
@@ -50,12 +54,14 @@ const Navbar = () => {
             </div>
 
             <div
-              className="py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
+              className="relative py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
               onClick={() => {
-                navigate('/mypage');
+                setShowMenu(true);
               }}>
               <Profile className="size-[40px]" />
               <p className="base-color-0 b3">유저닉네임</p>
+
+              {showMenu && <NavbarMenuModal setShowMenu={setShowMenu} />}
             </div>
           </div>
         </div>
