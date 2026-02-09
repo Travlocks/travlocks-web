@@ -19,7 +19,7 @@ const DeleteAccountSection = () => {
     <>
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-[10px]">
-          <AppIcon name="alert" width="17px" height="17px" fill="#FD7565" />
+          <AppIcon name="alert" width="17px" height="17px" color="#fd7565" />
           <p className="text-negative b4 font-normal">계정 삭제 시 모든 데이터가 영구적으로 삭제됩니다</p>
         </div>
 
@@ -43,9 +43,7 @@ const DeleteAccountSection = () => {
           </div>
         </div>
       </div>
-      {showModal && (
-        <AccountModal modalType="withdrawal" onCancel={() => setShowModal(false)} onConfirm={handleDelete} />
-      )}
+      {showModal && <AccountModal modalType="complete" onCancel={() => setShowModal(false)} onConfirm={handleDelete} />}
     </>
   );
 };

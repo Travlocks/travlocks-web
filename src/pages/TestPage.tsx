@@ -13,6 +13,7 @@ import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import MyPage from '@/pages/MyPage/MyPage';
+import TextField from '@/shared/components/TextField/TextField';
 
 const TestPage = () => {
   const schema = z.object({
@@ -141,6 +142,9 @@ const TestPage = () => {
           textSize={18}
         />
       </div>
+      <Alert text="1234" type="alert" />
+      <Alert text="1234" type="check" />
+      <TextField label="1234" error="1234" />
 
       <div>
         <h1>✅ Input.tsx & Alert.tsx</h1>

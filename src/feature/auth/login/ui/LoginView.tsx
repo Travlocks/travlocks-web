@@ -85,7 +85,7 @@ export const LoginView = () => {
           <div className="min-h-[44px]">
             {errorMessage ? (
               <span className="b6 text-negative px-[22px] flex items-center gap-2">
-                <AppIcon name="alert" width="17px" height="17px" fill="#FD7565" />
+                <AppIcon name="alert" width="17px" height="17px" color="#fd7565" />
                 <p>{errorMessage}</p>
               </span>
             ) : null}
