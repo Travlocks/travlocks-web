@@ -1,19 +1,15 @@
 import { axiosInstance } from '@/shared/apis/axios';
 import { extractErrorMessage, isErrorResponse, isSuccessResponse } from '@/shared/utils/apiErrorHandler';
-import type {
-  RegionListErrorResponse,
-  RegionListSuccessResponse,
-  VlockCategoryListErrorResponse,
-  VlockCategoryListSuccessResponse,
-} from '../types/blockMeta.types';
+import type { RegionListErrorResponse, RegionListSuccessResponse } from '../types/blockRegion.types';
+import type { BlockCategoryListSuccessResponse, BlockCategoryListErrorResponse } from '../types/blockCategory.types';
 
 // 기본 블록 카테고리 목록 조회
-export const getVlockCategories = async (): Promise<VlockCategoryListSuccessResponse> => {
-  let responseData: VlockCategoryListSuccessResponse | VlockCategoryListErrorResponse;
+export const getCategories = async (): Promise<BlockCategoryListSuccessResponse> => {
+  let responseData: BlockCategoryListSuccessResponse | BlockCategoryListErrorResponse;
 
   try {
     ({ data: responseData } = await axiosInstance.get<
-      VlockCategoryListSuccessResponse | VlockCategoryListErrorResponse
+      BlockCategoryListSuccessResponse | BlockCategoryListErrorResponse
     >('/vlocks/categories'));
   } catch (error) {
     throw new Error(extractErrorMessage(error, '블록 카테고리 조회 중 오류가 발생했습니다.'));

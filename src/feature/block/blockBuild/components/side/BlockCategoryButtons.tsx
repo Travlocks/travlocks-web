@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import type { CategoryType } from '../../types/block';
 import clsx from 'clsx';
+import type { BlockCategory } from '../../types/blockCategory.types';
 
-// TODO: api로 불러오기
-const CATEGORIES: CategoryType[] = ['식당', '카페', '쇼핑', '문화', '숙소', '액티비티', '투어', '기타'];
 const ITEMS_PER_ROW = 4;
 
 interface CategoryButtonProps {
@@ -26,11 +23,15 @@ const CategoryButton = ({ label, isActive, onClick }: CategoryButtonProps) => {
   );
 };
 
-const BlockCategoryButtons = () => {
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('식당');
+interface BlockCategoryButtonsProps {
+  categories: BlockCategory[];
+  selectedCategoryId: number | null;
+  onSelectCategory: (id: number) => void;
+}
 
-  const rows = Array.from({ length: Math.ceil(CATEGORIES.length / ITEMS_PER_ROW) }, (_, rowIndex) =>
-    CATEGORIES.slice(rowIndex * ITEMS_PER_ROW, (rowIndex + 1) * ITEMS_PER_ROW),
+const BlockCategoryButtons = ({ categories, selectedCategoryId, onSelectCategory }: BlockCategoryButtonsProps) => {
+  const rows = Array.from({ length: Math.ceil(categories.length / ITEMS_PER_ROW) }, (_, rowIndex) =>
+    categories.slice(rowIndex * ITEMS_PER_ROW, (rowIndex + 1) * ITEMS_PER_ROW),
   );
 
   return (
@@ -39,10 +40,10 @@ const BlockCategoryButtons = () => {
         <div key={rowIndex} className="flex items-center gap-3">
           {row.map((category) => (
             <CategoryButton
-              key={category}
-              label={category}
-              isActive={selectedCategory === category}
-              onClick={() => setSelectedCategory(category)}
+              key={category.id}
+              label={category.name}
+              isActive={selectedCategoryId === category.id}
+              onClick={() => onSelectCategory(category.id)}
             />
           ))}
         </div>
