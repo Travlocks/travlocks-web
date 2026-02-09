@@ -27,16 +27,18 @@ const TransportTypeSelector = ({ onSelect }: TransportTypeSelectorProps) => {
    * @param transportType 토글할 이동 수단 키입니다.
    *
    * @remarks
-   * 이미 선택된 이동 수단이면 해제하고, 선택되지 않았다면 선택 목록에 추가합니다.
+   * 이미 선택된 이동 수단이면 해제하고, 선택되지 않았다면 기존 선택 해제 후 해당 이동 수단을 선택합니다. (최대 1개 선택 가능)
    * 변경된 선택 목록은 onSelect 콜백을 통해 상위 컴포넌트로 전달됩니다.
    */
   const handleToggleTransport = (transportType: TransportTypeKey) => {
     let newSelectedTypes: TransportTypeKey[];
 
     if (selectedTypes.includes(transportType)) {
+      // 이미 선택된 이동 수단이면 해제
       newSelectedTypes = selectedTypes.filter((type) => type !== transportType);
     } else {
-      newSelectedTypes = [...selectedTypes, transportType];
+      // 선택되지 않은 이동 수단이면 선택
+      newSelectedTypes = [transportType];
     }
 
     setSelectedTypes(newSelectedTypes);

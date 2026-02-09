@@ -1,10 +1,12 @@
-import TemplateHeader from '@/feature/template-search/components/TemplateHeader';
+import TemplateContent from '@/feature/search/TemplateContent';
 
 const TemplatePage = () => {
   return (
-    <>
-      <TemplateHeader />
-    </>
+    <div>
+      <div className="w-full max-w-[1920px] mx-auto">
+        <TemplateContent />
+      </div>
+    </div>
   );
 };
 

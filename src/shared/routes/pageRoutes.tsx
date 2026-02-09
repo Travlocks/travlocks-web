@@ -1,6 +1,7 @@
 import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import AuthLayout from '@/shared/layouts/auth/AuthLayout';
 import TestLayout from '@/shared/layouts/TestLayout';
+import FeatureLayout from '@/shared/layouts/FeatureLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
@@ -22,16 +23,26 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.BlockPage />,
           },
           {
-            path: 'onboarding',
-            element: <lazyRoutes.OnboardingPage />,
+            element: (
+              <FeatureLayout subtitle="나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!" title="블록 쌓기" />
+            ),
+            children: [
+              {
+                path: 'onboarding',
+                element: <lazyRoutes.OnboardingPage />,
+              },
+            ],
           },
         ],
+      },
+      {
+        path: 'template',
+        element: <lazyRoutes.TemplatePage />,
       },
       {
         path: 'mypage',
         element: <lazyRoutes.MyPage />,
       },
-      { path: 'template', element: <lazyRoutes.TemplatePage /> },
     ],
   },
   {
@@ -48,9 +59,19 @@ export const routes: RouteObject[] = [
             path: 'signup',
             element: <lazyRoutes.SignupPage />,
           },
+        ],
+      },
+      {
+        element: <AuthLayout />,
+        children: [
           {
             path: 'password',
             element: <lazyRoutes.ResetPasswordPage />,
+          },
+          {
+            path: 'password-reset',
+            element: <lazyRoutes.PasswordResetConfirmPage />,
+            handle: { skipSplash: true, skipSessionGate: true },
           },
         ],
       },
@@ -63,6 +84,28 @@ export const routes: RouteObject[] = [
       {
         index: true,
         element: <TestPage />,
+      },
+      {
+        element: (
+          <FeatureLayout subtitle="다른 여행자들의 블록을 탐색하고 내 블록으로 리믹스해요!" title="템플릿 탐색" />
+        ),
+        children: [
+          {
+            path: 'template',
+            element: <lazyRoutes.TemplatePage />,
+          },
+        ],
+      },
+      {
+        element: (
+          <FeatureLayout subtitle="나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!" title="블록 쌓기" />
+        ),
+        children: [
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OnboardingPage />,
+          },
+        ],
       },
     ],
   },

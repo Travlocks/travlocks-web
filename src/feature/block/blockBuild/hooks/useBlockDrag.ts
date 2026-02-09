@@ -7,6 +7,8 @@ import { getTailIdFromBlocks } from '../utils/path';
 import { commitEditorDrop, commitSidebarDrop, detachTail } from '../utils/commit';
 import { calcCandidate } from '../utils/boardCandidate';
 import { buildDockHint, computeSnapDecision } from '../utils/dockHint';
+import { arrayMove } from '@dnd-kit/sortable';
+import { convertSidebarToBlock } from '../utils/convertSidebarToBlock';
 
 const DEFAULT_BLOCK = { w: 125, h: 125 };
 const GRID = 40;
@@ -84,6 +86,16 @@ export const useBlockDrag = ({
           });
         }
       }
+
+      if (type === 'blockTimeline') {
+        const item = e.active.data.current?.block as SidebarBlock | undefined;
+
+        if (item)
+          setActiveDrag({
+            type: 'blockTimeline',
+            block: item,
+          });
+      }
     },
     [currentDay, updateBlocksByDay],
   );
@@ -130,9 +142,54 @@ export const useBlockDrag = ({
       const currentBlocks = puzzleBlocksRef.current;
       const currentZoom = zoomRef.current;
 
+      // 타임라인 내부에서 순서 정렬할 때
+      if (type === 'blockTimeline') {
+        const day = e.active.data.current?.day;
+        if (!e.over) return;
+
+        updateBlocksByDay((prev) => {
+          const items = prev[day];
+
+          const oldIdx = items.findIndex((b) => `${b.blockId}-${day}` === e.active.id);
+          const newIDx = items.findIndex((b) => `${b.blockId}-${day}` === overId);
+
+          return {
+            ...prev,
+            [day]: arrayMove(items, oldIdx, newIDx),
+          };
+        });
+      }
+
       if (overId === 'blockTrash' && type === 'blockEditor') {
         const blockId = e.active.data.current?.blockId as number | undefined;
         if (blockId != null) removeById(blockId);
+        return;
+      }
+
+      if (String(overId)?.startsWith('timeline-')) {
+        if (type !== 'blockSidebar') return;
+
+        const day = Number(String(overId).split('-').pop());
+
+        if (type === 'blockSidebar') {
+          const item = e.active.data.current?.item as SidebarBlock | undefined;
+          if (!item) return;
+
+          updateBlocksByDay((prev) => {
+            const block = prev[day] ?? [];
+
+            const isExist = block.some((b) => b.blockId === item.id);
+            if (isExist) return prev; // 똑같은 블럭 추가하면 무시
+
+            const newBlock = convertSidebarToBlock(item);
+
+            return {
+              ...prev,
+              [day]: [...block, newBlock],
+            };
+          });
+        }
+
         return;
       }
 
