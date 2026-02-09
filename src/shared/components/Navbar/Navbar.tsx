@@ -5,11 +5,11 @@ import Logo from '@assets/Navbar/icon-nav-logo.svg?react';
 import Puzzle from '@assets/Navbar/icon-puzzle.svg?react';
 import AlarmOn from '@assets/Navbar/icon-alarm-on.svg?react';
 import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
-import Profile from '@assets/Navbar/profile-happy.svg?react';
 import { useState } from 'react';
 import NavbarMenuModal from './NavbarMenuModal';
 import AccountModal from '@/feature/mypage/components/AccountModal';
 import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
+import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -26,6 +26,7 @@ const Navbar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
 
   const { mutate } = usePostLogout(); // 로그아웃
+  const { data } = useGetMyPage(); // 내 정보 조회
 
   const handleLogout = () => {
     mutate(undefined, {
@@ -72,10 +73,18 @@ const Navbar = () => {
               onClick={() => {
                 setShowMenu(true);
               }}>
-              <Profile className="size-[40px]" />
-              <p className="base-color-0 b3">유저닉네임</p>
+              <div className="size-[40px]">
+                <img
+                  src={data?.data.profileImageUrl}
+                  alt={`${data?.data.nickname}의 프로필 사진`}
+                  className="size-[40px] object-contain"
+                />
+              </div>
+              <p className="base-color-0 b3">{data?.data.nickname}</p>
 
-              {showMenu && <NavbarMenuModal setShowMenu={setShowMenu} setShowLogoutModal={setShowLogoutModal} />}
+              {showMenu && (
+                <NavbarMenuModal setShowMenu={setShowMenu} setShowLogoutModal={setShowLogoutModal} data={data} />
+              )}
             </div>
           </div>
         </div>

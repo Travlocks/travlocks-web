@@ -1,15 +1,16 @@
-import Profile from '@assets/Navbar/profile-happy.svg?react';
 import MypageIcon from '@assets/Navbar/icon-mypage.svg?react';
 import LogoutIcon from '@assets/Navbar/icon-logout.svg?react';
 import { useEffect, useRef, type SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { ResponseGetMeDto } from '@/feature/user/types/user';
 
 interface NavbarMenuModalProps {
   setShowMenu: React.Dispatch<SetStateAction<boolean>>;
   setShowLogoutModal: React.Dispatch<SetStateAction<boolean>>;
+  data?: ResponseGetMeDto;
 }
 
-const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal }: NavbarMenuModalProps) => {
+const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal, data }: NavbarMenuModalProps) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -49,11 +50,17 @@ const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal }: NavbarMenuModalPro
       <div
         ref={modalRef}
         className="absolute z-modal right-0 top-[85px] bg-white rounded-[30px] w-[307px] shadow-[0_1px_20px_0_rgba(0,0,0,0.10)] px-[27px] pt-[27px] pb-[16px]">
-        <div className="flex gap-[16px] items-center pb-[18px] border-b border-base-color">
-          <Profile className="size-[60px]" />
-          <div className="flex flex-col gap-[4px]">
-            <p className="t2">유저닉네임</p>
-            <p className="b4 text-base-color-1">your@email.com</p>
+        <div className="flex gap-[16px] items-center pb-[18px] border-b border-base-color w-full">
+          <div className="size-[60px] shrink-0">
+            <img
+              src={data?.data.profileImageUrl}
+              alt={`${data?.data.nickname}의 이미지`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex flex-col gap-[4px] w-full flex-1 truncate">
+            <p className="t2">{data?.data.nickname}</p>
+            <p className="b4 text-base-color-1 truncate">{data?.data.email}</p>
           </div>
         </div>
 
