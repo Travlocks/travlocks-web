@@ -1,49 +1,19 @@
-import { useMemo } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import clsx from 'clsx';
 import loadingAnimation from '@assets/exceptions/loading.lottie';
+import { getLottieSrc } from '@/shared/utils/lottiePreloader';
 
-interface LoadingProps {
-  fullScreen?: boolean;
-  className?: string;
-}
-
-const Loading = ({ fullScreen = false, className }: LoadingProps) => {
-  const renderConfig = useMemo(
-    () => ({
-      freezeOnOffscreen: false,
-      devicePixelRatio: Math.min(window.devicePixelRatio, 2),
-      autoResize: false,
-    }),
-    [],
-  );
+const Loading = () => {
+  const cachedLottieSrc = getLottieSrc() || loadingAnimation;
 
   return (
-    <div
-      className={clsx(
-        'relative flex flex-col items-center justify-center loading-backdrop',
-        fullScreen && 'fixed inset-0 z-max',
-        className,
-      )}>
-      <div className="w-[700px] h-[700px] flex items-center justify-center">
-        <DotLottieReact
-          src={loadingAnimation}
-          loop
-          autoplay
-          useFrameInterpolation={true}
-          renderConfig={renderConfig}
-          className="w-full h-full"
-          mode="bounce"
-          style={{
-            transform: 'translateZ(0) scale(0.5)',
-            willChange: 'transform',
-            imageRendering: 'auto',
-          }}
-        />
+    <div className="fixed inset-0 z-tooltip flex flex-col items-center justify-center">
+      <div className="bg-base-color-1 opacity-60 fixed inset-0" />
+      <div className="relative w-[1500px] h-[900px] flex flex-col">
+        <DotLottieReact src={cachedLottieSrc} loop autoplay className="w-[1500px] z-header" mode="bounce" />
+        <div className="absolute top-[500px] left-1/2 -translate-x-1/2 mt-4 h5 text-base-color-6 z-header whitespace-nowrap">
+          화면을 구성하고 있어요 ..
+        </div>
       </div>
-      <p className="absolute top-[calc(50%+110px+16px)] h5 text-base-color-6 whitespace-nowrap">
-        화면을 구성하고 있어요 ..
-      </p>
     </div>
   );
 };
