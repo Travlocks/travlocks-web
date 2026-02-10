@@ -5,9 +5,9 @@ import PuzzleIcon from '@assets/draft/icon-draft-puzzle.svg?react';
 const DraftEmptyCard = () => {
   return (
     <div className="group max-w-[1218px] w-full h-[452px] rounded-[30px] border-base-color bg-white flex flex-col justify-center items-center gap-[28px] relative overflow-hidden">
-      <Character />
+      <Character className="relative z-above" />
 
-      <div className="flex flex-col gap-[8px] text-center">
+      <div className="flex flex-col gap-[8px] text-center z-above relative">
         <p className="h6">아직 여행이 시작되지 않았어요</p>
         <p className="b3 text-base-color-3">첫 블록을 쌓아 여행을 시작해볼까요?</p>
       </div>
