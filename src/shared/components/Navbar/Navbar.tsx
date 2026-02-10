@@ -36,6 +36,9 @@ const Navbar = () => {
         setShowLogoutModal(false);
         window.location.href = '/login';
       },
+      onError: () => {
+        alert('로그아웃에 실패했습니다.');
+      },
     });
   };
 
