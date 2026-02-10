@@ -9,7 +9,7 @@ import useGetIsNicknameExists from '../hooks/queries/useGetIsNicknameExists';
 import { useDebouncedInputProps } from '@/shared/hooks/useDebouncedInput';
 import { useEffect } from 'react';
 
-const Nickname = ({ setLevel }: StepProps) => {
+const Nickname = ({ onPrev, onNext }: StepProps) => {
   const {
     register,
     setError,
@@ -20,7 +20,7 @@ const Nickname = ({ setLevel }: StepProps) => {
   const { inputProps, debouncedValue, onSubmit, reset } = useDebouncedInputProps({
     submit: () => {
       if (!data?.data.exists) {
-        setLevel(4);
+        onNext();
       }
     },
   });
@@ -72,7 +72,7 @@ const Nickname = ({ setLevel }: StepProps) => {
           left={{
             text: '이전',
             variant: 'white',
-            onClick: () => setLevel(2),
+            onClick: onPrev,
           }}
           right={{
             text: '다음',

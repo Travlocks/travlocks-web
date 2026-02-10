@@ -34,7 +34,7 @@ const TERMS = [
 
 export type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
 
-const Terms = ({ setLevel }: StepProps) => {
+const Terms = ({ onNext }: StepProps) => {
   const { setValue, watch } = useFormContext<FormFields>();
   const consents = watch('consents');
   const [modalType, setModalType] = useState<TermKey | null>(null);
@@ -102,7 +102,7 @@ const Terms = ({ setLevel }: StepProps) => {
         />
       )}
 
-      <Button text="다음" disabled={!isRequired} onClick={() => setLevel((prev) => prev + 1)} />
+      <Button text="다음" disabled={!isRequired} onClick={onNext} />
     </section>
   );
 };

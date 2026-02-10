@@ -23,10 +23,9 @@ export const useGoogleLoginCallback = () => {
       if (data.isSuccess && data.data) {
         const { accessToken, status } = data.data;
 
-        // TODO: 온보딩 상태 처리는 나중에
         if (status === 'ONBOARDING') {
           login(accessToken);
-          navigate('/', { replace: true });
+          navigate('/onboarding', { replace: true });
           return;
         }
 
@@ -52,10 +51,9 @@ export const useNaverLoginCallback = () => {
       if (data.isSuccess && data.data) {
         const { accessToken, status } = data.data;
 
-        // TODO: 온보딩 상태 처리는 나중에
         if (status === 'ONBOARDING') {
           login(accessToken);
-          navigate('/', { replace: true });
+          navigate('/onboarding', { replace: true });
           return;
         }
 

@@ -11,6 +11,9 @@ export const lazyRoutes = {
   GoogleCallbackPage: React.lazy(() => import('../../pages/GoogleCallbackPage')),
   NaverCallbackPage: React.lazy(() => import('../../pages/NaverCallbackPage')),
 
+  /** OAuth 온보딩 페이지 */
+  OAuthOnboardingPage: React.lazy(() => import('../../pages/OAuthOnboardingPage')),
+
   /** 홈 페이지 */
   HomePage: React.lazy(() => import('../../pages/HomePage')),
 

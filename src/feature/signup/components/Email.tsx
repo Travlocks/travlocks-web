@@ -14,7 +14,7 @@ import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerif
 import handleMutationSuccess from '../utils/handleMutationSuccess';
 import handleMutationError from '../utils/handleMutationError';
 
-const Email = ({ setLevel }: StepProps) => {
+const Email = ({ onPrev, onNext }: StepProps) => {
   const {
     register,
     watch,
@@ -124,7 +124,7 @@ const Email = ({ setLevel }: StepProps) => {
 
           if (result?.signupToken) {
             setValue('signupToken', result.signupToken);
-            setLevel(2);
+            onNext();
           }
         },
         onError: (error) => {
@@ -244,7 +244,7 @@ const Email = ({ setLevel }: StepProps) => {
               text: '이전',
               variant: 'white',
               onClick: () => {
-                setLevel(0);
+                onPrev();
                 setValue('email', '');
                 clearErrors('email');
               },

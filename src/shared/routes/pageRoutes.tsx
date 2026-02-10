@@ -90,6 +90,10 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.PasswordResetConfirmPage />,
             handle: { skipSplash: true, skipSessionGate: true },
           },
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OAuthOnboardingPage />,
+          },
         ],
       },
     ],
