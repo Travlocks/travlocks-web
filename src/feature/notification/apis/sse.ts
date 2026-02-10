@@ -1,6 +1,6 @@
 let eventSource: EventSource | null = null;
 
-export const connectSSE = () => {
+export const connectSSE = (setUnread: (value: boolean) => void) => {
   if (eventSource) return; // 중복 연결을 방지
 
   // 알림 구독 (SSE 연결)
@@ -22,12 +22,21 @@ export const connectSSE = () => {
   });
 
   // new-notification 이벤트
-  eventSource.addEventListener('new-notification', (e) => {
+  eventSource.addEventListener('notification', (e) => {
     console.log('new-notification', e);
   });
 
   // ping 이벤트
   eventSource.addEventListener('ping', (e) => {
     console.log('ping', e);
+  });
+
+  // unread 이벤트
+  eventSource.addEventListener('unread', (e) => {
+    console.log('unread', e);
+
+    if (e.data) {
+      setUnread(true);
+    }
   });
 };

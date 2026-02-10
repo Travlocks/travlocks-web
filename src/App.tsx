@@ -8,11 +8,13 @@ import { useAuthStore } from './shared/stores/authStore';
 import ToastContainer from './shared/components/Toast/Toast';
 import { connectSSE } from './feature/notification/apis/sse';
 import { postSSEToken } from './feature/notification/apis/notification';
+import { useNotificationStore } from './shared/stores/notificationStore';
 
 export const queryClient = new QueryClient();
 
 function App() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const setUnread = useNotificationStore((s) => s.setUnread);
 
   // 앱 시작 시 즉시 인증 상태 초기화
   useEffect(() => {
@@ -25,7 +27,7 @@ function App() {
 
     const initSSE = async () => {
       await postSSEToken();
-      connectSSE();
+      connectSSE(setUnread);
     };
 
     initSSE();

@@ -11,6 +11,7 @@ import AccountModal from '@/feature/mypage/components/AccountModal';
 import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
 import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
 import NavbarNotificationModal from './NavbarNotificationModal';
+import { useNotification } from '@/shared/hooks/useNotification';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -19,7 +20,7 @@ const MENU = [
 ];
 
 const Navbar = () => {
-  const alarm = false; // Todo: 추후 api 연결 시 수정
+  const { unread, setUnread } = useNotification();
 
   const navigate = useNavigate();
 
@@ -75,8 +76,8 @@ const Navbar = () => {
               ref={alarmRef}
               onClick={() => setShowNotificationModal((prev) => !prev)}
               className="relative size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
-              {!alarm && <AlarmOff className="self-start cursor-pointer" />}
-              {alarm && <AlarmOn className="self-start cursor-pointer" />}
+              {!unread && <AlarmOff className="self-start cursor-pointer" />}
+              {unread && <AlarmOn onClick={() => setUnread(false)} className="self-start cursor-pointer" />}
 
               {showNotificationModal && (
                 <NavbarNotificationModal setShowNotificationModal={setShowNotificationModal} alarmRef={alarmRef} />
