@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { useEffect, useRef, type SetStateAction } from 'react';
 import useDeleteNotifications from '@/feature/notification/hook/useMutation/useDeleteNotifications';
 import axios from 'axios';
+import { useNotification } from '@/shared/hooks/useNotification';
 
 interface NavbarNotificationModal {
   setShowNotificationModal: React.Dispatch<SetStateAction<boolean>>;
@@ -20,9 +21,13 @@ const NavbarNotificationModal = ({ setShowNotificationModal, alarmRef }: NavbarN
   const { ref, inView } = useInView({ threshold: 0 });
 
   const { mutate } = useDeleteNotifications();
+  const { setUnread } = useNotification();
 
   const handleDelete = () => {
     mutate(undefined, {
+      onSuccess: () => {
+        setUnread(false);
+      },
       onError: (error) => {
         if (axios.isAxiosError(error)) {
           alert(error.response?.data?.errorMessage);
