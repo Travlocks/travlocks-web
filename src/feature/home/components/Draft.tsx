@@ -12,8 +12,7 @@ const Draft = () => {
         <h1 className="text-base-color-0 h1">최근 편집 초안</h1>
 
         <div className={clsx('flex gap-[40px] flex-wrap', data?.data?.length > 2 && 'justify-center')}>
-          {/* 데이터 없는 경우 404로 받아와짐 */}
-          {data?.data.length === 0 ? (
+          {data?.data?.length === 0 ? (
             <DraftEmptyCard />
           ) : (
             data?.data.map((template) => (
