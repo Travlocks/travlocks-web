@@ -40,7 +40,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   }
 
   // 모든 사용자는 로그인 후에 서비스 이용 가능
-  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
+  if (protectedRoutes && shouldRequireAuth && !showSplash) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 

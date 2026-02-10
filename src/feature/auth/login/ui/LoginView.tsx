@@ -103,7 +103,6 @@ export const LoginView = () => {
         {/* 소셜 로그인 버튼들 */}
         <div className="flex justify-center items-center gap-[20px] mb-[23px]">
           <SocialLoginButton provider="naver" onClick={() => handleSocialLogin('naver')} />
-          <SocialLoginButton provider="kakao" onClick={() => handleSocialLogin('kakao')} />
           <SocialLoginButton provider="google" onClick={() => handleSocialLogin('google')} />
         </div>
 
