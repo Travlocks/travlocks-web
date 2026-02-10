@@ -5,7 +5,7 @@ import Logo from '@assets/Navbar/icon-nav-logo.svg?react';
 import Puzzle from '@assets/Navbar/icon-puzzle.svg?react';
 import AlarmOn from '@assets/Navbar/icon-alarm-on.svg?react';
 import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import NavbarMenuModal from './NavbarMenuModal';
 import AccountModal from '@/feature/mypage/components/AccountModal';
 import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
@@ -26,6 +26,9 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
   const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
+
+  const alarmRef = useRef<HTMLDivElement | null>(null); // 알림 아이콘
+  const profileRef = useRef<HTMLDivElement | null>(null);
 
   const { mutate } = usePostLogout(); // 로그아웃
   const { data } = useGetMyPage(); // 내 정보 조회
@@ -69,18 +72,22 @@ const Navbar = () => {
 
           <div className="flex items-center gap-[15px] ml-[26px]">
             <div
-              onClick={() => setShowNotificationModal(true)}
+              ref={alarmRef}
+              onClick={() => setShowNotificationModal((prev) => !prev)}
               className="relative size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
               {!alarm && <AlarmOff className="self-start cursor-pointer" />}
               {alarm && <AlarmOn className="self-start cursor-pointer" />}
 
-              {showNotificationModal && <NavbarNotificationModal setShowNotificationModal={setShowNotificationModal} />}
+              {showNotificationModal && (
+                <NavbarNotificationModal setShowNotificationModal={setShowNotificationModal} alarmRef={alarmRef} />
+              )}
             </div>
 
             <div
+              ref={profileRef}
               className="relative py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
               onClick={() => {
-                setShowMenu(true);
+                setShowMenu((prev) => !prev);
               }}>
               <div className="size-[40px]">
                 <img
@@ -92,7 +99,12 @@ const Navbar = () => {
               <p className="base-color-0 b3">{data?.data.nickname}</p>
 
               {showMenu && (
-                <NavbarMenuModal setShowMenu={setShowMenu} setShowLogoutModal={setShowLogoutModal} data={data} />
+                <NavbarMenuModal
+                  setShowMenu={setShowMenu}
+                  setShowLogoutModal={setShowLogoutModal}
+                  data={data}
+                  profileRef={profileRef}
+                />
               )}
             </div>
           </div>

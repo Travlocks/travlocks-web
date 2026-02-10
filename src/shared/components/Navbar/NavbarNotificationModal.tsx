@@ -33,9 +33,10 @@ const LISTS = [
 
 interface NavbarNotificationModal {
   setShowNotificationModal: React.Dispatch<SetStateAction<boolean>>;
+  alarmRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const NavbarNotificationModal = ({ setShowNotificationModal }: NavbarNotificationModal) => {
+const NavbarNotificationModal = ({ setShowNotificationModal, alarmRef }: NavbarNotificationModal) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [data, setData] = useState(LISTS);
 
@@ -45,7 +46,11 @@ const NavbarNotificationModal = ({ setShowNotificationModal }: NavbarNotificatio
 
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        !alarmRef.current?.contains(e.target as Node)
+      ) {
         setShowNotificationModal(false);
       }
     };

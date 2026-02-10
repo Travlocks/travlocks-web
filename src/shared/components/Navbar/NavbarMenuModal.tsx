@@ -1,6 +1,6 @@
 import MypageIcon from '@assets/Navbar/icon-mypage.svg?react';
 import LogoutIcon from '@assets/Navbar/icon-logout.svg?react';
-import { useEffect, useRef, type SetStateAction } from 'react';
+import React, { useEffect, useRef, type SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ResponseGetMeDto } from '@/feature/user/types/user';
 
@@ -8,9 +8,10 @@ interface NavbarMenuModalProps {
   setShowMenu: React.Dispatch<SetStateAction<boolean>>;
   setShowLogoutModal: React.Dispatch<SetStateAction<boolean>>;
   data?: ResponseGetMeDto;
+  profileRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal, data }: NavbarMenuModalProps) => {
+const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal, data, profileRef }: NavbarMenuModalProps) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -33,7 +34,11 @@ const NavbarMenuModal = ({ setShowMenu, setShowLogoutModal, data }: NavbarMenuMo
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        !profileRef.current?.contains(e.target as Node)
+      ) {
         setShowMenu(false); // 외부 클릭시 닫히도록
       }
     };
