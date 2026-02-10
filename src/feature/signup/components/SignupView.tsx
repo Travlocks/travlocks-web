@@ -78,7 +78,8 @@ interface SignupViewProps {
 }
 
 const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
-  const steps = mode === 'onboarding' ? ONBOARDING_STEPS : SIGNUP_STEPS;
+  const isOnboarding = mode === 'onboarding';
+  const steps = isOnboarding ? ONBOARDING_STEPS : SIGNUP_STEPS;
   const totalSteps = steps.length;
 
   const [level, setLevel] = useState<number>(0);
@@ -95,13 +96,19 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
     <FormProvider {...methods}>
       {level < totalSteps && (
         // 단계 영역
-        <div className="relative w-full self-start mt-[-32px]">
+        <div
+          className={clsx(
+            'relative w-full self-start',
+            // 온보딩 헤더 안겹치게
+            isOnboarding ? 'mt-5' : 'mt-[-32px]',
+          )}>
           {/* 세로 진행선 */}
-          <div className="absolute w-[40px] min-h-[631px] flex flex-col">
+          <div className={clsx('absolute w-[40px] flex flex-col', isOnboarding ? 'min-h-[480px]' : 'min-h-[631px]')}>
             <div
               className={clsx(
-                'absolute left-1/2 -translate-x-1/2 w-[3px] min-h-[631px] rounded-[5px] bg-primary-color',
-                level === totalSteps - 1 && 'min-h-[300px]!',
+                'absolute left-1/2 -translate-x-1/2 w-[3px] rounded-[5px] bg-primary-color',
+                isOnboarding ? 'min-h-[510px]' : 'min-h-[631px]',
+                level === totalSteps - 1 && 'min-h-[170px]!',
               )}></div>
           </div>
 

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLoginCallback } from '@/feature/auth/login/hooks/useSocialLoginCallback';
-import Loading from '@/shared/components/Exception/Loading';
 
 /**
  * Google OAuth 콜백 페이지
@@ -35,7 +34,7 @@ const GoogleCallbackPage = () => {
     googleLogin({ idToken });
   }, [googleLogin, navigate]);
 
-  return <Loading />;
+  return null;
 };
 
 export default GoogleCallbackPage;

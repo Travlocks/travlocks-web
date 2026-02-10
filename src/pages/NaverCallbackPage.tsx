@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useNaverLoginCallback } from '@/feature/auth/login/hooks/useSocialLoginCallback';
-import Loading from '@/shared/components/Exception/Loading';
 
 const NaverCallbackPage = () => {
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ const NaverCallbackPage = () => {
     naverLogin({ code, state });
   }, [naverLogin, navigate, searchParams]);
 
-  return <Loading />;
+  return null;
 };
 
 export default NaverCallbackPage;
