@@ -11,4 +11,5 @@ export const QUERY_KEY = {
   emailExists: 'emailExists',
   member: 'member',
   templateSearch: 'template-search',
+  notification: 'notification',
 };
