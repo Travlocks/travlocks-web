@@ -6,7 +6,7 @@ import { router } from '@routes/pageRoutes';
 import { useEffect } from 'react';
 import { useAuthStore } from './shared/stores/authStore';
 import ToastContainer from './shared/components/Toast/Toast';
-import { connectSSE } from './feature/notification/apis/sse';
+import { connectSSE, disconnectSSE } from './feature/notification/apis/sse';
 import { postSSEToken } from './feature/notification/apis/notification';
 import { useNotificationStore } from './shared/stores/notificationStore';
 
@@ -26,12 +26,20 @@ function App() {
     if (!isAuthenticated) return;
 
     const initSSE = async () => {
-      await postSSEToken();
-      connectSSE(setUnread);
+      try {
+        await postSSEToken();
+        connectSSE(setUnread);
+      } catch (error) {
+        console.error('SSE 초기화 실패', error);
+      }
     };
 
     initSSE();
-  }, [isAuthenticated]);
+
+    return () => {
+      disconnectSSE();
+    };
+  }, [isAuthenticated, setUnread]);
 
   return (
     <QueryClientProvider client={queryClient}>

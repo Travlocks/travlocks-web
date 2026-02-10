@@ -40,3 +40,10 @@ export const connectSSE = (setUnread: (value: boolean) => void) => {
     }
   });
 };
+
+export const disconnectSSE = () => {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+  }
+};
