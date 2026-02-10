@@ -7,6 +7,10 @@ export const lazyRoutes = {
   ResetPasswordPage: React.lazy(() => import('../../pages/ResetPasswordPage')),
   PasswordResetConfirmPage: React.lazy(() => import('../../pages/PasswordResetConfirmPage')),
 
+  /** 소셜 로그인 콜백 페이지 */
+  GoogleCallbackPage: React.lazy(() => import('../../pages/GoogleCallbackPage')),
+  NaverCallbackPage: React.lazy(() => import('../../pages/NaverCallbackPage')),
+
   /** 홈 페이지 */
   HomePage: React.lazy(() => import('../../pages/HomePage')),
 

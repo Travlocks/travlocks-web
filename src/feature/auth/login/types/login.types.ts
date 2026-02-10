@@ -7,8 +7,11 @@ export type RequestLoginDto = {
   password: string;
 };
 
+export type LoginStatus = 'ACTIVE' | 'ONBOARDING';
+
 export type Login = {
   memberId: number;
+  status?: LoginStatus;
   accessToken: string;
   accessTokenExpiresIn: number;
 };

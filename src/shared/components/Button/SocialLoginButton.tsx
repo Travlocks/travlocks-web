@@ -19,11 +19,10 @@
 import clsx from 'clsx';
 import { IconBase } from '@/shared/ui/icon/IconBase';
 import NaverIcon from '@assets/logo/logo-naver.svg?react';
-import KakaoIcon from '@assets/logo/logo-kakao.svg?react';
 import GoogleIcon from '@assets/logo/logo-google.svg?react';
 
 interface SocialLoginButtonProps {
-  provider: 'naver' | 'kakao' | 'google';
+  provider: 'naver' | 'google';
   onClick: () => void;
 }
 
@@ -32,14 +31,8 @@ const SocialLoginButton = ({ provider, onClick }: SocialLoginButtonProps) => {
     naver: {
       ariaLabel: '네이버 로그인',
       bgColor: 'bg-[#03EB66]',
-      borderColor: 'border-base-color-3',
+      borderColor: 'border-[#03EB66]',
       icon: <IconBase icon={NaverIcon} size={51} />,
-    },
-    kakao: {
-      ariaLabel: '카카오 로그인',
-      bgColor: 'bg-[#FFE812]',
-      borderColor: '',
-      icon: <IconBase icon={KakaoIcon} size={51} />,
     },
     google: {
       ariaLabel: '구글 로그인',

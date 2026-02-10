@@ -95,6 +95,14 @@ export const routes: RouteObject[] = [
     ],
   },
   {
+    path: 'google/callback',
+    element: <lazyRoutes.GoogleCallbackPage />,
+  },
+  {
+    path: 'naver/callback',
+    element: <lazyRoutes.NaverCallbackPage />,
+  },
+  {
     path: '/test',
     element: <TestLayout />,
     children: [
