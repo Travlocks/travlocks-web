@@ -33,6 +33,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: 'top' | 'left';
   width?: number;
   hasCancel?: boolean;
+  onCancel?: () => void;
   error?: boolean;
   className?: string;
 }
@@ -42,7 +43,17 @@ const IconList = {
   password: PasswordIcon,
 } as const;
 
-const Input = ({ register, width, label, error, type, hasCancel = false, className, ...rest }: InputProps) => {
+const Input = ({
+  register,
+  width,
+  label,
+  error,
+  type,
+  hasCancel = false,
+  onCancel,
+  className,
+  ...rest
+}: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const form = useFormContext();
@@ -107,6 +118,9 @@ const Input = ({ register, width, label, error, type, hasCancel = false, classNa
           disabled={rest.disabled}
           onClick={() => {
             setValue(register?.name, '');
+            if (onCancel) {
+              onCancel();
+            }
           }}
           className="absolute top-1/2 -translate-y-1/2 right-[15px] cursor-pointer size-[17px] bg-base-color-3 rounded-full flex items-center justify-center">
           <XIcon className="text-white" />

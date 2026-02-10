@@ -9,10 +9,12 @@ export const LOCAL_STORAGE_KEY = {
 export const QUERY_KEY = {
   verifyResetToken: 'verifyResetToken',
   emailExists: 'emailExists',
+  member: 'member',
   templateSearch: 'template-search',
   // 블록 관련 쿼리키
   vlockCategories: 'vlockCategories',
   regions: 'regions', // 지역 목록 조회
   popularVlocks: 'popularVlocks', // 인기 블록 목록
   createdVlocks: 'createdVlocks', // 내가 만든 블록 목록
+  notification: 'notification',
 };

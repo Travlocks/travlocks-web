@@ -3,13 +3,17 @@ import AuthLayout from '@/shared/layouts/auth/AuthLayout';
 import TestLayout from '@/shared/layouts/TestLayout';
 import FeatureLayout from '@/shared/layouts/FeatureLayout';
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { Suspense } from 'react';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
+import NotFoundPage from '@/shared/components/Exception/NotFoundPage';
+import Loading from '@/shared/components/Exception/Loading';
 
 export const routes: RouteObject[] = [
   {
     path: '/',
     element: <DefaultLayout protectedRoutes />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true,
@@ -20,7 +24,11 @@ export const routes: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <lazyRoutes.BlockPage />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <lazyRoutes.BlockPage />
+              </Suspense>
+            ),
           },
           {
             element: (
@@ -41,7 +49,16 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'mypage',
-        element: <lazyRoutes.MyPage />,
+        children: [
+          {
+            index: true,
+            element: <lazyRoutes.MyPage />,
+          },
+          {
+            path: 'settings',
+            element: <lazyRoutes.SettingsPage />,
+          },
+        ],
       },
     ],
   },

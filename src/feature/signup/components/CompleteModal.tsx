@@ -8,17 +8,40 @@ import MainBg from '@/shared/components/MainBg';
 import Logo from '@assets/logo/logo-auth.svg?react';
 import SignupAnimation from '@feature/signup/assets/signup-animation.lottie';
 import { useEffect, useState } from 'react';
-
-const USER = [
-  { id: 1, label: 'TRAVELER', text: '윤디모' },
-  { id: 2, label: 'INTERESTS', text: '자연, 맛집' },
-  { id: 3, label: 'STYLE', text: '효율중시형' },
-];
+import { useQueryClient } from '@tanstack/react-query';
+import type { ResponseSignupDto } from '../types/auth';
+import { SIGNUP_KEY } from '../constants/key';
+import { STYLES } from '../data/styles';
+import { THEMES } from '../data/preferencs';
 
 const CompleteModal = () => {
   const navigate = useNavigate();
   const [dotLottie, setDotLottie] = useState<DotLottie | null>(null); // 로티 애니메이션 인스턴스
   const [isLottieDone, setIsLottieDone] = useState<boolean>(false); // 로티 에니메이션 종료 여부
+
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData<ResponseSignupDto>(SIGNUP_KEY.signup);
+
+  const themeIds = data?.data.preferredTravelThemes.map((t) => t.themeId);
+  const styleIds = data?.data.preferredTravelStyles.map((s) => s.styleId);
+
+  const USER = [
+    { id: 1, label: 'TRAVELER', text: data?.data.nickname },
+    {
+      id: 2,
+      label: 'INTERESTS',
+      text: THEMES.filter((t) => themeIds?.includes(t.id))
+        .map((t) => t.label)
+        .join(','),
+    },
+    {
+      id: 3,
+      label: 'STYLE',
+      text: STYLES.filter((s) => styleIds?.includes(s.id))
+        .map((s) => s.label)
+        .join(','),
+    },
+  ];
 
   useEffect(() => {
     const onComplete = () => {
@@ -59,7 +82,7 @@ const CompleteModal = () => {
           </div>
 
           <h2 className="h4 leading-[20px]">
-            환영합니다, <span className="text-primary-color">윤디모</span>님
+            환영합니다, <span className="text-primary-color">{data?.data.nickname}</span>님
           </h2>
 
           <p className="mt-[4px] text-center text-base-color-1 h9">

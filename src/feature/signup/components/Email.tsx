@@ -7,18 +7,26 @@ import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
 import DualButton from '@/shared/components/Button/DualButton';
 import EmailModal from './EmailModal';
-import { useEmailValidation } from '@/shared/hooks/useEmailValidation';
+
+import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
+import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVerificationConfirm';
+import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerificationResend';
+import handleMutationSuccess from '../utils/handleMutationSuccess';
+import handleMutationError from '../utils/handleMutationError';
 
 const Email = ({ setLevel }: StepProps) => {
   const {
     register,
     watch,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useFormContext<FormFields>();
 
   const [step, setStep] = useState<number>(1); // step 1: 이메일, step2: 인증번호
   const [timeLeft, setTimeLeft] = useState<number>(300); // 5분 타이머
+  const [showTimer, setShowTimer] = useState<boolean>(false);
   const [timerKey, setTimerKey] = useState(0);
 
   const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
@@ -26,13 +34,13 @@ const Email = ({ setLevel }: StepProps) => {
   const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
   const [showModal, setShowModal] = useState(false);
 
+  const { mutate: mutatePostEmailVerification } = usePostEmailVerification(); // 이메일 인증 코드 발송
+  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm(); // 이메일 인증 코드 확인
+  const { mutate: mutatePostEmailVerificationResned } = usePostEmailVerificationResend(); // 이메일 인증 코드 재발송
+
   const email = watch('email');
   const code = watch('code');
-
-  // 이메일 존재 검증 (회원가입 모드)
-  const { emailExistsMessage, isCheckingEmail, canProceed } = useEmailValidation({ mode: 'signup' });
-
-  const isCodeError = code !== '123123'; // TODO: 이메일 인증 코드 맞는지 확인하는 로직 필요
+  const verificationId = watch('verificationId');
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -47,13 +55,86 @@ const Email = ({ setLevel }: StepProps) => {
     setValue('code', ''); // 입력란 비우기
   };
 
+  // 이메일 인증 (이메일 입력 후 다음 버튼 누를 때 실행되는 함수)
+  const handleSubmitEmail = () => {
+    mutatePostEmailVerification(
+      { email },
+      {
+        onSuccess: (res) => {
+          const result = handleMutationSuccess(res, 'send');
+
+          if (result?.verificationId) {
+            setValue('verificationId', result.verificationId);
+            setStep(2); // 인증 코드 발송 후 코드 입력 레벨로 이동함
+            setShowTimer(true);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setError('email', { message });
+          }
+        },
+      },
+    );
+  };
+
   // 인증 메일 재전송
   const handleResend = () => {
-    setHasTriedResend(true);
-    setHasRetry(false);
-    setHasTriedVerify(false);
+    setHasTriedVerify(false); // 재전송 누른 즉시 에러 메시지는 사라지도록
+    setHasTriedResend(false); // 재전송 누르면 안내 문구 사라지도록
+    setHasRetry(true);
+    setShowTimer(false);
 
-    handleTimer();
+    setValue('code', '');
+
+    mutatePostEmailVerificationResned(
+      { verificationId },
+      {
+        onSuccess: (res) => {
+          if (res.isSuccess) {
+            setHasTriedResend(true);
+            setHasRetry(false);
+
+            handleTimer();
+            setShowTimer(true);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setHasTriedVerify(true);
+            setError('code', { message });
+          }
+        },
+      },
+    );
+  };
+
+  // 인증 코드 확인 (인증 완료 버튼 클릭 시 실행)
+  const handleConfirmCode = () => {
+    setHasTriedVerify(true);
+    setHasRetry(true);
+
+    mutatePostEmailVerificationConfirm(
+      { verificationId, code },
+      {
+        onSuccess: (res) => {
+          const result = handleMutationSuccess(res, 'confirm');
+
+          if (result?.signupToken) {
+            setValue('signupToken', result.signupToken);
+            setLevel(2);
+          }
+        },
+        onError: (error) => {
+          const message = handleMutationError(error);
+          if (message) {
+            setError('code', { message });
+          }
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -91,8 +172,6 @@ const Email = ({ setLevel }: StepProps) => {
         <div className="absolute top-[61px] w-full">
           {/* 이메일 유효성 검사 */}
           {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
-          {/* 이메일 존재 검증 에러 메시지 */}
-          {emailExistsMessage && <Alert text={emailExistsMessage} type="alert"></Alert>}
 
           {step === 2 && (
             <div className="flex flex-col gap-[8px] justify-between">
@@ -117,11 +196,11 @@ const Email = ({ setLevel }: StepProps) => {
                   label="left"
                   placeholder="인증코드를 입력하세요"
                   maxLength={6}
-                  error={hasTriedVerify && isCodeError}
+                  error={hasTriedVerify}
                 />
 
                 {/* 타이머 */}
-                {step === 2 && (
+                {step === 2 && showTimer && (
                   <p className="absolute top-1/2 -translate-y-1/2 right-[24px] text-negative text-[16px] font-[400] leading-[15px]">
                     {formatTime(timeLeft)}
                   </p>
@@ -129,12 +208,12 @@ const Email = ({ setLevel }: StepProps) => {
               </div>
 
               {/* 인증코드 틀렸을 때 */}
-              {hasTriedVerify && isCodeError && (
+              {hasTriedVerify && (
                 <div>
                   <Alert
                     text={
                       <div className="flex justify-between flex-1">
-                        <p>인증코드가 올바르지 않습니다</p>
+                        <p>{errors.code?.message}</p>
                         <p onClick={handleResend} className="underline cursor-pointer">
                           재전송
                         </p>
@@ -157,19 +236,24 @@ const Email = ({ setLevel }: StepProps) => {
         </p>
       )}
 
+      {/* 처음 진입 시 이메일 입력할 때 버튼 (이전/다음) */}
       {step === 1 && (
         <>
           <DualButton
             left={{
               text: '이전',
               variant: 'white',
-              onClick: () => setLevel(0),
+              onClick: () => {
+                setLevel(0);
+                setValue('email', '');
+                clearErrors('email');
+              },
               className: 'border-base-color!',
             }}
             right={{
               text: '다음',
-              disabled: !email || !!errors.email || !!emailExistsMessage || isCheckingEmail || !canProceed,
-              onClick: () => setStep(2),
+              disabled: !email || !!errors.email,
+              onClick: handleSubmitEmail,
             }}
             width={215}
             height={64}
@@ -179,6 +263,7 @@ const Email = ({ setLevel }: StepProps) => {
         </>
       )}
 
+      {/* 이메일 인증 번호 발송 후 나오는 버튼 (이전,인증 완료) */}
       {step === 2 && (
         <>
           <DualButton
@@ -193,15 +278,9 @@ const Email = ({ setLevel }: StepProps) => {
             }}
             right={{
               text: '인증 완료',
-              disabled: (hasTriedVerify && isCodeError) || code?.length < 6,
-              onClick: () => {
-                setHasTriedVerify(true);
-                setHasRetry(true);
-
-                if (!isCodeError) {
-                  setLevel(2);
-                }
-              },
+              disabled: hasTriedVerify || code?.length < 6,
+              type: 'button',
+              onClick: handleConfirmCode,
             }}
             width={215}
             height={64}

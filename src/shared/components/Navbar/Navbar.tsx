@@ -5,7 +5,13 @@ import Logo from '@assets/Navbar/icon-nav-logo.svg?react';
 import Puzzle from '@assets/Navbar/icon-puzzle.svg?react';
 import AlarmOn from '@assets/Navbar/icon-alarm-on.svg?react';
 import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
-import Profile from '@assets/Navbar/profile-happy.svg?react';
+import { useRef, useState } from 'react';
+import NavbarMenuModal from './NavbarMenuModal';
+import AccountModal from '@/feature/mypage/components/AccountModal';
+import usePostLogout from '@/feature/auth/logout/hooks/mutations/usePostLogout';
+import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
+import NavbarNotificationModal from './NavbarNotificationModal';
+import { useNotification } from '@/shared/hooks/useNotification';
 
 const MENU = [
   { id: 1, label: '홈', to: '/' },
@@ -14,9 +20,31 @@ const MENU = [
 ];
 
 const Navbar = () => {
-  const alarm = false; // Todo: 추후 api 연결 시 수정
+  const { unread, setUnread } = useNotification();
 
   const navigate = useNavigate();
+
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
+  const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
+
+  const alarmRef = useRef<HTMLDivElement | null>(null); // 알림 아이콘
+  const profileRef = useRef<HTMLDivElement | null>(null);
+
+  const { mutate } = usePostLogout(); // 로그아웃
+  const { data } = useGetMyPage(); // 내 정보 조회
+
+  const handleLogout = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        setShowLogoutModal(false);
+        window.location.href = '/login';
+      },
+      onError: () => {
+        alert('로그아웃에 실패했습니다.');
+      },
+    });
+  };
 
   return (
     <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
@@ -44,22 +72,55 @@ const Navbar = () => {
           ))}
 
           <div className="flex items-center gap-[15px] ml-[26px]">
-            <div className="size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
-              {!alarm && <AlarmOff className="self-start cursor-pointer" />}
-              {alarm && <AlarmOn className="self-start cursor-pointer" />}
+            <div
+              ref={alarmRef}
+              onClick={() => setShowNotificationModal((prev) => !prev)}
+              className="relative size-[40px] hover:bg-base-color-5 rounded-full cursor-pointer">
+              {!unread && <AlarmOff className="self-start cursor-pointer" />}
+              {unread && <AlarmOn onClick={() => setUnread(false)} className="self-start cursor-pointer" />}
+
+              {showNotificationModal && (
+                <NavbarNotificationModal setShowNotificationModal={setShowNotificationModal} alarmRef={alarmRef} />
+              )}
             </div>
 
             <div
-              className="py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
+              ref={profileRef}
+              className="relative py-[5px] px-[12px] rounded-[30px] hover:bg-base-color-5 flex items-center gap-[13px] cursor-pointer"
               onClick={() => {
-                navigate('/mypage');
+                setShowMenu((prev) => !prev);
               }}>
-              <Profile className="size-[40px]" />
-              <p className="base-color-0 b3">유저닉네임</p>
+              <div className="size-[40px]">
+                <img
+                  src={data?.data.profileImageUrl}
+                  alt={`${data?.data.nickname}의 프로필 사진`}
+                  className="size-[40px] object-contain"
+                />
+              </div>
+              <p className="base-color-0 b3">{data?.data.nickname}</p>
+
+              {showMenu && (
+                <NavbarMenuModal
+                  setShowMenu={setShowMenu}
+                  setShowLogoutModal={setShowLogoutModal}
+                  data={data}
+                  profileRef={profileRef}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {showLogoutModal && (
+        <AccountModal
+          modalType="logout"
+          onCancel={() => {
+            setShowLogoutModal(false);
+          }}
+          onConfirm={handleLogout}
+        />
+      )}
     </nav>
   );
 };
