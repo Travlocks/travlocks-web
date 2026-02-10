@@ -1,6 +1,8 @@
 import type { SuccessPayload } from '@/shared/types/common';
 import type { Vlock, VlockSummary } from '@/shared/types/vlock';
 
+export type ConnectionPortType = 'TOP_LEFT' | 'BOTTOM_LEFT' | 'TOP_RIGHT' | 'BOTTOM_RIGHT';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Request DTOs
 // ─────────────────────────────────────────────────────────────────────────────
@@ -8,7 +10,10 @@ import type { Vlock, VlockSummary } from '@/shared/types/vlock';
 // 블록 추가 요청 타입
 export type RequestCreateBlockDto = {
   vlockId: number;
-  orderNo: number;
+  canvasX?: number | null;
+  canvasY?: number | null;
+  inputPort?: ConnectionPortType | null;
+  outputPort?: ConnectionPortType | null;
 };
 
 // 블록 순서 변경 요청 타입
@@ -16,6 +21,10 @@ export type RequestReorderBlocksDto = {
   vlockOrders: Array<{
     templateVlocksId: number;
     orderNo: number;
+    canvasX?: number | null;
+    canvasY?: number | null;
+    inputPort?: ConnectionPortType | null;
+    outputPort?: ConnectionPortType | null;
   }>;
 };
 
@@ -29,9 +38,14 @@ export type CreateBlockData = {
   templateDayId: number;
   dayNo: number;
   orderNo: number;
-  stayMinutes: number;
+  stayHours: number;
+  canvasX: number | null;
+  canvasY: number | null;
+  inputPort: ConnectionPortType | null;
+  outputPort: ConnectionPortType | null;
   vlock: Vlock;
   createdAt: string;
+  warning: string | null;
 };
 
 // 블록 생성 성공 응답 타입
@@ -58,7 +72,7 @@ export type ResponseDeleteBlockDto = SuccessPayload<DeleteBlockData>;
 // 이동 정보
 export type MoveInfo = {
   moveMinutes: number;
-  transportType: 'CAR' | 'WALK' | 'PUBLIC';
+  transportType: 'CAR' | 'WALK' | 'TRANSIT' | 'PUBLIC';
   distanceMeter: number;
 } | null;
 
@@ -66,7 +80,11 @@ export type MoveInfo = {
 export type ReorderedVlock = {
   templateVlocksId: number;
   orderNo: number;
-  stayMinutes: number;
+  stayHours: number;
+  canvasX: number | null;
+  canvasY: number | null;
+  inputPort: ConnectionPortType | null;
+  outputPort: ConnectionPortType | null;
   vlock: VlockSummary;
   moveToNext: MoveInfo;
 };
@@ -81,3 +99,33 @@ export type ReorderBlocksData = {
 
 // 블록 순서 변경 성공 응답 타입
 export type ResponseReorderBlocksDto = SuccessPayload<ReorderBlocksData>;
+
+// 캔버스 조회 응답 데이터
+export type CanvasVlockBrief = {
+  vlockId: number;
+  name: string;
+  category: string;
+};
+
+export type CanvasVlockData = {
+  templateVlockId: number;
+  orderNo: number;
+  stayHours: number;
+  nextMoveMinutes: number;
+  vlock: CanvasVlockBrief;
+};
+
+export type CanvasData = {
+  templateId: number;
+  title: string;
+  dayNo: number;
+  vlockCount: number;
+  totalHours: number;
+  totalMoveHours: number;
+  totalStayHours: number;
+  cities: number[];
+  vlocks: CanvasVlockData[];
+  createdAt: string;
+};
+
+export type ResponseCanvasDto = SuccessPayload<CanvasData>;

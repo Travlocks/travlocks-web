@@ -1,11 +1,19 @@
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import type { Level } from '@/feature/block/blockBuild/types/level';
 import BlockHeader from '@/feature/block/blockHeader/BlockHeader';
 import BlockSummary from '@/feature/block/blockSummary/BlockSummary';
-import { useState } from 'react';
 
 const BlockPage = () => {
+  const { templateId } = useParams<{ templateId?: string }>();
+  const setTemplateId = useBlockTemplateStore((s) => s.setTemplateId);
   const [level, setLevel] = useState<Level>('timeline');
+
+  useEffect(() => {
+    setTemplateId(templateId ?? null);
+  }, [setTemplateId, templateId]);
 
   return (
     <div className="flex justify-center gap-[25px] w-screen overflow-hidden bg-base-color-5">

@@ -41,6 +41,14 @@ export const routes: RouteObject[] = [
               },
             ],
           },
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OnboardingPage />,
+          },
+          {
+            path: ':templateId',
+            element: <lazyRoutes.BlockPage />,
+          },
         ],
       },
       {

@@ -1,11 +1,23 @@
 import { axiosInstance } from '@/shared/apis/axios';
 import type {
+  ResponseCanvasDto,
   RequestCreateBlockDto,
   RequestReorderBlocksDto,
   ResponseCreateBlockDto,
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
 } from '../blockBuild.type';
+
+// 캔버스 조회
+export const getBlockCanvas = async (templateId: number, dayNo: number): Promise<ResponseCanvasDto> => {
+  try {
+    const { data } = await axiosInstance.get<ResponseCanvasDto>(`/templates/${templateId}/days/${dayNo}/canvas`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 // 블록 추가
 export const postBlock = async (

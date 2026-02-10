@@ -1,19 +1,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import { useShallow } from 'zustand/react/shallow';
-import { postBlock, deleteBlock } from '../apis/templateBlockApi';
+import { deleteBlock, getBlockCanvas, patchBlocksReorder, postBlock } from '../apis/templateBlockApi';
 import type { Block } from '../types/block';
+import { mapCanvasToBlocksFallback } from '../utils/canvasFallbackMapper';
+import { buildDerivedReorderRequest, derivePortMap, toCreateRequest } from '../utils/syncDerivation';
 
 const DEBOUNCE_MS = 500;
 const START_BLOCK_ID = 0;
 
 type SyncStatus = 'idle' | 'pending' | 'syncing' | 'error';
-
-interface PendingOperation {
-  type: 'create' | 'delete';
-  block: Block;
-  orderNo: number;
-}
 
 /**
  * 블록 상태 변경을 감지하여 서버와 동기화하는 훅
@@ -32,48 +28,76 @@ export const useBlockSync = () => {
 
   const syncStatusRef = useRef<SyncStatus>('idle');
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const previousBlocksRef = useRef<Block[]>([]);
-  const pendingOpsRef = useRef<PendingOperation[]>([]);
+  const latestBlocksRef = useRef<Block[]>([]);
+  const syncedBlocksRef = useRef<Block[]>([]);
+  const suppressSyncRef = useRef(false);
+  const isHydratingRef = useRef(false);
+  const isSyncingRef = useRef(false);
+  const requeueSyncRef = useRef(false);
+  const hydrateSeqRef = useRef(0);
 
-  // 현재 day의 블록 목록
-
-  /**
-   * 이전 상태와 현재 상태를 비교하여 변경된 블록을 찾음
-   */
-  const detectChanges = useCallback((prevBlocks: Block[], nextBlocks: Block[]): PendingOperation[] => {
-    const ops: PendingOperation[] = [];
-
-    // START 블록 제외
-    const prevFiltered = prevBlocks.filter((b) => b.blockId !== START_BLOCK_ID);
-    const nextFiltered = nextBlocks.filter((b) => b.blockId !== START_BLOCK_ID);
-
-    const prevIds = new Set(prevFiltered.map((b) => b.blockId));
-    const nextIds = new Set(nextFiltered.map((b) => b.blockId));
-
-    // 새로 추가된 블록 (blockId가 vlockId로 매핑됨)
-    for (const block of nextFiltered) {
-      if (!prevIds.has(block.blockId)) {
-        const orderNo = nextFiltered.findIndex((b) => b.blockId === block.blockId) + 1;
-        ops.push({ type: 'create', block, orderNo });
-      }
-    }
-
-    // 삭제된 블록 (templateVlocksId가 있는 것만 동기화)
-    for (const block of prevFiltered) {
-      if (!nextIds.has(block.blockId) && block.templateVlocksId) {
-        ops.push({ type: 'delete', block, orderNo: 0 });
-      }
-    }
-
-    return ops;
-  }, []);
+  const withSuppressedSync = useCallback(
+    (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => {
+      suppressSyncRef.current = true;
+      updateBlocksByDay(updater);
+      queueMicrotask(() => {
+        suppressSyncRef.current = false;
+      });
+    },
+    [updateBlocksByDay],
+  );
 
   /**
-   * 서버에 동기화 수행
+   * 현재 day 캔버스를 서버에서 가져와 로컬 상태를 보정
    */
-  const syncToServer = useCallback(async () => {
-    if (!templateId || pendingOpsRef.current.length === 0) {
+  const hydrateDayFromServer = useCallback(async () => {
+    if (!templateId) return;
+    const templateIdNum = Number(templateId);
+    if (Number.isNaN(templateIdNum)) {
+      console.error('[useBlockSync] Invalid templateId:', templateId);
+      return;
+    }
+
+    const seq = ++hydrateSeqRef.current;
+    isHydratingRef.current = true;
+    syncStatusRef.current = 'syncing';
+
+    try {
+      const response = await getBlockCanvas(templateIdNum, currentDay);
+      if (seq !== hydrateSeqRef.current) return;
+
+      const mapped = mapCanvasToBlocksFallback(response.data);
+      latestBlocksRef.current = mapped;
+      syncedBlocksRef.current = mapped;
+
+      withSuppressedSync((prev) => ({
+        ...prev,
+        [currentDay]: mapped,
+      }));
+
       syncStatusRef.current = 'idle';
+    } catch (error) {
+      console.error('[useBlockSync] Hydration failed:', error);
+      syncStatusRef.current = 'error';
+    } finally {
+      if (seq === hydrateSeqRef.current) {
+        isHydratingRef.current = false;
+      }
+    }
+  }, [templateId, currentDay, withSuppressedSync]);
+
+  /**
+   * 현재 day의 상태를 서버에 동기화 수행
+   */
+  const syncCurrentState = useCallback(async () => {
+    if (!templateId) {
+      syncStatusRef.current = 'idle';
+      return;
+    }
+    if (isHydratingRef.current) return;
+
+    if (isSyncingRef.current) {
+      requeueSyncRef.current = true;
       return;
     }
 
@@ -83,87 +107,118 @@ export const useBlockSync = () => {
       return;
     }
 
+    isSyncingRef.current = true;
     syncStatusRef.current = 'syncing';
-    const ops = [...pendingOpsRef.current];
-    pendingOpsRef.current = [];
-
-    // 롤백을 위해 이전 상태 저장
-    const snapshotBeforeSync = previousBlocksRef.current;
 
     try {
-      for (const op of ops) {
-        if (op.type === 'create') {
-          const response = await postBlock(templateIdNum, currentDay, {
-            vlockId: op.block.blockId, // blockId를 vlockId로 사용
-            orderNo: op.orderNo,
-          });
+      const currentBlocks = latestBlocksRef.current;
+      const syncedBlocks = syncedBlocksRef.current;
 
-          // 서버에서 생성된 templateVlocksId 업데이트
-          if (response?.data?.templateVlocksId) {
-            updateBlocksByDay((prev) => ({
-              ...prev,
-              [currentDay]: (prev[currentDay] ?? []).map((b) =>
-                b.blockId === op.block.blockId ? { ...b, templateVlocksId: response.data.templateVlocksId } : b,
-              ),
-            }));
-          }
-        } else if (op.type === 'delete' && op.block.templateVlocksId) {
-          await deleteBlock(templateIdNum, currentDay, op.block.templateVlocksId);
+      const currentNonStart = currentBlocks.filter((b) => b.blockId !== START_BLOCK_ID);
+      const syncedNonStart = syncedBlocks.filter((b) => b.blockId !== START_BLOCK_ID);
+
+      const currentTemplateVlockIds = new Set(
+        currentNonStart.map((b) => b.templateVlocksId).filter((id): id is number => typeof id === 'number'),
+      );
+
+      const deleteTargets = syncedNonStart.filter(
+        (b) => typeof b.templateVlocksId === 'number' && !currentTemplateVlockIds.has(b.templateVlocksId),
+      );
+
+      for (const block of deleteTargets) {
+        if (!block.templateVlocksId) continue;
+        await deleteBlock(templateIdNum, currentDay, block.templateVlocksId);
+      }
+
+      let nextBlocks = currentBlocks;
+      const ports = derivePortMap(currentBlocks, START_BLOCK_ID);
+      const createTargets = currentNonStart.filter((b) => b.templateVlocksId == null);
+
+      for (const block of createTargets) {
+        const response = await postBlock(templateIdNum, currentDay, toCreateRequest(block, ports.get(block.blockId)));
+        const createdId = response?.data?.templateVlocksId;
+        if (typeof createdId === 'number') {
+          nextBlocks = nextBlocks.map((b) =>
+            b.blockId === block.blockId && b.templateVlocksId == null ? { ...b, templateVlocksId: createdId } : b,
+          );
         }
       }
 
+      if (nextBlocks !== currentBlocks) {
+        latestBlocksRef.current = nextBlocks;
+        withSuppressedSync((prev) => ({
+          ...prev,
+          [currentDay]: nextBlocks,
+        }));
+      }
+
+      const reorderRequest = buildDerivedReorderRequest(nextBlocks, START_BLOCK_ID);
+      if (reorderRequest.vlockOrders.length > 0) {
+        await patchBlocksReorder(templateIdNum, currentDay, reorderRequest);
+      }
+
+      syncedBlocksRef.current = nextBlocks;
       syncStatusRef.current = 'idle';
     } catch (error) {
-      console.error('[useBlockSync] Sync failed, rolling back:', error);
+      console.error('[useBlockSync] Sync failed:', error);
       syncStatusRef.current = 'error';
 
-      // 롤백
-      updateBlocksByDay((prev) => ({
-        ...prev,
-        [currentDay]: snapshotBeforeSync,
-      }));
-
-      // TODO: toast 에러 표시
+      // 서버 상태와 어긋나는 것을 방지하기 위해 최신 서버 상태를 재조회
+      await hydrateDayFromServer();
+    } finally {
+      isSyncingRef.current = false;
+      if (requeueSyncRef.current) {
+        requeueSyncRef.current = false;
+        void syncCurrentState();
+      }
     }
-  }, [templateId, currentDay, updateBlocksByDay]);
+  }, [templateId, currentDay, withSuppressedSync, hydrateDayFromServer]);
 
   /**
-   * 블록 변경 감지 및 디바운스 처리
+   * template/day 변경 시 서버 캔버스로 초기 동기화
+   */
+  useEffect(() => {
+    if (!templateId) {
+      syncedBlocksRef.current = [];
+      return;
+    }
+    void hydrateDayFromServer();
+  }, [templateId, currentDay, hydrateDayFromServer]);
+
+  /**
+   * 블록 변경 감지 및 디바운스 동기화
    */
   useEffect(() => {
     const currentBlocks = blocksByDay[currentDay] ?? [];
-    const changes = detectChanges(previousBlocksRef.current, currentBlocks);
+    latestBlocksRef.current = currentBlocks;
 
-    if (changes.length > 0) {
-      pendingOpsRef.current.push(...changes);
-      syncStatusRef.current = 'pending';
+    if (!templateId || suppressSyncRef.current || isHydratingRef.current) return;
 
-      // 디바운스 타이머 리셋
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        syncToServer();
-      }, DEBOUNCE_MS);
+    syncStatusRef.current = 'pending';
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
 
-    // 현재 상태를 이전 상태로 저장
-    previousBlocksRef.current = [...currentBlocks];
+    debounceTimerRef.current = setTimeout(() => {
+      void syncCurrentState();
+    }, DEBOUNCE_MS);
 
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [blocksByDay, currentDay, detectChanges, syncToServer]);
+  }, [blocksByDay, currentDay, templateId, syncCurrentState]);
 
   // 컴포넌트 언마운트 시 즉시 동기화
   useEffect(() => {
     return () => {
-      if (pendingOpsRef.current.length > 0) {
-        syncToServer();
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      if (!suppressSyncRef.current && !isHydratingRef.current) {
+        void syncCurrentState();
       }
     };
-  }, [syncToServer]);
+  }, [syncCurrentState]);
 };
