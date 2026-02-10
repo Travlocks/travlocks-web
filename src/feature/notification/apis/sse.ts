@@ -15,4 +15,19 @@ export const connectSSE = () => {
   eventSource.onerror = (err) => {
     console.error('sse error', err);
   };
+
+  // connected 이벤트
+  eventSource.addEventListener('connected', (e) => {
+    console.log('connected:', e);
+  });
+
+  // new-notification 이벤트
+  eventSource.addEventListener('new-notification', (e) => {
+    console.log('new-notification', e);
+  });
+
+  // ping 이벤트
+  eventSource.addEventListener('ping', (e) => {
+    console.log('ping', e);
+  });
 };
