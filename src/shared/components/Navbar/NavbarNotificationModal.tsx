@@ -3,6 +3,7 @@ import ShuffleIcon from '@assets/Navbar/icon-shuffle.svg?react';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useRef, type SetStateAction } from 'react';
 import useDeleteNotifications from '@/feature/notification/hook/useMutation/useDeleteNotifications';
+import axios from 'axios';
 
 interface NavbarNotificationModal {
   setShowNotificationModal: React.Dispatch<SetStateAction<boolean>>;
@@ -21,7 +22,13 @@ const NavbarNotificationModal = ({ setShowNotificationModal, alarmRef }: NavbarN
   const { mutate } = useDeleteNotifications();
 
   const handleDelete = () => {
-    mutate();
+    mutate(undefined, {
+      onError: (error) => {
+        if (axios.isAxiosError(error)) {
+          alert(error.response?.data?.errorMessage);
+        }
+      },
+    });
   };
 
   useEffect(() => {
@@ -55,7 +62,12 @@ const NavbarNotificationModal = ({ setShowNotificationModal, alarmRef }: NavbarN
       <div className="flex justify-between pb-[27px] border-b border-base-color">
         <p className="h4">알림</p>
         {hasNotifications && (
-          <p onClick={handleDelete} className="h6 font-[500] text-base-color-2">
+          <p
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            className="h6 font-[500] text-base-color-2">
             전체 삭제
           </p>
         )}
