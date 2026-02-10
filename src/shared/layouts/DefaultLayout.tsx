@@ -30,8 +30,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
     }
   };
 
-  // 인증 관련 페이지 목록 (스플래시 가드 제외 대상)
-  const AUTH_PAGES = ['/login', '/signup', '/password', '/onboarding'];
+  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset', '/onboarding'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   // 다른 url로 들어오면 스플래시
