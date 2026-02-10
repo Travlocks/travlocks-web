@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import ScrollToTop from '../components/scrollToTop';
 
 interface FeatureLayoutProps {
   subtitle: string;
@@ -19,6 +20,8 @@ interface FeatureLayoutProps {
 const FeatureLayout = ({ subtitle, title }: FeatureLayoutProps) => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative">
+      <ScrollToTop />
+
       {/* 퍼즐 애니메이션 요소 추가 예정입니다*/}
 
       {/* 컨텐츠 영역 */}
