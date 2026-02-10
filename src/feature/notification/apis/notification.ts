@@ -22,3 +22,10 @@ export const getNotificationList = async (
 
   return data;
 };
+
+// 알림 전체 삭제
+export const deleteNotifications = async (): Promise<ResponseNotificationsDto> => {
+  const { data } = await axiosInstance.delete('/notifications');
+
+  return data;
+};

@@ -2,6 +2,7 @@ import useGetNotificationList from '@/feature/notification/hook/useQuery/useGetN
 import ShuffleIcon from '@assets/Navbar/icon-shuffle.svg?react';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useRef, type SetStateAction } from 'react';
+import useDeleteNotifications from '@/feature/notification/hook/useMutation/useDeleteNotifications';
 
 interface NavbarNotificationModal {
   setShowNotificationModal: React.Dispatch<SetStateAction<boolean>>;
@@ -17,8 +18,10 @@ const NavbarNotificationModal = ({ setShowNotificationModal, alarmRef }: NavbarN
 
   const { ref, inView } = useInView({ threshold: 0 });
 
+  const { mutate } = useDeleteNotifications();
+
   const handleDelete = () => {
-    // setData([]);
+    mutate();
   };
 
   useEffect(() => {
