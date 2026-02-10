@@ -12,7 +12,7 @@ function useGetNotificationList() {
     string | undefined
   >({
     queryKey: [QUERY_KEY.notification],
-    queryFn: ({ pageParam }) => getNotificationList(pageParam, 1),
+    queryFn: ({ pageParam }) => getNotificationList(pageParam, 10),
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => {
       if (!lastPage.data.hasNext) return undefined;
