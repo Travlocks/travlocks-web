@@ -90,9 +90,21 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.PasswordResetConfirmPage />,
             handle: { skipSplash: true, skipSessionGate: true },
           },
+          {
+            path: 'onboarding',
+            element: <lazyRoutes.OAuthOnboardingPage />,
+          },
         ],
       },
     ],
+  },
+  {
+    path: 'google/callback',
+    element: <lazyRoutes.GoogleCallbackPage />,
+  },
+  {
+    path: 'naver/callback',
+    element: <lazyRoutes.NaverCallbackPage />,
   },
   {
     path: '/test',

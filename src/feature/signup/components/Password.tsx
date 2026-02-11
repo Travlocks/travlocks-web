@@ -18,7 +18,7 @@ const ERRORS = [
   },
 ];
 
-const Password = ({ setLevel }: StepProps) => {
+const Password = ({ onPrev, onNext }: StepProps) => {
   const {
     register,
     watch,
@@ -109,14 +109,14 @@ const Password = ({ setLevel }: StepProps) => {
               text: '이전',
               variant: 'white',
               onClick: () => {
-                setLevel(1);
+                onPrev();
                 setValue('code', '');
               },
             }}
             right={{
               text: '다음',
               disabled: !password || !passwordCheck || !!errors.password || !!errors.passwordCheck,
-              onClick: () => setLevel(3),
+              onClick: onNext,
             }}
             width={215}
             height={64}

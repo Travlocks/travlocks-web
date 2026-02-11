@@ -1,5 +1,5 @@
 import { axiosInstance, type CustomAxiosRequestConfig } from '@/shared/apis/axios';
-import type { RequestLoginDto, ResponseLoginDto, ResponseRefreshTokenDto } from '../login.type';
+import type { RequestLoginDto, ResponseLoginDto, ResponseRefreshTokenDto } from '../types/login.types';
 
 // 로그인
 export const postLogin = async (body: RequestLoginDto): Promise<ResponseLoginDto> => {

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { postLogin } from '../apis/login';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { RequestLoginDto, ResponseLoginDto, ErrorLoginDto } from '../login.type';
+import type { RequestLoginDto, ResponseLoginDto, ErrorLoginDto } from '../types/login.types';
 import type { AxiosError } from 'axios';
 import { handleLoginError } from '@/shared/utils/errorHandler';
 
