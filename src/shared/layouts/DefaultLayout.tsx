@@ -6,6 +6,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
 import { useAuth } from '../hooks/useAuth';
+import ScrollToTop from '../components/scrollToTop';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -45,6 +46,8 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
 
   return (
     <div className="relative w-full min-h-dvh overflow-hidden" aria-label="메인 레이아웃">
+      <ScrollToTop />
+
       {/* 메인 배경 */}
       {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-base bg-base-color-6" />}
       {/* 스플래시 플로우 */}
