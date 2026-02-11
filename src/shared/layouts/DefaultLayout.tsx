@@ -7,6 +7,7 @@ import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
 import { useAuth } from '../hooks/useAuth';
 import ScrollToTop from '../components/scrollToTop';
+import Footer from '../components/Footer/Footer';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -75,6 +76,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
           </main>
         </div>
       )}
+      <Footer />
     </div>
   );
 };
