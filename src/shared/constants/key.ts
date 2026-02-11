@@ -12,4 +12,5 @@ export const QUERY_KEY = {
   member: 'member',
   templateSearch: 'template-search',
   notification: 'notification',
+  vlock: 'vlock',
 };
