@@ -1,14 +1,18 @@
 import type { SuccessPayload } from '@/shared/types/common';
-import type { Vlock } from '@/shared/types/vlock';
 
-export type { Vlock as VlockDto };
+export interface VlockDto {
+  vlockId: number;
+  vlockName: string;
+  regionId: number;
+  createdAt: string;
+}
 
 export interface CreatedTemplateDto {
   templateId: number;
-  title: string;
-  city: string;
+  templateTitle: string;
+  regionId: number;
   createdAt: string;
-  isFavorite: boolean;
+  favorite: boolean;
 }
 
 export interface CountsDto {
@@ -18,14 +22,16 @@ export interface CountsDto {
 }
 
 export interface RecentDto {
-  createdVlocks: Vlock[];
-  createdTemplates: CreatedTemplateDto[];
+  myPageRecentVlocks: VlockDto[];
+  myPageRecentTemplates: CreatedTemplateDto[];
 }
 
 export interface MyPage {
   memberId: number;
   nickname: string;
   introduction: string;
+  profileImageUrl: string;
+  email: string;
   preferredTravelStyleIds: number[];
   preferredTravelThemeIds: number[];
   counts: CountsDto;

@@ -1,6 +1,7 @@
 import PuzzleIcon from '@/shared/assets/icon-puzzle.svg?react';
 import StarIcon from '@/shared/assets/icon-star.svg?react';
 import TemplateIcon from '@/shared/assets/icon-template.svg?react';
+import { REGION_MAP, type RegionId } from '@/shared/constants/destinationCity';
 import ActivityList from './ActivityList';
 import type { InterestTheme } from './InterestThemeSection';
 import ProfileHeader from './ProfileHeader';
@@ -13,11 +14,13 @@ import { useFavoriteMutation } from '../hooks/useFavoriteMutation';
 import { useUpdateMyProfileMutation } from '../hooks/useUpdateMyProfileMutation';
 import type { VlockDto, CreatedTemplateDto } from '../types/mypage.type';
 
+const getRegionName = (regionId: number) => REGION_MAP[regionId as RegionId]?.name.korean ?? '지역 정보 없음';
+
 // Vlock을 ActivityList 형식으로 변환
 const formatVlockForActivity = (vlock: VlockDto) => ({
   id: String(vlock.vlockId),
-  title: vlock.name,
-  location: vlock.city,
+  title: vlock.vlockName,
+  location: getRegionName(vlock.regionId),
   date:
     new Date(vlock.createdAt).toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -29,9 +32,9 @@ const formatVlockForActivity = (vlock: VlockDto) => ({
 // Template을 ActivityList 형식으로 변환
 const formatTemplateForActivity = (template: CreatedTemplateDto) => ({
   id: String(template.templateId),
-  title: template.title,
-  description: template.city,
-  isFavorite: template.isFavorite,
+  title: template.templateTitle,
+  description: getRegionName(template.regionId),
+  isFavorite: template.favorite,
 });
 
 const TRAVEL_STYLE_TO_ID: Record<TravelStyle, number> = {
@@ -100,9 +103,10 @@ const Dashboard = () => {
   });
 
   const handleToggleFavorite = (id: string) => {
-    const template = myPageData?.recent.createdTemplates.find((t) => t.templateId === Number(id));
+    const recentTemplates = myPageData?.recent.myPageRecentTemplates ?? [];
+    const template = recentTemplates.find((t) => t.templateId === Number(id));
     if (template) {
-      toggleFavorite(template.templateId, template.isFavorite);
+      toggleFavorite(template.templateId, template.favorite);
     }
   };
 
@@ -128,11 +132,17 @@ const Dashboard = () => {
     return <div className="px-6 py-12 text-center text-red-500">데이터를 불러오는데 실패했습니다.</div>;
   }
 
-  const recentVlocks = myPageData.recent.createdVlocks.map(formatVlockForActivity);
+  const recentVlockSource = myPageData.recent.myPageRecentVlocks;
+  const recentTemplateSource = myPageData.recent.myPageRecentTemplates;
+  const recentVlocks = recentVlockSource.map(formatVlockForActivity);
 
   return (
     <div className="px-6 py-12">
-      <ProfileHeader nickname={myPageData.nickname} introduction={myPageData.introduction} />
+      <ProfileHeader
+        nickname={myPageData.nickname}
+        introduction={myPageData.introduction}
+        profileImageUrl={myPageData.profileImageUrl}
+      />
       <div className="flex gap-5">
         <StatusCard icon={<PuzzleIcon />} label="Vlocks" count={myPageData.counts.vlockCount} />
         <StatusCard icon={<TemplateIcon />} label="템플릿" count={myPageData.counts.templateCount} />
@@ -149,8 +159,8 @@ const Dashboard = () => {
         </div>
         <div className="flex-1">
           <ActivityList
-            sectionTitle="최근 사용한 탬플릿"
-            activities={myPageData.recent.createdTemplates.map(formatTemplateForActivity)}
+            sectionTitle="최근 사용한 템플릿"
+            activities={recentTemplateSource.map(formatTemplateForActivity)}
             showStar
             onToggleFavorite={handleToggleFavorite}
           />
@@ -160,7 +170,7 @@ const Dashboard = () => {
       <div className="mt-20">
         <SettingsSection
           initialNickname={myPageData.nickname}
-          email="your@email.com"
+          email={myPageData.email}
           initialBio={myPageData.introduction || ''}
           initialTravelStyles={toTravelStyleKeys(myPageData.preferredTravelStyleIds)}
           initialInterestThemes={toInterestThemeKeys(myPageData.preferredTravelThemeIds)}

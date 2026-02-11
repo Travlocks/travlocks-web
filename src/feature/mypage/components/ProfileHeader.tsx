@@ -4,20 +4,25 @@ import clsx from 'clsx';
 interface ProfileHeaderProps {
   nickname: string;
   introduction?: string | null;
+  profileImageUrl?: string | null;
   className?: string;
 }
 
-const ProfileHeader = ({ nickname, introduction, className }: ProfileHeaderProps) => {
+const ProfileHeader = ({ nickname, introduction, profileImageUrl, className }: ProfileHeaderProps) => {
   return (
     <div className={clsx('flex items-start justify-between w-full mb-12', className)}>
       <div className="flex items-center gap-8">
         {/* Avatar */}
         <div className="relative w-45 h-45 rounded-full bg-base-color-6 flex items-center justify-center border-8 border-base-color-6 overflow-hidden">
-          <img
-            src="" // TODO: 이미지
-            alt="Avatar"
-            className={clsx('bg-base-color-4 w-full h-full')}
-          />
+          {profileImageUrl ? (
+            <img
+              src={profileImageUrl}
+              alt={`${nickname} 프로필 이미지`}
+              className={clsx('bg-base-color-4 w-full h-full')}
+            />
+          ) : (
+            <div className="bg-base-color-4 w-full h-full" />
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
