@@ -42,6 +42,7 @@ interface useDebouncedInputProps {
  * - inputProps: input 컴포넌트에 spread 가능한 props
  * - debouncedValue: 디바운스 처리된 입력값
  * - onSubmit: submit 콜백 실행 함수
+ * - setValue: input 값을 강제로 변경하는 함수
  */
 export function useDebouncedInputProps({ delay = 300, submit }: useDebouncedInputProps) {
   const [value, setValue] = useState(''); // 즉시 반영되는 값
@@ -83,6 +84,7 @@ export function useDebouncedInputProps({ delay = 300, submit }: useDebouncedInpu
     },
     debouncedValue,
     onSubmit,
+    setValue,
     reset,
   };
 }
