@@ -76,7 +76,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
           </main>
         </div>
       )}
-      <Footer />
+      {!isHomeRoute && !isAuthPage && <Footer />}
     </div>
   );
 };
