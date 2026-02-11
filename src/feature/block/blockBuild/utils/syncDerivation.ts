@@ -110,7 +110,7 @@ export const derivePortMap = (blocks: Block[], startId: number = START_BLOCK_ID)
   }
 
   for (const parent of blocks) {
-    if (parent.blockId === startId || parent.connectedTo == null) continue;
+    if (parent.connectedTo == null) continue;
 
     const child = byId.get(parent.connectedTo);
     if (!child || child.blockId === startId) continue;
