@@ -77,7 +77,7 @@ export const Footer = () => {
             {/* 소셜 아이콘 */}
             <div className="flex items-center justify-end gap-[15px]">
               <a
-                href="https://lake-fighter-3f3.notion.site/2fd9d6b4e3be80798d06d8a144b34bc2?source=copy_link"
+                href="https://lake-fighter-3f3.notion.site/2fd9d6b4e3be80798d06d8a144b34bc2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-base-color-6 transition-opacity hover:opacity-80">

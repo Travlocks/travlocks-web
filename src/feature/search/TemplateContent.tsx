@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import SearchBar from './component/SearchBar';
 import SearchFilter from './component/SearchFilter/SearchFilter';
 import SortDropDown from './component/SortDropDown';
 import FilterTags from './component/FilterTags';
@@ -7,6 +6,7 @@ import SearchResultCards from './component/ResultSection/SearchResultCards';
 import { useTemplateSearch } from './hooks/useTemplateSearch';
 import { useFilterTags } from './hooks/useFIlterTags';
 import type { FilterState, SortOption, FilterTag } from './types/searchTemplate.types';
+import TemplateHeader from '../template-search/components/TemplateHeader';
 
 /**
  * 템플릿 탐색 페이지의 메인 컨텐츠 컴포넌트
@@ -113,7 +113,7 @@ const TemplateContent = () => {
     <div className="w-full flex flex-col gap-[40px]">
       {/* 검색 영역 */}
       <section className="flex justify-center items-center">
-        <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요? " />
+        <TemplateHeader onSearch={handleSearchChange} />
       </section>
 
       {/* 전체보기 버튼 */}

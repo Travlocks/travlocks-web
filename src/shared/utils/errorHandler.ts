@@ -1,5 +1,5 @@
 import type { AxiosError } from 'axios';
-import type { ErrorLoginDto } from '@/feature/auth/login/login.type';
+import type { ErrorLoginDto } from '@/feature/auth/login/types/login.types';
 
 // 로그인 에러 처리
 export const handleLoginError = (error: AxiosError<ErrorLoginDto>) => {

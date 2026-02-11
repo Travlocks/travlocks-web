@@ -6,6 +6,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 import { SESSION_STORAGE_KEY } from '@constants/key';
 import { useAuth } from '../hooks/useAuth';
+import ScrollToTop from '../components/scrollToTop';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -30,8 +31,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
     }
   };
 
-  // 인증 페이지 목록
-  const AUTH_PAGES = ['/login', '/signup', '/password'];
+  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset', '/onboarding'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
 
   // 다른 url로 들어오면 스플래시
@@ -40,12 +40,14 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
   }
 
   // 모든 사용자는 로그인 후에 서비스 이용 가능
-  if (protectedRoutes && shouldRequireAuth && !showSplash && !isHomeRoute) {
+  if (protectedRoutes && shouldRequireAuth && !showSplash) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   return (
     <div className="relative w-full min-h-dvh overflow-hidden" aria-label="메인 레이아웃">
+      <ScrollToTop />
+
       {/* 메인 배경 */}
       {showSplash || isAuthPage ? <MainBg /> : <div className="absolute inset-0 z-base bg-base-color-6" />}
       {/* 스플래시 플로우 */}
