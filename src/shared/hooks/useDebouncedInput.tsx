@@ -85,5 +85,6 @@ export function useDebouncedInputProps({ delay = 300, submit }: useDebouncedInpu
     debouncedValue,
     onSubmit,
     setValue,
+    reset,
   };
 }

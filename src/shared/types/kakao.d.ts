@@ -19,6 +19,24 @@ declare namespace kakao.maps {
   }
 
   function load(callback: () => void): void;
+
+  namespace services {
+    class Places {
+      keywordSearch(
+        keyword: string,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        callback: (result: any[], status: Status, pagination: any) => void,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        options?: any,
+      ): void;
+    }
+
+    enum Status {
+      OK = 'OK',
+      ZERO_RESULT = 'ZERO_RESULT',
+      ERROR = 'ERROR',
+    }
+  }
 }
 
 interface Window {
