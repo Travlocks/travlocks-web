@@ -23,10 +23,7 @@ export interface PlaceSearchProps {
   required?: boolean;
 }
 
-const KAKAO_API_KEY =
-  import.meta.env.VITE_KAKAO_MAP_KEYWORD_SEARCH_API_KEY ||
-  import.meta.env.VITE_KAKAO_MAP_API_KEY ||
-  '873ba25a24bb1ef6448afacecb16e016';
+const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_KEYWORD_SEARCH_API_KEY;
 
 // 의존성 문제를 피하기 위해 컴포넌트 외부로 이동시킨 헬퍼 함수
 const findScrollableParent = (element: HTMLElement | null): HTMLElement | null => {
@@ -53,7 +50,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
   const [results, setResults] = useState<PlaceResult[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [, setIsEnd] = useState(false); // Unused state kept for logic consistency if needed later
+  const [, setIsEnd] = useState(false);
   const [, setIsLoading] = useState(false);
   const [isSdkLoaded, setIsSdkLoaded] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
