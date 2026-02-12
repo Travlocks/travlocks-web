@@ -20,7 +20,6 @@ export const lazyRoutes = {
   /** 블록 페이지 */
   BlockPage: React.lazy(() => import('../../pages/BlockPage/BlockPage')),
   OnboardingPage: React.lazy(() => import('../../pages/BlockPage/OnboardingPage')),
-  TimelinePage: React.lazy(() => import('../../pages/BlockPage/TimelinePage')),
 
   /** 템플릿 페이지 */
   TemplatePage: React.lazy(() => import('../../pages/TemplatePage')),

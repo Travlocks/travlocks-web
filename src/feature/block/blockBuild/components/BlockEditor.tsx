@@ -11,15 +11,36 @@ import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
 import { type SetStateAction, useState } from 'react';
 import { getDescendantBlocks, getDescendants } from '../utils/path';
+import VlockModal from '@/feature/block/vlockModal/VlockModal';
+import type { VlockData, VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
+import type { SidebarBlock, CategoryType } from '../types/block';
+import { VLOCK_CATEGORY_MAP } from '@/shared/constants/vlockCategory';
+import { MOCK_BLOCKS } from '../mock';
 
 interface BlockEditorProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
 }
 
+const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
+  return {
+    id: vlock.id,
+    name: vlock.name,
+    category: (VLOCK_CATEGORY_MAP[vlock.vlockCategory.id as keyof typeof VLOCK_CATEGORY_MAP] as CategoryType) || '기타',
+    duration: vlock.vlockCategory.stayHours ? `${vlock.vlockCategory.stayHours}시간` : '1시간',
+    imageUrl: vlock.coverImgUrl,
+  };
+};
+
 const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
+  const [blockItems, setBlockItems] = useState<SidebarBlock[]>(MOCK_BLOCKS);
+  const [activeVlockModal, setActiveVlockModal] = useState<{
+    type: 'create' | 'edit';
+    vlockId?: number;
+    data?: VlockModalRequestDto;
+  } | null>(null);
   const PAD = 2000;
 
   // 서버 동기화 (디바운스 + 롤백)
@@ -40,7 +61,7 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
       <div className="flex h-full w-full overflow-hidden">
         {/* 사이드바 */}
         <aside className="w-[302px] h-full shrink-0 relative z-above">
-          <BlockSidebar />
+          <BlockSidebar items={blockItems} onOpenVlockModal={(config) => setActiveVlockModal(config)} />
         </aside>
 
         <main className="flex-1 h-full min-w-0">
@@ -64,6 +85,23 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
                 }
               />
             </div>
+          )}
+
+          {activeVlockModal && (
+            <VlockModal
+              type={activeVlockModal.type}
+              vlockId={activeVlockModal.vlockId}
+              data={activeVlockModal.data}
+              cityId={103} // 실제 cityId 연동 필요
+              onClose={() => setActiveVlockModal(null)}
+              onSuccess={(data) => {
+                setActiveVlockModal(null);
+                if (data) {
+                  const newBlock = mapVlockToSidebarBlock(data);
+                  setBlockItems((prev) => [...prev, newBlock]);
+                }
+              }}
+            />
           )}
         </main>
       </div>
