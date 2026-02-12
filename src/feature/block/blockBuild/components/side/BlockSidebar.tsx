@@ -147,7 +147,8 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-base-color-6 border-r border-gray-200">
+    // BlockEditor의 에디터 영역 높이(h-[1091px])와 맞추기 위한 고정값
+    <div className="flex flex-col h-[1091px] bg-base-color-6 border-r border-gray-200">
       {/* 헤더 타이틀 */}
       <div className="px-6 pt-8 pb-4">
         <h2 className="text-xl font-semibold text-black">Vlock 라이브러리</h2>
@@ -162,7 +163,7 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
       </div>
 
       {/* 탭별 컨텐츠 */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>
     </div>
   );
 };
