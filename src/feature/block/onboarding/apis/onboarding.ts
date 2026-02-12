@@ -18,5 +18,5 @@ export const postTemplatesPreInputs = async (body: OnboardingRequestDto): Promis
     return data.data;
   }
 
-  return data as unknown as OnboardingResponseDto;
+  throw new Error('알 수 없는 응답 형식입니다.');
 };
