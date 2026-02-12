@@ -59,7 +59,7 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             value={input}
             placeholder={input}
             onChange={(e) => setInput(e.target.value)}
-            className="py-[4px] px-[10px] h6 peer outline-none"
+            className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
           />
         </div>
 
