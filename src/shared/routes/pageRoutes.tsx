@@ -52,6 +52,15 @@ export const routes: RouteObject[] = [
         ],
       },
       {
+        path: 'timeline/:templateId',
+        element: (
+          <Suspense fallback={<Loading />}>
+            <lazyRoutes.TimelinePage />
+          </Suspense>
+        ),
+      },
+
+      {
         path: 'template',
         element: <lazyRoutes.TemplatePage />,
       },
