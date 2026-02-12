@@ -11,11 +11,12 @@ import MainBg from '@/shared/components/MainBg';
 interface TemrsModalProps {
   type: 'service' | 'privacy' | 'marketing';
   onClose: () => void;
-  onChange: (checked: boolean) => void;
-  agreements: boolean;
+  onChange?: (checked: boolean) => void;
+  agreements?: boolean;
+  hasCheckbox?: boolean;
 }
 
-const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) => {
+const TermsModal = ({ type, onClose, onChange, agreements = false, hasCheckbox = true }: TemrsModalProps) => {
   const term = TERMS[type]; // 어떤 모달인지
   const checkRef = useRef<HTMLDivElement>(null);
 
@@ -27,7 +28,7 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
     const isBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
 
     if (isBottom && !agreements) {
-      onChange(true);
+      onChange?.(true);
     }
   };
 
@@ -97,33 +98,35 @@ const TermsModal = ({ type, onClose, onChange, agreements }: TemrsModalProps) =>
           ))}
         </section>
 
-        <div className="h-[195px] bg-base-color-5 py-[35px] px-[26px] flex flex-col gap-[20px] rounded-[15px]">
-          <Checkbox
-            text="내용을 모두 확인하였으며 동의합니다."
-            outline={true}
-            checked={agreements}
-            onChange={onChange}
-            className="w-full max-w-none"
-          />
-          <DualButton
-            left={{
-              text: '취소',
-              variant: 'white',
-              className: 'border-[rgba(0,0,0,0.1)]',
-              onClick: onClose,
-            }}
-            right={{
-              text: '확인',
-              disabled: !agreements,
-              onClick: onClose,
-            }}
-            width={105}
-            height={45}
-            gap={17}
-            textSize={18}
-            className="flex justify-end"
-          />
-        </div>
+        {hasCheckbox && (
+          <div className="h-[195px] bg-base-color-5 py-[35px] px-[26px] flex flex-col gap-[20px] rounded-[15px]">
+            <Checkbox
+              text="내용을 모두 확인하였으며 동의합니다."
+              outline={true}
+              checked={agreements}
+              onChange={onChange ?? (() => {})}
+              className="w-full max-w-none"
+            />
+            <DualButton
+              left={{
+                text: '취소',
+                variant: 'white',
+                className: 'border-[rgba(0,0,0,0.1)]',
+                onClick: onClose,
+              }}
+              right={{
+                text: '확인',
+                disabled: !agreements,
+                onClick: onClose,
+              }}
+              width={105}
+              height={45}
+              gap={17}
+              textSize={18}
+              className="flex justify-end"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
