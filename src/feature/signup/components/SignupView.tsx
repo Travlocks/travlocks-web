@@ -110,7 +110,7 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
               className={clsx(
                 'absolute left-1/2 -translate-x-1/2 w-[3px] rounded-[5px] bg-primary-color',
                 isOnboarding ? 'min-h-[510px]' : 'min-h-[631px]',
-                level === totalSteps - 1 && 'min-h-[170px]!',
+                level === totalSteps - 1 && 'min-h-[300px]!',
               )}></div>
           </div>
 
