@@ -1,8 +1,10 @@
 import clsx from 'clsx';
-import TreeIcon from '@/shared/assets/icon-tree.svg?react';
-import BuildingIcon from '@/shared/assets/icon-building.svg?react';
-import UtensilsIcon from '@/shared/assets/icon-utensils.svg?react';
-import ActivityIcon from '@/shared/assets/icon-activity.svg?react';
+import TreeIcon from '@assets/preference/icon-preference-nature.svg?react';
+import BuildingIcon from '@assets/preference/icon-preference-culture.svg?react';
+import LocalIcon from '@assets/preference/icon-preference-local.svg?react';
+import UtensilsIcon from '@assets/preference/icon-preference-food.svg?react';
+import HealingIcon from '@assets/preference/icon-preference-healing.svg?react';
+import ActivityIcon from '@assets/preference/icon-preference-activity.svg?react';
 import StyleCard from './StyleCard';
 
 export type InterestTheme = 'nature' | 'culture' | 'food' | 'healing' | 'activity' | 'local';
@@ -17,9 +19,9 @@ const interestThemeOptions: { id: InterestTheme; icon: React.ReactNode; label: s
   { id: 'nature', icon: <TreeIcon className="w-full h-full" />, label: '자연' },
   { id: 'culture', icon: <BuildingIcon className="w-full h-full" />, label: '문화' },
   { id: 'food', icon: <UtensilsIcon className="w-full h-full" />, label: '맛집' },
-  { id: 'healing', icon: <ActivityIcon className="w-full h-full" />, label: '힐링' },
-  { id: 'activity', icon: <ActivityIcon className="w-full h-full" />, label: '문화' },
-  { id: 'local', icon: <BuildingIcon className="w-full h-full" />, label: '맛집' },
+  { id: 'healing', icon: <HealingIcon className="w-full h-full" />, label: '힐링' },
+  { id: 'activity', icon: <ActivityIcon className="w-full h-full" />, label: '액티비티' },
+  { id: 'local', icon: <LocalIcon className="w-full h-full" />, label: '로컬' },
 ];
 
 const InterestThemeSection = ({ selectedThemes, onToggleTheme, className }: InterestThemeSectionProps) => {
