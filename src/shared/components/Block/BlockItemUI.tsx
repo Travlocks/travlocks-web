@@ -2,12 +2,39 @@ import ClockIcon from '@feature/block/blockBuild/assets/edit-icon-clock.svg?reac
 import clsx from 'clsx';
 import type { SidebarBlock } from '@/feature/block/blockBuild/types/block';
 import { blockItemStyles, categoryColor } from '@/feature/block/blockBuild/components/side/block-styles';
+import type { Vlock } from '@/feature/block/blockTimeLine/types/block';
 
 interface BlockItemUIProps {
-  item: SidebarBlock;
+  item: SidebarBlock | Vlock;
 }
 
 const BlockItemUI = ({ item }: BlockItemUIProps) => {
+  const getImgUrl = (item: SidebarBlock | Vlock) => {
+    if ('imageUrl' in item) return item.imageUrl;
+    if ('coverImgUrl' in item) return item.coverImgUrl;
+    return undefined;
+  };
+
+  const imageURL = getImgUrl(item);
+
+  const getCategory = (item: SidebarBlock | Vlock) => {
+    if ('category' in item) return item.category;
+    if ('categoryName' in item) return item.categoryName;
+
+    return undefined;
+  };
+
+  const category = getCategory(item);
+
+  const getHours = (item: SidebarBlock | Vlock) => {
+    if ('duration' in item) return item.duration;
+    if ('stayhours' in item) return `${item.stayhours} 시간`;
+
+    return undefined;
+  };
+
+  const duration = getHours(item);
+
   return (
     <button
       className={clsx(
@@ -16,8 +43,8 @@ const BlockItemUI = ({ item }: BlockItemUIProps) => {
       )}>
       {/* 이미지 영역 */}
       <div className="w-16 h-16 rounded-[10px] bg-gray-200 shrink-0 flex items-center justify-center overflow-hidden">
-        {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+        {imageURL ? (
+          <img src={imageURL} alt={item.name} className="w-full h-full object-cover" />
         ) : (
           // 빈 이미지 영역
           <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,8 +61,8 @@ const BlockItemUI = ({ item }: BlockItemUIProps) => {
       {/* 텍스트 정보 */}
       <div className="flex flex-col items-start text-left">
         {/* 카테고리 */}
-        <span className={clsx(blockItemStyles.smallText, categoryColor[item.category as keyof typeof categoryColor])}>
-          {item.category}
+        <span className={clsx(blockItemStyles.smallText, categoryColor[category as keyof typeof categoryColor])}>
+          {category}
         </span>
 
         {/* 이름 */}
@@ -44,7 +71,7 @@ const BlockItemUI = ({ item }: BlockItemUIProps) => {
         {/* 시간 */}
         <div className="flex items-center gap-1">
           <ClockIcon />
-          <span className={clsx(blockItemStyles.smallText, blockItemStyles.time)}>{item.duration}</span>
+          <span className={clsx(blockItemStyles.smallText, blockItemStyles.time)}>{duration}</span>
         </div>
       </div>
     </button>
