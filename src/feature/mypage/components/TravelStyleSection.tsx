@@ -1,8 +1,10 @@
 import clsx from 'clsx';
-import TreeIcon from '@/shared/assets/icon-tree.svg?react';
-import BuildingIcon from '@/shared/assets/icon-building.svg?react';
-import UtensilsIcon from '@/shared/assets/icon-utensils.svg?react';
-import ActivityIcon from '@/shared/assets/icon-activity.svg?react';
+import Free from '@assets/preference/icon-preference-style-free.svg?react';
+import Plan from '@assets/preference/icon-preference-style-plan.svg?react';
+import Schedule from '@assets/preference/icon-preference-style-schedule.svg?react';
+import Efficiency from '@assets/preference/icon-preference-style-efficiency.svg?react';
+import Improvise from '@assets/preference/icon-preference-style-imporvise.svg?react';
+import Stay from '@assets/preference/icon-preference-style-stay.svg?react';
 import StyleCard from './StyleCard';
 
 export type TravelStyle = 'free' | 'healing' | 'food' | 'activity' | 'accommodation' | 'other';
@@ -14,12 +16,12 @@ interface TravelStyleSectionProps {
 }
 
 const travelStyleOptions: { id: TravelStyle; icon: React.ReactNode; label: string }[] = [
-  { id: 'free', icon: <TreeIcon className="w-full h-full" />, label: '자유 여행' },
-  { id: 'healing', icon: <BuildingIcon className="w-full h-full" />, label: '힐링 · 여유 중심' },
-  { id: 'food', icon: <UtensilsIcon className="w-full h-full" />, label: '맛집 · 로컬 중심' },
-  { id: 'other', icon: <UtensilsIcon className="w-full h-full" />, label: '기타' },
-  { id: 'activity', icon: <ActivityIcon className="w-full h-full" />, label: '액티비티 중심' },
-  { id: 'accommodation', icon: <BuildingIcon className="w-full h-full" />, label: '숙소 중심' },
+  { id: 'free', icon: <Free className="w-full h-full" />, label: '자유 계획형' },
+  { id: 'healing', icon: <Plan className="w-full h-full" />, label: '계획 충실형' },
+  { id: 'food', icon: <Schedule className="w-full h-full" />, label: '느긋한 일정형' },
+  { id: 'other', icon: <Efficiency className="w-full h-full" />, label: '효율 중시형' },
+  { id: 'activity', icon: <Improvise className="w-full h-full" />, label: '즉흥 탐색형' },
+  { id: 'accommodation', icon: <Stay className="w-full h-full" />, label: '숙소 중심형' },
 ];
 
 const TravelStyleSection = ({ selectedStyles, onToggleStyle, className }: TravelStyleSectionProps) => {

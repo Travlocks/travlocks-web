@@ -93,14 +93,14 @@ const SettingsSection = ({
           onBioClear={() => setBio('')}
         />
 
-        {/* Travel Style Section */}
-        <div className="mt-10">
-          <TravelStyleSection selectedStyles={travelStyles} onToggleStyle={handleToggleTravelStyle} />
-        </div>
-
         {/* Interest Theme Section */}
         <div className="mt-10">
           <InterestThemeSection selectedThemes={interestThemes} onToggleTheme={handleToggleInterestTheme} />
+        </div>
+
+        {/* Travel Style Section */}
+        <div className="mt-10">
+          <TravelStyleSection selectedStyles={travelStyles} onToggleStyle={handleToggleTravelStyle} />
         </div>
 
         {/* Save Button */}
