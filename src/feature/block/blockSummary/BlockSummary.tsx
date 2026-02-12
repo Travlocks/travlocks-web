@@ -9,7 +9,7 @@ const data = {
 
 const BlockSummary = () => {
   return (
-    <div className="rounded-[30px] mt-[79px] border border-base-color bg-white max-w-[302px] w-full h-max">
+    <div className="rounded-[30px] mt-[79px] border border-base-color bg-white w-[15vw] max-w-[302px] h-max">
       <div className="py-[28px] pl-[24px] border-b border-base-color h8">일정 요약</div>
 
       <div className="py-[32px] mx-[24px] border-b border-base-color">
