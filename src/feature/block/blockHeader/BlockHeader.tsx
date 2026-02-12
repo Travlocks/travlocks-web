@@ -47,13 +47,11 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             onClick={() => {
               if (level === 'editor') {
                 setLevel('timeline');
-              } else {
-                setLevel('editor');
               }
             }}
             className={clsx(
-              'rounded-[10px] size-[36px] flex justify-center items-center cursor-pointer transition',
-              level === 'timeline' ? 'bg-base-color-3' : 'bg-primary-color',
+              'rounded-[10px] size-[36px] flex justify-center items-center transition',
+              level === 'timeline' ? 'bg-base-color-3 cursor-not-allowed' : 'bg-primary-color cursor-pointer',
             )}>
             <LeftIcon className="text-white rotate-180" />
           </div>
