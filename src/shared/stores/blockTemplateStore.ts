@@ -23,12 +23,16 @@ const START_BLOCK: Block = {
 
 type BlockTemplateState = {
   templateId: string | null;
+  templateTitle: string;
+  templateCityIds: number[];
   currentDay: number;
   blocksByDay: Record<number, Block[]>;
 };
 
 type BlockTemplateActions = {
   setTemplateId: (templateId: string | null) => void;
+  setTemplateTitle: (title: string) => void;
+  setTemplateCityIds: (cityIds: number[]) => void;
   setDay: (day: number) => void;
   reset: (day?: number) => void;
   setPuzzleBlocks: (blocks: Block[]) => void;
@@ -52,6 +56,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
   persist(
     (set, get) => ({
       templateId: null,
+      templateTitle: '',
+      templateCityIds: [],
       currentDay: 1,
       blocksByDay: createDefaultBlocksByDayRecord(),
 
@@ -62,9 +68,19 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
         // 템플릿이 바뀌면 편집 상태를 템플릿 기준으로 초기화 (서버 연동 전 임시 정책)
         set({
           templateId,
+          templateTitle: '',
+          templateCityIds: [],
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
         });
+      },
+
+      setTemplateTitle: (title) => {
+        set({ templateTitle: title });
+      },
+
+      setTemplateCityIds: (cityIds) => {
+        set({ templateCityIds: cityIds });
       },
 
       // 날짜 설정
@@ -130,11 +146,13 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
     }),
     {
       name: `block-template-store`,
-      version: 2, // Block 타입에 w, h, points, connectors 추가됨
+      version: 4, // templateTitle, templateCityIds 추가
       migrate: () => {
         // 이전 버전 데이터는 새 구조와 호환되지 않으므로 초기화
         return {
           templateId: null,
+          templateTitle: '',
+          templateCityIds: [],
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
         };

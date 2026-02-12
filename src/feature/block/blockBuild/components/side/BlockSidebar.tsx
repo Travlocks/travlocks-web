@@ -5,7 +5,6 @@ import BlockItem from './BlockItem';
 import BlockSearchInput from './BlockSearchInput';
 import BlockCategoryButtons from './BlockCategoryButtons';
 import { useBlockSearch } from '../../hooks/useBlockSearch';
-import { useRegions } from '../../hooks/queries/useRegions';
 import { useCategories } from '../../hooks/queries/useCategories';
 import { usePopularBlocks, useCreatedBlocks, useBlocksByCategory } from '../../hooks/queries/useBlockList';
 import { toSidebarBlock } from '../../utils/blockMapper';
@@ -13,6 +12,8 @@ import { filterCategoryBlocks } from '../../utils/blockFilter';
 import EmptyBlockMessage from '../ui/EmplyBlockMessage';
 import type { SidebarBlock } from '../../types/block';
 import type { VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+
 interface BlockSidebarProps {
   items: SidebarBlock[];
   onOpenVlockModal?: (config: { type: 'create' | 'edit'; vlockId?: number; data?: VlockModalRequestDto }) => void;
@@ -26,38 +27,8 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
     delay: 300,
   });
 
-  const { data: regionsData } = useRegions();
-
-  // 모든 도시를 배열로 수집
-  const allCities = useMemo(() => {
-    const regions = regionsData?.data?.regions ?? [];
-    const cities: Array<{ cityId: number; cityName: string; regionName: string }> = [];
-
-    for (const region of regions) {
-      for (const city of region.cities) {
-        cities.push({
-          cityId: city.cityId,
-          cityName: city.cityName,
-          regionName: region.regionName,
-        });
-      }
-    }
-
-    return cities;
-  }, [regionsData]);
-
-  // 첫 번째 cityId
-  const firstCityId = useMemo(() => {
-    return allCities.length > 0 ? allCities[0].cityId : 0;
-  }, [allCities]);
-
-  // 선택된 cityId
-  const [selectedCityId, setSelectedCityId] = useState<number>(firstCityId);
-
-  // allCities가 업데이트되면 첫 번째 cityId로 설정
-  if (allCities.length > 0 && !allCities.some((city) => city.cityId === selectedCityId)) {
-    setSelectedCityId(firstCityId);
-  }
+  // 템플릿 캔버스 응답의 cities를 신뢰하여 사이드바 조회 cityId를 결정
+  const selectedCityId = useBlockTemplateStore((s) => s.templateCityIds[0] ?? 0);
 
   // 카테고리 목록
   const { data: categoriesData } = useCategories();
