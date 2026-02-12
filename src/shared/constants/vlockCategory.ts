@@ -2,12 +2,12 @@ export type vlockCategoryId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 export type vlockCategoryKey = '숙소' | '식당' | '카페' | '쇼핑' | '관광지' | '액티비티' | '문화' | '기타';
 
-export interface VlockCategory {
+export interface VlockCategoryConstant {
   id: vlockCategoryId;
   key: vlockCategoryKey;
 }
 
-export const VLOCK_CATEGORY_OPTIONS: VlockCategory[] = [
+export const VLOCK_CATEGORY_OPTIONS: VlockCategoryConstant[] = [
   { id: 1, key: '숙소' },
   { id: 2, key: '식당' },
   { id: 3, key: '카페' },

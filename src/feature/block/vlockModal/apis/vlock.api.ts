@@ -28,11 +28,7 @@ export const createVlock = async (
     formData.append('coverImg', new Blob(), '');
   }
 
-  const { data } = await axiosInstance.post<CreateVlockModalResponseDto>('/vlocks', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const { data } = await axiosInstance.post<CreateVlockModalResponseDto>('/vlocks', formData);
 
   return data;
 };
@@ -60,11 +56,7 @@ export const updateVlock = async (
     formData.append('coverImg', new Blob(), '');
   }
 
-  const { data } = await axiosInstance.put<UpdateVlockModalResponseDto>(`/vlocks/${vlockId}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const { data } = await axiosInstance.put<UpdateVlockModalResponseDto>(`/vlocks/${vlockId}`, formData);
 
   return data;
 };
