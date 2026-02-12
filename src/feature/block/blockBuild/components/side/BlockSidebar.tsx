@@ -16,7 +16,12 @@ import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 interface BlockSidebarProps {
   items: SidebarBlock[];
-  onOpenVlockModal?: (config: { type: 'create' | 'edit'; vlockId?: number; data?: VlockModalRequestDto }) => void;
+  onOpenVlockModal?: (config: {
+    type: 'create' | 'edit';
+    vlockId?: number;
+    data?: VlockModalRequestDto;
+    cityId?: number;
+  }) => void;
 }
 
 const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
@@ -106,7 +111,7 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create' })} />
+            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create', cityId: selectedCityId })} />
             {createdBlocks.length > 0 ? (
               createdBlocks.map((item) => <BlockItem key={item.id} item={item} />)
             ) : isSearching ? (

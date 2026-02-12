@@ -40,6 +40,7 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
     type: 'create' | 'edit';
     vlockId?: number;
     data?: VlockModalRequestDto;
+    cityId?: number;
   } | null>(null);
   const PAD = 2000;
 
@@ -92,7 +93,7 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
               type={activeVlockModal.type}
               vlockId={activeVlockModal.vlockId}
               data={activeVlockModal.data}
-              cityId={103} // 실제 cityId 연동 필요
+              cityId={activeVlockModal.cityId}
               onClose={() => setActiveVlockModal(null)}
               onSuccess={(data) => {
                 setActiveVlockModal(null);
