@@ -1,14 +1,17 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import DestinationCityDropdown from './components/DestinationCityDrodown';
-import TripDurationDropdown from './components/TripDurationDropdown';
+import TripDaysDropdown from './components/TripDaysDropdown';
 import TransportTypeSelector from './components/TransportTypeSelector';
 import TravelThemeSelector from './components/TravelThemeSelector';
 import type { DestinationCityId } from '@/shared/constants/destinationCity';
-import type { TripDuration } from '@/shared/constants/tripDuration';
 import type { TransportTypeKey } from '@/shared/constants/transportType';
 import type { TravleThemeId } from '@/shared/constants/travelTheme';
+
+import type { TripDayItem } from '@/shared/constants/tripDays';
 import { OnboardingWidgetStyle } from './styles/OnboardingWidget.style';
+import { usePostOnboarding } from './hooks/usePostOnboarding';
+import type { OnboardingRequestDto } from './types/onboarding.type';
 
 /**
  * 온보딩 위젯에서 서버로 전송할 요청 DTO 타입입니다.
@@ -16,15 +19,7 @@ import { OnboardingWidgetStyle } from './styles/OnboardingWidget.style';
  * @remarks
  * 사용자가 선택한 여행지, 여행 기간, 교통 수단, 여행 테마 정보를 모두 포함합니다.
  */
-interface OnboardingWidgetRequestDTO {
-  destinationCityIds: DestinationCityId[];
-  trip: {
-    days: number;
-    nights: number;
-  };
-  transportTypes: TransportTypeKey[];
-  travelThemeIds: TravleThemeId[];
-}
+// OnboardingWidgetRequestDTO는 onboarding.type.ts의 OnboardingRequestDto로 교체되었습니다.
 
 /**
  * 여행 사전 정보를 입력받는 온보딩 위젯 컴포넌트입니다.
@@ -35,25 +30,25 @@ interface OnboardingWidgetRequestDTO {
  */
 const OnboardingWidget = () => {
   const [selectedCityIds, setSelectedCityIds] = useState<DestinationCityId[]>([]);
-  const [selectedTripDuration, setSelectedTripDuration] = useState<TripDuration | null>(null);
+  const [selectedTripDayItem, setSelectedTripDayItem] = useState<TripDayItem | null>(null);
   const [selectedTransportTypes, setSelectedTransportTypes] = useState<TransportTypeKey[]>([]);
   const [selectedTravelThemeIds, setSelectedTravelThemeIds] = useState<TravleThemeId[]>([]);
+
+  const { mutate: postOnboarding, isPending } = usePostOnboarding();
 
   // 유효성 검사
   const isValid =
     selectedCityIds.length > 0 &&
-    selectedTripDuration !== null &&
+    selectedTripDayItem !== null &&
     selectedTransportTypes.length > 0 &&
     selectedTravelThemeIds.length > 0;
 
   // 요청 DTO 생성
-  const generateRequestDTO = (): OnboardingWidgetRequestDTO => {
+  const generateRequestDTO = (): OnboardingRequestDto | null => {
+    if (!isValid) return null;
     return {
       destinationCityIds: selectedCityIds,
-      trip: {
-        days: selectedTripDuration?.trip.days ?? 0,
-        nights: selectedTripDuration?.trip.nights ?? 0,
-      },
+      tripDays: selectedTripDayItem.key,
       transportTypes: selectedTransportTypes,
       travelThemeIds: selectedTravelThemeIds,
     };
@@ -61,9 +56,10 @@ const OnboardingWidget = () => {
 
   // 제출 핸들러
   const handleSubmit = () => {
-    if (!isValid) return;
     const requestDTO = generateRequestDTO();
-    console.log(requestDTO);
+    if (requestDTO) {
+      postOnboarding(requestDTO);
+    }
   };
 
   return (
@@ -84,7 +80,8 @@ const OnboardingWidget = () => {
           <div>
             <span className={OnboardingWidgetStyle.headerText}>여행 기간 선택</span>
           </div>
-          <TripDurationDropdown onSelect={setSelectedTripDuration} />
+          {/* <TripDurationDropdown onSelect={setSelectedTripDuration} /> */}
+          <TripDaysDropdown onSelect={setSelectedTripDayItem} />
         </div>
 
         {/* 교통 수단 선택 섹션 */}
@@ -112,12 +109,12 @@ const OnboardingWidget = () => {
       <div className="flex justify-end">
         <button
           onClick={handleSubmit}
-          disabled={!isValid}
+          disabled={!isValid || isPending}
           className={clsx(OnboardingWidgetStyle.submitButton, {
-            [OnboardingWidgetStyle.submitButtonDisabled]: !isValid,
-            [OnboardingWidgetStyle.submitButtonAbled]: isValid,
+            [OnboardingWidgetStyle.submitButtonDisabled]: !isValid || isPending,
+            [OnboardingWidgetStyle.submitButtonAbled]: isValid && !isPending,
           })}>
-          설정 완료
+          {isPending ? '설정 중...' : '설정 완료'}
         </button>
       </div>
     </div>

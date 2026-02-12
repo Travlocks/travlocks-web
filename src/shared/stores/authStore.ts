@@ -17,7 +17,8 @@ export type AuthState = {
 };
 
 // 메모리 기반 토큰 저장소
-let memoryToken: string | null = null;
+let memoryToken: string | null =
+  'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzcwODk0MjY5LCJleHAiOjE3NzA4OTc4Njl9.yEAtJaMmmhASJ11cwhBVFMlXajlMePpyMV4jX-DvdS8';
 
 export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,

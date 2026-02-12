@@ -35,16 +35,8 @@ export interface SearchTemplateParams {
   keyword?: string;
 
   /** 여행지 ID 배열 */
-  region?: number[];
 
   /** 여행 기간 (일, 박) */
-  trip?: {
-    days: number;
-    nights: number;
-  };
-
-  /** 여행 테마 ID 배열 */
-  travelTheme?: number[];
 
   /** 교통 수단 키 배열 */
   transportType?: string[];
@@ -54,9 +46,6 @@ export interface SearchTemplateParams {
 
   /** 페이지 번호 (1부터 시작) */
   page?: number;
-
-  /** 페이지당 아이템 수 */
-  size?: number;
 }
 
 /**
