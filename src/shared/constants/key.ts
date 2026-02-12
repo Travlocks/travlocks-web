@@ -13,4 +13,5 @@ export const QUERY_KEY = {
   templateSearch: 'template-search',
   template: 'template',
   notification: 'notification',
+  vlock: 'vlock',
 };

@@ -3,7 +3,6 @@ import { useState, type SetStateAction } from 'react';
 
 import type { Level } from '../blockBuild/types/level';
 import SaveIcon from '@assets/block/icon-save.svg?react';
-import ShareIcon from '@assets/block/icon-share.svg?react';
 import LeftIcon from '@assets/splash/icon-arrow.svg?react';
 
 const VISIBILITY = [
@@ -23,11 +22,11 @@ const ACTIONS = [
     icon: <SaveIcon />,
     text: '저장',
   },
-  {
-    id: 2,
-    icon: <ShareIcon />,
-    text: '공유하기',
-  },
+  // {
+  //   id: 2,
+  //   icon: <ShareIcon />,
+  //   text: '공유하기',
+  // },
 ];
 
 interface BlockHeaderProps {
@@ -37,6 +36,7 @@ interface BlockHeaderProps {
 
 const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
+  const [input, setInput] = useState('1205 제주여행'); // TODO: 사전 정보 입력값과 연동 필요
 
   return (
     <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
@@ -47,17 +47,20 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             onClick={() => {
               if (level === 'editor') {
                 setLevel('timeline');
-              } else {
-                setLevel('editor');
               }
             }}
             className={clsx(
-              'rounded-[10px] size-[36px] flex justify-center items-center cursor-pointer transition',
-              level === 'timeline' ? 'bg-base-color-3' : 'bg-primary-color',
+              'rounded-[10px] size-[36px] flex justify-center items-center transition',
+              level === 'timeline' ? 'bg-base-color-3 cursor-not-allowed' : 'bg-primary-color cursor-pointer',
             )}>
             <LeftIcon className="text-white rotate-180" />
           </div>
-          <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
+          <input
+            value={input}
+            placeholder={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="py-[4px] px-[10px] h6 peer outline-none"
+          />
         </div>
 
         {/* 전체 공개 및 나만 보기 버튼 */}
@@ -85,8 +88,8 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             key={action.id}
             className={clsx(
               'rounded-[10px] py-[10px] px-[15px] flex gap-[10px] border items-center cursor-pointer',
-              action.id === 1 && 'border-base-color bg-white',
-              action.id === 2 && 'border-primary-color bg-primary-color text-white',
+              // action.id === 1 && 'border-base-color bg-white',
+              action.id === 1 && 'border-primary-color bg-primary-color text-white',
             )}>
             {action.icon}
             <p>{action.text}</p>
