@@ -36,6 +36,7 @@ interface BlockHeaderProps {
 
 const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
+  const [input, setInput] = useState('1205 제주여행'); // TODO: 사전 정보 입력값과 연동 필요
 
   return (
     <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
@@ -56,7 +57,12 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             )}>
             <LeftIcon className="text-white rotate-180" />
           </div>
-          <p className="py-[4px] px-[10px] h6 peer">1205 제주여행</p>
+          <input
+            value={input}
+            placeholder={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="py-[4px] px-[10px] h6 peer outline-none"
+          />
         </div>
 
         {/* 전체 공개 및 나만 보기 버튼 */}
