@@ -1,8 +1,9 @@
-import { IconBase } from '@/shared/ui/icon/IconBase';
-import TriangleIcon from '@feature/block/blockBuild/assets/edit-icon-triangle.svg?react';
-import clsx from 'clsx';
 import { useDroppable } from '@dnd-kit/core';
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { IconBase } from '@/shared/ui/icon/IconBase';
+import TriangleIcon from '@feature/block/blockBuild/assets/edit-icon-triangle.svg?react';
+import AISortButton from '@/feature/block/blockBuild/components/ui/AISortButton';
 import type { Block } from '../../types/block';
 import type { DockHintState } from '../../types/drag';
 import PuzzleBlock from '../ui/PuzzleBlock';
@@ -151,6 +152,11 @@ const BlockEditorContent = ({
         {/* 블록 삭제 드래그 영역 */}
         <div data-pan-ignore className="absolute bottom-11 right-10 p-2">
           <BlockTrash />
+        </div>
+
+        {/* AI 스마트 정렬 버튼 */}
+        <div data-pan-ignore className="absolute left-1/2 bottom-12 -translate-x-1/2 z-sticky">
+          <AISortButton />
         </div>
       </div>
     </div>

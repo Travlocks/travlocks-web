@@ -1,6 +1,5 @@
 import BlockSidebar from './side/BlockSidebar';
 import BlockEditorContent from './main/BlockEditorContent';
-import { MOCK_BLOCKS } from '../mock';
 import { useBlockEditor } from '../hooks/useBlockEditor';
 import { useBlockDrag } from '../hooks/useBlockDrag';
 import { useBlockSync } from '../hooks/useBlockSync';
@@ -41,7 +40,7 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
       <div className="flex h-full w-full overflow-hidden">
         {/* 사이드바 */}
         <aside className="w-[302px] h-full shrink-0 relative z-above">
-          <BlockSidebar items={MOCK_BLOCKS} />
+          <BlockSidebar />
         </aside>
 
         <main className="flex-1 h-full min-w-0">

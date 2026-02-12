@@ -24,7 +24,7 @@ export const HeroTitle = () => {
   const reduce = useReducedMotion();
   const navigate = useNavigate();
   const click = () => {
-    navigate('/block');
+    navigate('/block/onboarding');
   };
   return (
     <motion.div
