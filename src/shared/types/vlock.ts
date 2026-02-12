@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-export interface Vlock {
-  vlockId: number;
-  name: string;
-  city: string;
-  createdAt: string;
-}
-=======
 // Vlock 상세 정보
 export type Vlock = {
   vlockId: number;
@@ -24,4 +16,3 @@ export type VlockSummary = {
   name: string;
   coverImgUrl: string;
 };
->>>>>>> 58f4b4a (템플릿 블록 API 호출 작업 중)
