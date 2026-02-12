@@ -11,6 +11,7 @@ interface ActivityCardProps {
   showStar?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  onClick?: () => void;
   className?: string;
 }
 
@@ -22,15 +23,21 @@ const ActivityCard = ({
   showStar = false,
   isFavorite = false,
   onToggleFavorite,
+  onClick,
   className,
 }: ActivityCardProps) => {
   if (showStar) {
     return (
-      <div className={clsx('px-6.5 py-6.25 bg-base-color-5 rounded-[10px]', className)}>
+      <div
+        className={clsx('px-6.5 py-6.25 bg-base-color-5 rounded-[10px]', onClick && 'cursor-pointer', className)}
+        onClick={onClick}>
         <div className="flex items-start justify-between gap-5 mb-2.75">
           <p className="b1 text-base-color-0">{title}</p>
           <button
-            onClick={onToggleFavorite}
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggleFavorite?.();
+            }}
             className="shrink-0 cursor-pointer transition-transform"
             aria-label={isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}>
             {isFavorite ? <StarFilledIcon className="w-7 h-7" /> : <StarEmptyIcon className="w-7 h-7" />}

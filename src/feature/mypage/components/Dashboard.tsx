@@ -3,6 +3,7 @@ import StarIcon from '@/shared/assets/icon-star.svg?react';
 import TemplateIcon from '@/shared/assets/icon-template.svg?react';
 import { REGION_MAP, type RegionId } from '@/shared/constants/destinationCity';
 import { toast } from '@/shared/stores/toastStore';
+import { useNavigate } from 'react-router-dom';
 import ActivityList from './ActivityList';
 import type { InterestTheme } from './InterestThemeSection';
 import ProfileHeader from './ProfileHeader';
@@ -95,6 +96,7 @@ const toInterestThemeIds = (themes: InterestTheme[]): number[] => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { data: myPageData, isLoading, isError } = useMyPageQuery();
   const { toggleFavorite } = useFavoriteMutation();
   const { updateMyProfile, isPending: isProfileUpdating } = useUpdateMyProfileMutation({
@@ -127,6 +129,10 @@ const Dashboard = () => {
       preferredTravelStyleIds: toTravelStyleIds(data.travelStyles),
       preferredTravelThemeIds: toInterestThemeIds(data.interestThemes),
     });
+  };
+
+  const handleTemplateClick = (id: string) => {
+    navigate(`/block/${id}`);
   };
 
   if (isLoading) {
@@ -168,6 +174,7 @@ const Dashboard = () => {
             activities={recentTemplateSource.map(formatTemplateForActivity)}
             showStar
             onToggleFavorite={handleToggleFavorite}
+            onActivityClick={handleTemplateClick}
           />
         </div>
       </div>

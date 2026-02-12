@@ -21,6 +21,7 @@ interface LocationActivityListProps {
   className?: string;
   showStar?: false;
   onToggleFavorite?: never;
+  onActivityClick?: never;
 }
 
 interface TemplateActivityListProps {
@@ -29,11 +30,19 @@ interface TemplateActivityListProps {
   className?: string;
   showStar: true;
   onToggleFavorite?: (id: string) => void;
+  onActivityClick?: (id: string) => void;
 }
 
 type ActivityListProps = LocationActivityListProps | TemplateActivityListProps;
 
-const ActivityList = ({ sectionTitle, activities, className, showStar, onToggleFavorite }: ActivityListProps) => {
+const ActivityList = ({
+  sectionTitle,
+  activities,
+  className,
+  showStar,
+  onToggleFavorite,
+  onActivityClick,
+}: ActivityListProps) => {
   return (
     <div className={clsx('p-9 bg-base-color-6 border border-base-color rounded-[10px]', className)}>
       <h3 className="h5 text-base-color-0 mb-8.5">{sectionTitle}</h3>
@@ -47,6 +56,7 @@ const ActivityList = ({ sectionTitle, activities, className, showStar, onToggleF
                 showStar
                 isFavorite={activity.isFavorite}
                 onToggleFavorite={() => onToggleFavorite?.(activity.id)}
+                onClick={() => onActivityClick?.(activity.id)}
               />
             ))
           : (activities as LocationActivity[]).map((activity) => (
