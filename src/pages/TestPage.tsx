@@ -14,6 +14,7 @@ import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import TextField from '@/shared/components/TextField/TextField';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import VlockModal from '@/feature/block/vlockModal/VlockModal';
 
 const TestPage = () => {
   const schema = z.object({
@@ -164,6 +165,11 @@ const TestPage = () => {
       </div>
 
       <Footer />
+
+      <div>
+        <h1>✅ VlockModal.tsx</h1>
+        <VlockModal type="create" cityId={103} onSuccess={() => alert('success')} onClose={() => alert('close')} />
+      </div>
     </>
   );
 };

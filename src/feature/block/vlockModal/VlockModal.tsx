@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { VlockModalRequestDto, UpdateVlockModalFormData } from '../types/vlockModal.types';
+import type { VlockModalRequestDto, UpdateVlockModalFormData } from './types/vlockModal.types';
 
-import { useCreateVlock, useUpdateVlock, useDeleteVlock } from '../hooks/useVlock';
-import InputField from './InputField';
-import Dropdown from './VlockCategoryDropdown';
-import PlaceSearchField from './PlaceSearch';
-import VisibilityToggle from './VisibilityToggle';
-import ImageUploadForm from './ImageUploadForm';
+import { useCreateVlock, useUpdateVlock, useDeleteVlock } from './hooks/useVlock';
+import InputField from './component/InputField';
+import Dropdown from './component/VlockCategoryDropdown';
+import PlaceSearchField from './component/PlaceSearch';
+import VisibilityToggle from './component/VisibilityToggle';
+import ImageUploadForm from './component/ImageUploadForm';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import XIcon from '@/shared/assets/icon-x-2.svg?react';
 
@@ -16,7 +16,7 @@ interface VlockModalProps {
   vlockId?: number; // 편집/삭제 모드 시 필요한 Vlock ID
   data?: VlockModalRequestDto; // 편집 모드 시 가져올 데이터
   onSuccess?: () => void; // 성공 시 호출될 콜백
-  onClose?: () => void; // 취소 시 호출될 콜백
+  onClose?: () => void; // 모달 창을 닫을 때 호출될 콜백
 }
 
 const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockModalProps) => {
@@ -82,6 +82,19 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
   const handleCreate = async () => {
     if (formData.type !== 'create') return;
 
+    console.log('[handleCreate] Payload:', {
+      request: {
+        name: formData.data.name,
+        address: formData.data.address,
+        categoryId: formData.data.categoryId,
+        cityId: formData.data.cityId,
+        latitude: formData.data.latitude,
+        longitude: formData.data.longitude,
+        memo: formData.data.memo,
+      },
+      coverImg: formData.data.coverImage,
+    });
+
     try {
       const result = await createMutation.mutateAsync({
         request: {
@@ -96,16 +109,32 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
         coverImg: formData.data.coverImage,
       });
 
-      console.log('Vlock 생성 성공:', result);
+      console.log('✅ Vlock 생성 성공:', result);
       onSuccess?.();
     } catch (error) {
-      console.error('Vlock 생성 실패:', error);
+      console.error('❌ Vlock 생성 실패:', error);
     }
   };
 
   // 수정 처리
   const handleUpdate = async () => {
     if (formData.type !== 'edit' || !vlockId) return;
+
+    console.log('[handleUpdate] Payload:', {
+      vlockId,
+      request: {
+        name: formData.data.name,
+        address: formData.data.address,
+        categoryId: formData.data.categoryId,
+        cityId: formData.data.cityId,
+        latitude: formData.data.latitude,
+        longitude: formData.data.longitude,
+        memo: formData.data.memo,
+        isPublic: formData.data.isPublic,
+        deleteCoverImg: formData.data.deleteCoverImage,
+      },
+      coverImg: formData.data.coverImage,
+    });
 
     try {
       const result = await updateMutation.mutateAsync({
@@ -124,10 +153,10 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
         coverImg: formData.data.coverImage,
       });
 
-      console.log('Vlock 수정 성공:', result);
+      console.log('✅ Vlock 수정 성공:', result);
       onSuccess?.();
     } catch (error) {
-      console.error('Vlock 수정 실패:', error);
+      console.error('❌ Vlock 수정 실패:', error);
     }
   };
 
@@ -135,23 +164,30 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
   const handleDelete = async () => {
     if (!vlockId) return;
 
+    console.log('[handleDelete] vlockId:', vlockId);
+
     try {
       const result = await deleteMutation.mutateAsync(vlockId);
-      console.log('Vlock 삭제 성공:', result);
+      console.log('✅ Vlock 삭제 성공:', result);
       onSuccess?.();
     } catch (error) {
-      console.error('Vlock 삭제 실패:', error);
+      console.error('❌ Vlock 삭제 실패:', error);
     }
   };
 
   // 폼 제출 함수
-  const handleFormSubmit = () => {
-    if (!isFormValid) return;
+  const handleFormSubmit = async () => {
+    console.log('[handleFormSubmit] Type:', type, 'Valid:', isFormValid);
+
+    if (!isFormValid) {
+      console.warn('[handleFormSubmit] Form is invalid. Missing required fields.');
+      return;
+    }
 
     if (type === 'create') {
-      handleCreate();
+      await handleCreate();
     } else {
-      handleUpdate();
+      await handleUpdate();
     }
   };
 
@@ -178,7 +214,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
         </div>
 
         {/* 스크롤바 우측 패딩 추가(pr-10px) */}
-        <div className="flex-1 flex flex-col gap-[20px] overflow-y-auto pr-[10px]">
+        <div className="flex-1 flex flex-col gap-[20px] overflow-y-auto">
           <Dropdown value={formData.data.categoryId} onChange={(id) => updateField('categoryId', id)} />
 
           <InputField
@@ -201,7 +237,6 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
           <PlaceSearchField
             label="장소"
             value={formData.data.address}
-            placeholder="주소를 입력해주세요"
             onChange={(val) => {
               updateField('address', val);
               // 주소가 비워지면 좌표도 초기화
