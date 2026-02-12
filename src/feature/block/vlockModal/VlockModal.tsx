@@ -1,25 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { VlockModalRequestDto, UpdateVlockModalFormData } from './types/vlockModal.types';
-
 import { useCreateVlock, useUpdateVlock, useDeleteVlock } from './hooks/useVlock';
-import InputField from './component/InputField';
-import Dropdown from './component/VlockCategoryDropdown';
-import PlaceSearchField from './component/PlaceSearch';
-import VisibilityToggle from './component/VisibilityToggle';
-import ImageUploadForm from './component/ImageUploadForm';
+import InputField from './components/InputField';
+import Dropdown from './components/VlockCategoryDropdown';
+import PlaceSearchField from './components/PlaceSearch';
+import VisibilityToggle from './components/VisibilityToggle';
+import ImageUploadForm from './components/ImageUploadForm';
 import SingleButton from '@/shared/components/Button/SingleButton';
-import XIcon from '@/shared/assets/icon-x-2.svg?react';
+import ModalLayout from './layouts/ModalLayout';
 
 interface VlockModalProps {
   type: 'create' | 'edit';
   cityId?: number; // 생성 모드 시 필수, 편집 모드 시 기본값으로 사용 가능
   vlockId?: number; // 편집/삭제 모드 시 필요한 Vlock ID
   data?: VlockModalRequestDto; // 편집 모드 시 가져올 데이터
-  onSuccess?: () => void; // 성공 시 호출될 콜백
+  onSubmit?: () => void; // 성공 시 호출될 콜백
   onClose?: () => void; // 모달 창을 닫을 때 호출될 콜백
 }
 
-const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockModalProps) => {
+const VlockModal = ({ type, cityId, vlockId, data, onSubmit, onClose }: VlockModalProps) => {
   // React Query Hooks
   const createMutation = useCreateVlock();
   const updateMutation = useUpdateVlock();
@@ -110,7 +109,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       });
 
       console.log('✅ Vlock 생성 성공:', result);
-      onSuccess?.();
+      onSubmit?.();
     } catch (error) {
       console.error('❌ Vlock 생성 실패:', error);
     }
@@ -154,7 +153,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       });
 
       console.log('✅ Vlock 수정 성공:', result);
-      onSuccess?.();
+      onSubmit?.();
     } catch (error) {
       console.error('❌ Vlock 수정 실패:', error);
     }
@@ -169,7 +168,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
     try {
       const result = await deleteMutation.mutateAsync(vlockId);
       console.log('✅ Vlock 삭제 성공:', result);
-      onSuccess?.();
+      onSubmit?.();
     } catch (error) {
       console.error('❌ Vlock 삭제 실패:', error);
     }
@@ -200,103 +199,17 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
 
   const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose?.();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-[80px_180px] bg-[rgba(74,85,105,0.60)]"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          onClose?.();
-        }
-      }}>
-      <div className="w-[534px] h-[800px] flex flex-col gap-[30px] rounded-[30px] bg-base-color-6 p-[45px_40px]">
-        <div className="flex flex-row justify-between items-center">
-          <p className="h6 text-base-color-0">{type === 'create' ? 'Vlock 생성' : '생성된 Vlock 편집'}</p>
-          <div className="flex items-center gap-[14px]">
-            {formData.type === 'edit' && (
-              <VisibilityToggle enabled={formData.data.isPublic} onChange={(val) => updateField('isPublic', val)} />
-            )}
-            <XIcon onClick={onClose} className="cursor-pointer text-base-color-0" />
-          </div>
-        </div>
-
-        {/* 스크롤바 우측 패딩 추가(pr-10px) */}
-        <div className="flex-1 flex flex-col gap-[20px] overflow-y-auto">
-          <Dropdown value={formData.data.categoryId} onChange={(id) => updateField('categoryId', id)} />
-
-          <InputField
-            label="이름"
-            value={formData.data.name}
-            placeholder="Vlock의 이름을 입력해주세요"
-            type="text"
-            onChange={(val) => updateField('name', val)}
-          />
-          <InputField
-            isRequired={false}
-            label="메모"
-            value={formData.data.memo ?? ''}
-            placeholder="Vlock에 대한 메모를 200자 이내로 남겨주세요"
-            type="textarea"
-            onChange={(val) => updateField('memo', val)}
-          />
-
-          {/* 장소 입력 (임시) */}
-          <PlaceSearchField
-            label="장소"
-            value={formData.data.address}
-            onChange={(val) => {
-              updateField('address', val);
-              // 주소가 비워지면 좌표도 초기화
-              if (!val.trim()) {
-                setFormData(
-                  (prev) =>
-                    ({
-                      ...prev,
-                      data: {
-                        ...prev.data,
-                        address: '',
-                        latitude: 0,
-                        longitude: 0,
-                      },
-                    }) as VlockModalRequestDto,
-                );
-              }
-            }}
-            onSelect={(place) => {
-              updateField('address', place.road_address_name || place.place_name);
-              updateField('latitude', Number(place.y));
-              updateField('longitude', Number(place.x));
-            }}
-            required
-          />
-
-          <ImageUploadForm
-            type={type}
-            initialPreviewUrl={formData.type === 'edit' ? formData.data.coverImgUrl : null}
-            onImageChange={(file) => {
-              updateField('coverImage', file);
-              // 이미지가 새로 선택되면 삭제 플래그는 false
-              if (file && type === 'edit') {
-                updateField('deleteCoverImage', false);
-              }
-            }}
-            onImageDelete={() => {
-              updateField('coverImage', null);
-              if (type === 'edit') {
-                updateField('deleteCoverImage', true);
-              }
-            }}
-          />
-        </div>
-
-        {type === 'create' ? (
+    <ModalLayout
+      title={type === 'create' ? 'Vlock 생성' : '생성된 Vlock 편집'}
+      onClose={onClose}
+      headerExtra={
+        formData.type === 'edit' && (
+          <VisibilityToggle enabled={formData.data.isPublic} onChange={(val) => updateField('isPublic', val)} />
+        )
+      }
+      footer={
+        type === 'create' ? (
           <SingleButton
             text={isLoading ? '생성 중...' : '생성하기'}
             onClick={handleFormSubmit}
@@ -305,7 +218,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
             disabled={!isFormValid || isLoading}
           />
         ) : (
-          <div className="flex flex-col gap-[10px]">
+          <>
             <span className="h9 flex items-center justify-center text-negative cursor-pointer" onClick={handleDelete}>
               {deleteMutation.isPending ? '삭제 중...' : '삭제하기'}
             </span>
@@ -316,10 +229,72 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
               height={64}
               disabled={!isFormValid || isLoading}
             />
-          </div>
-        )}
-      </div>
-    </div>
+          </>
+        )
+      }>
+      <Dropdown value={formData.data.categoryId} onChange={(id) => updateField('categoryId', id)} />
+
+      <InputField
+        label="이름"
+        value={formData.data.name}
+        placeholder="Vlock의 이름을 입력해주세요"
+        type="text"
+        onChange={(val) => updateField('name', val)}
+      />
+      <InputField
+        isRequired={false}
+        label="메모"
+        value={formData.data.memo ?? ''}
+        placeholder="Vlock에 대한 메모를 200자 이내로 남겨주세요"
+        type="textarea"
+        onChange={(val) => updateField('memo', val)}
+      />
+
+      <PlaceSearchField
+        label="장소"
+        value={formData.data.address}
+        onChange={(val) => {
+          updateField('address', val);
+          if (!val.trim()) {
+            setFormData(
+              (prev) =>
+                ({
+                  ...prev,
+                  data: {
+                    ...prev.data,
+                    address: '',
+                    latitude: 0,
+                    longitude: 0,
+                  },
+                }) as VlockModalRequestDto,
+            );
+          }
+        }}
+        onSelect={(place) => {
+          updateField('address', place.road_address_name || place.place_name);
+          updateField('latitude', Number(place.y));
+          updateField('longitude', Number(place.x));
+        }}
+        required
+      />
+
+      <ImageUploadForm
+        type={type}
+        initialPreviewUrl={formData.type === 'edit' ? formData.data.coverImgUrl : null}
+        onImageChange={(file) => {
+          updateField('coverImage', file);
+          if (file && type === 'edit') {
+            updateField('deleteCoverImage', false);
+          }
+        }}
+        onImageDelete={() => {
+          updateField('coverImage', null);
+          if (type === 'edit') {
+            updateField('deleteCoverImage', true);
+          }
+        }}
+      />
+    </ModalLayout>
   );
 };
 
