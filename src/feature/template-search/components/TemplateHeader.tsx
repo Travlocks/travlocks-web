@@ -1,13 +1,9 @@
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import TemplateAnimation from '../assets/template.lottie';
 import PuzzleIcon from '@assets/draft/icon-draft-puzzle.svg?react';
-import SearchBar from '@/feature/search/component/SearchBar';
+// import SearchBar from '@/feature/search/component/SearchBar';
 
-interface TemplateHeaderProps {
-  onSearch: (keyword: string) => void;
-}
-
-const TemplateHeader = ({ onSearch }: TemplateHeaderProps) => {
+const TemplateHeader = () => {
   return (
     <div className="relative bg-base-color-5 flex flex-col justify-center h-[483px] w-full z-above px-[20px]">
       <div className="flex flex-col items-center gap-[60px] relative z-above">
@@ -16,7 +12,7 @@ const TemplateHeader = ({ onSearch }: TemplateHeaderProps) => {
           <h1 className="text-[60px] font-[600] leading-[60px]">템플릿 탐색</h1>
         </div>
 
-        <SearchBar onSearch={onSearch} placeholder="어디로 떠나고 싶으신가요?" />
+        {/* <SearchBar onSearch={onSearch} placeholder="어디로 떠나고 싶으신가요?" /> */}
       </div>
 
       <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0 pointer-events-none" />

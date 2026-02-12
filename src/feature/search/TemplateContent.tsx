@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import SearchBar from './component/SearchBar';
 import SearchFilter from './component/SearchFilter/SearchFilter';
 import SortDropDown from './component/SortDropDown';
 import FilterTags from './component/FilterTags';
@@ -16,17 +17,20 @@ import TemplateHeader from '../template-search/components/TemplateHeader';
  * - 초기 상태: 검색어 없음, 필터 선택 없음, 별점순 정렬, 1페이지
  * - '전체보기' 버튼으로 초기 상태로 리셋 가능
  */
+/**
+ * 초기 필터 및 정렬 상태 정의
+ * 컴포넌트 외부로 이동하여 useCallback 의존성 문제 해결 및 성능 최적화
+ */
+const initialFilters: FilterState = {
+  regions: [],
+  tripDurations: [],
+  travelThemes: [],
+  transportTypes: [],
+};
+
+const initialSort: SortOption = 'rating';
+
 const TemplateContent = () => {
-  // 초기 상태 정의
-  const initialFilters: FilterState = {
-    regions: [],
-    tripDurations: [],
-    travelThemes: [],
-    transportTypes: [],
-  };
-
-  const initialSort: SortOption = 'rating';
-
   // 탐색 기준 상태 관리
   const [keyword, setKeyword] = useState<string>('');
   const [filters, setFilters] = useState<FilterState>(initialFilters);
@@ -95,14 +99,6 @@ const TemplateContent = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // 페이지 변경 시 상단으로 스크롤
   }, []);
 
-  // 전체보기 (초기화) 핸들러
-  const handleResetAll = useCallback(() => {
-    setKeyword('');
-    setFilters(initialFilters);
-    setSort(initialSort);
-    setPage(1);
-  }, []);
-
   // 템플릿 카드 클릭 핸들러
   const handleTemplateClick = useCallback((templateId: number) => {
     console.log('Template clicked:', templateId);
@@ -110,13 +106,16 @@ const TemplateContent = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-[40px]">
-      {/* 검색 영역 */}
-      <section className="flex justify-center items-center">
+    <div className="w-full flex flex-col gap-[40px] pb-[200px]">
+      {/* 애니메이션, 검색 영역 */}
+      <section className="flex justify-center items-center relative">
         <TemplateHeader onSearch={handleSearchChange} />
+        <div className="absolute bottom-[40px] z-above">
+          <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요?" />
+        </div>
       </section>
 
-      {/* 전체보기 버튼 */}
+      {/* 전체보기 버튼
       <section className="w-full flex justify-center bg-base-color-6 p-[10px] pb-[11px]">
         <div className="w-[1130px]">
           <button
@@ -126,7 +125,7 @@ const TemplateContent = () => {
             전체 보기
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* 메인 레이아웃: 3-column (왼쪽 사이드 + 메인 컨텐츠 + 오른쪽 사이드) */}
       <div className="flex justify-center px-[40px]">
