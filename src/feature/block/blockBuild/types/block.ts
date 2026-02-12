@@ -11,9 +11,10 @@ export type SidebarBlock = {
   imageUrl?: string;
 };
 
-// 샘플 블록 데이터 타입
+// 캔버스 블록 데이터 타입
 export type Block = {
-  blockId: number;
+  blockId: number; // vlockId와 동일하게 매핑됨
+  templateVlocksId?: number; // 서버에서 생성된 template_vlocks ID
   name: string;
   category: CategoryType;
   duration: string;
