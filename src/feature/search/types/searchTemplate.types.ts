@@ -15,6 +15,18 @@ import type { Template } from '@/feature/home/types/template';
 export type SortOption = 'rating' | 'popular' | 'latest';
 
 /**
+ * 여행 기간 타입
+ *
+ * @remarks
+ * - 'ONE_DAY': 1일
+ * - 'TWO_DAYS': 2일
+ * - 'THREE_DAYS': 3일
+ * - 'FOUR_DAYS': 4일
+ * - 'FIVE_DAYS': 5일
+ */
+
+export type TripDays = 'ONE_DAY' | 'TWO_DAYS' | 'THREE_DAYS' | 'FOUR_DAYS' | 'FIVE_DAYS';
+/**
  * 정렬 옵션의 한글 표시 이름
  */
 export const SORT_OPTIONS: Record<SortOption, string> = {
@@ -35,16 +47,13 @@ export interface SearchTemplateParams {
   keyword?: string;
 
   /** 여행지 ID 배열 */
-  region?: number[];
-
-  /** 여행 기간 (일, 박) */
-  trip?: {
-    days: number;
-    nights: number;
-  };
+  cities?: string[];
 
   /** 여행 테마 ID 배열 */
-  travelTheme?: number[];
+  themes?: string[];
+
+  /** 여행 기간 (일, 박) */
+  tripDays?: TripDays[];
 
   /** 교통 수단 키 배열 */
   transportType?: string[];
@@ -54,9 +63,6 @@ export interface SearchTemplateParams {
 
   /** 페이지 번호 (1부터 시작) */
   page?: number;
-
-  /** 페이지당 아이템 수 */
-  size?: number;
 }
 
 /**

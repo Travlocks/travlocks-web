@@ -109,7 +109,7 @@ const TemplateContent = () => {
     <div className="w-full flex flex-col gap-[40px] pb-[200px]">
       {/* 애니메이션, 검색 영역 */}
       <section className="flex justify-center items-center relative">
-        <TemplateHeader onSearch={handleSearchChange} />
+        <TemplateHeader />
         <div className="absolute bottom-[40px] z-above">
           <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요?" />
         </div>
