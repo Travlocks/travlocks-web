@@ -112,7 +112,19 @@ const Preference = ({ onPrev, onNext, mode }: StepProps) => {
         preferredTravelThemeIds: [],
       });
     } else {
-      onNext();
+      const signupToken = watch('signupToken');
+      const email = watch('email');
+      const password = watch('passwordGroup.password');
+
+      signupMutate({
+        signupToken,
+        email,
+        password,
+        nickname,
+        consents,
+        preferredTravelStyleIds: [],
+        preferredTravelThemeIds: [],
+      });
     }
   };
 
