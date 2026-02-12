@@ -13,7 +13,7 @@ import { OnboardingWidgetStyle } from './styles/OnboardingWidget.style';
 import { usePostOnboarding } from './hooks/usePostOnboarding';
 import type { OnboardingRequestDto } from './types/onboarding.type';
 
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 /**
  * 온보딩 위젯에서 서버로 전송할 요청 DTO 타입입니다.
@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router-dom';
  * - 현재는 `console.log`를 통해 요청 DTO를 출력하도록 구현되어 있습니다.
  */
 const OnboardingWidget = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [selectedCityIds, setSelectedCityIds] = useState<DestinationCityId[]>([]);
 
   const [selectedTripDayItem, setSelectedTripDayItem] = useState<TripDayItem | null>(null);
@@ -64,7 +64,8 @@ const OnboardingWidget = () => {
     if (requestDTO) {
       postOnboarding(requestDTO, {
         onSuccess: (data) => {
-          navigate(`/block/${data.templateId}`);
+          // navigate(`/block/${data.templateId}`);
+          console.log(data);
         },
       });
     }
