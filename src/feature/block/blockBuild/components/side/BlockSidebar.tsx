@@ -11,8 +11,14 @@ import { usePopularBlocks, useCreatedBlocks, useBlocksByCategory } from '../../h
 import { toSidebarBlock } from '../../utils/blockMapper';
 import { filterCategoryBlocks } from '../../utils/blockFilter';
 import EmptyBlockMessage from '../ui/EmplyBlockMessage';
+import type { SidebarBlock } from '../../types/block';
+import type { VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
+interface BlockSidebarProps {
+  items: SidebarBlock[];
+  onOpenVlockModal?: (config: { type: 'create' | 'edit'; vlockId?: number; data?: VlockModalRequestDto }) => void;
+}
 
-const BlockSidebar = () => {
+const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('인기');
 
   const { inputProps, debouncedValue } = useBlockSearch({
@@ -129,7 +135,7 @@ const BlockSidebar = () => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            <BlockCreateButton />
+            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create' })} />
             {createdBlocks.length > 0 ? (
               createdBlocks.map((item) => <BlockItem key={item.id} item={item} />)
             ) : isSearching ? (
@@ -139,6 +145,7 @@ const BlockSidebar = () => {
         );
     }
   };
+
   return (
     <div className="flex flex-col h-full bg-base-color-6 border-r border-gray-200">
       {/* 헤더 타이틀 */}

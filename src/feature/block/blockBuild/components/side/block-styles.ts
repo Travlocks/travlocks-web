@@ -10,7 +10,7 @@ export const categoryColor = {
   액티비티: 'text-[#BBE23A]',
   투어: 'text-[#2FD4A4]',
   기타: 'text-[#3C4EF4]',
-  관광: 'text-[#5B8DEF]',
+  관광지: 'text-[#5B8DEF]',
 };
 
 export const blockItemStyles = {

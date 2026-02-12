@@ -15,7 +15,7 @@ const DraftEmptyCard = () => {
         <p className="b3 text-base-color-3">첫 블록을 쌓아 여행을 시작해볼까요?</p>
       </div>
 
-      <RoundButton text="여행 조립하러 떠나기" width={292} hover onClick={() => navigate('/block')} />
+      <RoundButton text="여행 조립하러 떠나기" width={292} hover onClick={() => navigate('/block/onboarding')} />
 
       {/* 애니메이션 */}
       <div className="absolute inset-0 -translate-x-[100%] group-hover:translate-x-0 duration-800 ease transition">

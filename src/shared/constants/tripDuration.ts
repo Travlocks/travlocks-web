@@ -12,7 +12,7 @@ export type TripDurationId = 1 | 2 | 3 | 4 | 5;
  * @remarks
  * UI에서 사용자에게 노출되는 여행 기간 문자열 값입니다.
  */
-export type TripDurationKey = '당일치기' | '1박 2일' | '2박 3일' | '3박 4일' | '4일 이상';
+export type TripDurationKey = '당일치기' | '1박 2일' | '2박 3일' | '3박 4일' | '4박 5일';
 
 /**
  * 여행 기간 정보를 나타내는 타입입니다.
@@ -67,7 +67,7 @@ export const TRIP_DURATION: TripDuration[] = [
   },
   {
     id: 5,
-    label: '4일 이상',
+    label: '4박 5일',
     trip: {
       days: 4,
       nights: 5,

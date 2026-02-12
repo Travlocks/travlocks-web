@@ -51,6 +51,7 @@ export const routes: RouteObject[] = [
           },
         ],
       },
+
       {
         path: 'template',
         element: <lazyRoutes.TemplatePage />,

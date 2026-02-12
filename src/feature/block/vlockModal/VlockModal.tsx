@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { VlockModalRequestDto, UpdateVlockModalFormData } from './types/vlockModal.types';
+import type { VlockModalRequestDto, UpdateVlockModalFormData, VlockData } from './types/vlockModal.types';
 
 import { useCreateVlock, useUpdateVlock, useDeleteVlock } from './hooks/useVlock';
 import InputField from './component/InputField';
@@ -15,7 +15,7 @@ interface VlockModalProps {
   cityId?: number; // 생성 모드 시 필수, 편집 모드 시 기본값으로 사용 가능
   vlockId?: number; // 편집/삭제 모드 시 필요한 Vlock ID
   data?: VlockModalRequestDto; // 편집 모드 시 가져올 데이터
-  onSuccess?: () => void; // 성공 시 호출될 콜백
+  onSuccess?: (data?: VlockData) => void; // 성공 시 호출될 콜백
   onClose?: () => void; // 모달 창을 닫을 때 호출될 콜백
 }
 
@@ -67,7 +67,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
   // 필드 업데이트 함수: data 객체 내부의 값을 업데이트
   const updateField = <K extends keyof UpdateVlockModalFormData>(field: K, value: UpdateVlockModalFormData[K]) => {
     setFormData(
-      (prev) =>
+      (prev: VlockModalRequestDto) =>
         ({
           ...prev,
           data: {
@@ -110,7 +110,9 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       });
 
       console.log('✅ Vlock 생성 성공:', result);
-      onSuccess?.();
+      if (result.isSuccess) {
+        onSuccess?.(result.data as VlockData);
+      }
     } catch (error) {
       console.error('❌ Vlock 생성 실패:', error);
     }
@@ -154,7 +156,9 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       });
 
       console.log('✅ Vlock 수정 성공:', result);
-      onSuccess?.();
+      if (result.isSuccess) {
+        onSuccess?.(result.data as VlockData);
+      }
     } catch (error) {
       console.error('❌ Vlock 수정 실패:', error);
     }
@@ -256,7 +260,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
               // 주소가 비워지면 좌표도 초기화
               if (!val.trim()) {
                 setFormData(
-                  (prev) =>
+                  (prev: VlockModalRequestDto) =>
                     ({
                       ...prev,
                       data: {

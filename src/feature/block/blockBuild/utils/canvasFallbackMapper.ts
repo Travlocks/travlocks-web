@@ -8,7 +8,7 @@ const START_POS = { x: 44, y: 76 };
 const BOARD_PADDING = { left: 80, top: 220 };
 const BOARD_RANGE = { width: 1400, height: 2000 };
 
-const KNOWN_CATEGORIES: CategoryType[] = ['숙소', '식당', '카페', '쇼핑', '관광', '문화', '액티비티', '투어', '기타'];
+const KNOWN_CATEGORIES: CategoryType[] = ['숙소', '식당', '카페', '쇼핑', '관광지', '문화', '액티비티', '투어', '기타'];
 
 const toKnownCategory = (raw: string): CategoryType => {
   return KNOWN_CATEGORIES.includes(raw as CategoryType) ? (raw as CategoryType) : '기타';

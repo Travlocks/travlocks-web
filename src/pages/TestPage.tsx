@@ -16,6 +16,7 @@ import TextField from '@/shared/components/TextField/TextField';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import { useState } from 'react';
+import PlaceSearch from '@/feature/block/vlockModal/component/PlaceSearch';
 
 const TestPage = () => {
   const schema = z.object({
@@ -180,6 +181,20 @@ const TestPage = () => {
             onClose={() => setIsModalOpen(false)}
           />
         )}
+      </div>
+
+      <div>
+        <h1>✅ PlaceSearch.tsx</h1>
+        <div className="p-[100px]">
+          <PlaceSearch
+            label="장소 검색"
+            value=""
+            placeholder="장소 검색"
+            onChange={() => {}}
+            onSelect={() => {}}
+            required
+          />
+        </div>
       </div>
     </>
   );

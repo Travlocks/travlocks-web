@@ -26,6 +26,7 @@ export const HeroTitle = () => {
   const click = () => {
     navigate('/block/onboarding');
   };
+
   return (
     <motion.div
       className="pointer-events-auto flex flex-col items-center"
