@@ -1,6 +1,6 @@
 import type { Connector, Point } from '@/shared/components/Block/blockShape';
 
-export type CategoryType = '숙소' | '식당' | '카페' | '쇼핑' | '관광' | '문화' | '액티비티' | '투어' | '기타';
+export type CategoryType = '숙소' | '식당' | '카페' | '쇼핑' | '관광지' | '문화' | '액티비티' | '투어' | '기타';
 
 // 샘플 사이드바 데이터 타입
 export type SidebarBlock = {
