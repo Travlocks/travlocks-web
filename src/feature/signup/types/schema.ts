@@ -14,26 +14,30 @@ const consentsField = z.array(
 );
 
 // 일반 회원가입 스키마
-export const signupSchema = z
-  .object({
-    email: z.string().email({ message: '올바르지 않은 이메일 형식입니다.' }),
-    code: z.string(),
-    password: z
-      .string()
-      .min(8)
-      .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/),
-    passwordCheck: z.string(),
-    nickname: nicknameField,
-    verificationId: z.string(),
-    signupToken: z.string(),
-    consents: consentsField,
-    preferredTravelStyleIds: z.array(z.number()),
-    preferredTravelThemeIds: z.array(z.number()),
-  })
-  .refine((data) => data.password === data.passwordCheck, {
-    message: '비밀번호가 일치하지 않습니다',
-    path: ['passwordCheck'],
-  });
+export const signupSchema = z.object({
+  email: z.string().email({ message: '올바르지 않은 이메일 형식입니다.' }),
+  code: z.string(),
+
+  passwordGroup: z
+    .object({
+      password: z
+        .string()
+        .min(8)
+        .regex(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+      passwordCheck: z.string(),
+    })
+    .refine((data) => data.password === data.passwordCheck, {
+      message: '비밀번호가 일치하지 않습니다',
+      path: ['passwordCheck'],
+    }),
+
+  nickname: nicknameField,
+  verificationId: z.string(),
+  signupToken: z.string(),
+  consents: consentsField,
+  preferredTravelStyleIds: z.array(z.number()),
+  preferredTravelThemeIds: z.array(z.number()),
+});
 
 // OAuth 온보딩 스키마
 export const onboardingSchema = z.object({

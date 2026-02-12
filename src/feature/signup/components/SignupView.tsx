@@ -50,8 +50,10 @@ const ONBOARDING_STEPS: readonly StepDef[] = [
 const SIGNUP_DEFAULTS: Partial<FormFields> = {
   email: '',
   code: undefined,
-  password: '',
-  passwordCheck: '',
+  passwordGroup: {
+    password: '',
+    passwordCheck: '',
+  },
   nickname: '',
   consents: [
     { policyId: 1, agreed: false },
@@ -85,7 +87,7 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
   const [level, setLevel] = useState<number>(0);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const methods = useForm<any>({
+  const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
     resolver: zodResolver(mode === 'onboarding' ? onboardingSchema : signupSchema),
     mode: 'onChange',
