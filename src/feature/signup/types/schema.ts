@@ -4,7 +4,10 @@ import { z } from 'zod';
 const nicknameField = z
   .string()
   .min(2, { message: '닉네임은 2자 이상 ~ 10자 이하로 입력해주세요' })
-  .max(10, { message: '닉네임은 2자 이상 ~ 10자 이하로 입력해주세요' });
+  .max(10, { message: '닉네임은 2자 이상 ~ 10자 이하로 입력해주세요' })
+  .regex(/^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]+$/, {
+    message: '닉네임은 한글/영문만 가능합니다.',
+  });
 
 const consentsField = z.array(
   z.object({

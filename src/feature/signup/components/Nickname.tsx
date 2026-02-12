@@ -60,7 +60,7 @@ const Nickname = ({ onPrev, onNext }: StepProps) => {
     };
 
     checkNickname();
-  }, [data, data?.data.exists, debouncedValue, setError, trigger, clearErrors]);
+  }, [data, data?.data.exists, debouncedValue, setError, trigger, clearErrors, setValue]);
 
   return (
     <section className="flex flex-col gap-[16px]">
