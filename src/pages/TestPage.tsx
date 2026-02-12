@@ -14,6 +14,8 @@ import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
 import TextField from '@/shared/components/TextField/TextField';
 import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
+import VlockModal from '@/feature/block/vlockModal/VlockModal';
+import { useState } from 'react';
 
 const TestPage = () => {
   const schema = z.object({
@@ -48,6 +50,8 @@ const TestPage = () => {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     console.log(data);
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
@@ -164,6 +168,19 @@ const TestPage = () => {
       </div>
 
       <Footer />
+
+      <div>
+        <h1>✅ VlockModal.tsx</h1>
+        <Button text="VlockModal 열기" onClick={() => setIsModalOpen(true)} />
+        {isModalOpen && (
+          <VlockModal
+            type="create"
+            cityId={103}
+            onSuccess={() => alert('success')}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+      </div>
     </>
   );
 };

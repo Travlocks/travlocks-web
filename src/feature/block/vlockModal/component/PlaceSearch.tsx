@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { animate } from 'motion';
 import { FormItem } from './common/FormItem';
 import { Dropdown } from './common/Dropdown';
@@ -23,10 +23,7 @@ export interface PlaceSearchProps {
   required?: boolean;
 }
 
-const KAKAO_API_KEY =
-  import.meta.env.VITE_KAKAO_MAP_KEYWORD_SEARCH_API_KEY ||
-  import.meta.env.VITE_KAKAO_MAP_API_KEY ||
-  '873ba25a24bb1ef6448afacecb16e016';
+const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_KEYWORD_SEARCH_API_KEY;
 
 // 의존성 문제를 피하기 위해 컴포넌트 외부로 이동시킨 헬퍼 함수
 const findScrollableParent = (element: HTMLElement | null): HTMLElement | null => {
@@ -38,6 +35,37 @@ const findScrollableParent = (element: HTMLElement | null): HTMLElement | null =
     return element;
   }
   return findScrollableParent(element.parentElement);
+};
+
+// 정규식 특수 문자 이스케이프 함수
+const escapeRegExp = (string: string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+// XSS 방지: 안전한 하이라이팅 (React 요소 사용)
+const HighlightedText = ({ text, highlight }: { text: string; highlight: string }) => {
+  if (!highlight.trim()) {
+    return <>{text}</>;
+  }
+
+  let parts: React.ReactNode[] = [text];
+  try {
+    const escapedHighlight = escapeRegExp(highlight);
+    const regex = new RegExp(`(${escapedHighlight})`, 'gi');
+    parts = text.split(regex).map((part, i) =>
+      part.toLowerCase() === highlight.toLowerCase() ? (
+        <span key={i} className="text-primary-color">
+          {part}
+        </span>
+      ) : (
+        part
+      ),
+    );
+  } catch (error) {
+    console.error('[HighlightedText] Error:', error);
+  }
+
+  return <>{parts}</>;
 };
 
 export const PlaceSearch: React.FC<PlaceSearchProps> = ({
@@ -53,10 +81,11 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
   const [results, setResults] = useState<PlaceResult[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [, setIsEnd] = useState(false); // Unused state kept for logic consistency if needed later
+  const [, setIsEnd] = useState(false);
   const [, setIsLoading] = useState(false);
   const [isSdkLoaded, setIsSdkLoaded] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [prevValue, setPrevValue] = useState(value);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -89,15 +118,13 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
     document.head.appendChild(script);
   }, []);
 
-  // value prop과 상태 동기화
-  useEffect(() => {
-    // 현재 선택된 상태가 아닐 때만 업데이트하여 원본 주소로 표시가 덮어씌워지는 것을 방지
+  // 외부 value prop이 변경되면 내부 query 상태 동기화
+  if (value !== prevValue) {
+    setPrevValue(value);
     if (!isSelected) {
       setQuery(value);
     }
-    // 'value'가 이 동기화의 유일한 의존성임
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }
 
   const searchPlaces = useCallback(
     (searchQuery: string, currentPage: number) => {
@@ -145,26 +172,23 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
     [isSdkLoaded],
   );
 
-  // 통합된 검색 Effect (디바운스 + 페이지 변경)
+  // 텍스트 입력 디바운스 (query 변경 시만) - API 호출만 담당
   useEffect(() => {
     if (!isSdkLoaded || isSelected) return;
 
-    // 빈 쿼리는 즉시 처리
-    if (!query.trim()) {
-      setResults([]);
-      setIsOpen(false);
-      return;
-    }
+    // 빈 쿼리는 이벤트 핸들러에서 처리하므로 여기서는 API 호출만 수행
+    if (!query.trim()) return;
 
     // 검색 디바운스 적용
     const timer = window.setTimeout(() => {
-      searchPlaces(query, page);
+      setPage(1); // 쿼리 변경 시 1페이지로 리셋
+      searchPlaces(query, 1);
     }, 300);
 
     return () => {
       window.clearTimeout(timer);
     };
-  }, [query, page, isSdkLoaded, isSelected, searchPlaces]);
+  }, [query, isSdkLoaded, isSelected, searchPlaces]);
 
   // 스크롤 애니메이션
   useEffect(() => {
@@ -196,6 +220,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    searchPlaces(query, newPage); // 페이지 변경 시 즉시 검색
   };
 
   const handleSelect = (item: PlaceResult) => {
@@ -217,7 +242,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
     onChange?.('');
   };
 
-  const toogleDropdown = () => {
+  const toggleDropdown = () => {
     if (query && results.length > 0) {
       setIsOpen(true);
     }
@@ -230,15 +255,13 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
         value={query}
         onFocus={() => {
           setIsSelected(false);
-          toogleDropdown();
+          toggleDropdown();
         }}
-        onClick={toogleDropdown}
+        onClick={toggleDropdown}
         onChange={(e) => {
           const val = e.target.value;
           setIsSelected(false);
           setQuery(val);
-          // 최적화를 위해 여기서도 빈 값일 때 결과를 즉시 지울 수 있음
-          // 하지만 Effect에서도 안전하게 처리함
           if (!val.trim()) {
             setResults([]);
             setIsOpen(false);
@@ -313,14 +336,9 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({
                   <PinIcon />
                 </div>
                 <div className="flex flex-col">
-                  <span
-                    className="b4 leading-tight text-base-color-3"
-                    dangerouslySetInnerHTML={{
-                      __html: item.place_name.replace(
-                        new RegExp(`(${query})`, 'gi'),
-                        '<span class="text-primary-color">$1</span>',
-                      ),
-                    }}></span>
+                  <span className="b4 leading-tight text-base-color-3">
+                    <HighlightedText text={item.place_name} highlight={query} />
+                  </span>
                   <span className="b6 mt-1 text-base-color-3">
                     {item.road_address_name || item.address_name || '주소 정보 없음'}
                   </span>

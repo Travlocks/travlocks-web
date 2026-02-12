@@ -91,7 +91,7 @@ const Preference = ({ onPrev, onNext, mode }: StepProps) => {
       // 일반 회원가입: 추가 필드 포함
       const signupToken = watch('signupToken');
       const email = watch('email');
-      const password = watch('password');
+      const password = watch('passwordGroup.password');
 
       signupMutate({
         signupToken,
@@ -112,7 +112,19 @@ const Preference = ({ onPrev, onNext, mode }: StepProps) => {
         preferredTravelThemeIds: [],
       });
     } else {
-      onNext();
+      const signupToken = watch('signupToken');
+      const email = watch('email');
+      const password = watch('passwordGroup.password');
+
+      signupMutate({
+        signupToken,
+        email,
+        password,
+        nickname,
+        consents,
+        preferredTravelStyleIds: [],
+        preferredTravelThemeIds: [],
+      });
     }
   };
 
