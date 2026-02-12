@@ -24,7 +24,7 @@ const DraftCard = ({ title, region, progressRate, updatedAt }: DraftCardProps) =
           <p>·</p>
 
           <div>
-            <p>{updatedAt.split('-').join('.')} 수정됨</p>
+            <p>{updatedAt.split('T')[0]} 수정됨</p>
           </div>
         </div>
       </div>

@@ -9,18 +9,20 @@ import useGetIsNicknameExists from '../hooks/queries/useGetIsNicknameExists';
 import { useDebouncedInputProps } from '@/shared/hooks/useDebouncedInput';
 import { useEffect } from 'react';
 
-const Nickname = ({ setLevel }: StepProps) => {
+const Nickname = ({ onPrev, onNext }: StepProps) => {
   const {
     register,
     setError,
     clearErrors,
+    trigger,
+    setValue,
     formState: { errors },
   } = useFormContext<FormFields>();
 
   const { inputProps, debouncedValue, onSubmit, reset } = useDebouncedInputProps({
     submit: () => {
       if (!data?.data.exists) {
-        setLevel(4);
+        onNext();
       }
     },
   });
@@ -33,16 +35,32 @@ const Nickname = ({ setLevel }: StepProps) => {
   };
 
   useEffect(() => {
-    if (!debouncedValue) return;
+    const checkNickname = async () => {
+      // 값 없으면 에러 지우고 종료
+      if (!debouncedValue) {
+        clearErrors('nickname');
+        return;
+      }
 
-    if (data?.data.exists) {
-      setError('nickname', {
-        message: '이미 사용 중인 닉네임 입니다.',
-      });
-    } else {
-      clearErrors('nickname');
-    }
-  }, [data, debouncedValue, setError, clearErrors]);
+      setValue('nickname', debouncedValue);
+
+      // 스키마 검증 (2자 이상 10자 이하)
+      const isValid = await trigger('nickname');
+
+      // 스키마 통과 후 중복 검사
+      if (isValid && data) {
+        if (data?.data.exists) {
+          setError('nickname', {
+            message: '이미 사용 중인 닉네임 입니다.',
+          });
+        } else {
+          clearErrors('nickname');
+        }
+      }
+    };
+
+    checkNickname();
+  }, [data, data?.data.exists, debouncedValue, setError, trigger, clearErrors, setValue]);
 
   return (
     <section className="flex flex-col gap-[16px]">
@@ -72,12 +90,12 @@ const Nickname = ({ setLevel }: StepProps) => {
           left={{
             text: '이전',
             variant: 'white',
-            onClick: () => setLevel(2),
+            onClick: onPrev,
           }}
           right={{
             text: '다음',
             onClick: handleOnClickNext,
-            disabled: !debouncedValue || !data || data?.data.exists,
+            disabled: !debouncedValue || !data || data?.data.exists || !!errors.nickname,
           }}
           width={215}
           height={64}

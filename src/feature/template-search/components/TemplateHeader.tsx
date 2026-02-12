@@ -1,13 +1,13 @@
-import { useState } from 'react';
-
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import TemplateAnimation from '../assets/template.lottie';
-import SearchIcon from '../assets/icon-search.svg?react';
 import PuzzleIcon from '@assets/draft/icon-draft-puzzle.svg?react';
+import SearchBar from '@/feature/search/component/SearchBar';
 
-const TemplateHeader = () => {
-  const [search, setSearch] = useState<string>('');
+interface TemplateHeaderProps {
+  onSearch: (keyword: string) => void;
+}
 
+const TemplateHeader = ({ onSearch }: TemplateHeaderProps) => {
   return (
     <div className="relative bg-base-color-5 flex flex-col justify-center h-[483px] w-full z-above px-[20px]">
       <div className="flex flex-col items-center gap-[60px] relative z-above">
@@ -16,15 +16,7 @@ const TemplateHeader = () => {
           <h1 className="text-[60px] font-[600] leading-[60px]">템플릿 탐색</h1>
         </div>
 
-        <div className="flex gap-[16px] items-center max-w-[1131px] w-full rounded-[30px] border border-base-color bg-white py-[32px] px-[40px]">
-          <SearchIcon />
-          <input
-            placeholder="어디로 떠나고 싶으신가요?"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="outline-none placeholder:font-['Pretendard'] placeholder:text-base-color-3 placeholder:text-[30px] placeholder:font-medium text-[30px] leading-[36px]"
-          />
-        </div>
+        <SearchBar onSearch={onSearch} placeholder="어디로 떠나고 싶으신가요?" />
       </div>
 
       <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0 pointer-events-none" />

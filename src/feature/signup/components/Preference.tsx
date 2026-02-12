@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import { useFormContext } from 'react-hook-form';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { StepProps } from './SignupView';
 import DualButton from '@/shared/components/Button/DualButton';
@@ -12,7 +12,10 @@ import { SIGNUP_KEY } from '../constants/key';
 import { THEMES } from '../data/preferencs';
 import { STYLES } from '../data/styles';
 
-const Preference = ({ setLevel }: StepProps) => {
+import { postOnboarding } from '@/feature/auth/login/apis/onboarding';
+import { useAuth } from '@/shared/hooks/useAuth';
+
+const Preference = ({ onPrev, onNext, mode }: StepProps) => {
   const [selected, setSelected] = useState<{
     theme: number[];
     style: number[];
@@ -24,20 +27,31 @@ const Preference = ({ setLevel }: StepProps) => {
 
   const { watch } = useFormContext<FormFields>();
   const queryClienet = useQueryClient();
+  const { login } = useAuth();
 
-  // 서버로 전송할 값
-  const signupToken = watch('signupToken');
-  const email = watch('email');
-  const password = watch('password');
+  // 서버로 전송할 공통 값
   const nickname = watch('nickname');
   const consents = watch('consents');
 
-  const { mutate } = usePostSignup({
+  // ─── 일반 회원가입 submit ───
+  const { mutate: signupMutate } = usePostSignup({
     onSuccess: (data) => {
       queryClienet.setQueryData(SIGNUP_KEY.signup, data);
-      setLevel(5);
+      onNext();
     },
-  }); // 최종 회원가입
+  });
+
+  // ─── OAuth 온보딩 submit ───
+  const { mutate: onboardingMutate } = useMutation({
+    mutationFn: postOnboarding,
+    onSuccess: (data) => {
+      if (data.isSuccess && data.data) {
+        login(data.data.accessToken);
+        queryClienet.setQueryData(SIGNUP_KEY.signup, data);
+        onNext();
+      }
+    },
+  });
 
   const handleSelect = (level: 'theme' | 'style', id: number) => {
     setSelected((prev) => {
@@ -64,15 +78,54 @@ const Preference = ({ setLevel }: StepProps) => {
   };
 
   const handleSubmit = () => {
-    mutate({
-      signupToken,
-      email,
-      password,
+    const preferences = {
       nickname,
       consents,
       preferredTravelStyleIds: selected.style,
       preferredTravelThemeIds: selected.theme,
-    });
+    };
+
+    if (mode === 'onboarding') {
+      onboardingMutate(preferences);
+    } else {
+      // 일반 회원가입: 추가 필드 포함
+      const signupToken = watch('signupToken');
+      const email = watch('email');
+      const password = watch('passwordGroup.password');
+
+      signupMutate({
+        signupToken,
+        email,
+        password,
+        ...preferences,
+      });
+    }
+  };
+
+  // 건너뛰기: 온보딩은 API 호출 필수 (ACTIVE 전환), 회원가입은 기존 동작 유지
+  const handleSkip = () => {
+    if (mode === 'onboarding') {
+      onboardingMutate({
+        nickname,
+        consents,
+        preferredTravelStyleIds: [],
+        preferredTravelThemeIds: [],
+      });
+    } else {
+      const signupToken = watch('signupToken');
+      const email = watch('email');
+      const password = watch('passwordGroup.password');
+
+      signupMutate({
+        signupToken,
+        email,
+        password,
+        nickname,
+        consents,
+        preferredTravelStyleIds: [],
+        preferredTravelThemeIds: [],
+      });
+    }
   };
 
   return (
@@ -121,9 +174,7 @@ const Preference = ({ setLevel }: StepProps) => {
         })}
       </div>
 
-      <p
-        onClick={() => setLevel(5)}
-        className="self-end underline text-base-color-1 b4 cursor-pointer underline-offset-3">
+      <p onClick={handleSkip} className="self-end underline text-base-color-1 b4 cursor-pointer underline-offset-3">
         건너뛰기
       </p>
 
@@ -131,7 +182,7 @@ const Preference = ({ setLevel }: StepProps) => {
         left={{
           text: '이전',
           variant: 'white',
-          onClick: () => setLevel(3),
+          onClick: onPrev,
           className: 'border-base-color!',
         }}
         right={{

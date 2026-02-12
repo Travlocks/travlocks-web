@@ -16,5 +16,7 @@ export const QUERY_KEY = {
   regions: 'regions', // 지역 목록 조회
   popularVlocks: 'popularVlocks', // 인기 블록 목록
   createdVlocks: 'createdVlocks', // 내가 만든 블록 목록
+  template: 'template',
   notification: 'notification',
+  vlock: 'vlock',
 };

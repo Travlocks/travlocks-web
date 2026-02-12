@@ -3,11 +3,11 @@ import type { ErrorPayload } from '@/shared/types/error';
 
 // 계정 탈퇴 요청 타입
 export type RequestAccountWithdrawalDto = {
-  reason: string;
+  reason?: string;
 };
 
 // 계정 탈퇴 성공 타입
-export type AccountWithdrawalSuccessDto = SuccessPayload<string>;
+export type AccountWithdrawalSuccessDto = SuccessPayload<null>;
 
 // 계정 탈퇴 실패 타입
 export type AccountWithdrawalErrorDto = ErrorPayload<string>;

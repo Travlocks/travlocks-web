@@ -17,8 +17,11 @@ interface SettingsSectionProps {
     travelStyles: TravelStyle[];
     interestThemes: InterestTheme[];
   }) => void;
+  isSaving?: boolean;
   className?: string;
 }
+
+const MAX_SELECTABLE_PREFERENCES = 2;
 
 const SettingsSection = ({
   initialNickname = '',
@@ -27,6 +30,7 @@ const SettingsSection = ({
   initialTravelStyles = [],
   initialInterestThemes = [],
   onSave,
+  isSaving = false,
   className,
 }: SettingsSectionProps) => {
   const [nickname, setNickname] = useState(initialNickname);
@@ -35,11 +39,31 @@ const SettingsSection = ({
   const [interestThemes, setInterestThemes] = useState<InterestTheme[]>(initialInterestThemes);
 
   const handleToggleTravelStyle = (style: TravelStyle) => {
-    setTravelStyles((prev) => (prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]));
+    setTravelStyles((prev) => {
+      if (prev.includes(style)) {
+        return prev.filter((s) => s !== style);
+      }
+
+      if (prev.length >= MAX_SELECTABLE_PREFERENCES) {
+        return prev;
+      }
+
+      return [...prev, style];
+    });
   };
 
   const handleToggleInterestTheme = (theme: InterestTheme) => {
-    setInterestThemes((prev) => (prev.includes(theme) ? prev.filter((t) => t !== theme) : [...prev, theme]));
+    setInterestThemes((prev) => {
+      if (prev.includes(theme)) {
+        return prev.filter((t) => t !== theme);
+      }
+
+      if (prev.length >= MAX_SELECTABLE_PREFERENCES) {
+        return prev;
+      }
+
+      return [...prev, theme];
+    });
   };
 
   const handleSave = () => {
@@ -83,9 +107,10 @@ const SettingsSection = ({
         <div className="flex justify-end mt-10">
           <button
             type="button"
+            disabled={isSaving}
             onClick={handleSave}
-            className="h10 w-[217px] h-[65px] bg-primary-color text-base-color-6 rounded-[15px] cursor-pointer hover:opacity-90 transition-opacity">
-            변경사항 저장
+            className="h10 w-[217px] h-[65px] bg-primary-color text-base-color-6 rounded-[15px] cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed">
+            {isSaving ? '저장 중...' : '변경사항 저장'}
           </button>
         </div>
       </div>

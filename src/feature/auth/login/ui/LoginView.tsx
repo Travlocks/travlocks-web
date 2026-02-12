@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { LoginFormData } from '@/shared/utils/validationSchemas';
 import { useLoginForm } from '../hooks/useLoginForm';
 import { useLoginMutation } from '../hooks/useLoginMutation';
+import { useSocialLogin } from '../hooks/useSocialLogin';
 import SocialLoginButton from '@/shared/components/Button/SocialLoginButton';
 import Button from '@/shared/components/Button/Button';
 import Input from '@/shared/components/Form/Input';
@@ -36,10 +37,7 @@ export const LoginView = () => {
     });
   };
 
-  const handleSocialLogin = (provider: 'naver' | 'kakao' | 'google') => {
-    // TODO: 소셜 로그인 API 연동
-    console.log('소셜 로그인 프로바이더:', provider);
-  };
+  const { handleSocialLogin } = useSocialLogin();
 
   const { canSubmit, submit, register, isSubmitting, inlineMessage } = useLoginForm(onSubmit);
   const errorMessage = apiError || inlineMessage;
@@ -103,7 +101,6 @@ export const LoginView = () => {
         {/* 소셜 로그인 버튼들 */}
         <div className="flex justify-center items-center gap-[20px] mb-[23px]">
           <SocialLoginButton provider="naver" onClick={() => handleSocialLogin('naver')} />
-          <SocialLoginButton provider="kakao" onClick={() => handleSocialLogin('kakao')} />
           <SocialLoginButton provider="google" onClick={() => handleSocialLogin('google')} />
         </div>
 

@@ -3,16 +3,29 @@ import TextField from '@/shared/components/TextField/TextField';
 import { useWithdrawalAccount } from '../hooks/useWithdrawalAccount';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import AccountModal from '../../components/AccountModal';
+import { useAuth } from '@/shared/hooks/useAuth';
+import { toast } from '@/shared/stores/toastStore';
 
 const DeleteAccountSection = () => {
   const [reason, setReason] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const { logout } = useAuth();
 
-  const { withdrawalAccount } = useWithdrawalAccount();
+  const { withdrawalAccount, isPending } = useWithdrawalAccount({
+    onSuccess: () => {
+      setShowModal(false);
+      setReason('');
+      toast.success('계정 탈퇴가 완료되었습니다.', 'bottom-center');
+      logout('/login');
+    },
+    onError: (error) => {
+      toast.error(error.message, 'bottom-center');
+    },
+  });
 
   const handleDelete = () => {
-    withdrawalAccount({ reason: reason.trim() });
-    setShowModal(false);
+    if (isPending) return;
+    withdrawalAccount({ reason });
   };
 
   return (
@@ -37,7 +50,8 @@ const DeleteAccountSection = () => {
             <button
               type="button"
               onClick={() => setShowModal(true)}
-              className="h9 px-14 py-4 bg-negative text-base-color-6 rounded-[10px] cursor-pointer hover:opacity-90 transition-all">
+              disabled={isPending}
+              className="h9 px-14 py-4 bg-negative text-base-color-6 rounded-[10px] cursor-pointer hover:opacity-90 transition-all disabled:cursor-not-allowed disabled:opacity-70">
               계정 삭제
             </button>
           </div>

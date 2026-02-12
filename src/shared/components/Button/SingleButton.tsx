@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
  * bg prop이 전달될 경우에는 variant보다 우선 적용됩니다.
  *
  * @param {string} text -- 버튼에 표시될 텍스트
- * @param {number} width -- 버튼 가로 최대 길이 (max-width)
+ * @param {number | 'full'} width -- 버튼 가로 최대 길이 (max-width) 또는 'full'
  * @param {number} height -- 버튼 세로 길이
  * @param {number} textSize -- 버튼에 들어갈 텍스트 크기, 기본 값은 20입니다. (현재 20, 18만 정의)
  * @param {'button' | 'submit'} type -- 버튼 타입, 기본 타입은 button이며 필요에 따라 타입을 지정할 수 있습니다.
@@ -30,7 +30,7 @@ import type { ReactNode } from 'react';
 
 export interface SingleButtonProps {
   text: string;
-  width: number;
+  width: number | 'full';
   height: number;
   textSize?: number;
   type?: 'button' | 'submit';
@@ -90,7 +90,7 @@ const SingleButton = ({
         icon && gap,
         className,
       )}
-      style={{ maxWidth: width, height }}>
+      style={{ maxWidth: width === 'full' ? '100%' : width, height }}>
       {icon && iconPosition === 'left' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
       {text}
       {icon && iconPosition === 'right' && <span className={clsx('flex items-center', iconSize)}>{icon}</span>}
