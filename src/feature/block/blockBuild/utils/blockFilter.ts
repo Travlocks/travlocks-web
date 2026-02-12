@@ -12,7 +12,7 @@ export const filterCategoryBlocks = (blocks: CategoryBlock[], query: string): Ca
   const trimmed = query.trim();
   if (!trimmed) return blocks;
 
-  return blocks.filter((block) => includes(block.name, trimmed) || includes(block.blockCategory.name, trimmed));
+  return blocks.filter((block) => includes(block.name, trimmed) || includes(block.vlockCategory.name, trimmed));
 };
 
 // SidebarBlock 기준 필터링

@@ -1,5 +1,6 @@
 import { type SidebarBlock } from '../../types/block';
 import ClockIcon from '@feature/block/blockBuild/assets/edit-icon-clock.svg?react';
+import DefaultBlockIconUrl from '@feature/block/blockBuild/assets/icon-default-block.svg?url';
 import { blockItemStyles, categoryColor } from './block-styles';
 import clsx from 'clsx';
 import { useDraggable } from '@dnd-kit/core';
@@ -30,7 +31,15 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {/* 이미지 영역 */}
       <div className="w-16 h-16 rounded-[10px] bg-gray-200 shrink-0 flex items-center justify-center overflow-hidden">
         {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+          <img
+            src={item.imageUrl}
+            alt={item.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = DefaultBlockIconUrl;
+            }}
+          />
         ) : (
           // 빈 이미지 영역
           <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

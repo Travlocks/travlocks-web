@@ -18,7 +18,7 @@ const formatDuration = (stayHours: number): string => {
 export const toSidebarBlock = (block: CategoryBlock): SidebarBlock => ({
   id: block.id,
   name: block.name,
-  category: block.blockCategory.name as CategoryType,
-  duration: formatDuration(block.blockCategory.stayHours),
+  category: block.vlockCategory.name as CategoryType,
+  duration: formatDuration(block.vlockCategory.stayHours),
   imageUrl: block.coverImgUrl || undefined,
 });

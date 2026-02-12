@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { useState, type SetStateAction } from 'react';
+import { useEffect, useState, type SetStateAction } from 'react';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 import type { Level } from '../blockBuild/types/level';
 import SaveIcon from '@assets/block/icon-save.svg?react';
@@ -36,7 +37,12 @@ interface BlockHeaderProps {
 
 const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
-  const [input, setInput] = useState('1205 제주여행'); // TODO: 사전 정보 입력값과 연동 필요
+  const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
+  const [input, setInput] = useState(templateTitle);
+
+  useEffect(() => {
+    setInput(templateTitle);
+  }, [templateTitle]);
 
   return (
     <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
@@ -57,7 +63,7 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
           </div>
           <input
             value={input}
-            placeholder={input}
+            placeholder="여행 제목"
             onChange={(e) => setInput(e.target.value)}
             className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
           />

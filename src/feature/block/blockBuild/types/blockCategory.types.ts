@@ -28,7 +28,7 @@ export interface BlockCity {
 export interface CategoryBlock {
   id: number;
   memberId: number;
-  blockCategory: BlockCategory;
+  vlockCategory: BlockCategory;
   city: BlockCity;
   name: string;
   address: string;

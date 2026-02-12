@@ -5,7 +5,6 @@ import BlockItem from './BlockItem';
 import BlockSearchInput from './BlockSearchInput';
 import BlockCategoryButtons from './BlockCategoryButtons';
 import { useBlockSearch } from '../../hooks/useBlockSearch';
-import { useRegions } from '../../hooks/queries/useRegions';
 import { useCategories } from '../../hooks/queries/useCategories';
 import { usePopularBlocks, useCreatedBlocks, useBlocksByCategory } from '../../hooks/queries/useBlockList';
 import { toSidebarBlock } from '../../utils/blockMapper';
@@ -13,9 +12,16 @@ import { filterCategoryBlocks } from '../../utils/blockFilter';
 import EmptyBlockMessage from '../ui/EmplyBlockMessage';
 import type { SidebarBlock } from '../../types/block';
 import type { VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+
 interface BlockSidebarProps {
   items: SidebarBlock[];
-  onOpenVlockModal?: (config: { type: 'create' | 'edit'; vlockId?: number; data?: VlockModalRequestDto }) => void;
+  onOpenVlockModal?: (config: {
+    type: 'create' | 'edit';
+    vlockId?: number;
+    data?: VlockModalRequestDto;
+    cityId?: number;
+  }) => void;
 }
 
 const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
@@ -26,38 +32,8 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
     delay: 300,
   });
 
-  const { data: regionsData } = useRegions();
-
-  // 모든 도시를 배열로 수집
-  const allCities = useMemo(() => {
-    const regions = regionsData?.data?.regions ?? [];
-    const cities: Array<{ cityId: number; cityName: string; regionName: string }> = [];
-
-    for (const region of regions) {
-      for (const city of region.cities) {
-        cities.push({
-          cityId: city.cityId,
-          cityName: city.cityName,
-          regionName: region.regionName,
-        });
-      }
-    }
-
-    return cities;
-  }, [regionsData]);
-
-  // 첫 번째 cityId
-  const firstCityId = useMemo(() => {
-    return allCities.length > 0 ? allCities[0].cityId : 0;
-  }, [allCities]);
-
-  // 선택된 cityId
-  const [selectedCityId, setSelectedCityId] = useState<number>(firstCityId);
-
-  // allCities가 업데이트되면 첫 번째 cityId로 설정
-  if (allCities.length > 0 && !allCities.some((city) => city.cityId === selectedCityId)) {
-    setSelectedCityId(firstCityId);
-  }
+  // 템플릿 캔버스 응답의 cities를 신뢰하여 사이드바 조회 cityId를 결정
+  const selectedCityId = useBlockTemplateStore((s) => s.templateCityIds[0] ?? 0);
 
   // 카테고리 목록
   const { data: categoriesData } = useCategories();
@@ -135,7 +111,7 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create' })} />
+            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create', cityId: selectedCityId })} />
             {createdBlocks.length > 0 ? (
               createdBlocks.map((item) => <BlockItem key={item.id} item={item} />)
             ) : isSearching ? (
@@ -147,7 +123,8 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-base-color-6 border-r border-gray-200">
+    // BlockEditor의 에디터 영역 높이(h-[1091px])와 맞추기 위한 고정값
+    <div className="flex flex-col h-[1091px] bg-base-color-6 border-r border-gray-200">
       {/* 헤더 타이틀 */}
       <div className="px-6 pt-8 pb-4">
         <h2 className="text-xl font-semibold text-black">Vlock 라이브러리</h2>
@@ -162,7 +139,7 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
       </div>
 
       {/* 탭별 컨텐츠 */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden min-w-0 px-6 pb-6">{content()}</div>
     </div>
   );
 };

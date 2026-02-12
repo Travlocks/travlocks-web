@@ -17,14 +17,17 @@ type SyncStatus = 'idle' | 'pending' | 'syncing' | 'error';
  * - Optimistic updates + rollback on error
  */
 export const useBlockSync = () => {
-  const { templateId, currentDay, blocksByDay, updateBlocksByDay } = useBlockTemplateStore(
-    useShallow((s) => ({
-      templateId: s.templateId,
-      currentDay: s.currentDay,
-      blocksByDay: s.blocksByDay,
-      updateBlocksByDay: s.updateBlocksByDay,
-    })),
-  );
+  const { templateId, currentDay, blocksByDay, updateBlocksByDay, setTemplateTitle, setTemplateCityIds } =
+    useBlockTemplateStore(
+      useShallow((s) => ({
+        templateId: s.templateId,
+        currentDay: s.currentDay,
+        blocksByDay: s.blocksByDay,
+        updateBlocksByDay: s.updateBlocksByDay,
+        setTemplateTitle: s.setTemplateTitle,
+        setTemplateCityIds: s.setTemplateCityIds,
+      })),
+    );
 
   const syncStatusRef = useRef<SyncStatus>('idle');
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -66,6 +69,9 @@ export const useBlockSync = () => {
       const response = await getBlockCanvas(templateIdNum, currentDay);
       if (seq !== hydrateSeqRef.current) return;
 
+      setTemplateTitle(response.data.title ?? '');
+      setTemplateCityIds(response.data.cities ?? []);
+
       const mapped = mapCanvasToBlocksFallback(response.data);
       latestBlocksRef.current = mapped;
       syncedBlocksRef.current = mapped;
@@ -84,7 +90,7 @@ export const useBlockSync = () => {
         isHydratingRef.current = false;
       }
     }
-  }, [templateId, currentDay, withSuppressedSync]);
+  }, [templateId, currentDay, withSuppressedSync, setTemplateTitle, setTemplateCityIds]);
 
   /**
    * 현재 day의 상태를 서버에 동기화 수행
@@ -180,10 +186,12 @@ export const useBlockSync = () => {
   useEffect(() => {
     if (!templateId) {
       syncedBlocksRef.current = [];
+      setTemplateTitle('');
+      setTemplateCityIds([]);
       return;
     }
     void hydrateDayFromServer();
-  }, [templateId, currentDay, hydrateDayFromServer]);
+  }, [templateId, currentDay, hydrateDayFromServer, setTemplateTitle, setTemplateCityIds]);
 
   /**
    * 블록 변경 감지 및 디바운스 동기화
