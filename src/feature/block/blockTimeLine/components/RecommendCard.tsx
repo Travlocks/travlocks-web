@@ -1,31 +1,22 @@
-import { useState } from 'react';
-import { MOCK_BLOCKS } from '../../blockBuild/mock';
 import RefreshIcon from '@assets/block/icon-refresh.svg?react';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
-
-// 연결 전 목데이터에서 랜덤으로 보여줌
-const getRandom = () => {
-  const arr = [...MOCK_BLOCKS];
-
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-
-  return arr.slice(0, 3);
-};
+import useGetRecommendAIVloks from '../hooks/useQuery/useGetRecommendAIVloks';
+import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
 
 const RecommendCard = () => {
-  const [randomArr, setRandomArr] = useState(getRandom());
+  const { data: userData } = useGetMyPage();
+
+  // TODO: 템플릿 사전 정보 입력 시 받는 템플릿 id로 연결해야 함
+  const { data, refetch } = useGetRecommendAIVloks(41);
 
   return (
     <div className="bg-white py-[25px] px-[30px] flex flex-col gap-[16px]">
       <div className="flex flex-col gap-[4px]">
         <div className="flex justify-between">
-          <p className="h8">디모님을 위한 AI 장소 추천</p>
+          <p className="h8">{userData?.data.nickname}님을 위한 AI 장소 추천</p>
 
           <div
-            onClick={() => setRandomArr(() => getRandom())}
+            onClick={() => refetch()}
             className="rounded-full size-[22px] border border-base-color bg-white flex justify-center items-center cursor-pointer">
             <RefreshIcon />
           </div>
@@ -35,8 +26,8 @@ const RecommendCard = () => {
       </div>
 
       <div className="flex gap-[20px]">
-        {randomArr.map((item) => (
-          <BlockItemUI key={item.id} item={item} />
+        {data?.data.vlocks.map((item) => (
+          <BlockItemUI key={item.vlockId} item={item} />
         ))}
       </div>
     </div>

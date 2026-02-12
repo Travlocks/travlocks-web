@@ -3,7 +3,6 @@ import type { SuccessPayload } from '@/shared/types/common';
 // AI 장소 추천
 export type RequestAIVlocksDto = {
   templateId: number;
-  dayNo: number;
 };
 
 export type Vlock = {
@@ -15,8 +14,5 @@ export type Vlock = {
 };
 
 export type ResponseAIVlocksDto = SuccessPayload<{
-  templateDayId: number;
   vlocks: Vlock[];
-  seed: number;
-  fromCached: boolean;
 }>;
