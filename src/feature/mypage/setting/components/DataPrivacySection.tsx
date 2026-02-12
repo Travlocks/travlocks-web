@@ -2,7 +2,6 @@ import ArrowRightIcon from '@assets/icon-arrow-right.svg?react';
 import { Link } from 'react-router-dom';
 
 const PRIVACY_LINKS = [
-  { id: 'data-download', label: '내 데이터 다운로드', to: '#' },
   { id: 'privacy-policy', label: '개인정보 처리방침', to: '#' },
   { id: 'terms', label: '이용약관', to: '#' },
 ];

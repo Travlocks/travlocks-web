@@ -2,6 +2,7 @@ import PuzzleIcon from '@/shared/assets/icon-puzzle.svg?react';
 import StarIcon from '@/shared/assets/icon-star.svg?react';
 import TemplateIcon from '@/shared/assets/icon-template.svg?react';
 import { REGION_MAP, type RegionId } from '@/shared/constants/destinationCity';
+import { toast } from '@/shared/stores/toastStore';
 import ActivityList from './ActivityList';
 import type { InterestTheme } from './InterestThemeSection';
 import ProfileHeader from './ProfileHeader';
@@ -97,8 +98,12 @@ const Dashboard = () => {
   const { data: myPageData, isLoading, isError } = useMyPageQuery();
   const { toggleFavorite } = useFavoriteMutation();
   const { updateMyProfile, isPending: isProfileUpdating } = useUpdateMyProfileMutation({
+    onSuccess: () => {
+      toast.success('변경사항이 저장되었습니다.', 'bottom-center');
+    },
     onError: (error) => {
       console.error('Failed to save settings:', error);
+      toast.error(error.message, 'bottom-center');
     },
   });
 

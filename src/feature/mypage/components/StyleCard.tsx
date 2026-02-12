@@ -15,22 +15,24 @@ const StyleCard = ({ icon, label, isSelected = false, onClick, className }: Styl
       type="button"
       onClick={onClick}
       className={clsx(
-        'flex flex-col items-center justify-center gap-1.25 w-full h-[159px] px-11.5 py-5 rounded-[10px] border transition-all cursor-pointer',
-        isSelected
-          ? 'border-primary-color bg-primary-color/5'
-          : 'border-base-color bg-base-color-6 hover:border-base-color-2',
+        'group w-full h-[159px] rounded-[10px] border pt-[20px] pb-[12px] px-[46px] flex flex-col justify-center items-center text-base-color-0 hover:bg-[rgba(60,78,244,0.10)] hover:border-primary-color hover:text-primary-color cursor-pointer transition-all duration-500',
+        isSelected ? 'border-primary-color text-primary-color bg-[rgba(60,78,244,0.10)]' : 'border-base-color',
         className,
       )}>
-      <div className="w-8 h-8 rounded-[10px] bg-base-color-4 flex items-center justify-center">
-        <div className={clsx('w-6.25 h-6.25', isSelected ? 'text-primary-color' : 'text-base-color-0')}>{icon}</div>
-      </div>
-      <span
+      <div
         className={clsx(
-          'b6 text-center leading-6 tracking-[-0.3125px]',
-          isSelected ? 'text-primary-color' : 'text-base-color-0',
+          'size-[45px] rounded-[10px] flex items-center justify-center group-hover:bg-primary-color transition-all duration-500',
+          isSelected ? 'bg-primary-color' : 'bg-base-color-4',
         )}>
-        {label}
-      </span>
+        <div
+          className={clsx(
+            'w-[25px] h-[25px] text-base-color-0 transition-all duration-500',
+            isSelected ? 'text-white' : 'group-hover:text-white',
+          )}>
+          {icon}
+        </div>
+      </div>
+      <span className="text-[16px] font-[500] leading-[24px] tracking-[-0.312px] whitespace-nowrap">{label}</span>
     </button>
   );
 };
