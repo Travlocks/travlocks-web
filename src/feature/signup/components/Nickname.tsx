@@ -14,6 +14,8 @@ const Nickname = ({ onPrev, onNext }: StepProps) => {
     register,
     setError,
     clearErrors,
+    trigger,
+    setValue,
     formState: { errors },
   } = useFormContext<FormFields>();
 
@@ -33,16 +35,34 @@ const Nickname = ({ onPrev, onNext }: StepProps) => {
   };
 
   useEffect(() => {
-    if (!debouncedValue) return;
+    const checkNickname = async () => {
+      // 값 없으면 에러 지우고 종료
+      if (!debouncedValue) {
+        clearErrors('nickname');
+        return;
+      }
 
-    if (data?.data.exists) {
-      setError('nickname', {
-        message: '이미 사용 중인 닉네임 입니다.',
-      });
-    } else {
-      clearErrors('nickname');
-    }
-  }, [data, debouncedValue, setError, clearErrors]);
+      setValue('nickname', debouncedValue);
+
+      // 스키마 검증 (2자 이상 10자 이하)
+      const isValid = await trigger('nickname');
+
+      // 스키마 통과 후 중복 검사
+      if (isValid && data) {
+        if (data?.data.exists) {
+          setError('nickname', {
+            message: '이미 사용 중인 닉네임 입니다.',
+          });
+        } else {
+          clearErrors('nickname');
+        }
+      }
+    };
+
+    checkNickname();
+  }, [data, data?.data.exists, debouncedValue, setError, trigger, clearErrors]);
+
+  console.log(errors.nickname);
 
   return (
     <section className="flex flex-col gap-[16px]">
@@ -77,7 +97,7 @@ const Nickname = ({ onPrev, onNext }: StepProps) => {
           right={{
             text: '다음',
             onClick: handleOnClickNext,
-            disabled: !debouncedValue || !data || data?.data.exists,
+            disabled: !debouncedValue || !data || data?.data.exists || !!errors.nickname,
           }}
           width={215}
           height={64}
