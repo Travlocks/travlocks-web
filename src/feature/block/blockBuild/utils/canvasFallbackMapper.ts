@@ -75,7 +75,7 @@ export const mapCanvasToBlocksFallback = (canvas: CanvasData): Block[] => {
 
   const ordered = [...connected, ...detached];
 
-  const mapped = ordered.map((vlock) => {
+  const mapped: Block[] = ordered.map((vlock): Block => {
     const category = toKnownCategory(vlock.vlock.category);
     const duration = toDurationLabel(category, vlock.stayHours);
     const shape = getBlockShapeByDuration(duration, category);
@@ -97,7 +97,7 @@ export const mapCanvasToBlocksFallback = (canvas: CanvasData): Block[] => {
       connectors: shape.connectors,
       connectedTo: null,
       connectedFrom: null,
-    } satisfies Block;
+    };
   });
 
   for (let i = 0; i < connected.length; i++) {
