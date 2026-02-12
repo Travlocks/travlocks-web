@@ -3,7 +3,6 @@ import { useState, type SetStateAction } from 'react';
 
 import type { Level } from '../blockBuild/types/level';
 import SaveIcon from '@assets/block/icon-save.svg?react';
-import ShareIcon from '@assets/block/icon-share.svg?react';
 import LeftIcon from '@assets/splash/icon-arrow.svg?react';
 
 const VISIBILITY = [
@@ -23,11 +22,11 @@ const ACTIONS = [
     icon: <SaveIcon />,
     text: '저장',
   },
-  {
-    id: 2,
-    icon: <ShareIcon />,
-    text: '공유하기',
-  },
+  // {
+  //   id: 2,
+  //   icon: <ShareIcon />,
+  //   text: '공유하기',
+  // },
 ];
 
 interface BlockHeaderProps {
@@ -85,8 +84,8 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             key={action.id}
             className={clsx(
               'rounded-[10px] py-[10px] px-[15px] flex gap-[10px] border items-center cursor-pointer',
-              action.id === 1 && 'border-base-color bg-white',
-              action.id === 2 && 'border-primary-color bg-primary-color text-white',
+              // action.id === 1 && 'border-base-color bg-white',
+              action.id === 1 && 'border-primary-color bg-primary-color text-white',
             )}>
             {action.icon}
             <p>{action.text}</p>
