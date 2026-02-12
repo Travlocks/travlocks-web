@@ -1,7 +1,6 @@
 import TemplateCard from '@/feature/template/TemplateCard';
 import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
-import EmptyResult from '@/feature/search/component/ResultSection/EmptyResult';
-import ErrorResult from '@/feature/search/component/ResultSection/ErrorResult';
+import EmptyResultCard from '@/shared/components/EmptyResultCard';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
 import type { SearchTemplateResponseDTO } from '@/feature/search/types/searchTemplate.types';
 
@@ -66,12 +65,22 @@ const SearchResultCards = ({
 
   // 에러 발생
   if (isError) {
-    return <ErrorResult />;
+    return (
+      <EmptyResultCard
+        title="해당 조건에 맞는 템플릿이 없어요."
+        label="하지만 트래블록스에선 없는 여행도 바로 만들 수 있어요"
+      />
+    );
   }
 
   // 결과 없음
   if (!data || data.templates.length === 0) {
-    return <EmptyResult />;
+    return (
+      <EmptyResultCard
+        title="해당 조건에 맞는 템플릿이 없어요."
+        label="하지만 트래블록스에선 없는 여행도 바로 만들 수 있어요"
+      />
+    );
   }
 
   // 정상: 카드 리스트 + 페이지네이션
