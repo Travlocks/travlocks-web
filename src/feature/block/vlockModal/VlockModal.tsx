@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { VlockModalRequestDto, UpdateVlockModalFormData } from './types/vlockModal.types';
 
 import { useCreateVlock, useUpdateVlock, useDeleteVlock } from './hooks/useVlock';
@@ -200,8 +200,22 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
 
   const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-[80px_180px] bg-[rgba(74,85,105,0.60)]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-[80px_180px] bg-[rgba(74,85,105,0.60)]"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose?.();
+        }
+      }}>
       <div className="w-[534px] h-[800px] flex flex-col gap-[30px] rounded-[30px] bg-base-color-6 p-[45px_40px]">
         <div className="flex flex-row justify-between items-center">
           <p className="h6 text-base-color-0">{type === 'create' ? 'Vlock 생성' : '생성된 Vlock 편집'}</p>
