@@ -39,7 +39,7 @@ export interface MyPage {
   recent: RecentDto;
 }
 
-export interface TemplateCard {
+export interface TemplateCardDto {
   templateId: number;
   coverImgUrl: string;
   title: string;
@@ -56,7 +56,7 @@ export interface MemberProfile {
   nickname: string;
   introduction: string;
   profileImageUrl: string;
-  templates: PageResponse<TemplateCard>;
+  templates: PageResponse<TemplateCardDto>;
 }
 
 export interface RequestUpdateMyProfileDto {
@@ -75,6 +75,6 @@ export interface UpdatedMyProfile {
 }
 
 export type ResponseMyPageDto = SuccessPayload<MyPage>;
-export type ResponseMyTemplatesDto = SuccessPayload<PageResponse<TemplateCard>>;
+export type ResponseMyTemplatesDto = SuccessPayload<PageResponse<TemplateCardDto>>;
 export type ResponseMemberProfileDto = SuccessPayload<MemberProfile>;
 export type ResponseUpdateMyProfileDto = SuccessPayload<UpdatedMyProfile>;

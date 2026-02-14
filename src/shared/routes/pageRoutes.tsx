@@ -72,10 +72,6 @@ export const routes: RouteObject[] = [
     element: <DefaultLayout />,
     children: [
       {
-        path: 'member/:memberId/vlocks',
-        element: <lazyRoutes.MemberVlocksPage />,
-      },
-      {
         path: 'member/:memberId/templates',
         element: <lazyRoutes.MemberTemplatesPage />,
       },

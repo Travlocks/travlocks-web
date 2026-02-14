@@ -1,11 +1,14 @@
 import { useMyPageQuery } from '@/feature/mypage/hooks/useMyPageQuery';
 import { useMyTemplatesQuery } from '@/feature/mypage/hooks/useMyTemplatesQuery';
+import TemplateCard from '@/feature/template/TemplateCard';
 import ProfileLayout from '@/feature/mypage/components/ProfileLayout';
+import { toTemplateCard } from '@/feature/mypage/utils/templateAdapter';
 
 const TemplatesPage = () => {
   const { data: myPageData, isLoading: isProfileLoading, isError: isProfileError } = useMyPageQuery();
   const { data: templateData, isLoading: isTemplateLoading, isError: isTemplateError } = useMyTemplatesQuery(0);
-  void templateData;
+
+  const templates = (templateData?.content ?? []).map(toTemplateCard);
 
   if (isProfileLoading || isTemplateLoading) {
     return <div className="px-6 py-12 text-center">로딩 중...</div>;
@@ -22,10 +25,18 @@ const TemplatesPage = () => {
       profileImageUrl={myPageData.profileImageUrl}
       title={`${myPageData.nickname}님이 만든 템플릿`}
       description={`${myPageData.nickname}님이 만든 템플릿 목록입니다.`}
-      children={null}>
-      {/* TODO: /mypage/templates 목록 API 연동 후 템플릿 리스트 렌더링 구현 */}
-      {/* TODO: 현재 슬롯은 비우고 레이아웃만 유지 */}
-    </ProfileLayout>
+      children={
+        templates.length > 0 ? (
+          <div className="grid grid-cols-1 gap-x-[18px] gap-y-[40px] sm:grid-cols-2 lg:grid-cols-3">
+            {templates.map((template) => (
+              <TemplateCard key={template.templateId} template={template} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-lg text-base-color-1">등록된 템플릿이 없습니다.</p>
+        )
+      }
+    />
   );
 };
 
