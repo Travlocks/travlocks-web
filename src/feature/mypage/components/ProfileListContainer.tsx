@@ -12,8 +12,8 @@ const ProfileListContainer = ({ title, description, action, children }: ProfileL
     <section>
       <div className="flex items-center justify-between gap-5">
         <div>
-          <h2 className="h3 text-base-color-0">{title}</h2>
-          <p className="mt-3 b3 text-base-color-1">{description}</p>
+          <h2 className="text-[36px] font-semibold leading-none text-base-color-0">{title}</h2>
+          <p className="mt-3 text-2xl font-normal leading-none text-base-color-1">{description}</p>
         </div>
         {action}
       </div>

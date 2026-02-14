@@ -70,8 +70,10 @@ const ProfilePage = () => {
               )}
             </div>
             <div className="ml-[282px] flex flex-col justify-start pt-3 text-left">
-              <h1 className="h1 text-base-color-0">{myPageData.nickname}</h1>
-              <p className="b2 text-base-color-1">{myPageData.introduction || '소개가 없습니다.'}</p>
+              <h1 className="text-[38px] font-semibold leading-none text-base-color-0">{myPageData.nickname}</h1>
+              <p className="mt-[11px] text-[28px] font-medium leading-none text-base-color-3">
+                {myPageData.introduction || '소개가 없습니다.'}
+              </p>
             </div>
           </div>
 
