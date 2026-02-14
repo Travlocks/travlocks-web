@@ -53,14 +53,31 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.MyPage />,
           },
           {
-            path: 'profile',
-            element: <lazyRoutes.ProfilePage />,
+            path: 'vlocks',
+            element: <lazyRoutes.VlocksPage />,
+          },
+          {
+            path: 'templates',
+            element: <lazyRoutes.TemplatesPage />,
           },
           {
             path: 'settings',
             element: <lazyRoutes.SettingsPage />,
           },
         ],
+      },
+    ],
+  },
+  {
+    element: <DefaultLayout />,
+    children: [
+      {
+        path: 'member/:memberId/vlocks',
+        element: <lazyRoutes.MemberVlocksPage />,
+      },
+      {
+        path: 'member/:memberId/templates',
+        element: <lazyRoutes.MemberTemplatesPage />,
       },
     ],
   },
