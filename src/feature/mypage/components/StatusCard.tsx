@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
+import ChevronRightIcon from '@assets/icon-chevron-right.svg?react';
 
 interface StatusCardProps {
   icon: React.ReactNode;
@@ -24,8 +25,8 @@ const StatusCard = ({ icon, label, count, onClick, className }: StatusCardProps)
       <div className="flex flex-col items-end">
         <span className="h1 text-base-color-0">{count}</span>
         <div className="flex items-center text-base-color-1 b2 mt-3">
-          {/* <span>보러가기</span>
-          <ChevronRightIcon /> */}
+          <span>보러가기</span>
+          <ChevronRightIcon />
         </div>
       </div>
     </div>
