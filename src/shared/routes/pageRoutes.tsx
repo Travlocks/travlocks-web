@@ -53,6 +53,10 @@ export const routes: RouteObject[] = [
             element: <lazyRoutes.MyPage />,
           },
           {
+            path: 'profile',
+            element: <lazyRoutes.ProfilePage />,
+          },
+          {
             path: 'settings',
             element: <lazyRoutes.SettingsPage />,
           },
