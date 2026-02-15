@@ -89,12 +89,9 @@ const SearchResultCards = ({
     <div className="flex flex-col gap-[80px]">
       {/* 템플릿 카드 그리드 (3x3) */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-        {(() => {
-          console.log(data.data.content.map((t) => ({ templateId: t.templateId, page: data.data.page })));
-          return data.data.content.map((template) => (
-            <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
-          ));
-        })()}
+        {data.data.content.map((template) => (
+          <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
+        ))}
       </div>
 
       {/* 페이지네이션 */}

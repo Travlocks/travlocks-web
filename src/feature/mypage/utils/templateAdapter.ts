@@ -14,6 +14,7 @@ export const toTemplateCard = (template: TemplateCardDto): TemplateCardViewModel
   title: template.title,
   travelTheme: isTravelTheme(template.travelTheme) ? template.travelTheme : '로컬',
   authorName: template.ownerNickname,
+  authorMemberId: template.memberId,
   avgRating: template.rating,
   starCount: template.favoriteCount,
   remixCount: template.favoriteCount,
