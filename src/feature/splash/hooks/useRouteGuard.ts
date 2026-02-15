@@ -32,26 +32,22 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
   );
 
   // 현재 경로 분석
-  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset'];
+  const AUTH_PAGES = ['/login', '/signup', '/password', '/password-reset', '/onboarding'];
   const isAuthPage = AUTH_PAGES.includes(location.pathname);
   const isHomeRoute = location.pathname === '/';
+  const returnTo = location.pathname + location.search;
+
+  // 스플래시 오버레이 표시 여부
+  const shouldShowSplashOverlay = showSplash && !isAuthPage && !routeFlags.skipSplash;
 
   const getRedirect = () => {
-    if (isAnimating) {
+    // 스플래시 중에는 어떤 페이지로든 리다이렉트 X
+    if (isAnimating || shouldShowSplashOverlay) {
       return null;
     }
 
-    // 스플래시 안본상태 + 인증 페이지 접근시
-    if (!hasSeenSplash && isAuthPage && !routeFlags.skipSplash) {
-      return '/';
-    }
-    // 스플래시 안본상태 + 다른 페이지 접근시
-    if (!hasSeenSplash && !isAuthPage && !isHomeRoute && !routeFlags.skipSplash) {
-      return '/';
-    }
-
     // 스플래시 본 상태 + 보호 라우트 + 인증필요
-    if (hasSeenSplash && protectedRoutes && shouldRequireAuth && !routeFlags.skipSessionGate) {
+    if (protectedRoutes && shouldRequireAuth && !routeFlags.skipSessionGate && !isAuthPage) {
       return '/login';
     }
     return null;
@@ -61,6 +57,8 @@ export const useRouteGuard = (protectedRoutes: boolean) => {
     isAuthPage,
     showSplash,
     isHomeRoute,
+    returnTo,
+    shouldShowSplashOverlay,
     isAuthenticated,
     hasSeenSplash,
     isAnimating,

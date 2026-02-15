@@ -12,7 +12,7 @@ import { useAuth } from '@/shared/hooks/useAuth';
  * @description
  * 로고, 카피 문구, 로그인/회원가입 탭 네비게이션을 포함하는 공통 UI를 제공합니다.
  *
- * @author seomgin36
+ * @author seongmin36
  */
 
 const DEFAULT_HEADER: AuthLayoutHeader = {
