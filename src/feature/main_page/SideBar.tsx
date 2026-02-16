@@ -66,7 +66,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
     });
   }, [mapCenter.lat, mapCenter.lng]);
 
-  const ratingText = templateDetail?.rating == null ? '-' : templateDetail.rating.toFixed(1);
+  const ratingText = templateDetail ? templateDetail.rating.toFixed(1) : '-';
   const tripDaysText = templateDetail?.tripDays ?? '-';
   const remixCountText = templateDetail ? `${templateDetail.remixCount}회` : '-';
 

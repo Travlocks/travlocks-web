@@ -3,8 +3,8 @@ import type { SuccessPayload } from '@/shared/types/common';
 export type TemplateDetailVlock = {
   vlockId: number;
   name: string;
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
   address: string;
 };
 
@@ -17,10 +17,10 @@ export type TemplateDetailData = {
   ownerNickname: string;
   coverImageUrl: string | null;
   ownerId: number;
-  rating: number | null;
+  rating: number;
   tripDays: string;
   remixCount: number;
-  description: string;
+  description: string | null;
   tags: string[];
   vlocks: TemplateDetailVlock[];
   isFavorited: boolean;
