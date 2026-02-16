@@ -1,13 +1,16 @@
-import RefreshIcon from '@assets/block/icon-refresh.svg?react';
-import BlockItemUI from '@/shared/components/Block/BlockItemUI';
+import { useParams } from 'react-router-dom';
+
 import useGetRecommendAIVloks from '../hooks/useQuery/useGetRecommendAIVloks';
 import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
+import BlockItemUI from '@/shared/components/Block/BlockItemUI';
+
+import RefreshIcon from '@assets/block/icon-refresh.svg?react';
 
 const RecommendCard = () => {
   const { data: userData } = useGetMyPage();
+  const { templateId } = useParams();
 
-  // TODO: 템플릿 사전 정보 입력 시 받는 템플릿 id로 연결해야 함
-  const { data, refetch } = useGetRecommendAIVloks(41);
+  const { data, refetch } = useGetRecommendAIVloks(Number(templateId));
 
   return (
     <div className="bg-white py-[25px] px-[30px] flex flex-col gap-[16px]">
