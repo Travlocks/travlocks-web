@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { Level } from '@/feature/block/blockBuild/types/level';
 import BlockHeader from '@/feature/block/blockHeader/BlockHeader';
+import BlockSummary from '@/feature/block/blockSummary/BlockSummary';
 
 const BlockPage = () => {
   const { templateId } = useParams<{ templateId?: string }>();
@@ -21,9 +22,9 @@ const BlockPage = () => {
         <BlockEditor level={level} setLevel={setLevel} />
       </div>
 
-      {/*<div className="max-2xl:hidden absolute left-[calc(50%+575px)] ">
+      <div className="hidden xl:block absolute left-[calc(50%+575px)] ">
         <BlockSummary />
-      </div>*/}
+      </div>
     </div>
   );
 };

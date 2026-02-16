@@ -6,12 +6,24 @@ import type {
   ResponseCreateBlockDto,
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
+  ResponseTemplateSummaryDto,
 } from '../blockBuild.type';
 
 // 캔버스 조회
 export const getBlockCanvas = async (templateId: number, dayNo: number): Promise<ResponseCanvasDto> => {
   try {
     const { data } = await axiosInstance.get<ResponseCanvasDto>(`/templates/${templateId}/days/${dayNo}/canvas`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// 일정 요약 조회
+export const getTemplateSummary = async (templateId: number): Promise<ResponseTemplateSummaryDto> => {
+  try {
+    const { data } = await axiosInstance.get<ResponseTemplateSummaryDto>(`/templates/${templateId}/summary`);
     return data;
   } catch (error) {
     console.error(error);
