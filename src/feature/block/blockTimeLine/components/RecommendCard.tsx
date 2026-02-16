@@ -1,14 +1,18 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import useGetRecommendAIVloks from '../hooks/useQuery/useGetRecommendAIVloks';
 import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 
 import RefreshIcon from '@assets/block/icon-refresh.svg?react';
+import convertIdToCity from '../utils/convertIdToCity';
 
 const RecommendCard = () => {
   const { data: userData } = useGetMyPage();
   const { templateId } = useParams();
+
+  const location = useLocation();
+  const city = convertIdToCity(location.state.destinationCityIds[0]);
 
   const { data, refetch } = useGetRecommendAIVloks(Number(templateId));
 
@@ -25,7 +29,7 @@ const RecommendCard = () => {
           </div>
         </div>
 
-        <p className="b6">제주에서 놓칠 수 없는 순간들! 많은 여행자들이 이 블록들을 조립했어요.</p>
+        <p className="b6">{city}에서 놓칠 수 없는 순간들! 많은 여행자들이 이 블록들을 조립했어요.</p>
       </div>
 
       <div className="flex gap-[20px]">
