@@ -2,6 +2,7 @@ import SummaryCard from './components/SummaryCard';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getTemplateSummary } from '@/feature/block/blockBuild/apis/templateBlockApi';
+import { QUERY_KEY } from '@/shared/constants/key';
 
 interface BlockSummaryData {
   totalVlocks: number;
@@ -23,7 +24,7 @@ const BlockSummary = () => {
   const hasValidTemplateId = typeof templateId === 'string' && Number.isInteger(templateIdNum) && templateIdNum > 0;
 
   const { data, isPending, isError } = useQuery({
-    queryKey: ['block-summary', templateIdNum],
+    queryKey: [QUERY_KEY.blockSummary, templateIdNum],
     enabled: hasValidTemplateId,
     queryFn: async () => {
       const response = await getTemplateSummary(templateIdNum);
