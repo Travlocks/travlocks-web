@@ -18,12 +18,16 @@ const EMPTY_SUMMARY: BlockSummaryData = {
 
 const toMinutes = (hours: number) => Math.max(0, Math.round(hours * 60));
 
-const BlockSummary = () => {
+interface BlockSummaryProps {
+  isSyncUpdating?: boolean;
+}
+
+const BlockSummary = ({ isSyncUpdating = false }: BlockSummaryProps) => {
   const { templateId } = useParams<{ templateId?: string }>();
   const templateIdNum = Number(templateId);
   const hasValidTemplateId = typeof templateId === 'string' && Number.isInteger(templateIdNum) && templateIdNum > 0;
 
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError, isFetching } = useQuery({
     queryKey: [QUERY_KEY.blockSummary, templateIdNum],
     enabled: hasValidTemplateId,
     queryFn: async () => {
@@ -41,6 +45,7 @@ const BlockSummary = () => {
   });
 
   const summaryData = data ?? EMPTY_SUMMARY;
+  const isUpdating = hasValidTemplateId && Boolean(data) && (isSyncUpdating || isFetching);
 
   return (
     <div className="rounded-[30px] mt-[79px] border border-base-color bg-white w-[15vw] max-w-[302px] h-max">
@@ -53,7 +58,7 @@ const BlockSummary = () => {
         {hasValidTemplateId && !isPending && isError && (
           <p className="b6 text-base-color-2 text-[14px]">일정 요약을 불러오지 못했습니다.</p>
         )}
-        {hasValidTemplateId && !isPending && !isError && <SummaryCard data={summaryData} />}
+        {hasValidTemplateId && !isPending && !isError && <SummaryCard data={summaryData} isUpdating={isUpdating} />}
       </div>
 
       <p className="px-[24px] pt-[12px] pb-[28px] text-base-color-2 b6 text-[14px]">

@@ -8,6 +8,7 @@ interface SummaryCardProps {
     totalDurationMinutes: number;
     totalMoveMinutes: number;
   };
+  isUpdating?: boolean;
 }
 
 const formatDuration = (totalMinutes: number): string => {
@@ -20,7 +21,7 @@ const formatDuration = (totalMinutes: number): string => {
   return `${hours}시간 ${minutes}분`;
 };
 
-const SummaryCard = ({ data }: SummaryCardProps) => {
+const SummaryCard = ({ data, isUpdating = false }: SummaryCardProps) => {
   const Card = [
     {
       key: 'total',
@@ -52,7 +53,14 @@ const SummaryCard = ({ data }: SummaryCardProps) => {
 
           <div className="flex flex-col gap-[3px]">
             <p className="text-primary-color b6">{item.text}</p>
-            <p className="h8">{item.value}</p>
+            {isUpdating ? (
+              <span
+                className="h-[24px] rounded-[6px] bg-base-color opacity-70 animate-pulse"
+                style={{ width: `${Math.max(item.value.length, 4)}ch` }}
+              />
+            ) : (
+              <p className="h8">{item.value}</p>
+            )}
           </div>
         </div>
       ))}

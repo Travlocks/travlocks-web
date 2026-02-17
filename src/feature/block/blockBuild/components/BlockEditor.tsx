@@ -20,6 +20,7 @@ import { MOCK_BLOCKS } from '../mock';
 interface BlockEditorProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
+  onSummaryUpdatingChange?: (isUpdating: boolean) => void;
 }
 
 const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
@@ -32,7 +33,7 @@ const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
   };
 };
 
-const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
+const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
   const [blockItems, setBlockItems] = useState<SidebarBlock[]>(MOCK_BLOCKS);
@@ -45,7 +46,7 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   const PAD = 2000;
 
   // 서버 동기화 (디바운스 + 롤백)
-  useBlockSync();
+  useBlockSync({ onSummaryUpdatingChange });
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
     puzzleBlocks,
