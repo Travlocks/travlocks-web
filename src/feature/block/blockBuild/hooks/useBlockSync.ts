@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, type RefObject } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -15,6 +15,7 @@ type SyncStatus = 'idle' | 'pending' | 'syncing' | 'error';
 
 type UseBlockSyncOptions = {
   onSummaryUpdatingChange?: (isUpdating: boolean) => void;
+  isSyncPausedRef?: RefObject<boolean>;
 };
 
 /**
@@ -22,7 +23,7 @@ type UseBlockSyncOptions = {
  * - Debounced 자동 저장
  * - Optimistic updates + rollback on error
  */
-export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = {}) => {
+export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBlockSyncOptions = {}) => {
   const queryClient = useQueryClient();
   const { templateId, currentDay, blocksByDay, updateBlocksByDay, setTemplateTitle, setTemplateCityIds } =
     useBlockTemplateStore(
@@ -62,6 +63,10 @@ export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = 
     },
     [onSummaryUpdatingChange],
   );
+
+  const isPaused = useCallback(() => {
+    return isSyncPausedRef?.current === true;
+  }, [isSyncPausedRef]);
 
   const withSuppressedSync = useCallback(
     (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => {
@@ -136,6 +141,8 @@ export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = 
    * 현재 day의 상태를 서버에 동기화 수행
    */
   const syncCurrentState = useCallback(async () => {
+    if (isPaused()) return;
+
     if (!templateId) {
       setSyncStatus('idle');
       return;
@@ -220,7 +227,15 @@ export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = 
         void syncCurrentState();
       }
     }
-  }, [templateId, currentDay, withSuppressedSync, hydrateDayFromServer, invalidateBlockSummary, setSyncStatus]);
+  }, [
+    templateId,
+    currentDay,
+    withSuppressedSync,
+    hydrateDayFromServer,
+    invalidateBlockSummary,
+    setSyncStatus,
+    isPaused,
+  ]);
 
   /**
    * template/day 변경 시 서버 캔버스로 초기 동기화
@@ -243,11 +258,24 @@ export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = 
     const currentBlocks = blocksByDay[currentDay] ?? [];
     latestBlocksRef.current = currentBlocks;
 
+    if (isPaused()) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      // 디바운스를 기다리는 도중 드래그가 되면 동기화를 일시 중지한다.
+      if (syncStatusRef.current === 'pending') {
+        setSyncStatus('idle');
+      }
+      return;
+    }
+
     if (!templateId || suppressSyncRef.current || isHydratingRef.current) return;
 
     setSyncStatus('pending');
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
     }
 
     debounceTimerRef.current = setTimeout(() => {
@@ -257,20 +285,22 @@ export const useBlockSync = ({ onSummaryUpdatingChange }: UseBlockSyncOptions = 
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
       }
     };
-  }, [blocksByDay, currentDay, templateId, syncCurrentState, setSyncStatus]);
+  }, [blocksByDay, currentDay, templateId, syncCurrentState, setSyncStatus, isPaused]);
 
   // 컴포넌트 언마운트 시 즉시 동기화
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
       }
-      if (!suppressSyncRef.current && !isHydratingRef.current) {
+      if (!isPaused() && !suppressSyncRef.current && !isHydratingRef.current) {
         void syncCurrentState();
       }
       onSummaryUpdatingChange?.(false);
     };
-  }, [syncCurrentState, onSummaryUpdatingChange]);
+  }, [syncCurrentState, onSummaryUpdatingChange, isPaused]);
 };
