@@ -1,4 +1,4 @@
-import { type SetStateAction } from 'react';
+import { useState, type SetStateAction } from 'react';
 import clsx from 'clsx';
 
 import { VISIBILITY, type FormFields } from '../BlockHeader';
@@ -6,6 +6,9 @@ import ImageUploadForm from '../../vlockModal/component/ImageUploadForm';
 import Input from '@/shared/components/Form/Input';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import { Controller, useFormContext } from 'react-hook-form';
+import type { RequestSaveTemplateDto } from '../types/template';
+import usePatchSaveTemplate from '../hooks/mutations/usePatchSaveTemplate';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface SaveModalProps {
   selectedId: number;
@@ -14,7 +17,30 @@ interface SaveModalProps {
 }
 
 const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalProps) => {
-  const { register, control } = useFormContext<FormFields>();
+  const { register, control, handleSubmit } = useFormContext<FormFields>();
+  const { mutate } = usePatchSaveTemplate();
+  const { templateId } = useParams();
+  const navigate = useNavigate();
+  const [cover, setCover] = useState<File | null>(null);
+
+  const onSubmit = (data: FormFields) => {
+    const body: RequestSaveTemplateDto = {
+      title: data.title,
+      description: data.description,
+      coverImage: cover,
+      isPublic: selectedId === 1,
+    };
+
+    mutate(
+      { templateId: Number(templateId), body },
+      {
+        onSuccess: (data) => {
+          setShowSaveModal(false);
+          navigate(`/block/${data.data.templateId}`);
+        },
+      },
+    );
+  };
 
   return (
     <div
@@ -43,7 +69,11 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
 
         <div className="flex flex-col gap-[20px] max-h-[588px] h-full overflow-y-auto">
           <div className="relative">
-            <ImageUploadForm type="create" />
+            <ImageUploadForm
+              type="create"
+              onImageChange={(file) => setCover(file)}
+              onImageDelete={() => setCover(null)}
+            />
           </div>
 
           <div className="flex flex-col gap-[10px]">
@@ -80,7 +110,7 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
 
         <div className="flex gap-[20px]">
           <SingleButton text="취소" width={107} height={64} variant="white" onClick={() => setShowSaveModal(false)} />
-          <SingleButton text="저장" width={327} height={64} variant="primary" onClick={() => {}} />
+          <SingleButton text="저장" width={327} height={64} variant="primary" onClick={handleSubmit(onSubmit)} />
         </div>
       </div>
     </div>
