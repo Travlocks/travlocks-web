@@ -3,7 +3,7 @@ import type { ResponseAITemplateDto, ResponsePopularTemplateDto, ResponseRemixDt
 
 // AI 템플릿 추천 리스트 조회
 export const getAITemplate = async (): Promise<ResponseAITemplateDto> => {
-  const { data } = await axiosInstance.get('/templates/recommendations');
+  const { data } = await axiosInstance.get('/templates/suggestions');
 
   return data;
 };
