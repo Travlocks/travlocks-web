@@ -18,6 +18,7 @@ const Draft = () => {
             data?.data.map((template) => (
               <DraftCard
                 key={template.id}
+                id={template.id}
                 title={template.title}
                 region={template.regionName}
                 progressRate={template.progressRate}
