@@ -5,6 +5,7 @@ import StarIcon from '@/shared/assets/template/icon-star.svg?react';
 import PinIcon from '@/shared/assets/template/icon-pin.svg?react';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import type { Template } from '../home/types/template';
+import DefaultThumbnail from '@assets/template/thumbnail.png';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -46,7 +47,11 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
       <div className={TemplateCardStyle.container()}>
         {/* 썸네일 */}
         <div className={TemplateCardStyle.imageContainer}>
-          <img className={TemplateCardStyle.image()} src={template.coverImgUrl} alt={template.title} />
+          <img
+            className={TemplateCardStyle.image()}
+            src={template.coverImgUrl || DefaultThumbnail}
+            alt={template.title}
+          />
         </div>
 
         {/* 여행 테마 태그 */}
