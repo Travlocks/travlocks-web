@@ -1,5 +1,6 @@
 import PlaneIcon from '@assets/block/icon-plane.svg?react';
 import DotsIcon from '@assets/block/icon-dots.svg?react';
+import BlockStartSvg from '@feature/block/blockBuild/assets/block-start.svg?react';
 
 interface BlockStartProps {
   className?: string;
@@ -7,8 +8,8 @@ interface BlockStartProps {
 
 const BlockStart = ({ className }: BlockStartProps) => {
   return (
-    <div
-      className={`relative w-[186px] h-[87px] rounded-[10px] overflow-hidden bg-gradient-color-hover ${className || ''}`}>
+    <div className={`relative ${className || ''}`}>
+      <BlockStartSvg className="w-full h-full" />
       {/* 비행기 아이콘 */}
       <div className="absolute left-[30px] top-[33px] w-[30px] h-[25px]">
         <PlaneIcon className="w-full h-full" />
