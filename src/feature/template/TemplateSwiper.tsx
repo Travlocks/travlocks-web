@@ -2,12 +2,13 @@ import useEmblaCarousel from 'embla-carousel-react';
 import type { EmblaOptionsType } from 'embla-carousel';
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
 import TemplateCard from './TemplateCard';
-import type { Template } from './template.types';
 import { TemplateSwiperStyle } from './styles/TemplateSwiperStyles';
+import type { Template } from '../home/types/template';
 
 // Props of TemplateSwiper
 interface TemplateSwiperProps {
   cards: Template[]; // 표시할 템플릿 카드 배열
+  type: 'recommended' | 'popular';
 }
 
 // Embla Carousel 설정 옵션
@@ -31,7 +32,7 @@ const options: EmblaOptionsType = {
  * <TemplateSwiper cards={templateList}
  */
 
-const TemplateSwiper = ({ cards }: TemplateSwiperProps) => {
+const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
   const [emblaRef] = useEmblaCarousel(options, [
     WheelGesturesPlugin({
       forceWheelAxis: 'x',
@@ -46,7 +47,7 @@ const TemplateSwiper = ({ cards }: TemplateSwiperProps) => {
           <div className={TemplateSwiperStyle.container}>
             {cards.map((card) => (
               <div key={card.templateId} className={TemplateSwiperStyle.slide}>
-                <TemplateCard template={card} />
+                <TemplateCard template={card} type={type} />
               </div>
             ))}
           </div>
