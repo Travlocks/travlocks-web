@@ -5,8 +5,12 @@ import IconShine from '@/feature/block/blockBuild/assets/icon-shine.svg?react';
 type AISortButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AISortButton = ({ className, type = 'button', ...props }: AISortButtonProps) => {
+  const handleAISort = () => {
+    console.log('AI 스마트 정렬');
+  };
+
   return (
-    <button type={type} className={AISortButtonStyles.Root(className)} {...props}>
+    <button type={type} className={AISortButtonStyles.Root(className)} {...props} onClick={handleAISort}>
       <div
         className={AISortButtonStyles.Background()}
         style={{

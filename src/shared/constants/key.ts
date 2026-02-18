@@ -19,4 +19,5 @@ export const QUERY_KEY = {
   template: 'template',
   notification: 'notification',
   vlock: 'vlock',
+  optimizeRoute: 'optimizeRoute', // AI 스마트 정렬
 };
