@@ -11,6 +11,7 @@ export const QUERY_KEY = {
   emailExists: 'emailExists',
   member: 'member',
   templateSearch: 'template-search',
+  AITemplate: 'AITemplate',
   // 블록 관련 쿼리키
   vlockCategories: 'vlockCategories',
   regions: 'regions', // 지역 목록 조회
