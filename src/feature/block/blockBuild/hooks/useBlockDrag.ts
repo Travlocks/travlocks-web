@@ -22,6 +22,7 @@ interface UseBlockDragParams {
   removeById: (blockId: number) => void;
   zoom: number;
   pad: number;
+  onDragStateChange?: (isDragging: boolean) => void;
 }
 
 export const useBlockDrag = ({
@@ -31,6 +32,7 @@ export const useBlockDrag = ({
   removeById,
   zoom,
   pad,
+  onDragStateChange,
 }: UseBlockDragParams) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -57,6 +59,7 @@ export const useBlockDrag = ({
   const onDragStart = useCallback(
     (e: DragStartEvent) => {
       const type = e.active.data.current?.type as DragType | undefined;
+      if (type) onDragStateChange?.(true);
 
       if (type === 'blockSidebar') {
         const item = e.active.data.current?.item as SidebarBlock | undefined;
@@ -97,7 +100,7 @@ export const useBlockDrag = ({
           });
       }
     },
-    [currentDay, updateBlocksByDay],
+    [currentDay, updateBlocksByDay, onDragStateChange],
   );
 
   const onDragMove = useCallback(
@@ -133,6 +136,7 @@ export const useBlockDrag = ({
 
   const onDragEnd = useCallback(
     (e: DragEndEvent) => {
+      onDragStateChange?.(false);
       setActiveDrag(null);
       setDockHint(null);
 
@@ -245,13 +249,14 @@ export const useBlockDrag = ({
         }));
       }
     },
-    [currentDay, updateBlocksByDay, removeById, pad],
+    [currentDay, updateBlocksByDay, removeById, pad, onDragStateChange],
   );
 
   const onDragCancel = useCallback(() => {
+    onDragStateChange?.(false);
     setActiveDrag(null);
     setDockHint(null);
-  }, []);
+  }, [onDragStateChange]);
 
   return {
     sensors,
