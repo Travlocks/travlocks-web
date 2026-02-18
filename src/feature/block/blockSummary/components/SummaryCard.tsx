@@ -4,14 +4,24 @@ import CarIcon from '@assets/block/icon-summary-car.svg?react';
 
 interface SummaryCardProps {
   data: {
-    templateId: number;
     totalVlocks: number;
-    totalStayMinutes: number;
+    totalDurationMinutes: number;
     totalMoveMinutes: number;
   };
+  isUpdating?: boolean;
 }
 
-const SummaryCard = ({ data }: SummaryCardProps) => {
+const formatDuration = (totalMinutes: number): string => {
+  const safeMinutes = Math.max(0, Math.round(totalMinutes));
+  const hours = Math.floor(safeMinutes / 60);
+  const minutes = safeMinutes % 60;
+
+  if (hours === 0) return `${minutes}분`;
+  if (minutes === 0) return `${hours}시간`;
+  return `${hours}시간 ${minutes}분`;
+};
+
+const SummaryCard = ({ data, isUpdating = false }: SummaryCardProps) => {
   const Card = [
     {
       key: 'total',
@@ -23,13 +33,13 @@ const SummaryCard = ({ data }: SummaryCardProps) => {
       key: 'stay',
       icon: <TimeIcon />,
       text: '예상 총 소요 시간',
-      value: `${Math.round(data.totalStayMinutes / 60)}시간`,
+      value: formatDuration(data.totalDurationMinutes),
     },
     {
       key: 'move',
       icon: <CarIcon />,
       text: '이동 시간 합계',
-      value: `${Math.round(data.totalMoveMinutes / 60)}시간`,
+      value: formatDuration(data.totalMoveMinutes),
     },
   ];
 
@@ -43,7 +53,14 @@ const SummaryCard = ({ data }: SummaryCardProps) => {
 
           <div className="flex flex-col gap-[3px]">
             <p className="text-primary-color b6">{item.text}</p>
-            <p className="h8">{item.value}</p>
+            {isUpdating ? (
+              <span
+                className="h-[24px] rounded-[6px] bg-base-color opacity-70 animate-pulse"
+                style={{ width: `${Math.max(item.value.length, 4)}ch` }}
+              />
+            ) : (
+              <p className="h8">{item.value}</p>
+            )}
           </div>
         </div>
       ))}
