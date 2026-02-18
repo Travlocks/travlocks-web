@@ -25,3 +25,9 @@ export type ResponseAITemplateDto = SuccessPayload<{
 
 // 인기 템플릿 추천 리스트 조회
 export type ResponsePopularTemplateDto = SuccessPayload<Template[]>;
+
+// 템플릿 리믹스
+export type ResponseRemixDto = SuccessPayload<{
+  remixedTemplateId: number;
+  parentTemplateId: number;
+}>;

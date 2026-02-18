@@ -6,6 +6,8 @@ import PinIcon from '@/shared/assets/template/icon-pin.svg?react';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import type { Template } from '../home/types/template';
 import DefaultThumbnail from '@assets/template/thumbnail.png';
+import usePostTemplateRemix from '../home/hooks/mutations/usePostTemplateRemix';
+import { useNavigate } from 'react-router-dom';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -41,6 +43,8 @@ interface TemplateCardProps {
  */
 const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
   const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
+  const navigate = useNavigate();
+  const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
 
   return (
     <div className={TemplateCardStyle.wrapper()}>
@@ -97,7 +101,14 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
               height={45}
               textSize={18}
               variant="white"
-              onClick={() => onClick?.(template.templateId)}
+              onClick={() => {
+                onClick?.(template.templateId);
+                mutate(template.templateId, {
+                  onSuccess: (data) => {
+                    navigate(`/block/${data.data.remixedTemplateId}`);
+                  },
+                });
+              }}
               className={TemplateCardStyle.button()}
               icon={type === 'popular' ? <RemixIcon className={TemplateCardStyle.buttonIcon} /> : undefined}
               iconPosition="left"
