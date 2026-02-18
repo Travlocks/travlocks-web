@@ -21,9 +21,9 @@ export const getBlockCanvas = async (templateId: number, dayNo: number): Promise
 };
 
 // 최적 동선 생성
-export const getAISmartSort = async (templateId: number, dayNo: number): Promise<ResponseOptimizeDto> => {
+export const postAISmartSort = async (templateId: number, dayNo: number): Promise<ResponseOptimizeDto> => {
   try {
-    const { data } = await axiosInstance.get<ResponseOptimizeDto>(`/templates/${templateId}/days/${dayNo}/optimize`);
+    const { data } = await axiosInstance.post<ResponseOptimizeDto>(`/templates/${templateId}/days/${dayNo}/optimize`);
     return data;
   } catch (error) {
     console.error(error);

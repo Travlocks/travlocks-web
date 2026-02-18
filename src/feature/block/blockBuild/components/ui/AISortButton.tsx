@@ -11,11 +11,9 @@ export const AISortButton = ({ className, type = 'button', ...props }: AISortBut
   const { templateId } = useParams();
   const { currentDay } = useBlockTemplateStore();
 
-  const { data: aiSmartSortData } = useAISmartSort({ templateId: Number(templateId), dayNo: currentDay });
+  const { mutate: aiSmartSort } = useAISmartSort({ templateId: Number(templateId), dayNo: currentDay });
   const handleAISort = () => {
-    if (aiSmartSortData) {
-      console.log(aiSmartSortData);
-    }
+    aiSmartSort({ templateId: Number(templateId), dayNo: currentDay });
   };
 
   return (
