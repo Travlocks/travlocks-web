@@ -23,14 +23,6 @@ export const routes: RouteObject[] = [
         path: 'block',
         children: [
           {
-            index: true,
-            element: (
-              <Suspense fallback={<Loading />}>
-                <lazyRoutes.BlockPage />
-              </Suspense>
-            ),
-          },
-          {
             element: (
               <FeatureLayout subtitle="나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!" title="블록 쌓기" />
             ),
@@ -47,7 +39,11 @@ export const routes: RouteObject[] = [
           },
           {
             path: ':templateId',
-            element: <lazyRoutes.BlockPage />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <lazyRoutes.BlockPage />
+              </Suspense>
+            ),
           },
         ],
       },

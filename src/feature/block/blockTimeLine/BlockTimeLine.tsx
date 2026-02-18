@@ -27,7 +27,7 @@ const BlockTimeLine = ({ setLevel }: BlockTimeLineProps) => {
         <p className="h4">Timeline</p>
       </div>
 
-      <div className="flex-1 py-[65px] px-[49px] flex gap-[40px] overflow-scroll min-h-[70dvh]">
+      <div className="flex-1 py-[65px] px-[49px] flex gap-[40px] overflow-scroll max-h-[56dvh]">
         {Array.from({ length: days }, (_, i) => (
           <DayCard
             key={i}

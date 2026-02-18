@@ -57,7 +57,6 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
   });
 
   return (
-    // modifier 제거: 모든 좌표 계산은 calcCandidate에서 일관되게 처리
     <DndContext sensors={sensors} {...handlers}>
       <div className="flex h-full w-full overflow-hidden">
         {/* 사이드바 */}
