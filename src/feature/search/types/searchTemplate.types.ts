@@ -2,7 +2,7 @@ import type { RegionId } from '@/shared/constants/destinationCity';
 import type { TripDurationId } from '@/shared/constants/tripDuration';
 import type { TravleThemeId } from '@/shared/constants/travelTheme';
 import type { TransportTypeId } from '@/shared/constants/transportType';
-import type { Template } from '@/feature/template/template.types';
+import type { Template } from '@/feature/home/types/template';
 
 /**
  * 템플릿 정렬 옵션 타입

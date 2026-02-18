@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 // Props of TemplateCard
 interface TemplateCardProps {
   template: Template; // 표시할 템플릿 데이터
-  type: 'recommended' | 'popular';
+  type?: 'recommended' | 'popular';
   onClick?: (templateId: number) => void; // 콜백
 }
 
