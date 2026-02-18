@@ -39,6 +39,8 @@ interface TemplateCardProps {
  * ```
  */
 const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
+  const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
+
   return (
     <div className={TemplateCardStyle.wrapper()}>
       <div className={TemplateCardStyle.container()}>
@@ -48,8 +50,8 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
         </div>
 
         {/* 여행 테마 태그 */}
-        <div className={TemplateCardStyle.travelTheme()} style={{ backgroundColor: THEME_COLORS[template.tripTheme] }}>
-          {template.tripTheme}
+        <div className={TemplateCardStyle.travelTheme()} style={{ backgroundColor: THEME_COLORS[theme!] }}>
+          {theme}
         </div>
 
         {/* 템플릿 정보 */}
@@ -58,7 +60,7 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
           <div className={TemplateCardStyle.topSection}>
             <p className={TemplateCardStyle.title}>{template.title}</p>
             <p className={TemplateCardStyle.subtitle}>
-              {type === 'recommended' ? template.description : <span>@{template.authorName}</span>}
+              {type === 'recommended' ? template.description : <span>@{template.ownerNickname}</span>}
             </p>
           </div>
 
@@ -77,9 +79,9 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
                 <>
                   <span className={TemplateCardStyle.metadataItem}>
                     <StarIcon className={TemplateCardStyle.starIcon} />
-                    {template.totalScore}
+                    {template.avgRating}
                   </span>
-                  <span className={TemplateCardStyle.metadataItem}>즐겨찾는 여행자 {template.remixCount}명</span>
+                  <span className={TemplateCardStyle.metadataItem}>리믹스 {template.remixCount}회</span>
                 </>
               )}
             </div>

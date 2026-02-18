@@ -33,6 +33,8 @@ const options: EmblaOptionsType = {
  */
 
 const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
+  console.log(cards);
+
   const [emblaRef] = useEmblaCarousel(options, [
     WheelGesturesPlugin({
       forceWheelAxis: 'x',

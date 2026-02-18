@@ -12,6 +12,7 @@ export const QUERY_KEY = {
   member: 'member',
   templateSearch: 'template-search',
   AITemplate: 'AITemplate',
+  popularTemplate: 'popularTemplate',
   // 블록 관련 쿼리키
   vlockCategories: 'vlockCategories',
   regions: 'regions', // 지역 목록 조회
