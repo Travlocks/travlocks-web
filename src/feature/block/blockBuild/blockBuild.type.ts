@@ -1,6 +1,5 @@
 import type { SuccessPayload } from '@/shared/types/common';
 import type { Vlock, VlockSummary } from '@/shared/types/vlock';
-import type { TripDaysKey } from '@/shared/constants/tripDays';
 
 export type ConnectionPortType = 'TOP_LEFT' | 'BOTTOM_LEFT' | 'TOP_RIGHT' | 'BOTTOM_RIGHT';
 
@@ -139,7 +138,7 @@ export type CanvasData = {
   templateId: number;
   title: string;
   dayNo: number;
-  tripDays: TripDaysKey;
+  tripDays: number;
   vlockCount: number;
   totalHours: number;
   totalMoveHours: number;

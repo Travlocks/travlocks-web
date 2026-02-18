@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import type { Block } from '../../blockBuild/types/block';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import TimeLineBlockItem from './TimeLineBlockItem';
-import { useBlockEditor } from '../../blockBuild/hooks/useBlockEditor';
 
 interface DayCardProps {
   day: number;
@@ -17,11 +16,10 @@ const DayCard = ({ day, items, onClick }: DayCardProps) => {
   });
 
   const { active } = useDndContext();
-  const { blocksByDay } = useBlockEditor();
   const isSidebarDragging = active?.data.current?.type === 'blockSidebar';
 
   return (
-    <SortableContext items={blocksByDay[day].map((b) => `${b.blockId}-${day}`)} strategy={verticalListSortingStrategy}>
+    <SortableContext items={items.map((b) => `${b.blockId}-${day}`)} strategy={verticalListSortingStrategy}>
       <div
         ref={setNodeRef}
         onClick={onClick}

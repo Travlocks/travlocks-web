@@ -1,5 +1,7 @@
 import { axiosInstance } from '@/shared/apis/axios';
+import { toTripDayCount, type TripDaysKey } from '@/shared/constants/tripDays';
 import type {
+  CanvasData,
   ResponseCanvasDto,
   RequestCreateBlockDto,
   RequestReorderBlocksDto,
@@ -9,11 +11,28 @@ import type {
   ResponseTemplateSummaryDto,
 } from '../blockBuild.type';
 
+// 서버의 tripDays 타입을 number로 변환
+type ResponseCanvasRawDto = Omit<ResponseCanvasDto, 'data'> & {
+  data: Omit<CanvasData, 'tripDays'> & {
+    tripDays: TripDaysKey;
+  };
+};
+
+const normalizeCanvasResponse = (response: ResponseCanvasRawDto): ResponseCanvasDto => {
+  return {
+    ...response,
+    data: {
+      ...response.data,
+      tripDays: toTripDayCount(response.data.tripDays),
+    },
+  };
+};
+
 // 캔버스 조회
 export const getBlockCanvas = async (templateId: number, dayNo: number): Promise<ResponseCanvasDto> => {
   try {
-    const { data } = await axiosInstance.get<ResponseCanvasDto>(`/templates/${templateId}/days/${dayNo}/canvas`);
-    return data;
+    const { data } = await axiosInstance.get<ResponseCanvasRawDto>(`/templates/${templateId}/days/${dayNo}/canvas`);
+    return normalizeCanvasResponse(data);
   } catch (error) {
     console.error(error);
     throw error;

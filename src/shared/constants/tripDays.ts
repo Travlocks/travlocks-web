@@ -8,6 +8,7 @@ export const TRIP_DAYS = [
 
 export type TripDayItem = (typeof TRIP_DAYS)[number];
 export type TripDaysKey = TripDayItem['key'];
+export type TripDaysLabel = TripDayItem['label'];
 
 export const TRIP_DAYS_TO_DAY_COUNT: Record<TripDaysKey, TripDayItem['dayCount']> = TRIP_DAYS.reduce(
   (acc, tripDay) => {
@@ -16,3 +17,29 @@ export const TRIP_DAYS_TO_DAY_COUNT: Record<TripDaysKey, TripDayItem['dayCount']
   },
   {} as Record<TripDaysKey, TripDayItem['dayCount']>,
 );
+
+export const TRIP_DAY_LABEL_TO_DAY_COUNT: Record<TripDaysLabel, TripDayItem['dayCount']> = TRIP_DAYS.reduce(
+  (acc, tripDay) => {
+    acc[tripDay.label] = tripDay.dayCount;
+    return acc;
+  },
+  {} as Record<TripDaysLabel, TripDayItem['dayCount']>,
+);
+
+export const toTripDayCount = (tripDays: unknown): number => {
+  if (typeof tripDays === 'number') {
+    return Number.isFinite(tripDays) ? Math.max(0, Math.floor(tripDays)) : 0;
+  }
+
+  if (typeof tripDays !== 'string') return 0;
+
+  if (tripDays in TRIP_DAYS_TO_DAY_COUNT) {
+    return TRIP_DAYS_TO_DAY_COUNT[tripDays as TripDaysKey];
+  }
+
+  if (tripDays in TRIP_DAY_LABEL_TO_DAY_COUNT) {
+    return TRIP_DAY_LABEL_TO_DAY_COUNT[tripDays as TripDaysLabel];
+  }
+
+  return 0;
+};

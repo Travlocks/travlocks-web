@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import { useShallow } from 'zustand/react/shallow';
 import { QUERY_KEY } from '@/shared/constants/key';
-import { TRIP_DAYS_TO_DAY_COUNT } from '@/shared/constants/tripDays';
 import { deleteBlock, getBlockCanvas, patchBlocksReorder, postBlock } from '../apis/templateBlockApi';
 import type { Block } from '../types/block';
 import { mapCanvasToBlocksFallback } from '../utils/canvasFallbackMapper';
@@ -116,7 +115,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
 
         setTemplateTitle(response.data.title ?? '');
         setTemplateCityIds(response.data.cities ?? []);
-        setTripDays(TRIP_DAYS_TO_DAY_COUNT[response.data.tripDays] ?? 0);
+        setTripDays(response.data.tripDays);
 
         const mapped = mapCanvasToBlocksFallback(response.data);
         latestBlocksByDayRef.current[day] = mapped;
