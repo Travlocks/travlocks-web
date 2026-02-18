@@ -21,4 +21,6 @@ export type ResponseAIVlocksDto = SuccessPayload<{
 export type ResponseTemplateDetailDto = SuccessPayload<{
   cityName: string;
   tripDays: string;
+  description: string;
+  title: string;
 }>;

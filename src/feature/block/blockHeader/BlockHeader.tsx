@@ -1,12 +1,15 @@
 import clsx from 'clsx';
-import { useState, type SetStateAction } from 'react';
-import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+import { useEffect, useState, type SetStateAction } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import type { Level } from '../blockBuild/types/level';
+import SaveModal from './components/SaveModal';
+
 import SaveIcon from '@assets/block/icon-save.svg?react';
 import LeftIcon from '@assets/splash/icon-arrow.svg?react';
-import SaveModal from './components/saveModal';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import useGetTemplateDetail from '../blockTimeLine/hooks/useQuery/useGetTemplateDetail';
 
 export const VISIBILITY = [
   {
@@ -46,6 +49,9 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
   const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
+  const { templateId } = useParams();
+
+  const { data } = useGetTemplateDetail(Number(templateId));
 
   const methods = useForm<FormFields>({
     defaultValues: {
@@ -53,6 +59,15 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
       description: '',
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      methods.reset({
+        title: data.data.title || '',
+        description: data.data.description || '',
+      });
+    }
+  }, [data, templateTitle, methods]);
 
   return (
     <FormProvider {...methods}>
