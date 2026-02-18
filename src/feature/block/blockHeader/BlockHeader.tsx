@@ -1,6 +1,7 @@
 import clsx from 'clsx';
-import { useEffect, useState, type SetStateAction } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type SetStateAction } from 'react';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+import { patchTemplateMetadata } from '../blockBuild/apis/templateBlockApi';
 
 import type { Level } from '../blockBuild/types/level';
 import SaveIcon from '@assets/block/icon-save.svg?react';
@@ -37,12 +38,64 @@ interface BlockHeaderProps {
 
 const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
+  const templateId = useBlockTemplateStore((s) => s.templateId);
   const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
-  const [input, setInput] = useState(templateTitle);
+  const setTemplateTitle = useBlockTemplateStore((s) => s.setTemplateTitle);
+  const [input, setInput] = useState('');
+  const [isTitleEditing, setIsTitleEditing] = useState(false);
+  const [isSavingTitle, setIsSavingTitle] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setInput(templateTitle);
-  }, [templateTitle]);
+    if (!isTitleEditing) return;
+    titleInputRef.current?.focus();
+    titleInputRef.current?.select();
+  }, [isTitleEditing]);
+
+  const commitTitle = async () => {
+    const nextTitle = input.trim();
+    const prevTitle = templateTitle;
+    if (nextTitle === prevTitle) {
+      setInput(prevTitle);
+      return;
+    }
+
+    setTemplateTitle(nextTitle);
+    setInput(nextTitle);
+
+    if (!templateId) return;
+
+    const templateIdNum = Number(templateId);
+    if (Number.isNaN(templateIdNum)) {
+      console.error('[BlockHeader] Invalid templateId:', templateId);
+      return;
+    }
+
+    setIsSavingTitle(true);
+    try {
+      await patchTemplateMetadata(templateIdNum, { title: nextTitle });
+    } catch (error) {
+      console.error('[BlockHeader] Failed to save template title:', error);
+      setTemplateTitle(prevTitle);
+      setInput(prevTitle);
+    } finally {
+      setIsSavingTitle(false);
+    }
+  };
+
+  const handleTitleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.currentTarget.blur();
+      return;
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setInput(templateTitle);
+      setIsTitleEditing(false);
+    }
+  };
 
   return (
     <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
@@ -61,12 +114,37 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             )}>
             <LeftIcon className="text-white rotate-180" />
           </div>
-          <input
-            value={input}
-            placeholder="여행 제목"
-            onChange={(e) => setInput(e.target.value)}
-            className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
-          />
+          {isTitleEditing ? (
+            <input
+              ref={titleInputRef}
+              value={input}
+              placeholder="여행 제목"
+              maxLength={30}
+              onChange={(e) => setInput(e.target.value)}
+              onBlur={() => {
+                void commitTitle();
+                setIsTitleEditing(false);
+              }}
+              onKeyDown={handleTitleKeyDown}
+              className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setInput(templateTitle);
+                setIsTitleEditing(true);
+              }}
+              disabled={isSavingTitle}
+              className={clsx(
+                'py-[4px] px-[10px] h6 max-w-[170px] w-full text-left rounded-[6px] transition-colors truncate',
+                'hover:bg-base-color-5',
+                isSavingTitle && 'cursor-wait',
+                templateTitle ? 'text-base-color-0' : 'text-base-color-3',
+              )}>
+              {templateTitle || '여행 제목'}
+            </button>
+          )}
         </div>
 
         {/* 전체 공개 및 나만 보기 버튼 */}

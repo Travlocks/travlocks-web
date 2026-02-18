@@ -3,9 +3,11 @@ import type {
   ResponseCanvasDto,
   RequestCreateBlockDto,
   RequestReorderBlocksDto,
+  RequestSaveTemplateDto,
   ResponseCreateBlockDto,
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
+  ResponseSaveTemplateDto,
 } from '../blockBuild.type';
 
 // 캔버스 조회
@@ -65,6 +67,23 @@ export const patchBlocksReorder = async (
       `/templates/${templateId}/days/${dayNo}/vlocks/reorder`,
       body,
     );
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// 템플릿 메타데이터 저장
+export const patchTemplateMetadata = async (
+  templateId: number,
+  request: RequestSaveTemplateDto,
+): Promise<ResponseSaveTemplateDto> => {
+  try {
+    const formData = new FormData();
+    formData.append('request', JSON.stringify(request));
+
+    const { data } = await axiosInstance.patch<ResponseSaveTemplateDto>(`/templates/${templateId}`, formData);
     return data;
   } catch (error) {
     console.error(error);

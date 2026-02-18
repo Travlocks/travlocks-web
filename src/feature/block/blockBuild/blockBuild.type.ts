@@ -28,6 +28,13 @@ export type RequestReorderBlocksDto = {
   }>;
 };
 
+// 템플릿 메타데이터 저장 요청 타입
+export type RequestSaveTemplateDto = {
+  title?: string | null;
+  description?: string | null;
+  isPublic?: boolean | null;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Response DTOs
 // ─────────────────────────────────────────────────────────────────────────────
@@ -99,6 +106,20 @@ export type ReorderBlocksData = {
 
 // 블록 순서 변경 성공 응답 타입
 export type ResponseReorderBlocksDto = SuccessPayload<ReorderBlocksData>;
+
+// 템플릿 저장 응답 데이터
+export type SaveTemplateData = {
+  templateId: number;
+  title: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  isPublic: boolean;
+  shareToken: string;
+  updatedAt: string;
+};
+
+// 템플릿 저장 성공 응답 타입
+export type ResponseSaveTemplateDto = SuccessPayload<SaveTemplateData>;
 
 // 캔버스 조회 응답 데이터
 export type CanvasVlockBrief = {
