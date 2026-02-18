@@ -29,6 +29,7 @@ interface BlockEditorContentProps {
   puzzleBlocks: Block[];
   dockHint: DockHintState;
   currentDay: number;
+  tripDays: number;
   onDayChange: (day: number) => void;
   zoom: number;
   onZoomChange: (zoom: number) => void;
@@ -40,6 +41,7 @@ const BlockEditorContent = ({
   puzzleBlocks,
   dockHint,
   currentDay,
+  tripDays,
   onDayChange,
   zoom,
   onZoomChange,
@@ -58,9 +60,14 @@ const BlockEditorContent = ({
     initialScroll: () => ({ left: PAD * zoom, top: PAD * zoom }),
   });
 
+  const maxDay = Math.max(0, tripDays);
+  const hasAvailableDays = maxDay > 0;
+  const isPrevDisabled = !hasAvailableDays || currentDay <= 1;
+  const isNextDisabled = !hasAvailableDays || currentDay >= maxDay;
+
   // 날짜 변경 핸들러
   const handleDayChange = (day: number) => {
-    if (day < 1 || day > 5) return;
+    if (!hasAvailableDays || day < 1 || day > maxDay) return;
     onDayChange(day);
   };
 
@@ -80,28 +87,31 @@ const BlockEditorContent = ({
         <div className="flex items-center gap-2">
           {/* 왼쪽 화살표 */}
           <button
+            type="button"
+            disabled={isPrevDisabled}
             className={clsx(
-              'text-base-color-0 hover:text-gray-600 transition-colors p-3',
-              currentDay === 1 ? 'cursor-not-allowed' : 'cursor-pointer',
+              'text-base-color-0 transition-colors p-3',
+              isPrevDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gray-600',
             )}
             onClick={() => handleDayChange(currentDay - 1)}>
             <IconBase
               icon={TriangleIcon}
-              className={clsx('w-2.5 h-2.5 rotate-180', currentDay === 1 && 'text-base-color')}
+              className={clsx('w-2.5 h-2.5 rotate-180', isPrevDisabled && 'text-base-color')}
             />
           </button>
 
           <span className="text-[28px] font-medium text-black leading-none">DAY {currentDay}</span>
 
           {/* 오른쪽 화살표 */}
-          {/* TODO: 전체 날짜 가져와서 마지막 날인지 판별하는 로직 추가 필요 */}
           <button
+            type="button"
+            disabled={isNextDisabled}
             className={clsx(
-              'text-base-color-0 hover:text-gray-600 transition-colors p-3',
-              currentDay === 5 ? 'cursor-not-allowed' : 'cursor-pointer',
+              'text-base-color-0 transition-colors p-3',
+              isNextDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:text-gray-600',
             )}
             onClick={() => handleDayChange(currentDay + 1)}>
-            <IconBase icon={TriangleIcon} className={clsx('w-2.5 h-2.5', currentDay === 5 && 'text-base-color')} />
+            <IconBase icon={TriangleIcon} className={clsx('w-2.5 h-2.5', isNextDisabled && 'text-base-color')} />
           </button>
         </div>
 

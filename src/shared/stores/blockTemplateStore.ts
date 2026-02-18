@@ -25,6 +25,7 @@ type BlockTemplateState = {
   templateId: string | null;
   templateTitle: string;
   templateCityIds: number[];
+  tripDays: number;
   currentDay: number;
   blocksByDay: Record<number, Block[]>;
 };
@@ -33,6 +34,7 @@ type BlockTemplateActions = {
   setTemplateId: (templateId: string | null) => void;
   setTemplateTitle: (title: string) => void;
   setTemplateCityIds: (cityIds: number[]) => void;
+  setTripDays: (tripDays: number) => void;
   setDay: (day: number) => void;
   reset: (day?: number) => void;
   setPuzzleBlocks: (blocks: Block[]) => void;
@@ -58,6 +60,7 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
       templateId: null,
       templateTitle: '',
       templateCityIds: [],
+      tripDays: 0,
       currentDay: 1,
       blocksByDay: createDefaultBlocksByDayRecord(),
 
@@ -70,6 +73,7 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
           templateId,
           templateTitle: '',
           templateCityIds: [],
+          tripDays: 0,
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
         });
@@ -83,9 +87,18 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
         set({ templateCityIds: cityIds });
       },
 
+      setTripDays: (tripDays) => {
+        const safeTripDays = Number.isFinite(tripDays) ? Math.max(0, Math.floor(tripDays)) : 0;
+        set((state) => ({
+          tripDays: safeTripDays,
+          currentDay: safeTripDays > 0 ? Math.min(Math.max(state.currentDay, 1), safeTripDays) : 1,
+        }));
+      },
+
       // 날짜 설정
       setDay: (day) => {
-        if (day < 1 || day > 5) return;
+        const maxDay = get().tripDays;
+        if (maxDay < 1 || day < 1 || day > maxDay) return;
         set({ currentDay: day });
       },
 
@@ -146,13 +159,14 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
     }),
     {
       name: `block-template-store`,
-      version: 4, // templateTitle, templateCityIds 추가
+      version: 5, // tripDays 추가
       migrate: () => {
         // 이전 버전 데이터는 새 구조와 호환되지 않으므로 초기화
         return {
           templateId: null,
           templateTitle: '',
           templateCityIds: [],
+          tripDays: 0,
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
         };

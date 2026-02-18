@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import { useShallow } from 'zustand/react/shallow';
 import { QUERY_KEY } from '@/shared/constants/key';
+import { TRIP_DAYS_TO_DAY_COUNT } from '@/shared/constants/tripDays';
 import { deleteBlock, getBlockCanvas, patchBlocksReorder, postBlock } from '../apis/templateBlockApi';
 import type { Block } from '../types/block';
 import { mapCanvasToBlocksFallback } from '../utils/canvasFallbackMapper';
@@ -25,7 +26,7 @@ type UseBlockSyncOptions = {
  */
 export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBlockSyncOptions = {}) => {
   const queryClient = useQueryClient();
-  const { templateId, currentDay, blocksByDay, updateBlocksByDay, setTemplateTitle, setTemplateCityIds } =
+  const { templateId, currentDay, blocksByDay, updateBlocksByDay, setTemplateTitle, setTemplateCityIds, setTripDays } =
     useBlockTemplateStore(
       useShallow((s) => ({
         templateId: s.templateId,
@@ -34,6 +35,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
         updateBlocksByDay: s.updateBlocksByDay,
         setTemplateTitle: s.setTemplateTitle,
         setTemplateCityIds: s.setTemplateCityIds,
+        setTripDays: s.setTripDays,
       })),
     );
 
@@ -114,6 +116,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
 
         setTemplateTitle(response.data.title ?? '');
         setTemplateCityIds(response.data.cities ?? []);
+        setTripDays(TRIP_DAYS_TO_DAY_COUNT[response.data.tripDays] ?? 0);
 
         const mapped = mapCanvasToBlocksFallback(response.data);
         latestBlocksByDayRef.current[day] = mapped;
@@ -138,7 +141,15 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
         }
       }
     },
-    [templateId, withSuppressedSync, setTemplateTitle, setTemplateCityIds, invalidateBlockSummary, setSyncStatus],
+    [
+      templateId,
+      withSuppressedSync,
+      setTemplateTitle,
+      setTemplateCityIds,
+      setTripDays,
+      invalidateBlockSummary,
+      setSyncStatus,
+    ],
   );
 
   /**
@@ -256,11 +267,12 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
       queuedSyncDaysRef.current.clear();
       setTemplateTitle('');
       setTemplateCityIds([]);
+      setTripDays(0);
       setSyncStatus('idle');
       return;
     }
     void hydrateDayFromServer(currentDay);
-  }, [templateId, currentDay, hydrateDayFromServer, setTemplateTitle, setTemplateCityIds, setSyncStatus]);
+  }, [templateId, currentDay, hydrateDayFromServer, setTemplateTitle, setTemplateCityIds, setTripDays, setSyncStatus]);
 
   /**
    * 블록 변경 감지 및 디바운스 동기화
