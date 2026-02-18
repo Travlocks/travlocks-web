@@ -9,7 +9,7 @@ import PuzzleBlock from './ui/PuzzleBlock';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
-import { type SetStateAction, useState } from 'react';
+import { type SetStateAction, useCallback, useRef, useState } from 'react';
 import { getDescendantBlocks, getDescendants } from '../utils/path';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import type { VlockData, VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
@@ -20,6 +20,7 @@ import { MOCK_BLOCKS } from '../mock';
 interface BlockEditorProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
+  onSummaryUpdatingChange?: (isUpdating: boolean) => void;
 }
 
 const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
@@ -32,7 +33,7 @@ const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
   };
 };
 
-const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
+const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
   const [blockItems, setBlockItems] = useState<SidebarBlock[]>(MOCK_BLOCKS);
@@ -43,9 +44,10 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
     cityId?: number;
   } | null>(null);
   const PAD = 2000;
-
-  // 서버 동기화 (디바운스 + 롤백)
-  useBlockSync();
+  const isSyncPausedRef = useRef(false);
+  const handleDragStateChange = useCallback((isDragging: boolean) => {
+    isSyncPausedRef.current = isDragging;
+  }, []);
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
     puzzleBlocks,
@@ -54,7 +56,11 @@ const BlockEditor = ({ level, setLevel }: BlockEditorProps) => {
     removeById: editorActions.removeById,
     zoom,
     pad: PAD,
+    onDragStateChange: handleDragStateChange,
   });
+
+  // 서버 동기화 (디바운스 + 롤백)
+  useBlockSync({ onSummaryUpdatingChange, isSyncPausedRef });
 
   return (
     // modifier 제거: 모든 좌표 계산은 calcCandidate에서 일관되게 처리

@@ -1,5 +1,6 @@
 import type { SuccessPayload } from '@/shared/types/common';
 import type { Vlock, VlockSummary } from '@/shared/types/vlock';
+import type { TripDaysKey } from '@/shared/constants/tripDays';
 
 export type ConnectionPortType = 'TOP_LEFT' | 'BOTTOM_LEFT' | 'TOP_RIGHT' | 'BOTTOM_RIGHT';
 
@@ -100,6 +101,25 @@ export type ReorderBlocksData = {
 // 블록 순서 변경 성공 응답 타입
 export type ResponseReorderBlocksDto = SuccessPayload<ReorderBlocksData>;
 
+export type TemplateSummaryDayData = {
+  templateDayId: number;
+  dayNo: number;
+  vlockCount: number;
+  stayHours: number;
+  moveMinutes: number;
+  warnings: string[];
+};
+
+export type TemplateSummaryData = {
+  templateId: number;
+  totalVlocks: number;
+  totalStayHours: number;
+  totalMoveMinutes: number;
+  daysSummary: TemplateSummaryDayData[];
+};
+
+export type ResponseTemplateSummaryDto = SuccessPayload<TemplateSummaryData>;
+
 // 캔버스 조회 응답 데이터
 export type CanvasVlockBrief = {
   vlockId: number;
@@ -119,6 +139,7 @@ export type CanvasData = {
   templateId: number;
   title: string;
   dayNo: number;
+  tripDays: TripDaysKey;
   vlockCount: number;
   totalHours: number;
   totalMoveHours: number;
