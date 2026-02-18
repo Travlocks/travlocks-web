@@ -5,8 +5,6 @@ import { useParams } from 'react-router-dom';
 import type { Level } from '@/feature/block/blockBuild/types/level';
 import BlockHeader from '@/feature/block/blockHeader/BlockHeader';
 import BlockSummary from '@/feature/block/blockSummary/BlockSummary';
-// import TemplateModal from '@/feature/block/vlockModal/TemplateModal';
-// import { useShallow } from 'zustand/react/shallow';
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/shared/constants/key';
 import { toTripDayCount } from '@/shared/constants/tripDays';
@@ -20,16 +18,6 @@ const BlockPage = () => {
   const setTripDays = useBlockTemplateStore((s) => s.setTripDays);
   const [level, setLevel] = useState<Level>('timeline');
   const [isSummaryUpdating, setIsSummaryUpdating] = useState(false);
-  // const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-
-  // const { templateTitle, templateDescription, templateCoverImageUrl } = useBlockTemplateStore(
-  //   useShallow((s) => ({
-  //     templateTitle: s.templateTitle,
-  //     templateDescription: s.templateDescription,
-  //     templateCoverImageUrl: s.templateCoverImageUrl,
-  //   })),
-  // );
-  // const setTemplateInfo = useBlockTemplateStore((s) => s.setTemplateInfo);
   const templateIdNum = Number(templateId);
   const hasValidTemplateId = typeof templateId === 'string' && Number.isInteger(templateIdNum) && templateIdNum > 0;
 
