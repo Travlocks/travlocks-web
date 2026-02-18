@@ -7,6 +7,8 @@ import type {
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
   ResponseTemplateSummaryDto,
+  UpdateTemplateRequestDto,
+  UpdateTemplateResponseDto,
 } from '../blockBuild.type';
 
 // 캔버스 조회
@@ -82,4 +84,40 @@ export const patchBlocksReorder = async (
     console.error(error);
     throw error;
   }
+};
+
+// 템플릿 수정
+export const updateTemplate = async (
+  templateId: number,
+  request: UpdateTemplateRequestDto,
+  coverImage?: File | null,
+): Promise<UpdateTemplateResponseDto> => {
+  const formData = new FormData();
+
+  formData.append('request', JSON.stringify(request));
+
+  if (coverImage) {
+    formData.append('coverImage', coverImage);
+  } else {
+    formData.append('coverImage', new Blob(), '');
+  }
+
+  // FormData 확인을 위한 로그
+  console.log('--- updateTemplate FormData ---');
+  formData.forEach((value, key) => {
+    if (typeof value !== 'string') {
+      const file = value as File;
+      console.log(`${key}:`, {
+        name: file.name || 'Blob',
+        size: file.size,
+        type: file.type,
+      });
+    } else {
+      console.log(`${key}:`, value);
+    }
+  });
+
+  const { data } = await axiosInstance.patch<UpdateTemplateResponseDto>(`/templates/${templateId}`, formData);
+
+  return data;
 };

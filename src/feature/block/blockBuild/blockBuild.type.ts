@@ -17,6 +17,13 @@ export type RequestCreateBlockDto = {
   outputPort?: ConnectionPortType | null;
 };
 
+// 템플릿 수정 요청 타입
+export type UpdateTemplateRequestDto = {
+  title: string;
+  description: string;
+  isPublic: boolean;
+};
+
 // 블록 순서 변경 요청 타입
 export type RequestReorderBlocksDto = {
   vlockOrders: Array<{
@@ -150,3 +157,12 @@ export type CanvasData = {
 };
 
 export type ResponseCanvasDto = SuccessPayload<CanvasData>;
+
+// 템플릿 수정 응답 타입
+export type UpdateTemplateResponseDto = SuccessPayload<{
+  templateId: number;
+  title: string;
+  description: string;
+  isPublic: boolean;
+  coverImageUrl: string;
+}>;

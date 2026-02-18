@@ -24,6 +24,8 @@ const START_BLOCK: Block = {
 type BlockTemplateState = {
   templateId: string | null;
   templateTitle: string;
+  templateDescription: string;
+  templateCoverImageUrl: string;
   templateCityIds: number[];
   currentDay: number;
   blocksByDay: Record<number, Block[]>;
@@ -32,6 +34,7 @@ type BlockTemplateState = {
 type BlockTemplateActions = {
   setTemplateId: (templateId: string | null) => void;
   setTemplateTitle: (title: string) => void;
+  setTemplateInfo: (info: { title: string; description: string; coverImageUrl: string }) => void;
   setTemplateCityIds: (cityIds: number[]) => void;
   setDay: (day: number) => void;
   reset: (day?: number) => void;
@@ -57,6 +60,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
     (set, get) => ({
       templateId: null,
       templateTitle: '',
+      templateDescription: '',
+      templateCoverImageUrl: '',
       templateCityIds: [],
       currentDay: 1,
       blocksByDay: createDefaultBlocksByDayRecord(),
@@ -69,6 +74,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
         set({
           templateId,
           templateTitle: '',
+          templateDescription: '',
+          templateCoverImageUrl: '',
           templateCityIds: [],
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
@@ -77,6 +84,14 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
 
       setTemplateTitle: (title) => {
         set({ templateTitle: title });
+      },
+
+      setTemplateInfo: (info) => {
+        set({
+          templateTitle: info.title,
+          templateDescription: info.description,
+          templateCoverImageUrl: info.coverImageUrl,
+        });
       },
 
       setTemplateCityIds: (cityIds) => {
@@ -146,12 +161,14 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
     }),
     {
       name: `block-template-store`,
-      version: 4, // templateTitle, templateCityIds 추가
+      version: 5, // templateDescription, templateCoverImageUrl 추가
       migrate: () => {
         // 이전 버전 데이터는 새 구조와 호환되지 않으므로 초기화
         return {
           templateId: null,
           templateTitle: '',
+          templateDescription: '',
+          templateCoverImageUrl: '',
           templateCityIds: [],
           currentDay: 1,
           blocksByDay: createDefaultBlocksByDayRecord(),
