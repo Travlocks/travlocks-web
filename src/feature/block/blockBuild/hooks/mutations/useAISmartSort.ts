@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEY } from '@/shared/constants/key';
-import { getAISmartSort } from '../../apis/templateBlock.api';
+import { getAISmartSort } from '../../apis/templateBlockApi';
 import type { ResponseOptimizeDto } from '../../blockBuild.type';
 
 interface UseAISmartSortParams {

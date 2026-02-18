@@ -1,12 +1,21 @@
 import React from 'react';
 import { AISortButtonStyles } from '@/feature/block/blockBuild/AISortButton.style';
 import IconShine from '@/feature/block/blockBuild/assets/icon-shine.svg?react';
+import { useAISmartSort } from '../../hooks/mutations/useAISmartSort';
+import { useParams } from 'react-router-dom';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 type AISortButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const AISortButton = ({ className, type = 'button', ...props }: AISortButtonProps) => {
+  const { templateId } = useParams();
+  const { currentDay } = useBlockTemplateStore();
+
+  const { data: aiSmartSortData } = useAISmartSort({ templateId: Number(templateId), dayNo: currentDay });
   const handleAISort = () => {
-    console.log('AI 스마트 정렬');
+    if (aiSmartSortData) {
+      console.log(aiSmartSortData);
+    }
   };
 
   return (
