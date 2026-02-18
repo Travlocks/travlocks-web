@@ -2,7 +2,7 @@ import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import AuthLayout from '@/shared/layouts/auth/AuthLayout';
 import TestLayout from '@/shared/layouts/TestLayout';
 import FeatureLayout from '@/shared/layouts/FeatureLayout';
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { Suspense } from 'react';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
@@ -23,6 +23,10 @@ export const routes: RouteObject[] = [
         path: 'block',
         children: [
           {
+            index: true,
+            element: <Navigate to="/block/onboarding" replace />,
+          },
+          {
             element: (
               <FeatureLayout subtitle="나만의 여행 일정을 블록을 쌓듯이 쉽고 재미있게 만들어요!" title="블록 쌓기" />
             ),
@@ -32,10 +36,6 @@ export const routes: RouteObject[] = [
                 element: <lazyRoutes.OnboardingPage />,
               },
             ],
-          },
-          {
-            path: 'onboarding',
-            element: <lazyRoutes.OnboardingPage />,
           },
           {
             path: ':templateId',
