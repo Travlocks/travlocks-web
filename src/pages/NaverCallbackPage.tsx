@@ -5,7 +5,17 @@ import { useNaverLoginCallback } from '@/feature/auth/login/hooks/useSocialLogin
 const NaverCallbackPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { mutate: naverLogin } = useNaverLoginCallback();
+  const { mutate: naverLogin } = useNaverLoginCallback({
+    onSuccess: (data) => {
+      console.log('naverLogin success', data);
+    },
+    onError: (error, errorMessage) => {
+      console.error(error.response?.data, errorMessage);
+      alert(errorMessage);
+      navigate('/login', { replace: true });
+      return;
+    },
+  });
   const called = useRef(false);
 
   useEffect(() => {
@@ -16,7 +26,6 @@ const NaverCallbackPage = () => {
     const state = searchParams.get('state');
 
     if (!code || !state) {
-      console.error('Naver 콜백: code 또는 state가 없습니다.');
       navigate('/login', { replace: true });
       return;
     }
@@ -24,7 +33,6 @@ const NaverCallbackPage = () => {
     // csrf 검증: sessionStorage에 저장한 state와 비교
     const savedState = sessionStorage.getItem('naver_state');
     if (savedState && savedState !== state) {
-      console.error('Naver 콜백: state 불일치 (CSRF 의심)');
       navigate('/login', { replace: true });
       return;
     }
