@@ -6,6 +6,7 @@ function useGetRecommendAIVloks(templateId: number) {
   return useQuery({
     queryKey: [QUERY_KEY.vlock, templateId],
     queryFn: () => getRecommenedAIVlocks({ templateId }),
+    enabled: !!templateId,
   });
 }
 

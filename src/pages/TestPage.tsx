@@ -7,8 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
-import TemplateSwiper from '@/feature/template/TemplateSwiper';
-import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
+// import TemplateSwiper from '@/feature/template/TemplateSwiper';
+// import { mockPopularTemplates, mockRecommendedTemplates } from '@/feature/template/template.data';
 import { Block } from '@/shared/components/Block/Block';
 import { createRectPoints } from '@/shared/components/Block/blockShape';
 import Footer from '@/shared/components/Footer/Footer';
@@ -160,12 +160,12 @@ const TestPage = () => {
 
       <div>
         <h1>✅ TemplateSection.tsx (Recommended by AI)</h1>
-        <TemplateSwiper cards={mockRecommendedTemplates} />
+        {/* <TemplateSwiper cards={mockRecommendedTemplates} /> */}
       </div>
 
       <div>
         <h1>✅ TemplateSection.tsx (Popular by AI)</h1>
-        <TemplateSwiper cards={mockPopularTemplates} />
+        {/* <TemplateSwiper cards={mockPopularTemplates} /> */}
       </div>
 
       <Footer />

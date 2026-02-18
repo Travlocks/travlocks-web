@@ -16,3 +16,9 @@ export type Vlock = {
 export type ResponseAIVlocksDto = SuccessPayload<{
   vlocks: Vlock[];
 }>;
+
+// 템플릿 상세 화면 조회
+export type ResponseTemplateDetailDto = SuccessPayload<{
+  cityName: string;
+  tripDays: string;
+}>;
