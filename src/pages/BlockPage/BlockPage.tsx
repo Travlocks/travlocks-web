@@ -10,7 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 const BlockPage = () => {
   const { templateId } = useParams<{ templateId?: string }>();
-  const templateIdNum = Number(templateId);
+  const templateIdNum = templateId ? Number(templateId) : null;
   const setTemplateId = useBlockTemplateStore((s) => s.setTemplateId);
   const [level, setLevel] = useState<Level>('timeline');
   const [isSummaryUpdating, setIsSummaryUpdating] = useState(false);
@@ -40,7 +40,7 @@ const BlockPage = () => {
         <BlockSummary isSyncUpdating={isSummaryUpdating} />
       </div>
 
-      {isTemplateModalOpen && (
+      {isTemplateModalOpen && templateIdNum != null && (
         <TemplateModal
           templateId={templateIdNum}
           title={templateTitle}
