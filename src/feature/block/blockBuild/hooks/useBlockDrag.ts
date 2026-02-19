@@ -177,6 +177,23 @@ export const useBlockDrag = ({
       const currentBlocks = puzzleBlocksRef.current;
       const currentZoom = zoomRef.current;
 
+      if (type === 'blockTimeline' && overId === 'sidebar') {
+        const day = e.active.data.current?.day;
+        const blockId = e.active.data.current?.block?.blockId;
+
+        if (day == null || blockId == null) return;
+
+        updateBlocksByDay((prev) => {
+          const blocks = prev[day] ?? [];
+          return {
+            ...prev,
+            [day]: blocks.filter((b) => b.blockId !== blockId),
+          };
+        });
+
+        return;
+      }
+
       // 타임라인 내부에서 순서 정렬할 때
       if (type === 'blockTimeline') {
         const day = e.active.data.current?.day;
