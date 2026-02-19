@@ -63,8 +63,8 @@ export function useTemplateSearch(keyword: string, filters: FilterState, sort: S
   return useQuery({
     queryKey: [QUERY_KEY.templateSearch, keyword, filters, sort, page],
     queryFn: () => getTemplates(params),
-    staleTime: 5 * 60 * 1000, // 5분
-    gcTime: 10 * 60 * 1000, // 10분
+    staleTime: 0, // 항상 최신 데이터 유지
+    gcTime: 0, // 캐시 즉시 만료 (데이터 꼬임 방지)
     // 초기 로드 시에만 자동으로 가져오기
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
