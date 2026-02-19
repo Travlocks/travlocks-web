@@ -3,6 +3,7 @@ import type { SuccessPayload } from './common';
 export type TemplateDetailData = {
   templateId: number;
   title: string;
+  ownerNickname: string;
   tripDays: string;
 };
 

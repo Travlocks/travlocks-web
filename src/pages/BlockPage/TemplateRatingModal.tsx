@@ -2,6 +2,7 @@ import StarRating from '@/shared/components/Rating/StarRating';
 
 interface TemplateRatingModalProps {
   templateTitle?: string;
+  templateAuthorName?: string;
   rating: number;
   reviewComment: string;
   isSubmitting: boolean;
@@ -13,6 +14,7 @@ interface TemplateRatingModalProps {
 
 const TemplateRatingModal = ({
   templateTitle,
+  templateAuthorName,
   rating,
   reviewComment,
   isSubmitting,
@@ -31,7 +33,7 @@ const TemplateRatingModal = ({
         <div className="text-center">
           <p className="h9 text-base-color-0">{templateTitle ?? '템플릿을 평가해 주세요'}</p>
           <p className="mt-[10px] b6 text-base-color-2 leading-[22px]">
-            디모님의 템플릿은 어떠셨나요?
+            {(templateAuthorName ?? '작성자') + '님의 템플릿은 어떠셨나요?'}
             <br />
             해당 템플릿을 1~5점으로 평가해주세요
           </p>

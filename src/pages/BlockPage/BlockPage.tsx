@@ -165,6 +165,7 @@ const BlockPage = () => {
       {isReviewModalOpen && (
         <TemplateRatingModal
           templateTitle={templateDetail?.title}
+          templateAuthorName={templateDetail?.ownerNickname}
           rating={rating}
           reviewComment={reviewComment}
           isSubmitting={isSubmittingRating}
