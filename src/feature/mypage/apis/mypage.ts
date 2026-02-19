@@ -39,6 +39,18 @@ export const getMyTemplates = async (page = 0): Promise<ResponseMyTemplatesDto> 
   }
 };
 
+export const getMyFavoriteTemplates = async (page = 0): Promise<ResponseMyTemplatesDto> => {
+  try {
+    const { data } = await axiosInstance.get<ResponseMyTemplatesDto>('/members/me/favorites', {
+      params: { page },
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const getMemberProfile = async (memberId: number, page = 0): Promise<ResponseMemberProfileDto> => {
   try {
     const { data } = await axiosInstance.get<ResponseMemberProfileDto>(`/members/${memberId}/profile`, {

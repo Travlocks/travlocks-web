@@ -1,5 +1,9 @@
 import { axiosInstance } from './axios';
-import type { ResponseTemplateDetailDto } from '@/shared/types/template';
+import type {
+  RequestTemplateRatingDto,
+  ResponseTemplateDetailDto,
+  ResponseTemplateRatingDto,
+} from '@/shared/types/template';
 
 export const getTemplateDetail = async (templateId: number): Promise<ResponseTemplateDetailDto> => {
   try {
@@ -9,4 +13,12 @@ export const getTemplateDetail = async (templateId: number): Promise<ResponseTem
     console.error(error);
     throw error;
   }
+};
+
+export const postTemplateRating = async (
+  templateId: number,
+  body: RequestTemplateRatingDto,
+): Promise<ResponseTemplateRatingDto> => {
+  const { data } = await axiosInstance.post<ResponseTemplateRatingDto>(`/templates/${templateId}/ratings`, body);
+  return data;
 };

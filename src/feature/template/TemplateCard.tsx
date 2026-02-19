@@ -13,6 +13,7 @@ import useDeleteTemplate from '../user/hooks/mutations/useDeleteTemplate';
 import AccountModal from '../mypage/components/AccountModal';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -64,6 +65,7 @@ const TemplateCard = ({
 
   const navigate = useNavigate();
   const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
+  const registerRemix = useRemixReviewStore((s) => s.registerRemix);
   const canNavigateToAuthorProfile =
     type !== 'recommended' && !disableAuthorProfileNavigation && typeof template.ownerId === 'number';
 
@@ -162,6 +164,7 @@ const TemplateCard = ({
                 onButtonClick?.(template.templateId);
                 mutate(template.templateId, {
                   onSuccess: (data) => {
+                    registerRemix(data.data.remixedTemplateId, data.data.parentTemplateId);
                     navigate(`/block/${data.data.remixedTemplateId}`);
                   },
                 });

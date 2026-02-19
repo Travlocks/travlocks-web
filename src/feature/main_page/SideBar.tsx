@@ -18,6 +18,7 @@ import type { ResponseRemixDto } from '@/feature/home/types/template';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatOneDecimal } from '@/shared/utils/format';
 import { toTripDayCount } from '@/shared/constants/tripDays';
+import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
 
 interface SideBarContentProps {
   templateId: number;
@@ -30,6 +31,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
   const navigate = useNavigate();
   const { mutate: remixMutate } = usePostTemplateRemix(); // 템플릿 리믹스
   const { mutate: toggleFavoriteMutate } = useToggleFavorite(); // 즐겨찾기 토글
+  const registerRemix = useRemixReviewStore((s) => s.registerRemix);
 
   // API 데이터 호출
   const { data: detailResponse } = useTemplateDetail(templateId);
@@ -162,6 +164,11 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
     );
   };
 
+  const handleProfileClick = () => {
+    if (typeof detail?.ownerId !== 'number') return;
+    navigate(`/member/${detail.ownerId}/templates`);
+  };
+
   return (
     <div
       className={clsx(
@@ -189,7 +196,9 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         </div>
 
         {/* 프로필 카드 */}
-        <div className="flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5">
+        <div
+          onClick={handleProfileClick}
+          className="w-full flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5 cursor-pointer">
           <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img
               src={detail?.ownerProfileImage || ProfileImageUrl}
@@ -289,6 +298,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
             onClick={() => {
               remixMutate(templateId, {
                 onSuccess: (data: ResponseRemixDto) => {
+                  registerRemix(data.data.remixedTemplateId, data.data.parentTemplateId);
                   navigate(`/block/${data.data.remixedTemplateId}`);
                 },
               });

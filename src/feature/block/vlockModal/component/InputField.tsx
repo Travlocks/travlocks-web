@@ -24,6 +24,11 @@ const InputField = ({ isRequired = true, label, value, placeholder, type = 'text
             value={value}
             placeholder={placeholder}
             onChange={(e) => onChange?.(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
             className="w-full box-border p-[17px_18px] pr-[40px] bg-base-color-6 border border-base-color rounded-[5px] hover:border-primary-color focus:ring-1 focus:ring-inset focus:ring-primary-color focus:border-primary-color transition-all outline-none"
           />
         ) : (
@@ -31,6 +36,11 @@ const InputField = ({ isRequired = true, label, value, placeholder, type = 'text
             value={value}
             placeholder={placeholder}
             onChange={(e) => onChange?.(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === ' ') {
+                e.stopPropagation();
+              }
+            }}
             className="w-full box-border h-[180px] p-[17px_18px] pr-[40px] bg-base-color-6 border border-base-color rounded-[5px] hover:border-primary-color focus:ring-1 focus:ring-inset focus:ring-primary-color focus:border-primary-color transition-all outline-none resize-none"
           />
         )}
