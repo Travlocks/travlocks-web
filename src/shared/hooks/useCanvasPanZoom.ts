@@ -196,10 +196,17 @@ export function useCanvasPanZoom(options: Options = { zoom: 1, onZoomChange: () 
 
   // 패닝 이벤트 해제 핸들러
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!panRef.current.active) return;
+
     e.preventDefault();
     e.stopPropagation();
+
     const el = viewportRef.current;
-    if (!el || !panRef.current.active) return;
+    if (!el) {
+      panRef.current.active = false;
+      setIsPanning(false);
+      return;
+    }
 
     try {
       el.releasePointerCapture?.(panRef.current.pointerId);
