@@ -132,6 +132,7 @@ export type CanvasVlockBrief = {
   vlockId: number;
   name: string;
   category: string;
+  coverImgUrl?: string;
 };
 
 export type CanvasVlockData = {

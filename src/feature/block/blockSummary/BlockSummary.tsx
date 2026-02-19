@@ -34,7 +34,7 @@ const BlockSummary = ({ isSyncUpdating = false }: BlockSummaryProps) => {
       const response = await getTemplateSummary(templateIdNum);
       const summary = response.data;
       const totalMoveMinutes = Math.max(0, Math.round(summary.totalMoveMinutes));
-      const totalDurationMinutes = toMinutes(summary.totalStayHours) + totalMoveMinutes;
+      const totalDurationMinutes = toMinutes(summary.totalStayHours);
 
       return {
         totalVlocks: summary.totalVlocks,

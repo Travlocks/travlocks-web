@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { IconBase } from '@/shared/ui/icon/IconBase';
 import TriangleIcon from '@feature/block/blockBuild/assets/edit-icon-triangle.svg?react';
@@ -13,6 +13,7 @@ import BlockStartNode from '../ui/BlockStartNode';
 import BlockUndoRedo from './BlockUndoRedo';
 import { useCanvasPanZoom } from '@/shared/hooks/useCanvasPanZoom';
 import BlockTrash from './BlockTrash';
+import { deriveConnectedConnectorEdgeMap } from '../../utils/connectedConnectorEdges';
 
 const CANVAS_W = 1680;
 const CANVAS_H = 2600;
@@ -72,6 +73,7 @@ const BlockEditorContent = ({
   const hasAvailableDays = maxDay > 0;
   const isPrevDisabled = !hasAvailableDays || currentDay <= 1;
   const isNextDisabled = !hasAvailableDays || currentDay >= maxDay;
+  const connectedEdgeMap = useMemo(() => deriveConnectedConnectorEdgeMap(puzzleBlocks), [puzzleBlocks]);
 
   // 날짜 변경 핸들러
   const handleDayChange = (day: number) => {
@@ -159,7 +161,18 @@ const BlockEditorContent = ({
                   }
                   // 드래그 중인 블록과 자손들은 숨김 (DOM에서 유지하여 위치 점프 방지)
                   const isHidden = draggingBlockIds.includes(block.blockId);
-                  return <PuzzleBlock key={block.blockId} block={block} canDrag isHidden={isHidden} />;
+                  const connectedEdges = connectedEdgeMap.get(block.blockId);
+
+                  return (
+                    <PuzzleBlock
+                      key={block.blockId}
+                      block={block}
+                      connectedPlugEdgeIndex={connectedEdges?.connectedPlugEdgeIndex ?? null}
+                      connectedSocketEdgeIndex={connectedEdges?.connectedSocketEdgeIndex ?? null}
+                      canDrag
+                      isHidden={isHidden}
+                    />
+                  );
                 })}
 
                 <BlockGhost hint={dockHint} />

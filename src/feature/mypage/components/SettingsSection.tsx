@@ -4,6 +4,7 @@ import SectionHeader from './SectionHeader';
 import ProfileEditForm from './ProfileEditForm';
 import TravelStyleSection, { type TravelStyle } from './TravelStyleSection';
 import InterestThemeSection, { type InterestTheme } from './InterestThemeSection';
+import { toast } from '@/shared/stores/toastStore';
 
 interface SettingsSectionProps {
   initialNickname?: string;
@@ -22,6 +23,7 @@ interface SettingsSectionProps {
 }
 
 const MAX_SELECTABLE_PREFERENCES = 2;
+const MAX_SELECTABLE_PREFERENCES_TOAST = '최대 2개까지 선택할 수 있습니다.';
 
 const SettingsSection = ({
   initialNickname = '',
@@ -39,6 +41,11 @@ const SettingsSection = ({
   const [interestThemes, setInterestThemes] = useState<InterestTheme[]>(initialInterestThemes);
 
   const handleToggleTravelStyle = (style: TravelStyle) => {
+    if (!travelStyles.includes(style) && travelStyles.length >= MAX_SELECTABLE_PREFERENCES) {
+      toast.error(MAX_SELECTABLE_PREFERENCES_TOAST, 'bottom-center');
+      return;
+    }
+
     setTravelStyles((prev) => {
       if (prev.includes(style)) {
         return prev.filter((s) => s !== style);
@@ -53,6 +60,11 @@ const SettingsSection = ({
   };
 
   const handleToggleInterestTheme = (theme: InterestTheme) => {
+    if (!interestThemes.includes(theme) && interestThemes.length >= MAX_SELECTABLE_PREFERENCES) {
+      toast.error(MAX_SELECTABLE_PREFERENCES_TOAST, 'bottom-center');
+      return;
+    }
+
     setInterestThemes((prev) => {
       if (prev.includes(theme)) {
         return prev.filter((t) => t !== theme);

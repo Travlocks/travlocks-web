@@ -14,6 +14,8 @@ interface BlockProps {
   color?: string;
   className?: string;
   connections?: Connector[];
+  connectedPlugEdgeIndex?: number | null;
+  connectedSocketEdgeIndex?: number | null;
   points: Point[];
   style?: React.CSSProperties;
 }
@@ -26,6 +28,8 @@ export const Block = ({
   color = 'text-negative',
   className,
   connections = [],
+  connectedPlugEdgeIndex = null,
+  connectedSocketEdgeIndex = null,
   points,
   style,
 }: BlockProps) => {
@@ -52,7 +56,25 @@ export const Block = ({
     };
   }, [points]);
 
-  const pathD = useBlockPath(points, connections);
+  // connected edge가 확정된 타입만 해당 edge를 남기고 나머지를 숨김
+  const visibleConnections = useMemo(() => {
+    const plugs = connections.filter((connector) => connector.type === 'plug');
+    const sockets = connections.filter((connector) => connector.type === 'socket');
+
+    return connections.filter((connector) => {
+      if (connector.type === 'plug' && plugs.length > 1 && connectedPlugEdgeIndex != null) {
+        return connector.edgeIndex === connectedPlugEdgeIndex;
+      }
+
+      if (connector.type === 'socket' && sockets.length > 1 && connectedSocketEdgeIndex != null) {
+        return connector.edgeIndex === connectedSocketEdgeIndex;
+      }
+
+      return true;
+    });
+  }, [connections, connectedPlugEdgeIndex, connectedSocketEdgeIndex]);
+
+  const pathD = useBlockPath(points, visibleConnections);
 
   return (
     <div className={`relative ${className}`} style={{ width: totalWidth, height: totalHeight, ...style }}>
