@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { type SortOption, SORT_OPTIONS } from '@/feature/search/types/searchTemplate.types';
+import { type SortOption, SORT_OPTIONS_LIST } from '@/feature/search/types/searchTemplate.types';
 import { DropdownStyle } from '@/feature/search/style/Dropdown.style';
 import ArrowDownIcon from '@/shared/assets/icon-arrow-down.svg?react';
 
@@ -52,7 +52,7 @@ const SortDropDown = ({ value, onChange }: SortDropDownProps) => {
   return (
     <div className={DropdownStyle.container} ref={dropdownRef}>
       <button type="button" className={DropdownStyle.button} onClick={() => setIsOpen(!isOpen)}>
-        <span>{SORT_OPTIONS[value]}</span>
+        <span>{value}</span>
         <div className={DropdownStyle.arrowIconWrapper}>
           <ArrowDownIcon className={DropdownStyle.arrowIcon(isOpen)} />
         </div>
@@ -60,13 +60,13 @@ const SortDropDown = ({ value, onChange }: SortDropDownProps) => {
 
       {isOpen && (
         <div className={DropdownStyle.menu}>
-          {Object.entries(SORT_OPTIONS).map(([key, label]) => (
+          {SORT_OPTIONS_LIST.map((option) => (
             <button
-              key={key}
+              key={option}
               type="button"
-              className={DropdownStyle.menuItem(value === key)}
-              onClick={() => handleSelect(key as SortOption)}>
-              {label}
+              className={DropdownStyle.menuItem(value === option)}
+              onClick={() => handleSelect(option)}>
+              {option}
             </button>
           ))}
         </div>
