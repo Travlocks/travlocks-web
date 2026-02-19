@@ -30,7 +30,7 @@ const MemberTemplatesPage = () => {
         templates.length > 0 ? (
           <div className="grid grid-cols-1 gap-x-[18px] gap-y-[40px] sm:grid-cols-2 lg:grid-cols-3">
             {templates.map((template) => (
-              <TemplateCard key={template.templateId} template={template} disableAuthorProfileNavigation />
+              <TemplateCard key={template.templateId} template={template} type="popular" disableAuthorProfileNavigation />
             ))}
           </div>
         ) : (

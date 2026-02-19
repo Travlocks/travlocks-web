@@ -4,18 +4,15 @@ import RemixIcon from '@/shared/assets/template/icon-remix.svg?react';
 import StarIcon from '@/shared/assets/template/icon-star.svg?react';
 import PinIcon from '@/shared/assets/template/icon-pin.svg?react';
 import SingleButton from '@/shared/components/Button/SingleButton';
-import type { Template as HomeTemplate } from '../home/types/template';
-import type { Template as ProfileTemplate } from './template.types';
+import type { Template } from '../home/types/template';
 import DefaultThumbnail from '@assets/template/thumbnail.png';
 import usePostTemplateRemix from '../home/hooks/mutations/usePostTemplateRemix';
 import { useNavigate } from 'react-router-dom';
 import { formatOneDecimal } from '@/shared/utils/format';
 
-type TemplateCardModel = HomeTemplate | ProfileTemplate;
-
 // Props of TemplateCard
 interface TemplateCardProps {
-  template: TemplateCardModel; // 표시할 템플릿 데이터
+  template: Template; // 표시할 템플릿 데이터
   type?: 'recommended' | 'popular';
   onButtonClick?: (templateId: number) => void; // 버튼 클릭 콜백
   onCardClick?: (templateId: number) => void; // 카드 영역 클릭 콜백
@@ -57,15 +54,12 @@ const TemplateCard = ({
   onCardClick,
   disableAuthorProfileNavigation = false,
 }: TemplateCardProps) => {
-  const resolvedType = type ?? ('type' in template && template.type ? template.type : 'popular');
-  const theme = (resolvedType === 'recommended' ? template.tripTheme ?? template.travelTheme : template.travelTheme) ?? '로컬';
-  const authorName = ('authorName' in template ? template.authorName : template.ownerNickname) ?? '';
-  const authorMemberId = ('authorMemberId' in template ? template.authorMemberId : template.ownerId) ?? undefined;
+  const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
 
   const navigate = useNavigate();
   const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
   const canNavigateToAuthorProfile =
-    resolvedType === 'popular' && !disableAuthorProfileNavigation && typeof authorMemberId === 'number';
+    type !== 'recommended' && !disableAuthorProfileNavigation && typeof template.ownerId === 'number';
 
   return (
     <div className={TemplateCardStyle.wrapper()} onClick={() => onCardClick?.(template.templateId)}>
@@ -90,20 +84,20 @@ const TemplateCard = ({
           <div className={TemplateCardStyle.topSection}>
             <p className={TemplateCardStyle.title}>{template.title}</p>
             <p className={TemplateCardStyle.subtitle}>
-              {resolvedType === 'recommended' ? (
+              {type === 'recommended' ? (
                 template.description
               ) : canNavigateToAuthorProfile ? (
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate(`/member/${authorMemberId}/templates`);
+                    navigate(`/member/${template.ownerId}/templates`);
                   }}
                   className="cursor-pointer hover:underline">
-                  @{authorName}
+                  @{template.ownerNickname}
                 </button>
               ) : (
-                <span>@{authorName}</span>
+                <span>@{template.ownerNickname}</span>
               )}
             </p>
           </div>
@@ -111,7 +105,7 @@ const TemplateCard = ({
           {/* 하단 영역(메타 정보, 버튼) */}
           <div className={TemplateCardStyle.bottomSection}>
             <div className={TemplateCardStyle.metadata}>
-              {resolvedType === 'recommended' ? (
+              {type === 'recommended' ? (
                 <>
                   <span className={TemplateCardStyle.metadataItem}>
                     <PinIcon className={TemplateCardStyle.pinIcon} />
@@ -123,15 +117,15 @@ const TemplateCard = ({
                 <>
                   <span className={TemplateCardStyle.metadataItem}>
                     <StarIcon className={TemplateCardStyle.starIcon} />
-                    {formatOneDecimal(template.avgRating ?? 0)}
+                    {formatOneDecimal(template.avgRating)}
                   </span>
-                  <span className={TemplateCardStyle.metadataItem}>리믹스 {template.remixCount ?? 0}회</span>
+                  <span className={TemplateCardStyle.metadataItem}>리믹스 {template.remixCount}회</span>
                 </>
               )}
             </div>
 
             <SingleButton
-              text={resolvedType === 'recommended' ? '이 템플릿 사용하기' : '리믹스 하기'}
+              text={type === 'recommended' ? '이 템플릿 사용하기' : '리믹스 하기'}
               width="full"
               height={45}
               textSize={18}
@@ -146,7 +140,7 @@ const TemplateCard = ({
                 });
               }}
               className={TemplateCardStyle.button()}
-              icon={resolvedType === 'popular' ? <RemixIcon className={TemplateCardStyle.buttonIcon} /> : undefined}
+              icon={type === 'popular' ? <RemixIcon className={TemplateCardStyle.buttonIcon} /> : undefined}
               iconPosition="left"
             />
           </div>
