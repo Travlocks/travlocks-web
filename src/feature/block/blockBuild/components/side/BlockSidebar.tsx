@@ -111,12 +111,45 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
       case '생성':
         return (
           <div className="flex flex-col gap-3">
-            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create', cityId: selectedCityId })} />
             {createdBlocks.length > 0 ? (
-              createdBlocks.map((item) => <BlockItem key={item.id} item={item} />)
+              createdBlocks.map((item) => {
+                const rawBlock = createdData?.data?.find((b) => b.id === item.id);
+                return (
+                  <BlockItem
+                    key={item.id}
+                    item={item}
+                    tab="created"
+                    onEditClick={() => {
+                      if (!rawBlock) return;
+                      onOpenVlockModal?.({
+                        type: 'edit',
+                        vlockId: item.id,
+                        cityId: selectedCityId,
+                        data: {
+                          type: 'edit',
+                          data: {
+                            name: rawBlock.name,
+                            address: rawBlock.address ?? '',
+                            categoryId: rawBlock.vlockCategory?.id ?? 0,
+                            cityId: rawBlock.city?.id ?? selectedCityId,
+                            memo: rawBlock.memo ?? '',
+                            latitude: rawBlock.latitude ?? 0,
+                            longitude: rawBlock.longitude ?? 0,
+                            coverImage: null,
+                            coverImgUrl: rawBlock.coverImgUrl ?? null,
+                            deleteCoverImage: false,
+                            isPublic: rawBlock.isPublic ?? true,
+                          },
+                        },
+                      });
+                    }}
+                  />
+                );
+              })
             ) : isSearching ? (
               <EmptyBlockMessage isSearching={isSearching} emptyMessage="검색 결과가 없습니다" />
             ) : null}
+            <BlockCreateButton onClick={() => onOpenVlockModal?.({ type: 'create', cityId: selectedCityId })} />
           </div>
         );
     }

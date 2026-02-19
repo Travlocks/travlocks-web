@@ -34,6 +34,10 @@ interface BlockEditorContentProps {
   zoom: number;
   onZoomChange: (zoom: number) => void;
   draggingBlockIds?: number[];
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
 const BlockEditorContent = ({
@@ -46,6 +50,10 @@ const BlockEditorContent = ({
   zoom,
   onZoomChange,
   draggingBlockIds = [],
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
 }: BlockEditorContentProps) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'block-board',
@@ -123,7 +131,7 @@ const BlockEditorContent = ({
       <div className="flex-1 min-h-0 h-[1200px] relative">
         {/* Redo, Undo 버튼 */}
         <div data-pan-ignore className="absolute top-[15px] right-8 z-content">
-          <BlockUndoRedo />
+          <BlockUndoRedo onUndo={onUndo} onRedo={onRedo} canUndo={canUndo} canRedo={canRedo} />
         </div>
         <div
           ref={setRefs}

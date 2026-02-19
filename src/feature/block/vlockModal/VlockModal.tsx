@@ -222,7 +222,7 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       }}>
       <div className="w-[534px] h-[800px] flex flex-col gap-[30px] rounded-[30px] bg-base-color-6 p-[45px_40px]">
         <div className="flex flex-row justify-between items-center">
-          <p className="h6 text-base-color-0">{type === 'create' ? 'Vlock 생성' : '생성된 Vlock 편집'}</p>
+          <p className="h6 text-base-color-0">{type === 'create' ? 'Vlock 생성' : 'Vlock 편집'}</p>
           <div className="flex items-center gap-[14px]">
             {formData.type === 'edit' && (
               <VisibilityToggle enabled={formData.data.isPublic} onChange={(val) => updateField('isPublic', val)} />
