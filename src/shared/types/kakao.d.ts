@@ -46,6 +46,17 @@ declare namespace kakao.maps {
     endArrow?: boolean;
   }
 
+  class Marker {
+    constructor(options: MarkerOptions);
+    setMap(map: Map | null): void;
+  }
+
+  interface MarkerOptions {
+    map?: Map;
+    position: LatLng;
+    title?: string;
+  }
+
   function load(callback: () => void): void;
 
   namespace services {

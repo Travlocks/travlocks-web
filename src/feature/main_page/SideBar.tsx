@@ -51,6 +51,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
 
     let isDisposed = false;
     let polyline: kakao.maps.Polyline | null = null;
+    const markers: kakao.maps.Marker[] = [];
 
     window.kakao.maps.load(() => {
       if (isDisposed || !mapRef.current) return;
@@ -58,6 +59,19 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
       const map = new window.kakao.maps.Map(mapRef.current, {
         center: new window.kakao.maps.LatLng(35.1796, 129.0756),
         level: 5,
+      });
+
+      const markerPositions = detail.vlocks
+        .filter((vlock) => Number.isFinite(vlock.latitude) && Number.isFinite(vlock.longitude))
+        .map((vlock) => new window.kakao.maps.LatLng(vlock.latitude, vlock.longitude));
+
+      markerPositions.forEach((position) => {
+        markers.push(
+          new window.kakao.maps.Marker({
+            map,
+            position,
+          }),
+        );
       });
 
       const drawPolyline = (path: kakao.maps.LatLng[]) => {
@@ -110,10 +124,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
           )
           .map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng));
 
-        if (routePath.length === 1) {
-          map.setCenter(routePath[0]);
-          return;
-        }
+        if (routePath.length < 2) return;
 
         drawPolyline(routePath);
       };
@@ -124,6 +135,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
     return () => {
       isDisposed = true;
       polyline?.setMap(null);
+      markers.forEach((marker) => marker.setMap(null));
     };
   }, [detail, templateId]);
 
