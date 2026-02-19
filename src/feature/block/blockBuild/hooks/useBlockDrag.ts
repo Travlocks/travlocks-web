@@ -47,6 +47,7 @@ export const useBlockDrag = ({
   // 항상 최신 상태를 참조하기 위한 ref
   const puzzleBlocksRef = useRef(puzzleBlocks);
   const zoomRef = useRef(zoom);
+  const isDraggingRef = useRef(false);
 
   useEffect(() => {
     puzzleBlocksRef.current = puzzleBlocks;
@@ -56,10 +57,37 @@ export const useBlockDrag = ({
     zoomRef.current = zoom;
   }, [zoom]);
 
+  const clearTransientDragState = useCallback(() => {
+    if (!isDraggingRef.current) return;
+
+    isDraggingRef.current = false;
+    onDragStateChange?.(false);
+    setActiveDrag(null);
+    setDockHint(null);
+  }, [onDragStateChange]);
+
+  useEffect(() => {
+    const handlePointerRelease = () => {
+      // dnd-kit onDragEnd가 누락되는 경우를 대비한 안전장치
+      clearTransientDragState();
+    };
+
+    window.addEventListener('pointerup', handlePointerRelease);
+    window.addEventListener('pointercancel', handlePointerRelease);
+
+    return () => {
+      window.removeEventListener('pointerup', handlePointerRelease);
+      window.removeEventListener('pointercancel', handlePointerRelease);
+    };
+  }, [clearTransientDragState]);
+
   const onDragStart = useCallback(
     (e: DragStartEvent) => {
       const type = e.active.data.current?.type as DragType | undefined;
-      if (type) onDragStateChange?.(true);
+      if (type) {
+        isDraggingRef.current = true;
+        onDragStateChange?.(true);
+      }
 
       if (type === 'blockSidebar') {
         const item = e.active.data.current?.item as SidebarBlock | undefined;
@@ -105,6 +133,8 @@ export const useBlockDrag = ({
 
   const onDragMove = useCallback(
     (e: DragMoveEvent) => {
+      if (!isDraggingRef.current) return;
+
       const boardEl = boardRef.current;
       if (!boardEl) return;
 
@@ -136,6 +166,7 @@ export const useBlockDrag = ({
 
   const onDragEnd = useCallback(
     (e: DragEndEvent) => {
+      isDraggingRef.current = false;
       onDragStateChange?.(false);
       setActiveDrag(null);
       setDockHint(null);
@@ -253,10 +284,8 @@ export const useBlockDrag = ({
   );
 
   const onDragCancel = useCallback(() => {
-    onDragStateChange?.(false);
-    setActiveDrag(null);
-    setDockHint(null);
-  }, [onDragStateChange]);
+    clearTransientDragState();
+  }, [clearTransientDragState]);
 
   return {
     sensors,
