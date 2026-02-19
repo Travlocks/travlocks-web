@@ -33,10 +33,11 @@ const ACTIONS = [
 interface BlockHeaderProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
-  onTemplateModalOpenChange: (open: boolean) => void;
+  // onTemplateModalOpenChange: (open: boolean) => void;
 }
 
-const BlockHeader = ({ level, setLevel, onTemplateModalOpenChange }: BlockHeaderProps) => {
+// const BlockHeader = ({ level, setLevel, onTemplateModalOpenChange }: BlockHeaderProps) => {
+const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
   const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
   const [input, setInput] = useState(templateTitle);
@@ -98,11 +99,12 @@ const BlockHeader = ({ level, setLevel, onTemplateModalOpenChange }: BlockHeader
               // action.id === 1 && 'border-base-color bg-white',
               action.id === 1 && 'border-primary-color bg-primary-color text-white',
             )}
-            onClick={() => {
-              if (action.id === 1) {
-                onTemplateModalOpenChange(true);
-              }
-            }}>
+            // onClick={() => {
+            //   if (action.id === 1) {
+            //     onTemplateModalOpenChange(true);
+            //   }
+            // }}
+          >
             {action.icon}
             <p>{action.text}</p>
           </button>
