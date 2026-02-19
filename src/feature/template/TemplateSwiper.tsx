@@ -15,7 +15,7 @@ interface TemplateSwiperProps {
 
 // Embla Carousel 설정 옵션
 const options: EmblaOptionsType = {
-  align: 'center',
+  align: 'start',
   slidesToScroll: 1,
   loop: false,
 };
@@ -65,12 +65,7 @@ const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
   }, [emblaApi, onSelect]);
 
   return (
-    <div
-      className="w-full flex flex-col items-center"
-      style={{
-        transform: selected === 0 ? 'translateX(15vw)' : 'translateX(0px)',
-        transition: 'transform 0.3s ease',
-      }}>
+    <div className="w-full flex flex-col items-center">
       <div className="w-full">
         {/* Embla Carousel 컨테이너 */}
         <div className={TemplateSwiperStyle.embla} ref={emblaRef}>

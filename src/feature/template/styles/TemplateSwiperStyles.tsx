@@ -5,7 +5,7 @@ export const TemplateSwiperStyle = {
   embla: 'max-w-[1920px] mx-auto py-[30px]',
 
   // Embla container (scroll body)
-  container: 'w-full flex items-center ml-[2vw]',
+  container: 'w-full flex items-center',
 
   // Slide wrapper
   slide: clsx('flex-[0_0_427px] min-w-0 pr-[40px]'),
