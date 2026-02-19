@@ -27,7 +27,6 @@ const BlockPage = () => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [reviewTargetTemplateId, setReviewTargetTemplateId] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
-  const [hoveredRating, setHoveredRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const consumePendingReview = useRemixReviewStore((s) => s.consumePendingReview);
   // const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -130,7 +129,6 @@ const BlockPage = () => {
     consumePendingReview(savedTemplateId);
     setReviewTargetTemplateId(parentTemplateId);
     setRating(0);
-    setHoveredRating(0);
     setReviewComment('');
     setIsReviewModalOpen(true);
   };
@@ -168,11 +166,9 @@ const BlockPage = () => {
         <TemplateRatingModal
           templateTitle={templateDetail?.title}
           rating={rating}
-          hoveredRating={hoveredRating}
           reviewComment={reviewComment}
           isSubmitting={isSubmittingRating}
           onRatingChange={setRating}
-          onRatingHoverChange={setHoveredRating}
           onCommentChange={setReviewComment}
           onSubmit={handleReviewSubmit}
           onSkip={() => {

@@ -1,14 +1,11 @@
-import StarEmptyIcon from '@/shared/assets/icon-star-empty.svg?react';
-import StarFilledIcon from '@/shared/assets/icon-star-filled.svg?react';
+import StarRating from '@/shared/components/Rating/StarRating';
 
 interface TemplateRatingModalProps {
   templateTitle?: string;
   rating: number;
-  hoveredRating: number;
   reviewComment: string;
   isSubmitting: boolean;
   onRatingChange: (rating: number) => void;
-  onRatingHoverChange: (rating: number) => void;
   onCommentChange: (comment: string) => void;
   onSubmit: () => void;
   onSkip: () => void;
@@ -17,11 +14,9 @@ interface TemplateRatingModalProps {
 const TemplateRatingModal = ({
   templateTitle,
   rating,
-  hoveredRating,
   reviewComment,
   isSubmitting,
   onRatingChange,
-  onRatingHoverChange,
   onCommentChange,
   onSubmit,
   onSkip,
@@ -42,28 +37,8 @@ const TemplateRatingModal = ({
           </p>
         </div>
 
-        <div className="flex justify-center gap-[8px]">
-          {Array.from({ length: 5 }, (_, index) => {
-            const starNumber = index + 1;
-            const isFilled = starNumber <= (hoveredRating || rating);
-
-            return (
-              <button
-                key={starNumber}
-                type="button"
-                onClick={() => onRatingChange(starNumber)}
-                onMouseEnter={() => onRatingHoverChange(starNumber)}
-                onMouseLeave={() => onRatingHoverChange(0)}
-                aria-label={`${starNumber}점`}
-                className="cursor-pointer rounded-[6px] p-[2px] transition-transform hover:scale-[1.06]">
-                {isFilled ? (
-                  <StarFilledIcon className="w-[38px] h-[38px]" />
-                ) : (
-                  <StarEmptyIcon className="w-[38px] h-[38px]" />
-                )}
-              </button>
-            );
-          })}
+        <div className="flex justify-center">
+          <StarRating initialRating={rating} onRatingChange={onRatingChange} size={38} />
         </div>
 
         <textarea
