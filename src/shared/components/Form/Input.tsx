@@ -120,7 +120,10 @@ const Input = ({
             if (register) {
               setValue?.(register?.name, '');
             } else if (rest.onChange) {
-              rest.onChange('');
+              const event = {
+                target: { value: '' },
+              } as unknown as React.ChangeEvent<HTMLInputElement>;
+              rest.onChange(event);
             }
             if (onCancel) {
               onCancel();
