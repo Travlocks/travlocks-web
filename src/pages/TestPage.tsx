@@ -17,6 +17,7 @@ import BlockEditor from '@/feature/block/blockBuild/components/BlockEditor';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import { useState } from 'react';
 import PlaceSearch from '@/feature/block/vlockModal/component/PlaceSearch';
+import StarRating from '@/shared/components/Rating/StarRating';
 
 const TestPage = () => {
   const schema = z.object({
@@ -195,6 +196,11 @@ const TestPage = () => {
             required
           />
         </div>
+      </div>
+
+      <div>
+        <h1>✅ StarRating.tsx</h1>
+        <StarRating initialRating={3} size={40} />
       </div>
     </>
   );
