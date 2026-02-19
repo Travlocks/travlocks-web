@@ -162,6 +162,11 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
     );
   };
 
+  const handleProfileClick = () => {
+    if (typeof detail?.ownerId !== 'number') return;
+    navigate(`/member/${detail.ownerId}/templates`);
+  };
+
   return (
     <div
       className={clsx(
@@ -189,7 +194,9 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         </div>
 
         {/* 프로필 카드 */}
-        <div className="flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5">
+        <div
+          onClick={handleProfileClick}
+          className="w-full flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5 cursor-pointer">
           <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img
               src={detail?.ownerProfileImage || ProfileImageUrl}
