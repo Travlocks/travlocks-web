@@ -101,6 +101,11 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal, onSaveSuccess 
                   placeholder="여행 타이틀을 입력해주세요"
                   hasCancel={true}
                   className="border-base-color! w-full!"
+                  onKeyDown={(e) => {
+                    if (e.key === ' ') {
+                      e.stopPropagation();
+                    }
+                  }}
                 />
               )}
             />
@@ -114,6 +119,11 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal, onSaveSuccess 
               className={clsx(
                 `h-[120px] b4 w-full py-[16px] rounded-[10px] border border-base-color bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none resize-none pt-[17px] pl-[18px]`,
               )}
+              onKeyDown={(e) => {
+                if (e.key === ' ') {
+                  e.stopPropagation();
+                }
+              }}
             />
           </div>
         </div>
