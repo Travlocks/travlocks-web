@@ -80,6 +80,27 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
     return isSyncPausedRef?.current === true;
   }, [isSyncPausedRef]);
 
+  const preserveMissingImageUrls = useCallback((nextBlocks: Block[], prevBlocks: Block[]): Block[] => {
+    const prevImageByBlockId = new Map<number, string>();
+
+    for (const block of prevBlocks) {
+      if (typeof block.imageUrl === 'string' && block.imageUrl.trim().length > 0) {
+        prevImageByBlockId.set(block.blockId, block.imageUrl);
+      }
+    }
+
+    if (prevImageByBlockId.size === 0) return nextBlocks;
+
+    return nextBlocks.map((block) => {
+      if (typeof block.imageUrl === 'string' && block.imageUrl.trim().length > 0) {
+        return block;
+      }
+
+      const preservedImageUrl = prevImageByBlockId.get(block.blockId);
+      return preservedImageUrl ? { ...block, imageUrl: preservedImageUrl } : block;
+    });
+  }, []);
+
   const withSuppressedSync = useCallback(
     (updater: (prev: Record<number, Block[]>) => Record<number, Block[]>) => {
       suppressSyncRef.current = true;
@@ -118,12 +139,14 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
         setTripDays(response.data.tripDays);
 
         const mapped = mapCanvasToBlocksFallback(response.data);
-        latestBlocksByDayRef.current[day] = mapped;
-        syncedBlocksByDayRef.current[day] = mapped;
+        const prevBlocksForDay = latestBlocksByDayRef.current[day] ?? blocksByDayRef.current[day] ?? [];
+        const hydrated = preserveMissingImageUrls(mapped, prevBlocksForDay);
+        latestBlocksByDayRef.current[day] = hydrated;
+        syncedBlocksByDayRef.current[day] = hydrated;
 
         withSuppressedSync((prev) => ({
           ...prev,
-          [day]: mapped,
+          [day]: hydrated,
         }));
 
         if (shouldInvalidateSummary) {
@@ -148,6 +171,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
       setTripDays,
       invalidateBlockSummary,
       setSyncStatus,
+      preserveMissingImageUrls,
     ],
   );
 

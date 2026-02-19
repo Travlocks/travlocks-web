@@ -9,14 +9,15 @@ import PuzzleBlock from './ui/PuzzleBlock';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
-import { type SetStateAction, useRef, useState } from 'react';
+import { type SetStateAction, useMemo, useRef, useState } from 'react';
 import { useBlockUndoRedo } from '../hooks/useBlockUndoRedo';
 import { getDescendantBlocks, getDescendants } from '../utils/path';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import type { VlockData, VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
-import type { SidebarBlock, CategoryType } from '../types/block';
+import type { CategoryType, SidebarBlock } from '../types/block';
 import { VLOCK_CATEGORY_MAP } from '@/shared/constants/vlockCategory';
 import { MOCK_BLOCKS } from '../mock';
+import { deriveConnectedConnectorEdgeMap } from '../utils/connectedConnectorEdges';
 
 interface BlockEditorProps {
   level: Level;
@@ -36,6 +37,7 @@ const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
 
 const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorProps) => {
   const { puzzleBlocks, currentDay, tripDays, actions: editorActions } = useBlockEditor();
+  const connectedEdgeMap = useMemo(() => deriveConnectedConnectorEdgeMap(puzzleBlocks), [puzzleBlocks]);
   const [zoom, setZoom] = useState(1);
   const [blockItems, setBlockItems] = useState<SidebarBlock[]>(MOCK_BLOCKS);
   const [activeVlockModal, setActiveVlockModal] = useState<{
@@ -158,7 +160,12 @@ const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorPr
                       transform: `scale(${zoom})`,
                       transformOrigin: 'top left',
                     }}>
-                    <PuzzleBlock block={b} isOverlay />
+                    <PuzzleBlock
+                      block={b}
+                      connectedPlugEdgeIndex={connectedEdgeMap.get(b.blockId)?.connectedPlugEdgeIndex ?? null}
+                      connectedSocketEdgeIndex={connectedEdgeMap.get(b.blockId)?.connectedSocketEdgeIndex ?? null}
+                      isOverlay
+                    />
                   </div>
                 ))}
               </div>

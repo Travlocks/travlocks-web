@@ -8,6 +8,22 @@ export interface VlockDetailDTO {
   address: string;
 }
 
+export type TemplateRouteTransportType = 'WALK' | 'CAR' | 'TRANSIT';
+
+export interface TemplateDayRouteDTO {
+  moveTimeId: number | null;
+  fromVlockId: number;
+  toVlockId: number;
+  moveMinutes: number;
+  distanceMeter: number;
+  transportType: TemplateRouteTransportType;
+  polyline: number[][];
+}
+
+export interface TemplateDayRoutesDTO {
+  routes: TemplateDayRouteDTO[];
+}
+
 export interface TemplateDetailDTO {
   templateId: number;
   title: string;
@@ -27,3 +43,4 @@ export interface TemplateDetailDTO {
 }
 
 export type TemplateDetailResponseDTO = SuccessPayload<TemplateDetailDTO>;
+export type TemplateDayRoutesResponseDTO = SuccessPayload<TemplateDayRoutesDTO>;

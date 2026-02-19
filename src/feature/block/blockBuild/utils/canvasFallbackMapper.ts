@@ -98,7 +98,7 @@ const createMappedBlock = (vlock: CanvasVlockData, dayNo: number): Block => {
     name: vlock.vlock.name,
     category,
     duration,
-    imageUrl: undefined,
+    imageUrl: vlock.vlock.coverImgUrl,
     color: categoryColor[category],
     x: initial.x,
     y: initial.y,

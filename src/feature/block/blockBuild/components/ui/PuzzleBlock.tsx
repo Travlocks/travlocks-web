@@ -4,6 +4,8 @@ import { Block } from '@/shared/components/Block/Block';
 
 interface PuzzleBlockProps {
   block: BlockData;
+  connectedPlugEdgeIndex?: number | null;
+  connectedSocketEdgeIndex?: number | null;
   canDrag?: boolean;
   isOverlay?: boolean;
   /** 상위 블록이 드래그될 때 true - DragOverlay에서 서브트리로 표시되므로 원본은 숨김 */
@@ -13,6 +15,8 @@ interface PuzzleBlockProps {
 
 export default function PuzzleBlock({
   block,
+  connectedPlugEdgeIndex = null,
+  connectedSocketEdgeIndex = null,
   canDrag = false,
   isOverlay = false,
   isHidden = false,
@@ -43,6 +47,8 @@ export default function PuzzleBlock({
           duration={block.duration}
           points={block.points}
           connections={block.connectors}
+          connectedPlugEdgeIndex={connectedPlugEdgeIndex}
+          connectedSocketEdgeIndex={connectedSocketEdgeIndex}
           color={block.color}
           style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
         />
@@ -75,6 +81,8 @@ export default function PuzzleBlock({
         duration={block.duration}
         points={block.points}
         connections={block.connectors}
+        connectedPlugEdgeIndex={connectedPlugEdgeIndex}
+        connectedSocketEdgeIndex={connectedSocketEdgeIndex}
         color={block.color}
       />
     </div>
