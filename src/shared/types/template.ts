@@ -7,3 +7,10 @@ export type TemplateDetailData = {
 };
 
 export type ResponseTemplateDetailDto = SuccessPayload<TemplateDetailData>;
+
+export type RequestTemplateRatingDto = {
+  rating: number;
+  content?: string;
+};
+
+export type ResponseTemplateRatingDto = SuccessPayload<unknown>;

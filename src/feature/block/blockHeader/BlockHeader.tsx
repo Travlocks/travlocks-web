@@ -38,6 +38,7 @@ const ACTIONS = [
 interface BlockHeaderProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
+  onSaveSuccess?: (templateId: number) => void;
   // onTemplateModalOpenChange: (open: boolean) => void;
 }
 
@@ -47,7 +48,7 @@ export type FormFields = {
   description: string;
 };
 
-const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
+const BlockHeader = ({ level, setLevel, onSaveSuccess }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
   const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
   const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
@@ -140,7 +141,12 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
             </button>
           ))}
           {showSaveModal && (
-            <SaveModal selectedId={selectedId} setSelectedId={setSelectedId} setShowSaveModal={setShowSaveModal} />
+            <SaveModal
+              selectedId={selectedId}
+              setSelectedId={setSelectedId}
+              setShowSaveModal={setShowSaveModal}
+              onSaveSuccess={onSaveSuccess}
+            />
           )}
         </section>
       </div>

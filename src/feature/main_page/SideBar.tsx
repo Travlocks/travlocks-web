@@ -18,6 +18,7 @@ import type { ResponseRemixDto } from '@/feature/home/types/template';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatOneDecimal } from '@/shared/utils/format';
 import { toTripDayCount } from '@/shared/constants/tripDays';
+import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
 
 interface SideBarContentProps {
   templateId: number;
@@ -30,6 +31,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
   const navigate = useNavigate();
   const { mutate: remixMutate } = usePostTemplateRemix(); // 템플릿 리믹스
   const { mutate: toggleFavoriteMutate } = useToggleFavorite(); // 즐겨찾기 토글
+  const registerRemix = useRemixReviewStore((s) => s.registerRemix);
 
   // API 데이터 호출
   const { data: detailResponse } = useTemplateDetail(templateId);
@@ -296,6 +298,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
             onClick={() => {
               remixMutate(templateId, {
                 onSuccess: (data: ResponseRemixDto) => {
+                  registerRemix(data.data.remixedTemplateId, data.data.parentTemplateId);
                   navigate(`/block/${data.data.remixedTemplateId}`);
                 },
               });
