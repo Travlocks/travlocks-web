@@ -4,7 +4,7 @@ export const TemplateCardStyle = {
   //Wrapper
   wrapper: (canHover: boolean = true) =>
     clsx(
-      'w-[387px] aspect-[387/455]',
+      'w-full aspect-[387/455]',
       'transition-transform duration-300 ease-in-out',
       canHover && 'hover:scale-[1.0336]', // 400/387 = 1.0336
     ),
@@ -16,7 +16,7 @@ export const TemplateCardStyle = {
       'w-full h-full',
       'rounded-[30px] overflow-hidden',
       'bg-white border ',
-      haveHoverGroup ? 'border-base-color-3' : 'border-base-color-6',
+      haveHoverGroup ? 'border-base-color-3' : 'border-base-color',
       'shadow-[0_1px_20px_0_rgba(0,0,0,0.15)]',
       'relative flex flex-col',
     ),

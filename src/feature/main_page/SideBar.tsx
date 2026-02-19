@@ -15,6 +15,7 @@ import { useToggleFavorite } from './hooks/mutations/useToggleFavorite';
 import { toast } from '@/shared/stores/toastStore';
 import type { ResponseRemixDto } from '@/feature/home/types/template';
 import { motion, AnimatePresence } from 'motion/react';
+import { formatOneDecimal } from '@/shared/utils/format';
 
 interface SideBarContentProps {
   templateId: number;
@@ -111,7 +112,11 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         {/* 프로필 카드 */}
         <div className="flex items-center gap-6.75 p-4.5 border border-base-color rounded-[5px] bg-base-color-5">
           <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
-            <img src={ProfileImageUrl} alt="profile" className="w-full h-full object-cover" />
+            <img
+              src={detail?.ownerProfileImage || ProfileImageUrl}
+              alt="profile"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="h9 text-base-color-0">@{detail?.ownerNickname}</span>
         </div>
@@ -138,7 +143,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
               <StarIcon className="w-6 h-6" />
             </div>
             <div className="flex flex-col items-center">
-              <span className="h9 text-base-color-0">{detail?.rating}</span>
+              <span className="h9 text-base-color-0">{formatOneDecimal(detail?.rating)}</span>
               <span className="b6 text-base-color-2">평점</span>
             </div>
           </div>
