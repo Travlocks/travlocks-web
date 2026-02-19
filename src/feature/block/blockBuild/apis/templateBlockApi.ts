@@ -94,7 +94,7 @@ export const updateTemplate = async (
 ): Promise<UpdateTemplateResponseDto> => {
   const formData = new FormData();
 
-  formData.append('request', JSON.stringify(request));
+  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
   if (coverImage) {
     formData.append('coverImage', coverImage);
