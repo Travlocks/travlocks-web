@@ -34,7 +34,7 @@ const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
 };
 
 const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorProps) => {
-  const { puzzleBlocks, currentDay, actions: editorActions } = useBlockEditor();
+  const { puzzleBlocks, currentDay, tripDays, actions: editorActions } = useBlockEditor();
   const [zoom, setZoom] = useState(1);
   const [blockItems, setBlockItems] = useState<SidebarBlock[]>(MOCK_BLOCKS);
   const [activeVlockModal, setActiveVlockModal] = useState<{
@@ -81,6 +81,7 @@ const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorPr
                 puzzleBlocks={puzzleBlocks}
                 dockHint={dockHint}
                 currentDay={currentDay}
+                tripDays={tripDays}
                 onDayChange={editorActions.setDay}
                 zoom={zoom}
                 onZoomChange={setZoom}
