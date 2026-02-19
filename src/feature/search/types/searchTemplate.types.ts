@@ -56,9 +56,6 @@ export interface SearchTemplateParams {
 
   /** 페이지 번호 (0부터 시작) */
   page?: number;
-
-  /** 페이지 크기 */
-  size?: number;
 }
 
 /**
