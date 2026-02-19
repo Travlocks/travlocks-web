@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { VlockModalRequestDto, UpdateVlockModalFormData, VlockData } from './types/vlockModal.types';
 
 import { useCreateVlock, useUpdateVlock, useDeleteVlock } from './hooks/useVlock';
+import { useCategories } from '../blockBuild/hooks/queries/useCategories';
 import InputField from './component/InputField';
 import Dropdown from './component/VlockCategoryDropdown';
 import PlaceSearchField from './component/PlaceSearch';
@@ -25,6 +26,8 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
   const createMutation = useCreateVlock();
   const updateMutation = useUpdateVlock();
   const deleteMutation = useDeleteVlock();
+  const { data: categoriesData, isLoading: isCategoriesLoading } = useCategories();
+  const categories = categoriesData?.data?.categories ?? [];
 
   // Edit mode
   const editData = data && data.type === 'edit' ? data.data : null;
@@ -241,7 +244,12 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
 
         {/* 스크롤바 우측 패딩 추가(pr-10px) */}
         <div className="flex-1 flex flex-col gap-[20px] overflow-y-auto">
-          <Dropdown value={formData.data.categoryId} onChange={(id) => updateField('categoryId', id)} />
+          <Dropdown
+            value={formData.data.categoryId}
+            categories={categories}
+            disabled={isCategoriesLoading}
+            onChange={(id) => updateField('categoryId', id)}
+          />
 
           <InputField
             label="이름"

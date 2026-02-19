@@ -15,7 +15,6 @@ import { getDescendantBlocks, getDescendants } from '../utils/path';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import type { VlockData, VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
 import type { CategoryType, SidebarBlock } from '../types/block';
-import { VLOCK_CATEGORY_MAP } from '@/shared/constants/vlockCategory';
 import { MOCK_BLOCKS } from '../mock';
 import { deriveConnectedConnectorEdgeMap } from '../utils/connectedConnectorEdges';
 
@@ -25,11 +24,18 @@ interface BlockEditorProps {
   onSummaryUpdatingChange?: (isUpdating: boolean) => void;
 }
 
+const KNOWN_CATEGORIES: CategoryType[] = ['숙소', '식당', '카페', '쇼핑', '관광지', '문화', '액티비티', '투어', '기타'];
+
 const mapVlockToSidebarBlock = (vlock: VlockData): SidebarBlock => {
+  const categoryName = vlock.vlockCategory.name;
+  const category: CategoryType = KNOWN_CATEGORIES.includes(categoryName as CategoryType)
+    ? (categoryName as CategoryType)
+    : '기타';
+
   return {
     id: vlock.id,
     name: vlock.name,
-    category: (VLOCK_CATEGORY_MAP[vlock.vlockCategory.id as keyof typeof VLOCK_CATEGORY_MAP] as CategoryType) || '기타',
+    category,
     duration: vlock.vlockCategory.stayHours ? `${vlock.vlockCategory.stayHours}시간` : '1시간',
     imageUrl: vlock.coverImgUrl,
   };
