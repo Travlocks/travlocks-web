@@ -15,7 +15,7 @@ const CategoryButton = ({ label, isActive, onClick }: CategoryButtonProps) => {
       type="button"
       onClick={onClick}
       className={clsx(
-        'flex items-center justify-center gap-3 px-3 py-2 text-[14px] b6 rounded-[20px] transition-colors',
+        'flex items-center justify-center gap-3 px-3 py-2 text-[14px] b6 rounded-[20px] transition-colors whitespace-nowrap',
         isActive ? 'bg-primary-color text-base-color-6' : 'bg-base-color-4 text-base-color-0',
       )}>
       {label}

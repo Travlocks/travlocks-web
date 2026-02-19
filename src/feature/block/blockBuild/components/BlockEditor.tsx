@@ -9,7 +9,8 @@ import PuzzleBlock from './ui/PuzzleBlock';
 import BlockTimeLine from '../../blockTimeLine/BlockTimeLine';
 import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 import type { Level } from '../types/level';
-import { type SetStateAction, useCallback, useRef, useState } from 'react';
+import { type SetStateAction, useRef, useState } from 'react';
+import { useBlockUndoRedo } from '../hooks/useBlockUndoRedo';
 import { getDescendantBlocks, getDescendants } from '../utils/path';
 import VlockModal from '@/feature/block/vlockModal/VlockModal';
 import type { VlockData, VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
@@ -45,18 +46,24 @@ const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorPr
   } | null>(null);
   const PAD = 2000;
   const isSyncPausedRef = useRef(false);
-  const handleDragStateChange = useCallback((isDragging: boolean) => {
-    isSyncPausedRef.current = isDragging;
-  }, []);
+
+  const { trackedUpdateBlocksByDay, trackedRemoveById, onDragStateChange, handleUndo, handleRedo, canUndo, canRedo } =
+    useBlockUndoRedo({
+      puzzleBlocks,
+      currentDay,
+      updateBlocksByDay: editorActions.updateBlocksByDay,
+      removeById: editorActions.removeById,
+      isSyncPausedRef,
+    });
 
   const { sensors, boardRef, activeDrag, dockHint, handlers } = useBlockDrag({
     puzzleBlocks,
     currentDay,
-    updateBlocksByDay: editorActions.updateBlocksByDay,
-    removeById: editorActions.removeById,
+    updateBlocksByDay: trackedUpdateBlocksByDay,
+    removeById: trackedRemoveById,
     zoom,
     pad: PAD,
-    onDragStateChange: handleDragStateChange,
+    onDragStateChange,
   });
 
   // 서버 동기화 (디바운스 + 롤백)
@@ -90,6 +97,10 @@ const BlockEditor = ({ level, setLevel, onSummaryUpdatingChange }: BlockEditorPr
                     ? [activeDrag.blockId, ...getDescendants(puzzleBlocks, activeDrag.blockId)]
                     : []
                 }
+                onUndo={handleUndo}
+                onRedo={handleRedo}
+                canUndo={canUndo}
+                canRedo={canRedo}
               />
             </div>
           )}

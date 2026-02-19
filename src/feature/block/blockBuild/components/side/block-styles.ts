@@ -15,7 +15,7 @@ export const categoryColor = {
 
 export const blockItemStyles = {
   smallText: clsx('text-[12px]', 'font-light'),
-  title: clsx('text-[15px]', 'font-light'),
+  title: clsx('text-[15px]', 'font-light', 'line-clamp-1'),
   time: clsx('text-[#9CA3AF]'),
   categoryColor,
 };
