@@ -105,4 +105,15 @@ export interface FilterTag {
  * @remarks
  * - 서버 API 응답 페이로드입니다.
  */
-export type SearchTemplateResponseDTO = SuccessPayload<Template[]>;
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}
+
+export type SearchTemplateResponseDTO = SuccessPayload<PageResponse<Template>>;
