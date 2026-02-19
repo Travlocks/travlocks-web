@@ -14,6 +14,7 @@ import AccountModal from '../mypage/components/AccountModal';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -165,6 +166,8 @@ const TemplateCard = ({
                 mutate(template.templateId, {
                   onSuccess: (data) => {
                     registerRemix(data.data.remixedTemplateId, data.data.parentTemplateId);
+
+                    useBlockTemplateStore.getState().setTemplateId(String(data.data.remixedTemplateId));
                     navigate(`/block/${data.data.remixedTemplateId}`);
                   },
                 });
