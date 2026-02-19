@@ -4,6 +4,7 @@ import { type MyTemplateFilter, useMyTemplatesQuery } from '@/feature/mypage/hoo
 import TemplateCard from '@/feature/template/TemplateCard';
 import ProfileLayout from '@/feature/mypage/components/ProfileLayout';
 import { toTemplateCard } from '@/feature/mypage/utils/templateAdapter';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 const parseFilter = (value: string | null): MyTemplateFilter => {
   if (value === 'favorite') {
@@ -23,6 +24,15 @@ const TemplatesPage = () => {
   const templates = (templateData?.content ?? []).map(toTemplateCard);
 
   const handleCardClick = (templateId: number) => {
+    /**
+     * 온보딩 진입 흐름과 동일하게 템플릿 ID를 선동기화합니다.
+     *
+     * @remarks
+     * - `/block/:templateId` 라우트로 이동하기 전에 store.templateId를 먼저 갱신합니다.
+     * - 이렇게 하면 페이지 전환 직후 이전 템플릿 편집 상태가 잠깐 보이는 현상을 줄일 수 있습니다.
+     * - BlockPage의 초기화 로직(setTemplateId 기준)이 동일한 기준으로 동작하도록 맞춥니다.
+     */
+    useBlockTemplateStore.getState().setTemplateId(String(templateId));
     navigate(`/block/${templateId}`);
   };
 
