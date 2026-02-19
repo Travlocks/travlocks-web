@@ -29,7 +29,7 @@ const initialFilters: FilterState = {
   transportTypes: [],
 };
 
-const initialSort: SortOption = 'rating';
+const initialSort: SortOption = '별점순';
 
 interface TemplateContentProps {
   onCardClick?: (templateId: number) => void;
@@ -169,9 +169,6 @@ const TemplateContent = ({ onCardClick }: TemplateContentProps) => {
               />
             </section>
           </main>
-
-          {/* 오른쪽 사이드 패널 (나중에 사용) */}
-          <aside className="w-[300px] flex-shrink-0">{/* 추후 컨텐츠 추가 예정 */}</aside>
         </div>
       </div>
     </div>

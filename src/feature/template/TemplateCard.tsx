@@ -8,6 +8,7 @@ import type { Template } from '../home/types/template';
 import DefaultThumbnail from '@assets/template/thumbnail.png';
 import usePostTemplateRemix from '../home/hooks/mutations/usePostTemplateRemix';
 import { useNavigate } from 'react-router-dom';
+import { formatOneDecimal } from '@/shared/utils/format';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -92,7 +93,7 @@ const TemplateCard = ({ template, type, onButtonClick, onCardClick }: TemplateCa
                 <>
                   <span className={TemplateCardStyle.metadataItem}>
                     <StarIcon className={TemplateCardStyle.starIcon} />
-                    {template.avgRating}
+                    {formatOneDecimal(template.avgRating)}
                   </span>
                   <span className={TemplateCardStyle.metadataItem}>리믹스 {template.remixCount}회</span>
                 </>
@@ -101,7 +102,7 @@ const TemplateCard = ({ template, type, onButtonClick, onCardClick }: TemplateCa
 
             <SingleButton
               text={type === 'recommended' ? '이 템플릿 사용하기' : '리믹스 하기'}
-              width={387}
+              width="full"
               height={45}
               textSize={18}
               variant="white"

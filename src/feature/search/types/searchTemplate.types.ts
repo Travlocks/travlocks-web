@@ -5,11 +5,11 @@ import type { SuccessPayload } from '@/shared/types/common';
  * 템플릿 정렬 옵션 타입
  *
  * @remarks
- * - 'rating': 별점 높은 순
- * - 'popular': 인기 많은 순
- * - 'latest': 최신 등록 순
+ * - '별점순': 별점 높은 순
+ * - '인기순': 인기 많은 순
+ * - '최신순': 최신 등록 순
  */
-export type SortOption = 'rating' | 'popular' | 'latest';
+export type SortOption = '별점순' | '인기순' | '최신순';
 
 /**
  * 여행 기간 타입
@@ -24,13 +24,9 @@ export type SortOption = 'rating' | 'popular' | 'latest';
 
 export type TripDays = 'ONE_DAY' | 'TWO_DAYS' | 'THREE_DAYS' | 'FOUR_DAYS' | 'FIVE_DAYS';
 /**
- * 정렬 옵션의 한글 표시 이름
+ * 정렬 옵션 목록
  */
-export const SORT_OPTIONS: Record<SortOption, string> = {
-  rating: '별점순',
-  popular: '인기순',
-  latest: '최신순',
-};
+export const SORT_OPTIONS_LIST: SortOption[] = ['별점순', '인기순', '최신순'];
 
 /**
  * 템플릿 탐색 API 요청 파라미터
