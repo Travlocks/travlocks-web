@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { useTemplateDetail } from './hooks/queries/useTemplateDetail';
+import { getTemplateDayRoutes } from './api/templateDetail.api';
 import usePostTemplateRemix from '@/feature/home/hooks/mutations/usePostTemplateRemix';
 import DefaultThumbnail from '@assets/template/thumbnail.png';
 import HeartIcon from '@assets/heart.svg?react';
@@ -16,6 +17,7 @@ import { toast } from '@/shared/stores/toastStore';
 import type { ResponseRemixDto } from '@/feature/home/types/template';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatOneDecimal } from '@/shared/utils/format';
+import { toTripDayCount } from '@/shared/constants/tripDays';
 
 interface SideBarContentProps {
   templateId: number;
@@ -47,18 +49,83 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
   useEffect(() => {
     if (!mapRef.current || !window.kakao || !detail) return;
 
-    window.kakao.maps.load(() => {
-      const firstVlock = detail.vlocks?.[0];
-      const lat = firstVlock?.latitude ?? 35.1796;
-      const lng = firstVlock?.longitude ?? 129.0756;
+    let isDisposed = false;
+    let polyline: kakao.maps.Polyline | null = null;
 
-      const options = {
-        center: new window.kakao.maps.LatLng(lat, lng),
+    window.kakao.maps.load(() => {
+      if (isDisposed || !mapRef.current) return;
+
+      const map = new window.kakao.maps.Map(mapRef.current, {
+        center: new window.kakao.maps.LatLng(35.1796, 129.0756),
         level: 5,
+      });
+
+      const drawPolyline = (path: kakao.maps.LatLng[]) => {
+        if (path.length < 2) return;
+
+        polyline?.setMap(null);
+
+        polyline = new window.kakao.maps.Polyline({
+          map,
+          path,
+          strokeWeight: 4,
+          strokeColor: '#3388FF',
+          strokeOpacity: 0.9,
+          strokeStyle: 'solid',
+        });
+
+        const bounds = new window.kakao.maps.LatLngBounds();
+        path.forEach((latLng) => bounds.extend(latLng));
+        map.setBounds(bounds);
       };
-      new window.kakao.maps.Map(mapRef.current!, options);
+
+      const drawRoutePolyline = async () => {
+        const dayCount = toTripDayCount(detail.tripDays);
+        if (dayCount <= 0) return;
+
+        const dayNos = Array.from({ length: dayCount }, (_, idx) => idx + 1);
+
+        // 모든 day에 대한 route 정보를 병렬적으로 가져옴
+        const routeGroups = await Promise.all(
+          dayNos.map(async (dayNo) => {
+            try {
+              const response = await getTemplateDayRoutes(templateId, dayNo);
+              return response.data.routes;
+            } catch (error) {
+              console.error(error);
+              return [];
+            }
+          }),
+        );
+
+        if (isDisposed) return;
+
+        // 각 day의 route를 이어서 점들로 LatLng 생성
+        const routePath = routeGroups
+          .flat()
+          .flatMap((route) => route.polyline)
+          .filter(
+            (coordinate): coordinate is [number, number] =>
+              coordinate.length === 2 && Number.isFinite(coordinate[0]) && Number.isFinite(coordinate[1]),
+          )
+          .map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng));
+
+        if (routePath.length === 1) {
+          map.setCenter(routePath[0]);
+          return;
+        }
+
+        drawPolyline(routePath);
+      };
+
+      void drawRoutePolyline();
     });
-  }, [detail]);
+
+    return () => {
+      isDisposed = true;
+      polyline?.setMap(null);
+    };
+  }, [detail, templateId]);
 
   const handleHeartClick = () => {
     const nextState = !isLiked;

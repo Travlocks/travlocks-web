@@ -5,17 +5,45 @@ declare namespace kakao.maps {
     getLng(): number;
   }
 
+  class LatLngBounds {
+    constructor(sw?: LatLng, ne?: LatLng);
+    extend(latlng: LatLng): void;
+  }
+
   class Map {
     constructor(container: HTMLElement, options: MapOptions);
     setCenter(latlng: LatLng): void;
     setLevel(level: number): void;
     getCenter(): LatLng;
     getLevel(): number;
+    setBounds(
+      bounds: LatLngBounds,
+      paddingTop?: number,
+      paddingRight?: number,
+      paddingBottom?: number,
+      paddingLeft?: number,
+    ): void;
   }
 
   interface MapOptions {
     center: LatLng;
     level?: number;
+  }
+
+  class Polyline {
+    constructor(options: PolylineOptions);
+    setMap(map: Map | null): void;
+  }
+
+  interface PolylineOptions {
+    map?: Map;
+    path: LatLng[] | LatLng[][];
+    strokeWeight?: number;
+    strokeColor?: string;
+    strokeOpacity?: number;
+    strokeStyle?: string;
+    zIndex?: number;
+    endArrow?: boolean;
   }
 
   function load(callback: () => void): void;
