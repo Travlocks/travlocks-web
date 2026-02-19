@@ -4,36 +4,34 @@ import { IconBase } from '@/shared/ui/icon/IconBase';
 
 interface BlockUndoRedoProps {
   className?: string;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
-const BUTTON_TYPE = {
-  common: {
-    className:
-      'flex items-center justify-center w-10 h-10 rounded-full border border-[#D9D9D9] bg-base-color-6 shadow-sm cursor-pointer',
-  },
-  undo: {
-    icon: GoBackIcon,
-    color: '#FFFFFF',
-    className: 'w-5 h-5',
-  },
-  redo: {
-    icon: GoBackIcon,
-    color: '#FFFFFF',
-    className: 'w-5 h-5 scale-x-[-1]',
-  },
-};
+const BTN_BASE =
+  'flex items-center justify-center w-10 h-10 rounded-full border border-[#D9D9D9] bg-base-color-6 shadow-sm transition-opacity';
 
-const BlockUndoRedo = ({ className }: BlockUndoRedoProps) => {
+const BlockUndoRedo = ({ className, onUndo, onRedo, canUndo = false, canRedo = false }: BlockUndoRedoProps) => {
   return (
     <div className={clsx('flex items-center gap-4', className)}>
-      {/* Undo */}
-      <button type="button" aria-label="되돌리기" className={clsx(BUTTON_TYPE.common.className)}>
-        <IconBase icon={BUTTON_TYPE.undo.icon} color={BUTTON_TYPE.undo.color} className={BUTTON_TYPE.undo.className} />
+      <button
+        type="button"
+        aria-label="되돌리기"
+        disabled={!canUndo}
+        onClick={() => onUndo?.()}
+        className={clsx(BTN_BASE, canUndo ? 'cursor-pointer' : 'cursor-not-allowed opacity-40')}>
+        <IconBase icon={GoBackIcon} color="#FFFFFF" className="w-5 h-5" />
       </button>
 
-      {/* Redo */}
-      <button type="button" aria-label="다시하기" className={clsx(BUTTON_TYPE.common.className)}>
-        <IconBase icon={BUTTON_TYPE.redo.icon} color={BUTTON_TYPE.redo.color} className={BUTTON_TYPE.redo.className} />
+      <button
+        type="button"
+        aria-label="다시하기"
+        disabled={!canRedo}
+        onClick={() => onRedo?.()}
+        className={clsx(BTN_BASE, canRedo ? 'cursor-pointer' : 'cursor-not-allowed opacity-40')}>
+        <IconBase icon={GoBackIcon} color="#FFFFFF" className="w-5 h-5 scale-x-[-1]" />
       </button>
     </div>
   );

@@ -33,7 +33,16 @@ export async function getTemplates(params: SearchTemplateParams): Promise<Search
         isSuccess: true,
         successCode: 'TEMPLATE_EXPLORE_EMPTY',
         successMessage: '조건에 맞는 템플릿이 없습니다.',
-        data: [],
+        data: {
+          content: [],
+          page: 0,
+          size: 0,
+          totalElements: 0,
+          totalPages: 0,
+          first: true,
+          last: true,
+          empty: true,
+        },
       };
     }
     throw error;

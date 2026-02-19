@@ -12,7 +12,7 @@ interface TemplateSwiperProps {
 }
 
 const TemplateSwiper = ({ cards, type, onCardClick }: TemplateSwiperProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(2);
   const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const containerRef = useRef<HTMLDivElement>(null);
 

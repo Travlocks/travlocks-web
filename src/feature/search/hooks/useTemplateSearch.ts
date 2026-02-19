@@ -16,7 +16,6 @@ function buildParams(keyword: string, filters: FilterState, sort: string, page: 
   const params: SearchTemplateParams = {
     sort,
     page: page - 1, // API는 0-based page index 사용
-    size: 9,
   };
 
   if (keyword.trim()) {
@@ -63,9 +62,8 @@ export function useTemplateSearch(keyword: string, filters: FilterState, sort: S
   return useQuery({
     queryKey: [QUERY_KEY.templateSearch, keyword, filters, sort, page],
     queryFn: () => getTemplates(params),
-    staleTime: 5 * 60 * 1000, // 5분
-    gcTime: 10 * 60 * 1000, // 10분
-    // 초기 로드 시에만 자동으로 가져오기
+    staleTime: 0,
+    gcTime: 0, // 캐시 즉시 만료
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });

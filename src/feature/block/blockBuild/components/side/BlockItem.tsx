@@ -1,15 +1,18 @@
 import { type SidebarBlock } from '../../types/block';
 import ClockIcon from '@feature/block/blockBuild/assets/edit-icon-clock.svg?react';
 import DefaultBlockIconUrl from '@feature/block/blockBuild/assets/icon-default-block.svg?url';
+import DotMonoIcon from '@assets/block/icon-dots-mono.svg?react';
 import { blockItemStyles, categoryColor } from './block-styles';
 import clsx from 'clsx';
 import { useDraggable } from '@dnd-kit/core';
 
 interface BlockItemProps {
   item: SidebarBlock;
+  tab?: 'normal' | 'created';
+  onEditClick?: (item: SidebarBlock) => void;
 }
 
-const BlockItem = ({ item }: BlockItemProps) => {
+const BlockItem = ({ item, tab = 'normal', onEditClick }: BlockItemProps) => {
   const { setNodeRef, listeners, attributes, isDragging } = useDraggable({
     id: `sidebar:${item.id}`,
     data: {
@@ -25,7 +28,7 @@ const BlockItem = ({ item }: BlockItemProps) => {
       {...attributes}
       className={clsx(
         'relative w-full h-21 rounded-[10px] border border-gray-200 bg-base-color-6 flex items-center gap-3 p-3',
-        'cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md',
+        'cursor-grab active:cursor-grabbing transition-shadow hover:shadow-md focus:outline-none',
         isDragging && 'opacity-0',
       )}>
       {/* 이미지 영역 */}
@@ -54,11 +57,27 @@ const BlockItem = ({ item }: BlockItemProps) => {
       </div>
 
       {/* 텍스트 정보 */}
-      <div className="flex flex-col items-start text-left">
-        {/* 카테고리 */}
-        <span className={clsx(blockItemStyles.smallText, categoryColor[item.category as keyof typeof categoryColor])}>
-          {item.category}
-        </span>
+      <div className="flex flex-col items-start text-left flex-1 min-w-0">
+        {/* 카테고리 + 편집 버튼 (생성 탭) */}
+        <div className="w-full flex items-center justify-between gap-2">
+          <span className={clsx(blockItemStyles.smallText, categoryColor[item.category as keyof typeof categoryColor])}>
+            {item.category}
+          </span>
+          {tab === 'created' && onEditClick && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onEditClick(item);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="shrink-0 p-1 cursor-pointer hover:opacity-70 transition-opacity focus:outline-none"
+              aria-label="편집">
+              <DotMonoIcon className="w-5 h-5 text-base-color-1" />
+            </button>
+          )}
+        </div>
 
         {/* 이름 */}
         <span className={blockItemStyles.title}>{item.name}</span>
