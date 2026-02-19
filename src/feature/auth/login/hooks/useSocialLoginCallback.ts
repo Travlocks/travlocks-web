@@ -11,13 +11,19 @@ import type {
   ErrorGoogleLoginDto,
   ErrorNaverLoginDto,
 } from '../types/socialLogin.types';
+import { handleLoginError } from '@/shared/utils/errorHandler';
+
+interface useSocialLoginCallbackOptions {
+  onSuccess?: (data: SuccessGoogleLoginDto | SuccessNaverLoginDto) => void;
+  onError?: (error: AxiosError<ErrorGoogleLoginDto | ErrorNaverLoginDto>, errorMessage: string) => void;
+}
 
 // google 소셜 로그인 콜백
-export const useGoogleLoginCallback = () => {
+export const useGoogleLoginCallback = (options?: useSocialLoginCallbackOptions) => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  return useMutation<SuccessGoogleLoginDto, AxiosError<ErrorGoogleLoginDto>, RequestGoogleLoginDto>({
+  const mutation = useMutation<SuccessGoogleLoginDto, AxiosError<ErrorGoogleLoginDto>, RequestGoogleLoginDto>({
     mutationFn: postGoogleLogin,
     onSuccess: (data) => {
       if (data.isSuccess && data.data) {
@@ -32,20 +38,23 @@ export const useGoogleLoginCallback = () => {
         login(accessToken);
         navigate('/', { replace: true });
       }
+      options?.onSuccess?.(data);
     },
-    onError: (error) => {
-      console.error('google 로그인 실패:', error.response?.data);
-      navigate('/login', { replace: true });
+    onError: (error: AxiosError<ErrorGoogleLoginDto>) => {
+      const errorMessage = handleLoginError(error);
+      console.error(errorMessage);
+      options?.onError?.(error, errorMessage);
     },
   });
+  return { mutate: mutation.mutate, isPending: mutation.isPending };
 };
 
 // naver 소셜 로그인 콜백
-export const useNaverLoginCallback = () => {
+export const useNaverLoginCallback = (options?: useSocialLoginCallbackOptions) => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  return useMutation<SuccessNaverLoginDto, AxiosError<ErrorNaverLoginDto>, RequestNaverLoginDto>({
+  const mutation = useMutation<SuccessNaverLoginDto, AxiosError<ErrorNaverLoginDto>, RequestNaverLoginDto>({
     mutationFn: postNaverLogin,
     onSuccess: (data) => {
       if (data.isSuccess && data.data) {
@@ -60,10 +69,13 @@ export const useNaverLoginCallback = () => {
         login(accessToken);
         navigate('/', { replace: true });
       }
+      options?.onSuccess?.(data);
     },
-    onError: (error) => {
-      console.error('Naver 로그인 실패:', error.response?.data);
-      navigate('/login', { replace: true });
+    onError: (error: AxiosError<ErrorNaverLoginDto>) => {
+      const errorMessage = handleLoginError(error);
+      console.error(errorMessage);
+      options?.onError?.(error, errorMessage);
     },
   });
+  return { mutate: mutation.mutate, isPending: mutation.isPending };
 };

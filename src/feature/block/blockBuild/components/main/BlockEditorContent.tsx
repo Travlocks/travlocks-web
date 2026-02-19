@@ -165,7 +165,7 @@ const BlockEditorContent = ({
         </div>
 
         {/* AI 스마트 정렬 버튼 */}
-        <div data-pan-ignore className="absolute left-1/2 bottom-12 -translate-x-1/2 z-sticky">
+        <div data-pan-ignore className="absolute left-1/2 bottom-12 -translate-x-1/2 ">
           <AISortButton />
         </div>
       </div>

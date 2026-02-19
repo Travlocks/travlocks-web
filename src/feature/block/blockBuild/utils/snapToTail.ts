@@ -30,6 +30,41 @@ type SnapCandidate = Omit<SnapBlock, 'blockId'>;
 const DEFAULT_TAB_WIDTH = 42;
 
 /**
+ * tail의 socket과 drag 블록의 plug를 매칭하여 가능한 모든 스냅 위치 반환
+ * 체인 배치 시 맞닿는 위치를 얻을 때 사용
+ */
+export function getAllSnapPositionsToTail(params: {
+  tail: SnapBlock;
+  drag: Pick<Block, 'points' | 'connectors'>;
+  tabWidth?: number;
+}): { x: number; y: number }[] {
+  const { tail, drag, tabWidth = DEFAULT_TAB_WIDTH } = params;
+  const tailSockets = tail.connectors.filter((c) => c.type === 'socket');
+  const dragPlugs = drag.connectors.filter((c) => c.type === 'plug');
+  const options: { x: number; y: number }[] = [];
+
+  for (const socket of tailSockets) {
+    const socketDir = getEdgeDirection(tail.points, socket.edgeIndex);
+    if (!socketDir) continue;
+
+    for (const plug of dragPlugs) {
+      const plugDir = getEdgeDirection(drag.points, plug.edgeIndex);
+      if (!plugDir || !areOppositeDirections(socketDir, plugDir)) continue;
+
+      const socketLocal = getConnectorCenter(tail.points, socket, tabWidth);
+      const plugLocal = getConnectorCenter(drag.points, plug, tabWidth);
+      if (!socketLocal || !plugLocal) continue;
+
+      options.push({
+        x: tail.x + socketLocal.x - plugLocal.x,
+        y: tail.y + socketLocal.y - plugLocal.y,
+      });
+    }
+  }
+  return options;
+}
+
+/**
  * 드래그 중인 블록이 tail 블록에 스냅될 수 있는지 계산
  * tail의 socket과 drag의 plug를 매칭하여 가장 가까운 연결점을 찾음
  */

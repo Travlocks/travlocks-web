@@ -37,7 +37,7 @@ export interface SingleButtonProps {
   bg?: string;
   variant?: 'primary' | 'white' | 'negative';
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   icon?: ReactNode;
   iconPosition?: 'left' | 'right';

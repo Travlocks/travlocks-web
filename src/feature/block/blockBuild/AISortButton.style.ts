@@ -3,9 +3,10 @@ import clsx from 'clsx';
 export const AISortButtonStyles = {
   Root: (className?: string) =>
     clsx(
-      'group relative inline-flex rounded-[10px] p-[1px]',
+      'group relative inline-flex rounded-[10px] p-[1px] w-[455px] h-[98px]',
       'bg-[#E0E7FF]',
       'cursor-pointer overflow-hidden transition-all duration-300',
+      'focus:outline-none',
       className,
     ),
 

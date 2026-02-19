@@ -1,7 +1,6 @@
 import TemplateCard from '@/feature/template/TemplateCard';
 import TemplateCardSkeleton from '@/feature/template/TemplateCardSkeleton';
-import EmptyResult from '@/feature/search/component/ResultSection/EmptyResult';
-import ErrorResult from '@/feature/search/component/ResultSection/ErrorResult';
+import EmptyResultCard from '@/shared/components/EmptyResultCard';
 import PageNavigation from '@/feature/search/component/ResultSection/PageNavigation';
 import type { SearchTemplateResponseDTO } from '@/feature/search/types/searchTemplate.types';
 
@@ -24,8 +23,8 @@ interface SearchResultCardsProps {
   /** 페이지 변경 시 호출되는 콜백 함수 */
   onPageChange: (page: number) => void;
 
-  /** 템플릿 카드 클릭 시 호출되는 콜백 함수 */
-  onTemplateClick?: (templateId: number) => void;
+  /** 템플릿 카드 영역 클릭 시 호출되는 콜백 함수 */
+  onCardClick?: (templateId: number) => void;
 }
 
 /**
@@ -51,7 +50,7 @@ const SearchResultCards = ({
   data,
   currentPage,
   onPageChange,
-  onTemplateClick,
+  onCardClick,
 }: SearchResultCardsProps) => {
   // 로딩 중
   if (isLoading) {
@@ -66,12 +65,23 @@ const SearchResultCards = ({
 
   // 에러 발생
   if (isError) {
-    return <ErrorResult />;
+    return (
+      <EmptyResultCard
+        title="해당 조건에 맞는 템플릿이 없어요."
+        label="하지만 트래블록스에선 없는 여행도 바로 만들 수 있어요"
+      />
+    );
   }
 
   // 결과 없음
-  if (!data || data.templates.length === 0) {
-    return <EmptyResult />;
+  // SuccessPayload 사용 시 data.data가 템플릿 배열입니다.
+  if (!data?.data || data.data.length === 0) {
+    return (
+      <EmptyResultCard
+        title="해당 조건에 맞는 템플릿이 없어요."
+        label="하지만 트래블록스에선 없는 여행도 바로 만들 수 있어요"
+      />
+    );
   }
 
   // 정상: 카드 리스트 + 페이지네이션
@@ -79,13 +89,13 @@ const SearchResultCards = ({
     <div className="flex flex-col gap-[80px]">
       {/* 템플릿 카드 그리드 (3x3) */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-        {data.templates.map((template) => (
-          <TemplateCard key={template.templateId} template={template} onClick={onTemplateClick} />
+        {data.data.map((template) => (
+          <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
         ))}
       </div>
 
       {/* 페이지네이션 */}
-      <PageNavigation currentPage={currentPage} totalPages={data.pagination.totalPages} onPageChange={onPageChange} />
+      <PageNavigation currentPage={currentPage} onPageChange={onPageChange} />
     </div>
   );
 };

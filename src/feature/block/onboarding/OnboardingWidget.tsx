@@ -64,7 +64,12 @@ const OnboardingWidget = () => {
     if (requestDTO) {
       postOnboarding(requestDTO, {
         onSuccess: (data) => {
-          navigate(`/block/${data.templateId}`);
+          navigate(`/block/${data.templateId}`, {
+            state: {
+              data,
+              destinationCityIds: selectedCityIds,
+            },
+          });
         },
       });
     }

@@ -1,4 +1,5 @@
 import type { SuccessPayload } from '@/shared/types/common';
+import type { ErrorPayload } from '@/shared/types/error';
 import type { Vlock, VlockSummary } from '@/shared/types/vlock';
 
 export type ConnectionPortType = 'TOP_LEFT' | 'BOTTOM_LEFT' | 'TOP_RIGHT' | 'BOTTOM_RIGHT';
@@ -149,3 +150,25 @@ export type CanvasData = {
 };
 
 export type ResponseCanvasDto = SuccessPayload<CanvasData>;
+
+// AI 스마트 정렬 응답 데이터
+export type OptimizeVlockItem = {
+  templateVlockId: number;
+  orderNo: number;
+  stayTimes: string;
+  vlockId: number;
+  vlockName: string;
+  categoryName: string;
+};
+
+export type OptimizeData = {
+  templateDayId: number;
+  vlocks: OptimizeVlockItem[];
+  distance: number;
+};
+
+// AI 스마트 정렬 성공 응답 타입
+export type ResponseOptimizeDto = SuccessPayload<OptimizeData>;
+
+// AI 스마트 정렬 에러 응답 타입
+export type ResponseOptimizeErrorDto = ErrorPayload<null>;

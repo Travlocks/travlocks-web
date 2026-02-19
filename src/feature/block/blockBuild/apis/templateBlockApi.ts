@@ -8,6 +8,7 @@ import type {
   ResponseCreateBlockDto,
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
+  ResponseOptimizeDto,
   ResponseTemplateSummaryDto,
 } from '../blockBuild.type';
 
@@ -33,6 +34,17 @@ export const getBlockCanvas = async (templateId: number, dayNo: number): Promise
   try {
     const { data } = await axiosInstance.get<ResponseCanvasRawDto>(`/templates/${templateId}/days/${dayNo}/canvas`);
     return normalizeCanvasResponse(data);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// 최적 동선 생성
+export const postAISmartSort = async (templateId: number, dayNo: number): Promise<ResponseOptimizeDto> => {
+  try {
+    const { data } = await axiosInstance.post<ResponseOptimizeDto>(`/templates/${templateId}/days/${dayNo}/optimize`);
+    return data;
   } catch (error) {
     console.error(error);
     throw error;

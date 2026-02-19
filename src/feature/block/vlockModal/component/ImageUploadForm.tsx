@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { FormItem } from './common/FormItem';
 import ImageIcon from '@/shared/assets/icon-image.svg?react';
+import Thumbnail from '@assets/template/thumbnail.png';
 
 interface ImageUploadFormProps {
   type: 'create' | 'edit';
@@ -44,7 +45,7 @@ const ImageUploadForm = ({ type, initialPreviewUrl, onImageChange, onImageDelete
       <div className="w-full relative h-[246px] border border-base-color rounded-[5px] bg-gradient-color-background overflow-hidden">
         {preview ? (
           <>
-            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+            <img src={preview} alt="Preview" className="w-full h-full object-cover relaative" />
             <div className="absolute bottom-[16px] right-[16px] flex gap-[8px]">
               <button
                 type="button"
@@ -78,6 +79,8 @@ const ImageUploadForm = ({ type, initialPreviewUrl, onImageChange, onImageDelete
           className="hidden"
           accept="image/png, image/jpeg, image/jpg"
         />
+
+        <img src={Thumbnail} className="w-full h-full object-cover" />
       </div>
     </FormItem>
   );
