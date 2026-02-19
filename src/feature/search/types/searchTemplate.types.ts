@@ -1,8 +1,5 @@
-import type { RegionId } from '@/shared/constants/destinationCity';
-import type { TripDurationId } from '@/shared/constants/tripDuration';
-import type { TravleThemeId } from '@/shared/constants/travelTheme';
-import type { TransportTypeId } from '@/shared/constants/transportType';
 import type { Template } from '@/feature/home/types/template';
+import type { SuccessPayload } from '@/shared/types/common';
 
 /**
  * 템플릿 정렬 옵션 타입
@@ -14,6 +11,18 @@ import type { Template } from '@/feature/home/types/template';
  */
 export type SortOption = 'rating' | 'popular' | 'latest';
 
+/**
+ * 여행 기간 타입
+ *
+ * @remarks
+ * - 'ONE_DAY': 1일
+ * - 'TWO_DAYS': 2일
+ * - 'THREE_DAYS': 3일
+ * - 'FOUR_DAYS': 4일
+ * - 'FIVE_DAYS': 5일
+ */
+
+export type TripDays = 'ONE_DAY' | 'TWO_DAYS' | 'THREE_DAYS' | 'FOUR_DAYS' | 'FIVE_DAYS';
 /**
  * 정렬 옵션의 한글 표시 이름
  */
@@ -27,35 +36,32 @@ export const SORT_OPTIONS: Record<SortOption, string> = {
  * 템플릿 탐색 API 요청 파라미터
  *
  * @remarks
- * - 서버 API 스펙에 따라 수정될 가능성이 높습니다.
+ * - API 스펙에 따른 검색 파라미터입니다.
  * - 모든 필드는 optional이며, 선택된 필터만 전송됩니다.
  */
 export interface SearchTemplateParams {
   /** 검색 키워드 */
   keyword?: string;
 
-  /** 여행지 ID 배열 */
-  region?: number[];
+  /** 권역 이름 배열 ('서울', '경기', '인천' 등) */
+  cities?: string[];
 
-  /** 여행 기간 (일, 박) */
-  trip?: {
-    days: number;
-    nights: number;
-  };
+  /** 여행 테마 이름 배열 ('자연', '문화', '맛집' 등) */
+  themes?: string[];
 
-  /** 여행 테마 ID 배열 */
-  travelTheme?: number[];
+  /** 여행 기간 배열 ('ONE_DAY', 'TWO_DAYS' 등) */
+  tripDays?: string[];
 
-  /** 교통 수단 키 배열 */
-  transportType?: string[];
+  /** 교통 수단 이름 배열 ('도보', '차량', '대중교통') */
+  transportTypes?: string[];
 
-  /** 정렬 옵션 */
+  /** 정렬 옵션 ('최신순', '별점순', '인기순') */
   sort?: string;
 
-  /** 페이지 번호 (1부터 시작) */
+  /** 페이지 번호 (0부터 시작) */
   page?: number;
 
-  /** 페이지당 아이템 수 */
+  /** 페이지 크기 */
   size?: number;
 }
 
@@ -64,20 +70,19 @@ export interface SearchTemplateParams {
  *
  * @remarks
  * - 사용자가 선택한 필터 옵션을 관리하는 상태 타입입니다.
- * - 각 필드는 선택된 ID들의 배열입니다.
  */
 export interface FilterState {
-  /** 선택된 여행지 ID 배열 */
-  regions: RegionId[];
+  /** 선택된 여행지 (권역) 이름 배열 */
+  cities: string[];
 
-  /** 선택된 여행 기간 ID 배열 */
-  tripDurations: TripDurationId[];
+  /** 선택된 여행 기간 값 배열 (ONE_DAY, TWO_DAYS 등) */
+  tripDays: string[];
 
-  /** 선택된 여행 테마 ID 배열 */
-  travelThemes: TravleThemeId[];
+  /** 선택된 여행 테마 이름 배열 */
+  themes: string[];
 
-  /** 선택된 교통 수단 ID 배열 */
-  transportTypes: TransportTypeId[];
+  /** 선택된 교통 수단 이름 배열 */
+  transportTypes: string[];
 }
 
 /**
@@ -89,10 +94,10 @@ export interface FilterState {
  */
 export interface FilterTag {
   /** 필터 타입 */
-  type: 'region' | 'tripDuration' | 'travelTheme' | 'transportType';
+  type: 'cities' | 'tripDays' | 'themes' | 'transportTypes';
 
-  /** 필터 항목의 ID */
-  id: number;
+  /** 필터 항목의 ID (이름 또는 키) */
+  id: string;
 
   /** 화면에 표시될 레이블 */
   label: string;
@@ -102,22 +107,6 @@ export interface FilterTag {
  * 템플릿 검색 API 응답 타입
  *
  * @remarks
- * - 서버 API 스펙에 따라 수정될 가능성이 높습니다.
- * - 템플릿 목록과 페이지네이션 정보를 포함합니다.
+ * - 서버 API 응답 페이로드입니다.
  */
-export interface SearchTemplateResponseDTO {
-  /** 검색된 템플릿 목록 */
-  templates: Template[];
-
-  /** 페이지네이션 정보 */
-  pagination: {
-    /** 현재 페이지 번호 */
-    currentPage: number;
-
-    /** 전체 페이지 수 */
-    totalPages: number;
-
-    /** 전체 아이템 수 */
-    totalItems: number;
-  };
-}
+export type SearchTemplateResponseDTO = SuccessPayload<Template[]>;

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import SearchBar from './component/SearchBar';
 import SearchFilter from './component/SearchFilter/SearchFilter';
 import SortDropDown from './component/SortDropDown';
 import FilterTags from './component/FilterTags';
@@ -7,6 +8,7 @@ import { useTemplateSearch } from './hooks/useTemplateSearch';
 import { useFilterTags } from './hooks/useFIlterTags';
 import type { FilterState, SortOption, FilterTag } from './types/searchTemplate.types';
 import TemplateHeader from '../template-search/components/TemplateHeader';
+import FilterIcon from '@/shared/assets/filter.svg?react';
 
 /**
  * 템플릿 탐색 페이지의 메인 컨텐츠 컴포넌트
@@ -16,17 +18,24 @@ import TemplateHeader from '../template-search/components/TemplateHeader';
  * - 초기 상태: 검색어 없음, 필터 선택 없음, 별점순 정렬, 1페이지
  * - '전체보기' 버튼으로 초기 상태로 리셋 가능
  */
-const TemplateContent = () => {
-  // 초기 상태 정의
-  const initialFilters: FilterState = {
-    regions: [],
-    tripDurations: [],
-    travelThemes: [],
-    transportTypes: [],
-  };
+/**
+ * 초기 필터 및 정렬 상태 정의
+ * 컴포넌트 외부로 이동하여 useCallback 의존성 문제 해결 및 성능 최적화
+ */
+const initialFilters: FilterState = {
+  cities: [],
+  tripDays: [],
+  themes: [],
+  transportTypes: [],
+};
 
-  const initialSort: SortOption = 'rating';
+const initialSort: SortOption = 'rating';
 
+interface TemplateContentProps {
+  onCardClick?: (templateId: number) => void;
+}
+
+const TemplateContent = ({ onCardClick }: TemplateContentProps) => {
   // 탐색 기준 상태 관리
   const [keyword, setKeyword] = useState<string>('');
   const [filters, setFilters] = useState<FilterState>(initialFilters);
@@ -63,16 +72,16 @@ const TemplateContent = () => {
       const newFilters = { ...filters };
 
       switch (tag.type) {
-        case 'region':
-          newFilters.regions = newFilters.regions.filter((id) => id !== tag.id);
+        case 'cities':
+          newFilters.cities = newFilters.cities.filter((id) => id !== tag.id);
           break;
-        case 'tripDuration':
-          newFilters.tripDurations = newFilters.tripDurations.filter((id) => id !== tag.id);
+        case 'tripDays':
+          newFilters.tripDays = newFilters.tripDays.filter((id) => id !== tag.id);
           break;
-        case 'travelTheme':
-          newFilters.travelThemes = newFilters.travelThemes.filter((id) => id !== tag.id);
+        case 'themes':
+          newFilters.themes = newFilters.themes.filter((id) => id !== tag.id);
           break;
-        case 'transportType':
+        case 'transportTypes':
           newFilters.transportTypes = newFilters.transportTypes.filter((id) => id !== tag.id);
           break;
       }
@@ -95,36 +104,20 @@ const TemplateContent = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // 페이지 변경 시 상단으로 스크롤
   }, []);
 
-  // 전체보기 (초기화) 핸들러
-  const handleResetAll = useCallback(() => {
-    setKeyword('');
-    setFilters(initialFilters);
-    setSort(initialSort);
-    setPage(1);
-  }, []);
-
-  // 템플릿 카드 클릭 핸들러
-  const handleTemplateClick = useCallback((templateId: number) => {
-    console.log('Template clicked:', templateId);
-    // 사이드바 열릴 예정
-  }, []);
+  // // 전체보기 (초기화) 핸들러
+  // const handleResetAll = useCallback(() => {
+  //   setKeyword('');
+  //   setFilters(initialFilters);
+  //   setSort(initialSort);
+  //   setPage(1);
+  // }, []);
 
   return (
-    <div className="w-full flex flex-col gap-[40px]">
-      {/* 검색 영역 */}
-      <section className="flex justify-center items-center">
-        <TemplateHeader onSearch={handleSearchChange} />
-      </section>
-
-      {/* 전체보기 버튼 */}
-      <section className="w-full flex justify-center bg-base-color-6 p-[10px] pb-[11px]">
-        <div className="w-[1130px]">
-          <button
-            type="button"
-            onClick={handleResetAll}
-            className="h4 text-base-color-2 underline decoration-[8px] underline-offset-[10px] cursor-pointer">
-            전체 보기
-          </button>
+    <div className="w-full flex flex-col gap-[40px] pb-[200px]">
+      <section className="flex justify-center items-center relative">
+        <TemplateHeader />
+        <div className="absolute bottom-[40px] z-above">
+          <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요?" />
         </div>
       </section>
 
@@ -139,12 +132,30 @@ const TemplateContent = () => {
           {/* 메인 컨텐츠 영역 (1200px 고정) */}
           <main className="flex-1 max-w-[1200px] flex flex-col gap-[40px]">
             {/* 필터 태그, 정렬 옵션 영역 */}
-            <section className="flex flex-row items-center justify-between">
-              <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
-              <div className="flex justify-end">
-                <SortDropDown value={sort} onChange={handleSortChange} />
-              </div>
-            </section>
+            <div className="flex flex-col gap-[15px]">
+              <section className="flex flex-row items-center justify-between">
+                {/* <FilterTags tags={filterTags} onRemove={handleRemoveTag} /> */}
+                <span>
+                  {keyword && (
+                    <span className="h6 text-base-color-0">
+                      <span className="text-primary-color">{keyword}</span>에 대한 검색 결과입니다
+                    </span>
+                  )}
+                </span>
+                <div className="flex justify-end">
+                  <SortDropDown value={sort} onChange={handleSortChange} />
+                </div>
+              </section>
+              <section className="flex flex-row items-center gap-[24px]">
+                {filterTags.length > 0 && (
+                  <div className="flex items-center gap-[8px] p-[8px_16px] rounded-[20px] bg-primary-color">
+                    <FilterIcon />
+                    <span className="h9 text-base-color-6">필터</span>
+                  </div>
+                )}
+                <FilterTags tags={filterTags} onRemove={handleRemoveTag} />
+              </section>
+            </div>
 
             {/* 검색 결과 */}
             <section>
@@ -154,7 +165,7 @@ const TemplateContent = () => {
                 data={data}
                 currentPage={page}
                 onPageChange={handlePageChange}
-                onTemplateClick={handleTemplateClick}
+                onCardClick={onCardClick}
               />
             </section>
           </main>
