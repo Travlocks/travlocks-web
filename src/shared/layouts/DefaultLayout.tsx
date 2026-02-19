@@ -33,7 +33,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
       const isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
 
       // 2. 화면 너비 체크 (반응형 감지)
-      const isSmallScreen = window.innerWidth < 1024;
+      const isSmallScreen = window.innerWidth < 1920;
 
       if (isTouchPrimary || isSmallScreen) {
         setIsBlocked(true);
