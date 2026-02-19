@@ -7,6 +7,7 @@ import type {
   ResponseDeleteBlockDto,
   ResponseReorderBlocksDto,
   ResponseOptimizeDto,
+  ResponseTemplateSummaryDto,
 } from '../blockBuild.type';
 
 // 캔버스 조회
@@ -24,6 +25,17 @@ export const getBlockCanvas = async (templateId: number, dayNo: number): Promise
 export const postAISmartSort = async (templateId: number, dayNo: number): Promise<ResponseOptimizeDto> => {
   try {
     const { data } = await axiosInstance.post<ResponseOptimizeDto>(`/templates/${templateId}/days/${dayNo}/optimize`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// 일정 요약 조회
+export const getTemplateSummary = async (templateId: number): Promise<ResponseTemplateSummaryDto> => {
+  try {
+    const { data } = await axiosInstance.get<ResponseTemplateSummaryDto>(`/templates/${templateId}/summary`);
     return data;
   } catch (error) {
     console.error(error);

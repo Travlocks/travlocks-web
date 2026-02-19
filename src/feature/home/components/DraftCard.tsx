@@ -1,15 +1,21 @@
 import PinIcon from '@assets/icon-pin.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 interface DraftCardProps {
+  id: number;
   title: string;
   region: string;
   progressRate: number;
   updatedAt: string;
 }
 
-const DraftCard = ({ title, region, progressRate, updatedAt }: DraftCardProps) => {
+const DraftCard = ({ id, title, region, progressRate, updatedAt }: DraftCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="group max-w-[589px] w-full h-[208px] rounded-[30px] border-base-color bg-base-color-6 shadow-[0_1px_20px_0_rgba(0,_0,_0,_0.15)] pt-[32px] px-[32px] pb-[28px] flex flex-col justify-between cursor-pointer">
+    <div
+      onClick={() => navigate(`/block/${id}`)}
+      className="group max-w-[589px] w-full h-[208px] rounded-[30px] border-base-color bg-base-color-6 shadow-[0_1px_20px_0_rgba(0,_0,_0,_0.15)] pt-[32px] px-[32px] pb-[28px] flex flex-col justify-between cursor-pointer">
       <div className="flex flex-col gap-[4px]">
         {/* 제목 */}
         <h2 className="text-base-color-0 b1 font-[600]">{title}</h2>

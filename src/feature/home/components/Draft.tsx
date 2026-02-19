@@ -7,7 +7,7 @@ const Draft = () => {
   const { data } = useGetRecentTemplates(); // 최근 편집 초안
 
   return (
-    <section className="bg-base-color-5 py-[60px] flex justify-center">
+    <section className="bg-base-color-5 py-[60px] pl-[17vw]">
       <div className="flex flex-col gap-[32px] max-w-[calc(589px*2+40px)] w-full">
         <h1 className="text-base-color-0 h1">최근 편집 초안</h1>
 
@@ -18,6 +18,7 @@ const Draft = () => {
             data?.data.map((template) => (
               <DraftCard
                 key={template.id}
+                id={template.id}
                 title={template.title}
                 region={template.regionName}
                 progressRate={template.progressRate}
