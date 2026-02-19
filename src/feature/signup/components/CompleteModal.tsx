@@ -115,7 +115,7 @@ const CompleteModal = () => {
             '[-webkit-mask-image:radial-gradient(circle_30px_at_left_bottom,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_bottom,transparent_99%,black_100%)]',
             // 두 마스크 합치는 법 (-> black인 부분만 보이도록 합침)
             '[mask-composite:intersect]',
-            '[-webkit-mask-composite:destination-in]',
+            '[-webkit-mask-composite:source-in]',
             // border
             'before:content-[""] before:absolute before:size-[62px] before:rounded-full before:border before:border-base-color before:left-[-31px] before:top-[-1px]',
             'after:content-[""] after:absolute after:size-[62px] after:rounded-full after:border after:border-base-color after:right-[-31px] after:top-[-1px]',
@@ -132,7 +132,7 @@ const CompleteModal = () => {
               '[mask-image:radial-gradient(circle_30px_at_left_top,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_top,transparent_99%,black_100%)]',
               '[-webkit-mask-image:radial-gradient(circle_30px_at_left_top,transparent_99%,black_100%),radial-gradient(circle_30px_at_right_top,transparent_99%,black_100%)]',
               '[mask-composite:intersect]',
-              '[-webkit-mask-composite:destination-in]',
+              '[-webkit-mask-composite:source-in]',
               'before:content-[""] before:absolute before:size-[62px] before:rounded-full before:border before:border-base-color before:left-[-31px] before:bottom-[-1px]',
               'after:content-[""] after:absolute after:size-[62px] after:rounded-full after:border after:border-base-color after:right-[-31px] after:bottom-[-1px]',
             )}>
