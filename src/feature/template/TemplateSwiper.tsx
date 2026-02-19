@@ -8,9 +8,10 @@ import clsx from 'clsx';
 interface TemplateSwiperProps {
   cards: Template[]; // 표시할 템플릿 카드 배열
   type: 'recommended' | 'popular';
+  onCardClick?: (templateId: number) => void;
 }
 
-const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
+const TemplateSwiper = ({ cards, type, onCardClick }: TemplateSwiperProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -131,7 +132,7 @@ const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
                 }}>
                 {/* TemplateCard의 크기가 확실히 잡히도록 pointer-events 설정 */}
                 <div className="pointer-events-auto w-[387px]">
-                  <TemplateCard template={card} type={type} />
+                  <TemplateCard template={card} type={type} onCardClick={onCardClick} />
                 </div>
               </motion.div>
             );
