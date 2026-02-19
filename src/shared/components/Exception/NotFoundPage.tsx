@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import RoundButton from '@/shared/components/Button/RoundButton';
 import Navbar from '@/shared/components/Navbar/Navbar';
-import NotFoundSvg from '@assets/exceptions/404.svg?react';
+import NotFoundSvg from '@assets/exceptions/404.png?url';
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function NotFoundPage() {
       <Navbar />
 
       <div className="flex flex-col items-center justify-center min-h-[calc(100dvh-109px)] px-4">
-        <NotFoundSvg className="w-full max-w-[1100px]" />
+        <img src={NotFoundSvg} alt="404" className="w-full max-w-[1100px]" />
 
         {/* 텍스트 영역 */}
         <h1 className="h3 font-medium text-base-color-0 mt-4">페이지를 찾을 수 없어요</h1>
