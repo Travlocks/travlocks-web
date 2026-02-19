@@ -3,14 +3,14 @@ import DualButton from '@/shared/components/Button/DualButton';
 import SingleButton from '@/shared/components/Button/SingleButton';
 
 interface AccountModalProps {
-  modalType: 'complete' | 'withdrawal' | 'logout'; // 수정, 탈퇴
+  modalType: 'complete' | 'withdrawal' | 'logout' | 'delete'; // 수정, 탈퇴
   onCancel: () => void;
   onConfirm: () => void;
 }
 
 // 모달 타입에 따라 제목과 설명 텍스트 변경
 const TEXT: Record<
-  'complete' | 'withdrawal' | 'logout',
+  'complete' | 'withdrawal' | 'logout' | 'delete',
   { title: string; description: string; isSingleButton: boolean; buttonText: string; color: 'primary' | 'negative' }
 > = {
   complete: {
@@ -32,6 +32,13 @@ const TEXT: Record<
     description: '트래블록스가 당신의 다음 여행 순간에도 함께할게요',
     isSingleButton: false,
     buttonText: '로그아웃',
+    color: 'primary',
+  },
+  delete: {
+    title: '이 템플릿을 삭제하시겠어요?',
+    description: '해당 템플릿에 속한 모든 정보가 삭제됩니다',
+    isSingleButton: false,
+    buttonText: '삭제',
     color: 'primary',
   },
 };

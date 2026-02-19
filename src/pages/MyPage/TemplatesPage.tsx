@@ -45,6 +45,7 @@ const TemplatesPage = () => {
                   type="popular"
                   disableAuthorProfileNavigation
                   onCardClick={handleCardClick}
+                  hasDelete={true}
                 />
               ))}
             </div>
