@@ -9,6 +9,8 @@ import Input from '@/shared/components/Form/Input';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import type { RequestSaveTemplateDto } from '../types/template';
 import usePatchSaveTemplate from '../hooks/mutations/usePatchSaveTemplate';
+import { toast } from '@/shared/stores/toastStore';
+import { extractErrorMessage } from '@/shared/utils/apiErrorHandler';
 
 interface SaveModalProps {
   selectedId: number;
@@ -18,13 +20,15 @@ interface SaveModalProps {
 
 const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalProps) => {
   const { register, control, handleSubmit } = useFormContext<FormFields>();
-  const { mutate } = usePatchSaveTemplate();
+  const { mutate, isPending } = usePatchSaveTemplate();
 
   const { templateId } = useParams();
   const navigate = useNavigate();
   const [cover, setCover] = useState<File | null>(null);
 
   const onSubmit = (data: FormFields) => {
+    if (isPending) return;
+
     const body: RequestSaveTemplateDto = {
       title: data.title,
       description: data.description,
@@ -36,8 +40,12 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
       { templateId: Number(templateId), body },
       {
         onSuccess: (data) => {
+          toast.success('템플릿이 저장되었습니다.', 'bottom-center');
           setShowSaveModal(false);
           navigate(`/block/${data.data.templateId}`);
+        },
+        onError: (error) => {
+          toast.error(extractErrorMessage(error, '템플릿 저장에 실패했습니다.'), 'bottom-center');
         },
       },
     );
@@ -111,7 +119,14 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
 
         <div className="flex gap-[20px]">
           <SingleButton text="취소" width={107} height={64} variant="white" onClick={() => setShowSaveModal(false)} />
-          <SingleButton text="저장" width={327} height={64} variant="primary" onClick={handleSubmit(onSubmit)} />
+          <SingleButton
+            text={isPending ? '저장 중...' : '저장'}
+            width={327}
+            height={64}
+            variant="primary"
+            disabled={isPending}
+            onClick={handleSubmit(onSubmit)}
+          />
         </div>
       </div>
     </div>
