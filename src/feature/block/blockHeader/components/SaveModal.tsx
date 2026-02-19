@@ -93,7 +93,6 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
               name="title"
               control={control}
               render={({ field }) => (
-                // @ts-expect-error - field 타입과 register 타입 일치하지 않아 임시 타입 오류 무시
                 <Input
                   {...field}
                   label="left"

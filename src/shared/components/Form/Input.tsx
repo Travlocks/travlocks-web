@@ -29,7 +29,7 @@ import XIcon from '@assets/icon-x.svg?react';
  * **/
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  register: UseFormRegisterReturn;
+  register?: UseFormRegisterReturn;
   label: 'top' | 'left';
   width?: number;
   hasCancel?: boolean;
@@ -87,7 +87,7 @@ const Input = ({
       {/* 실제 input 영역 */}
       <input
         type={inputType}
-        {...register}
+        {...(register ?? {})}
         {...rest}
         className={clsx(
           `b4 w-full py-[16px] rounded-[10px] border border-base-color-3 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none`,
@@ -117,7 +117,11 @@ const Input = ({
           type="button"
           disabled={rest.disabled}
           onClick={() => {
-            setValue(register?.name, '');
+            if (register) {
+              setValue?.(register?.name, '');
+            } else if (rest.onChange) {
+              rest.onChange('');
+            }
             if (onCancel) {
               onCancel();
             }
