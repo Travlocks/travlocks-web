@@ -1,12 +1,17 @@
 import { categoryColor } from '../components/side/block-styles';
-import type { CanvasData } from '../blockBuild.type';
+import type { CanvasData, CanvasVlockData } from '../blockBuild.type';
 import type { Block, CategoryType } from '../types/block';
 import { createStartBlockShape, getBlockShapeByDuration } from './blockShapeByDuration';
+import { getAllSnapPositionsToTail } from './snapToTail';
 
 const START_BLOCK_ID = 0;
 const START_POS = { x: 44, y: 76 };
-const BOARD_PADDING = { left: 80, top: 220 };
-const BOARD_RANGE = { width: 1400, height: 2000 };
+const CONNECTED_ORDER_GAP = 20;
+const FALLBACK_GRID_COLUMNS = 6;
+const FALLBACK_GRID_ROWS = 4;
+const FALLBACK_GRID_CELL = { x: 150, y: 120 };
+const FALLBACK_GRID_OFFSET_FROM_START = { x: 160, y: 120 };
+const DAY_SEED_MULTIPLIER = 1000;
 
 const KNOWN_CATEGORIES: CategoryType[] = ['숙소', '식당', '카페', '쇼핑', '관광지', '문화', '액티비티', '투어', '기타'];
 
@@ -25,19 +30,132 @@ const toDurationLabel = (category: CategoryType, stayHours: number): string => {
   return `${Math.max(1, Math.round(hours))}시간`;
 };
 
-const seededUnit = (seed: number): number => {
-  const x = Math.sin(seed * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-};
-
 const seededPosition = (seed: number) => {
-  const xSeed = seededUnit(seed + 17);
-  const ySeed = seededUnit(seed + 71);
+  const normalizedSeed = Math.abs(Math.trunc(seed));
+  const slotCount = FALLBACK_GRID_COLUMNS * FALLBACK_GRID_ROWS;
+  const slot = normalizedSeed % slotCount;
+  const col = slot % FALLBACK_GRID_COLUMNS;
+  const row = Math.floor(slot / FALLBACK_GRID_COLUMNS);
 
   return {
-    x: Math.round(BOARD_PADDING.left + xSeed * BOARD_RANGE.width),
-    y: Math.round(BOARD_PADDING.top + ySeed * BOARD_RANGE.height),
+    x: START_POS.x + FALLBACK_GRID_OFFSET_FROM_START.x + col * FALLBACK_GRID_CELL.x,
+    y: START_POS.y + FALLBACK_GRID_OFFSET_FROM_START.y + row * FALLBACK_GRID_CELL.y,
   };
+};
+
+const sortConnectedByOrder = (a: CanvasVlockData, b: CanvasVlockData): number => {
+  return a.orderNo - b.orderNo || a.templateVlockId - b.templateVlockId;
+};
+
+const splitVlocks = (vlocks: CanvasVlockData[]): { connected: CanvasVlockData[]; detached: CanvasVlockData[] } => {
+  const connected = vlocks.filter((v) => v.orderNo > 0).sort(sortConnectedByOrder);
+  const detached = vlocks.filter((v) => v.orderNo <= 0);
+  return { connected, detached };
+};
+
+const hasServerPosition = (
+  vlock: CanvasVlockData,
+): vlock is CanvasVlockData & {
+  canvasX: number;
+  canvasY: number;
+} => {
+  return (
+    typeof vlock.canvasX === 'number' &&
+    Number.isFinite(vlock.canvasX) &&
+    typeof vlock.canvasY === 'number' &&
+    Number.isFinite(vlock.canvasY)
+  );
+};
+
+const resolveInitialPosition = (vlock: CanvasVlockData, dayNo: number): { x: number; y: number } => {
+  if (hasServerPosition(vlock)) {
+    return { x: vlock.canvasX, y: vlock.canvasY };
+  }
+  // 좌표가 null 일 때 매번 옮겨다니지 않도록 시드를 고정
+  return seededPosition(vlock.templateVlockId + dayNo * DAY_SEED_MULTIPLIER);
+};
+
+const buildConnectedOrderPosition = (tail: Block, block: Block): { x: number; y: number } => {
+  const options = getAllSnapPositionsToTail({
+    tail,
+    drag: { points: block.points, connectors: block.connectors },
+  });
+  if (options.length > 0) {
+    return options[0];
+  }
+  return { x: tail.x + tail.w + CONNECTED_ORDER_GAP, y: tail.y };
+};
+
+const createMappedBlock = (vlock: CanvasVlockData, dayNo: number): Block => {
+  const category = toKnownCategory(vlock.vlock.category);
+  const duration = toDurationLabel(category, vlock.stayHours);
+  const shape = getBlockShapeByDuration(duration, category);
+  const initial = resolveInitialPosition(vlock, dayNo);
+
+  return {
+    blockId: vlock.vlock.vlockId,
+    templateVlocksId: vlock.templateVlockId,
+    name: vlock.vlock.name,
+    category,
+    duration,
+    imageUrl: undefined,
+    color: categoryColor[category],
+    x: initial.x,
+    y: initial.y,
+    w: shape.w,
+    h: shape.h,
+    points: shape.points,
+    connectors: shape.connectors,
+    connectedTo: null,
+    connectedFrom: null,
+  };
+};
+
+const indexBlocksByTemplateVlockId = (blocks: Block[]): Map<number, Block> => {
+  const entries: Array<[number, Block]> = [];
+  for (const block of blocks) {
+    if (typeof block.templateVlocksId === 'number') {
+      entries.push([block.templateVlocksId, block]);
+    }
+  }
+  return new Map(entries);
+};
+
+const rebuildConnectedPositionsByOrder = (
+  connected: CanvasVlockData[],
+  blocksByTemplateVlockId: Map<number, Block>,
+  start: Block,
+) => {
+  let tail: Block = start;
+  for (const item of connected) {
+    const block = blocksByTemplateVlockId.get(item.templateVlockId);
+    if (!block) continue;
+
+    const { x: newX, y: newY } = buildConnectedOrderPosition(tail, block);
+    block.x = newX;
+    block.y = newY;
+    tail = block;
+  }
+};
+
+const linkConnectedChain = (
+  connected: CanvasVlockData[],
+  blocksByTemplateVlockId: Map<number, Block>,
+  start: Block,
+) => {
+  for (let i = 0; i < connected.length; i++) {
+    const current = blocksByTemplateVlockId.get(connected[i].templateVlockId);
+    if (!current) continue;
+
+    const prev = i > 0 ? blocksByTemplateVlockId.get(connected[i - 1].templateVlockId) : start;
+    const next = i < connected.length - 1 ? blocksByTemplateVlockId.get(connected[i + 1].templateVlockId) : null;
+
+    current.connectedFrom = prev?.blockId ?? null;
+    current.connectedTo = next?.blockId ?? null;
+  }
+
+  start.connectedTo =
+    connected.length > 0 ? (blocksByTemplateVlockId.get(connected[0].templateVlockId)?.blockId ?? null) : null;
 };
 
 const createStartBlock = (): Block => {
@@ -59,63 +177,26 @@ const createStartBlock = (): Block => {
 };
 
 /**
- * Temporary fallback mapper.
- * The canvas endpoint currently lacks layout + port fields, so this mapper restores
- * chain structure from orderNo and places blocks in deterministic pseudo-random positions.
+ * 서버에서 가져온 일부 필드가 null일 때 클라이언트에서 처리 로직
+ * - 시작 블록에 붙은 블록이 canvasX/Y를 가지고 있으면 그대로 사용
+ * - canvasX/Y가 모종의 이유로 null이 되면 orderNo를 사용해 원복 (inputPort, outputPort는 랜덤)
+ * - 연결되지 않은 블록이 canvasX/Y가 null이면 랜덤으로 좌표 생성
  */
 export const mapCanvasToBlocksFallback = (canvas: CanvasData): Block[] => {
   const start = createStartBlock();
   if (!canvas.vlocks.length) return [start];
 
-  const connected = canvas.vlocks
-    .filter((v) => v.orderNo > 0)
-    .sort((a, b) => a.orderNo - b.orderNo || a.templateVlockId - b.templateVlockId);
-
-  const detached = canvas.vlocks.filter((v) => v.orderNo <= 0).sort((a, b) => a.templateVlockId - b.templateVlockId);
-
+  const { connected, detached } = splitVlocks(canvas.vlocks);
   const ordered = [...connected, ...detached];
+  const mapped = ordered.map((vlock) => createMappedBlock(vlock, canvas.dayNo));
+  const mappedByTemplateVlockId = indexBlocksByTemplateVlockId(mapped);
 
-  const mapped: Block[] = ordered.map((vlock): Block => {
-    const category = toKnownCategory(vlock.vlock.category);
-    const duration = toDurationLabel(category, vlock.stayHours);
-    const shape = getBlockShapeByDuration(duration, category);
-    const pos = seededPosition(vlock.templateVlockId + canvas.dayNo * 1000);
-
-    return {
-      blockId: vlock.vlock.vlockId,
-      templateVlocksId: vlock.templateVlockId,
-      name: vlock.vlock.name,
-      category,
-      duration,
-      imageUrl: undefined,
-      color: categoryColor[category],
-      x: pos.x,
-      y: pos.y,
-      w: shape.w,
-      h: shape.h,
-      points: shape.points,
-      connectors: shape.connectors,
-      connectedTo: null,
-      connectedFrom: null,
-    };
-  });
-
-  for (let i = 0; i < connected.length; i++) {
-    const current = mapped.find((b) => b.templateVlocksId === connected[i].templateVlockId);
-    if (!current) continue;
-
-    const prev = i > 0 ? mapped.find((b) => b.templateVlocksId === connected[i - 1].templateVlockId) : start;
-    const next =
-      i < connected.length - 1 ? mapped.find((b) => b.templateVlocksId === connected[i + 1].templateVlockId) : null;
-
-    current.connectedFrom = prev?.blockId ?? null;
-    current.connectedTo = next?.blockId ?? null;
+  const shouldRebuildConnectedByOrder = connected.some((v) => !hasServerPosition(v));
+  if (shouldRebuildConnectedByOrder) {
+    rebuildConnectedPositionsByOrder(connected, mappedByTemplateVlockId, start);
   }
 
-  start.connectedTo =
-    connected.length > 0
-      ? (mapped.find((b) => b.templateVlocksId === connected[0].templateVlockId)?.blockId ?? null)
-      : null;
+  linkConnectedChain(connected, mappedByTemplateVlockId, start);
 
   return [start, ...mapped];
 };

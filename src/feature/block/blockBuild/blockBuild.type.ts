@@ -138,6 +138,10 @@ export type CanvasVlockData = {
   templateVlockId: number;
   orderNo: number;
   stayHours: number;
+  canvasX: number | null;
+  canvasY: number | null;
+  inputPort: ConnectionPortType | null;
+  outputPort: ConnectionPortType | null;
   nextMoveMinutes: number;
   vlock: CanvasVlockBrief;
 };
