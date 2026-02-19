@@ -14,6 +14,7 @@ import { usePostOnboarding } from './hooks/usePostOnboarding';
 import type { OnboardingRequestDto } from './types/onboarding.type';
 
 import { useNavigate } from 'react-router-dom';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 /**
  * 온보딩 위젯에서 서버로 전송할 요청 DTO 타입입니다.
@@ -64,6 +65,11 @@ const OnboardingWidget = () => {
     if (requestDTO) {
       postOnboarding(requestDTO, {
         onSuccess: (data) => {
+          // 1364: 템플릿 생성 직후, 페이지 이동 전에 스토어의 ID를 업데이트하여
+          // 이전 템플릿 데이터가 보이는 현상(Stale Data)을 방지합니다.
+          // setTemplateId 내부에서 ID 변경 시 블록 데이터를 초기화하도록 구현되어 있습니다.
+          useBlockTemplateStore.getState().setTemplateId(String(data.templateId));
+
           navigate(`/block/${data.templateId}`, {
             state: {
               data,
