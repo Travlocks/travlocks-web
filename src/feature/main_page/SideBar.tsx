@@ -6,7 +6,9 @@ import RemixIcon from '@assets/icon-remix.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
 import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import { useNavigate } from 'react-router-dom';
 import { useTemplateDetail } from './hooks/queries/useTemplateDetail';
+import usePostTemplateRemix from '@/feature/home/hooks/mutations/usePostTemplateRemix';
 
 interface SideBarContentProps {
   templateId: number;
@@ -16,6 +18,8 @@ interface SideBarContentProps {
 
 const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
 
   // API 데이터 호출
   const { data: detailResponse, isLoading, isError } = useTemplateDetail(templateId);
@@ -155,7 +159,15 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         </div>
 
         {/* 리믹스 하기 버튼 */}
-        <button className="w-full bg-primary-color hover:opacity-90 transition-opacity rounded-[5px] py-5 flex items-center justify-center gap-2.75">
+        <button
+          onClick={() => {
+            mutate(templateId, {
+              onSuccess: (data) => {
+                navigate(`/block/${data.data.remixedTemplateId}`);
+              },
+            });
+          }}
+          className="w-full bg-primary-color hover:opacity-90 transition-opacity rounded-[5px] py-5 flex items-center justify-center gap-2.75">
           <RemixIcon className="w-7 h-7 [&_path]:fill-base-color-6" />
           <span className="b1 font-semibold text-base-color-6">리믹스 하기</span>
         </button>
