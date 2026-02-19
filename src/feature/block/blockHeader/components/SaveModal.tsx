@@ -16,9 +16,10 @@ interface SaveModalProps {
   selectedId: number;
   setSelectedId: React.Dispatch<SetStateAction<number>>;
   setShowSaveModal: React.Dispatch<SetStateAction<boolean>>;
+  onSaveSuccess?: (templateId: number) => void;
 }
 
-const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalProps) => {
+const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal, onSaveSuccess }: SaveModalProps) => {
   const { register, control, handleSubmit } = useFormContext<FormFields>();
   const { mutate, isPending } = usePatchSaveTemplate();
 
@@ -42,6 +43,7 @@ const SaveModal = ({ selectedId, setSelectedId, setShowSaveModal }: SaveModalPro
         onSuccess: (data) => {
           toast.success('템플릿이 저장되었습니다.', 'bottom-center');
           setShowSaveModal(false);
+          onSaveSuccess?.(data.data.templateId);
           navigate(`/block/${data.data.templateId}`);
         },
         onError: (error) => {
