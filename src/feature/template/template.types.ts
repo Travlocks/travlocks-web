@@ -65,6 +65,9 @@ export interface PopularTemplateFields extends TemplateBase {
   /** 템플릿 작성자 이름 */
   authorName: string;
 
+  /** 템플릿 작성자 멤버 ID (프로필 페이지 이동용) */
+  authorMemberId?: number;
+
   /** 평균 평점 */
   avgRating: number;
 

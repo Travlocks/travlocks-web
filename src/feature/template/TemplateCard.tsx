@@ -16,6 +16,7 @@ interface TemplateCardProps {
   type?: 'recommended' | 'popular';
   onButtonClick?: (templateId: number) => void; // 버튼 클릭 콜백
   onCardClick?: (templateId: number) => void; // 카드 영역 클릭 콜백
+  disableAuthorProfileNavigation?: boolean;
 }
 
 /**
@@ -46,10 +47,19 @@ interface TemplateCardProps {
  * />
  * ```
  */
-const TemplateCard = ({ template, type, onButtonClick, onCardClick }: TemplateCardProps) => {
+const TemplateCard = ({
+  template,
+  type,
+  onButtonClick,
+  onCardClick,
+  disableAuthorProfileNavigation = false,
+}: TemplateCardProps) => {
   const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
+
   const navigate = useNavigate();
   const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
+  const canNavigateToAuthorProfile =
+    type !== 'recommended' && !disableAuthorProfileNavigation && typeof template.ownerId === 'number';
 
   return (
     <div className={TemplateCardStyle.wrapper()} onClick={() => onCardClick?.(template.templateId)}>
@@ -74,7 +84,21 @@ const TemplateCard = ({ template, type, onButtonClick, onCardClick }: TemplateCa
           <div className={TemplateCardStyle.topSection}>
             <p className={TemplateCardStyle.title}>{template.title}</p>
             <p className={TemplateCardStyle.subtitle}>
-              {type === 'recommended' ? template.description : <span>@{template.ownerNickname}</span>}
+              {type === 'recommended' ? (
+                template.description
+              ) : canNavigateToAuthorProfile ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/member/${template.ownerId}/templates`);
+                  }}
+                  className="cursor-pointer hover:underline">
+                  @{template.ownerNickname}
+                </button>
+              ) : (
+                <span>@{template.ownerNickname}</span>
+              )}
             </p>
           </div>
 

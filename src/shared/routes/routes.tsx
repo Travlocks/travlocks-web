@@ -27,4 +27,7 @@ export const lazyRoutes = {
   /** 마이페이지 */
   MyPage: React.lazy(() => import('../../pages/MyPage/MyPage')),
   SettingsPage: React.lazy(() => import('../../pages/MyPage/SettingsPage')),
+  MemberTemplatesPage: React.lazy(() => import('../../pages/Member/MemberTemplatesPage')),
+  VlocksPage: React.lazy(() => import('../../pages/MyPage/VlocksPage')),
+  TemplatesPage: React.lazy(() => import('../../pages/MyPage/TemplatesPage')),
 };
