@@ -47,7 +47,7 @@ export const updateVlock = async (
   const formData = new FormData();
 
   // JSON 데이터를 문자열로 변환하여 추가
-  formData.append('request', JSON.stringify(request));
+  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
 
   // 새로운 커버 이미지가 있으면 추가, 없으면 빈 Blob 추가
   if (coverImg) {

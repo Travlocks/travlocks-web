@@ -24,6 +24,8 @@ const START_BLOCK: Block = {
 type BlockTemplateState = {
   templateId: string | null;
   templateTitle: string;
+  templateDescription: string;
+  templateCoverImageUrl: string;
   templateCityIds: number[];
   tripDays: number;
   currentDay: number;
@@ -33,6 +35,7 @@ type BlockTemplateState = {
 type BlockTemplateActions = {
   setTemplateId: (templateId: string | null) => void;
   setTemplateTitle: (title: string) => void;
+  setTemplateInfo: (info: { title: string; description: string; coverImageUrl: string }) => void;
   setTemplateCityIds: (cityIds: number[]) => void;
   setTripDays: (tripDays: number) => void;
   setDay: (day: number) => void;
@@ -59,6 +62,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
     (set, get) => ({
       templateId: null,
       templateTitle: '',
+      templateDescription: '',
+      templateCoverImageUrl: '',
       templateCityIds: [],
       tripDays: 0,
       currentDay: 1,
@@ -72,6 +77,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
         set({
           templateId,
           templateTitle: '',
+          templateDescription: '',
+          templateCoverImageUrl: '',
           templateCityIds: [],
           tripDays: 0,
           currentDay: 1,
@@ -81,6 +88,14 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
 
       setTemplateTitle: (title) => {
         set({ templateTitle: title });
+      },
+
+      setTemplateInfo: (info) => {
+        set({
+          templateTitle: info.title,
+          templateDescription: info.description,
+          templateCoverImageUrl: info.coverImageUrl,
+        });
       },
 
       setTemplateCityIds: (cityIds) => {
@@ -165,6 +180,8 @@ export const useBlockTemplateStore = create<BlockTemplateState & BlockTemplateAc
         return {
           templateId: null,
           templateTitle: '',
+          templateDescription: '',
+          templateCoverImageUrl: '',
           templateCityIds: [],
           tripDays: 0,
           currentDay: 1,

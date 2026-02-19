@@ -38,8 +38,10 @@ const ACTIONS = [
 interface BlockHeaderProps {
   level: Level;
   setLevel: React.Dispatch<SetStateAction<Level>>;
+  // onTemplateModalOpenChange: (open: boolean) => void;
 }
 
+// const BlockHeader = ({ level, setLevel, onTemplateModalOpenChange }: BlockHeaderProps) => {
 export type FormFields = {
   title: string;
   description: string;
@@ -137,7 +139,6 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
               <p>{action.text}</p>
             </button>
           ))}
-
           {showSaveModal && (
             <SaveModal selectedId={selectedId} setSelectedId={setSelectedId} setShowSaveModal={setShowSaveModal} />
           )}
