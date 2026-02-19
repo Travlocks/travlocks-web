@@ -74,8 +74,8 @@ const SearchResultCards = ({
   }
 
   // 결과 없음
-  // SuccessPayload 사용 시 data.data가 템플릿 배열입니다.
-  if (!data?.data || data.data.length === 0) {
+  // SuccessPayload 사용 시 data.data가 PageResponse<Template>입니다.
+  if (!data?.data?.content || data.data.content.length === 0) {
     return (
       <EmptyResultCard
         title="해당 조건에 맞는 템플릿이 없어요."
@@ -89,13 +89,16 @@ const SearchResultCards = ({
     <div className="flex flex-col gap-[80px]">
       {/* 템플릿 카드 그리드 (3x3) */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-        {data.data.map((template) => (
-          <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
-        ))}
+        {(() => {
+          console.log(data.data.content.map((t) => ({ templateId: t.templateId, page: data.data.page })));
+          return data.data.content.map((template) => (
+            <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
+          ));
+        })()}
       </div>
 
       {/* 페이지네이션 */}
-      <PageNavigation currentPage={currentPage} onPageChange={onPageChange} />
+      <PageNavigation currentPage={currentPage} totalPages={data.data.totalPages} onPageChange={onPageChange} />
     </div>
   );
 };
