@@ -25,7 +25,11 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
     })),
   );
 
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(() => {
+    const isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
+    const isSmallScreen = window.innerWidth < 1024;
+    return isTouchPrimary || isSmallScreen;
+  });
 
   useEffect(() => {
     const checkMobile = () => {
@@ -34,17 +38,10 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
 
       // 2. 화면 너비 체크 (반응형 감지)
       const isSmallScreen = window.innerWidth < 1024;
-
-      if (isTouchPrimary || isSmallScreen) {
-        setIsBlocked(true);
-        console.log('📱 [Travlocks] 모바일/태블릿 접속 제한 활성화');
-      } else {
-        setIsBlocked(false);
-      }
+      setIsBlocked(isTouchPrimary || isSmallScreen);
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile); // 창 크기 변경 시 다시 계산
+    window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
