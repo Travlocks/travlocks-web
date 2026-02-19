@@ -139,34 +139,6 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
               <p>{action.text}</p>
             </button>
           ))}
-        </div>
-
-        {/* <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" /> */}
-      </section>
-
-      {/* 저장 및 공유하기 버튼 */}
-      <section className="flex gap-[25px]">
-        {ACTIONS.map((action) => (
-          <button
-            key={action.id}
-            className={clsx(
-              'rounded-[10px] py-[10px] px-[15px] flex gap-[10px] border items-center cursor-pointer',
-              // action.id === 1 && 'border-base-color bg-white',
-              action.id === 1 && 'border-primary-color bg-primary-color text-white',
-            )}
-            // onClick={() => {
-            //   if (action.id === 1) {
-            //     onTemplateModalOpenChange(true);
-            //   }
-            // }}
-          >
-            {action.icon}
-            <p>{action.text}</p>
-          </button>
-        ))}
-      </section>
-    </div>
-
           {showSaveModal && (
             <SaveModal selectedId={selectedId} setSelectedId={setSelectedId} setShowSaveModal={setShowSaveModal} />
           )}

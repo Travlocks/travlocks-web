@@ -159,14 +159,6 @@ export type CanvasData = {
 
 export type ResponseCanvasDto = SuccessPayload<CanvasData>;
 
-// 템플릿 수정 응답 타입
-export type UpdateTemplateResponseDto = SuccessPayload<{
-  templateId: number;
-  title: string;
-  description: string;
-  isPublic: boolean;
-  coverImageUrl: string;
-}>;
 // AI 스마트 정렬 응답 데이터
 export type OptimizeVlockItem = {
   templateVlockId: number;
@@ -188,3 +180,14 @@ export type ResponseOptimizeDto = SuccessPayload<OptimizeData>;
 
 // AI 스마트 정렬 에러 응답 타입
 export type ResponseOptimizeErrorDto = ErrorPayload<null>;
+
+// 템플릿 수정 응답 타입
+export type UpdateTemplateResponseDto = SuccessPayload<{
+  templateId: number;
+  title: string;
+  description: string;
+  isPublic: boolean;
+  coverImageUrl: string;
+  shareToken: string;
+  updatedAt: string;
+}>;
