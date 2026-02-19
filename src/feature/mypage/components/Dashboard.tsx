@@ -155,9 +155,24 @@ const Dashboard = () => {
         profileImageUrl={myPageData.profileImageUrl}
       />
       <div className="flex gap-5">
-        <StatusCard icon={<PuzzleIcon />} label="Vlocks" count={myPageData.counts.vlockCount} />
-        <StatusCard icon={<TemplateIcon />} label="템플릿" count={myPageData.counts.templateCount} />
-        <StatusCard icon={<StarIcon />} label="즐겨찾기" count={myPageData.counts.starCount} />
+        <StatusCard
+          icon={<PuzzleIcon />}
+          label="Vlocks"
+          count={myPageData.counts.vlockCount}
+          onClick={() => navigate('/mypage/vlocks')}
+        />
+        <StatusCard
+          icon={<TemplateIcon />}
+          label="템플릿"
+          count={myPageData.counts.templateCount}
+          onClick={() => navigate('/mypage/templates')}
+        />
+        <StatusCard
+          icon={<StarIcon />}
+          label="즐겨찾기"
+          count={myPageData.counts.starCount}
+          onClick={() => navigate('/mypage/templates')}
+        />
       </div>
 
       <div className="mt-20">

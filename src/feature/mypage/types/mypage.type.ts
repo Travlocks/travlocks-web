@@ -1,4 +1,5 @@
 import type { SuccessPayload } from '@/shared/types/common';
+import type { PageResponse } from '@/shared/types/pagination';
 
 export interface VlockDto {
   vlockId: number;
@@ -38,6 +39,26 @@ export interface MyPage {
   recent: RecentDto;
 }
 
+export interface TemplateCardDto {
+  templateId: number;
+  coverImgUrl: string;
+  title: string;
+  travelThemeId: number;
+  travelTheme: string;
+  memberId: number;
+  ownerNickname: string;
+  rating: number;
+  favoriteCount: number;
+}
+
+export interface MemberProfile {
+  memberId: number;
+  nickname: string;
+  introduction: string;
+  profileImageUrl: string;
+  templates: PageResponse<TemplateCardDto>;
+}
+
 export interface RequestUpdateMyProfileDto {
   nickname: string;
   introduction: string;
@@ -54,4 +75,6 @@ export interface UpdatedMyProfile {
 }
 
 export type ResponseMyPageDto = SuccessPayload<MyPage>;
+export type ResponseMyTemplatesDto = SuccessPayload<PageResponse<TemplateCardDto>>;
+export type ResponseMemberProfileDto = SuccessPayload<MemberProfile>;
 export type ResponseUpdateMyProfileDto = SuccessPayload<UpdatedMyProfile>;
