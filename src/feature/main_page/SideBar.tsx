@@ -9,6 +9,12 @@ import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { useTemplateDetail } from './hooks/queries/useTemplateDetail';
 import usePostTemplateRemix from '@/feature/home/hooks/mutations/usePostTemplateRemix';
+import DefaultThumbnail from '@assets/template/thumbnail.png';
+import HeartIcon from '@assets/heart.svg?react';
+import { useToggleFavorite } from './hooks/mutations/useToggleFavorite';
+import { toast } from '@/shared/stores/toastStore';
+import type { ResponseRemixDto } from '@/feature/home/types/template';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface SideBarContentProps {
   templateId: number;
@@ -19,11 +25,23 @@ interface SideBarContentProps {
 const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
+  const { mutate: remixMutate } = usePostTemplateRemix(); // 템플릿 리믹스
+  const { mutate: toggleFavoriteMutate } = useToggleFavorite(); // 즐겨찾기 토글
 
   // API 데이터 호출
-  const { data: detailResponse, isLoading, isError } = useTemplateDetail(templateId);
+  const { data: detailResponse } = useTemplateDetail(templateId);
   const detail = detailResponse?.data;
+
+  // 로컬 상태는 API 데이터가 로드되면 초기화
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isRemixHovered, setIsRemixHovered] = useState(false);
+  const [prevIsFavorited, setPrevIsFavorited] = useState<boolean | null>(null);
+
+  // useEffect 대신 렌더링 도중 동기화 (Lint: react-hooks/set-state-in-effect 해결)
+  if (detail && detail.isFavorited !== prevIsFavorited) {
+    setPrevIsFavorited(detail.isFavorited);
+    setIsLiked(detail.isFavorited);
+  }
 
   useEffect(() => {
     if (!mapRef.current || !window.kakao || !detail) return;
@@ -41,10 +59,28 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
     });
   }, [detail]);
 
-  // API 데이터 로딩/에러 상태 로깅 (유저 확인용)
-  if (isLoading) console.log(`Template ${templateId} loading...`);
-  if (isError) console.error(`Template ${templateId} fetch failed.`);
-  if (detail) console.log('Template detail loaded:', detail);
+  const handleHeartClick = () => {
+    const nextState = !isLiked;
+    setIsLiked(nextState);
+
+    // Toast 알림
+    if (nextState) {
+      toast.favorite('내 보관함에 저장되었습니다.');
+    } else {
+      toast.unfavorite('보관함에서 삭제되었습니다.');
+    }
+
+    toggleFavoriteMutate(
+      { templateId, isFavorited: nextState },
+      {
+        onError: () => {
+          // 실패 시 복구
+          setIsLiked(!nextState);
+          toast.error('요청 처리에 실패했습니다.');
+        },
+      },
+    );
+  };
 
   return (
     <div
@@ -59,7 +95,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         </button>
       </div>
 
-      <div className="px-10 pt-13.5 pb-10 flex flex-col gap-8">
+      <div className="px-10 pt-13.5 pb-16 flex flex-col gap-8">
         {/* 타이틀 */}
         <div className="flex flex-col gap-5">
           <span className="h8 text-primary-color">템플릿 이름</span>
@@ -67,8 +103,8 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
           <div className="flex items-center gap-2 text-base-color-2 b3">
             <PinIcon />
             <span>{detail?.cityName}</span>
-            {/* <span>·</span> */}
-            {/* <span>2025.12.23 ~ 2025.12.24</span> */}
+            <span>·</span>
+            <span>{detail?.theme}</span>
           </div>
         </div>
 
@@ -78,6 +114,21 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
             <img src={ProfileImageUrl} alt="profile" className="w-full h-full object-cover" />
           </div>
           <span className="h9 text-base-color-0">@{detail?.ownerNickname}</span>
+        </div>
+
+        {/* 템플릿 커버 이미지 */}
+        <div className="w-full h-[330px] rounded-[5px] overflow-hidden relative">
+          <button type="button" onClick={handleHeartClick} className="absolute top-[20px] right-[20px]">
+            <div className="w-[40px] h-[40px] rounded-full bg-base-color-4 flex items-center justify-center cursor-pointer">
+              <HeartIcon
+                className={clsx(
+                  'w-[20px] h-[20px] text-base-color-3 transition-colors',
+                  isLiked ? 'fill-[#FF69B4]' : 'fill-none',
+                )}
+              />
+            </div>
+          </button>
+          <img src={detail?.coverImageUrl || DefaultThumbnail} alt="cover" className="w-full h-full object-cover" />
         </div>
 
         {/* 통계 카드 */}
@@ -98,7 +149,7 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
             </div>
             <div className="flex flex-col items-center">
               <span className="h9 text-base-color-0">{detail?.tripDays}</span>
-              <span className="b6 text-base-color-2">체류시간</span>
+              <span className="b6 text-base-color-2">여행기간</span>
             </div>
           </div>
 
@@ -137,18 +188,6 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
               </span>
             ))}
             {detail?.tags.length === 0 && <p className="b4 text-base-color-3">태그가 존재하지 않습니다.</p>}
-            {/* <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
-              #부산
-            </span>
-            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
-              #부산여행
-            </span>
-            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
-              #맛집
-            </span>
-            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
-              #부산맛집
-            </span> */}
           </div>
         </div>
 
@@ -159,18 +198,39 @@ const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps)
         </div>
 
         {/* 리믹스 하기 버튼 */}
-        <button
-          onClick={() => {
-            mutate(templateId, {
-              onSuccess: (data) => {
-                navigate(`/block/${data.data.remixedTemplateId}`);
-              },
-            });
-          }}
-          className="w-full bg-primary-color hover:opacity-90 transition-opacity rounded-[5px] py-5 flex items-center justify-center gap-2.75">
-          <RemixIcon className="w-7 h-7 [&_path]:fill-base-color-6" />
-          <span className="b1 font-semibold text-base-color-6">리믹스 하기</span>
-        </button>
+        <div className="relative w-full">
+          <button
+            onMouseEnter={() => setIsRemixHovered(true)}
+            onMouseLeave={() => setIsRemixHovered(false)}
+            onClick={() => {
+              remixMutate(templateId, {
+                onSuccess: (data: ResponseRemixDto) => {
+                  navigate(`/block/${data.data.remixedTemplateId}`);
+                },
+              });
+            }}
+            className="w-full bg-primary-color hover:opacity-90 transition-opacity rounded-[5px] py-5 flex items-center justify-center gap-2.75">
+            <RemixIcon className="w-7 h-7 [&_path]:fill-base-color-6" />
+            <span className="b1 font-semibold text-base-color-6">리믹스 하기</span>
+          </button>
+
+          <AnimatePresence>
+            {isRemixHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, x: '-50%' }}
+                animate={{ opacity: 1, y: 0, x: '-50%' }}
+                exit={{ opacity: 0, y: 10, x: '-50%' }}
+                className="absolute left-1/2 top-[calc(100%+12px)] z-20">
+                {/* Tooltip Bubble */}
+                <div className="bg-[#222222] text-white text-[14px] px-4 py-2 rounded-[8px] whitespace-nowrap relative shadow-lg font-medium">
+                  원본 템플릿은 변경되지 않아요
+                  {/* Tooltip Arrow */}
+                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-[#222222]" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
