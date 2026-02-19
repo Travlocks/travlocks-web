@@ -15,6 +15,7 @@ import { useMyPageQuery } from '../hooks/useMyPageQuery';
 import { useFavoriteMutation } from '../hooks/useFavoriteMutation';
 import { useUpdateMyProfileMutation } from '../hooks/useUpdateMyProfileMutation';
 import type { VlockDto, CreatedTemplateDto } from '../types/mypage.type';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 const getRegionName = (regionId: number) => REGION_MAP[regionId as RegionId]?.name.korean ?? '지역 정보 없음';
 
@@ -132,6 +133,15 @@ const Dashboard = () => {
   };
 
   const handleTemplateClick = (id: string) => {
+    /**
+     * 온보딩 진입 흐름과 동일하게 템플릿 ID를 선동기화합니다.
+     *
+     * @remarks
+     * - 최근 사용 템플릿 클릭 후 `/block/:id`로 이동하기 전에 store.templateId를 먼저 반영합니다.
+     * - 템플릿이 바뀌는 순간의 store 초기화 타이밍을 일정하게 맞춰
+     *   화면 전환 시 컨텍스트 불일치를 줄입니다.
+     */
+    useBlockTemplateStore.getState().setTemplateId(String(id));
     navigate(`/block/${id}`);
   };
 
