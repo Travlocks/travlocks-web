@@ -9,6 +9,7 @@ import VisibilityToggle from './component/VisibilityToggle';
 import ImageUploadForm from './component/ImageUploadForm';
 import SingleButton from '@/shared/components/Button/SingleButton';
 import XIcon from '@/shared/assets/icon-x-2.svg?react';
+import { toast } from '@/shared/stores/toastStore';
 
 interface VlockModalProps {
   type: 'create' | 'edit';
@@ -109,12 +110,14 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
         coverImg: formData.data.coverImage,
       });
 
-      console.log('✅ Vlock 생성 성공:', result);
       if (result.isSuccess) {
         onSuccess?.(result.data as VlockData);
+        toast.success('블록 생성이 완료되었습니다.', 'bottom-center');
+      } else {
+        toast.error('블록 생성에 실패했습니다.', 'bottom-center');
       }
-    } catch (error) {
-      console.error('❌ Vlock 생성 실패:', error);
+    } catch {
+      toast.error('블록 생성 중 오류가 발생했습니다.', 'bottom-center');
     }
   };
 
@@ -158,9 +161,12 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       console.log('✅ Vlock 수정 성공:', result);
       if (result.isSuccess) {
         onSuccess?.(result.data as VlockData);
+        toast.success('블록 수정이 완료되었습니다.', 'bottom-center');
+      } else {
+        toast.error('블록 수정에 실패했습니다.', 'bottom-center');
       }
-    } catch (error) {
-      console.error('❌ Vlock 수정 실패:', error);
+    } catch {
+      toast.error('블록 수정 중 오류가 발생했습니다.', 'bottom-center');
     }
   };
 
@@ -174,8 +180,10 @@ const VlockModal = ({ type, cityId, vlockId, data, onSuccess, onClose }: VlockMo
       const result = await deleteMutation.mutateAsync(vlockId);
       console.log('✅ Vlock 삭제 성공:', result);
       onSuccess?.();
+      toast.success('블록이 삭제되었습니다.', 'bottom-center');
     } catch (error) {
       console.error('❌ Vlock 삭제 실패:', error);
+      toast.error('블록 삭제에 실패했습니다.', 'bottom-center');
     }
   };
 
