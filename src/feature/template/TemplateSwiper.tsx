@@ -12,9 +12,10 @@ interface TemplateSwiperProps {
 }
 
 const TemplateSwiper = ({ cards, type, onCardClick }: TemplateSwiperProps) => {
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const containerRef = useRef<HTMLDivElement>(null);
+  const activeIndexRef = useRef(activeIndex); // ref를 통해 항상 최신 activeIndex 읽음
 
   // 반응형 뷰포트 너비 업데이트
   useEffect(() => {
@@ -24,6 +25,10 @@ const TemplateSwiper = ({ cards, type, onCardClick }: TemplateSwiperProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
   // 휠/트랙패드 스크롤 핸들러
   useEffect(() => {
     const container = containerRef.current;
@@ -32,28 +37,36 @@ const TemplateSwiper = ({ cards, type, onCardClick }: TemplateSwiperProps) => {
     let isThrottled = false;
 
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
       if (isThrottled) return;
 
       // 가로(deltaX) 또는 세로(deltaY) 스크롤 감지
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       const threshold = 30; // 감도 조절
 
-      if (Math.abs(delta) > threshold) {
-        if (delta > 0) {
-          // 오른쪽/아래로 스크롤 -> 다음 카드
-          setActiveIndex((prev) => Math.min(prev + 1, cards.length - 1));
-        } else {
-          // 왼쪽/위로 스크롤 -> 이전 카드
-          setActiveIndex((prev) => Math.max(prev - 1, 0));
-        }
+      if (Math.abs(delta) <= threshold) return;
 
-        isThrottled = true;
-        setTimeout(() => {
-          isThrottled = false;
-        }, 500); // 쿨타임 (너무 빠른 넘김 방지)
+      const currentIndex = activeIndexRef.current;
+
+      // 처음 activeIndex가 1일 때 이전 카드로 넘어가는 문제 방지
+      if (delta < 0 && currentIndex === 1) {
+        // 첫 카드에서 위로 스크롤 → 기본 페이지 스크롤 되도록
+        return;
       }
+
+      e.preventDefault();
+
+      if (delta > 0) {
+        // 오른쪽/아래로 스크롤 -> 다음 카드
+        setActiveIndex((prev) => Math.min(prev + 1, cards.length - 1));
+      } else {
+        // 왼쪽/위로 스크롤 -> 이전 카드
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
+      }
+
+      isThrottled = true;
+      setTimeout(() => {
+        isThrottled = false;
+      }, 500); // 쿨타임 (너무 빠른 넘김 방지)
     };
 
     // passive: false로 설정해야 e.preventDefault()가 동작함 (페이지 전체 스크롤 방지)
