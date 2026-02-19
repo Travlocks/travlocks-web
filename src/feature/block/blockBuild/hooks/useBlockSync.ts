@@ -25,18 +25,27 @@ type UseBlockSyncOptions = {
  */
 export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBlockSyncOptions = {}) => {
   const queryClient = useQueryClient();
-  const { templateId, currentDay, blocksByDay, updateBlocksByDay, setTemplateTitle, setTemplateCityIds, setTripDays } =
-    useBlockTemplateStore(
-      useShallow((s) => ({
-        templateId: s.templateId,
-        currentDay: s.currentDay,
-        blocksByDay: s.blocksByDay,
-        updateBlocksByDay: s.updateBlocksByDay,
-        setTemplateTitle: s.setTemplateTitle,
-        setTemplateCityIds: s.setTemplateCityIds,
-        setTripDays: s.setTripDays,
-      })),
-    );
+  const {
+    templateId,
+    currentDay,
+    tripDays,
+    blocksByDay,
+    updateBlocksByDay,
+    setTemplateTitle,
+    setTemplateCityIds,
+    setTripDays,
+  } = useBlockTemplateStore(
+    useShallow((s) => ({
+      templateId: s.templateId,
+      currentDay: s.currentDay,
+      tripDays: s.tripDays,
+      blocksByDay: s.blocksByDay,
+      updateBlocksByDay: s.updateBlocksByDay,
+      setTemplateTitle: s.setTemplateTitle,
+      setTemplateCityIds: s.setTemplateCityIds,
+      setTripDays: s.setTripDays,
+    })),
+  );
 
   const invalidateBlockSummary = useCallback(
     (templateIdNum: number) => {
@@ -53,12 +62,15 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
   const syncedBlocksByDayRef = useRef<Record<number, Block[]>>({});
   const suppressSyncRef = useRef(false);
   const hydratingDaysRef = useRef<Set<number>>(new Set());
+  const hydratedDaysRef = useRef<Set<number>>(new Set());
   const isSyncingRef = useRef(false);
   const queuedSyncDaysRef = useRef<Set<number>>(new Set());
   const hydrateSeqByDayRef = useRef<Record<number, number>>({});
+  const prevTemplateIdRef = useRef<string | null>(null);
   const blocksByDayRef = useRef(blocksByDay);
   const currentDayRef = useRef(currentDay);
   const syncCurrentStateRef = useRef<(day: number) => Promise<void>>(async () => {});
+  const currentDayBlocks = blocksByDay[currentDay];
 
   useEffect(() => {
     blocksByDayRef.current = blocksByDay;
@@ -143,6 +155,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
         const hydrated = preserveMissingImageUrls(mapped, prevBlocksForDay);
         latestBlocksByDayRef.current[day] = hydrated;
         syncedBlocksByDayRef.current[day] = hydrated;
+        hydratedDaysRef.current.add(day);
 
         withSuppressedSync((prev) => ({
           ...prev,
@@ -279,30 +292,72 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
    * template/day 변경 시 서버 캔버스로 초기 동기화
    */
   useEffect(() => {
-    if (!templateId) {
+    if (prevTemplateIdRef.current !== templateId) {
+      prevTemplateIdRef.current = templateId ?? null;
+
       Object.values(debounceTimersRef.current).forEach((timer) => {
         if (timer) clearTimeout(timer);
       });
+
       debounceTimersRef.current = {};
       latestBlocksByDayRef.current = {};
       syncedBlocksByDayRef.current = {};
+      hydrateSeqByDayRef.current = {};
       hydratingDaysRef.current.clear();
+      hydratedDaysRef.current.clear();
       queuedSyncDaysRef.current.clear();
+    }
+
+    if (!templateId) {
       setTemplateTitle('');
       setTemplateCityIds([]);
       setTripDays(0);
       setSyncStatus('idle');
       return;
     }
-    void hydrateDayFromServer(currentDay);
+
+    if (!hydratedDaysRef.current.has(currentDay) && !hydratingDaysRef.current.has(currentDay)) {
+      void hydrateDayFromServer(currentDay);
+    }
   }, [templateId, currentDay, hydrateDayFromServer, setTemplateTitle, setTemplateCityIds, setTripDays, setSyncStatus]);
+
+  /**
+   * tripDays가 확정되면 모든 날짜의 캔버스를 선로딩하여 타임라인에 전체 블록을 표시
+   */
+  useEffect(() => {
+    if (!templateId) return;
+
+    const totalDays = Number.isFinite(tripDays) ? Math.max(0, Math.floor(tripDays)) : 0;
+    if (totalDays < 1) return;
+
+    const daysToHydrate: number[] = [];
+    for (let day = 1; day <= totalDays; day += 1) {
+      if (day === currentDay) continue;
+      if (hydratedDaysRef.current.has(day) || hydratingDaysRef.current.has(day)) continue;
+      daysToHydrate.push(day);
+    }
+
+    if (daysToHydrate.length === 0) return;
+
+    let isCancelled = false;
+    void (async () => {
+      for (const day of daysToHydrate) {
+        if (isCancelled) return;
+        await hydrateDayFromServer(day);
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [templateId, tripDays, currentDay, hydrateDayFromServer]);
 
   /**
    * 블록 변경 감지 및 디바운스 동기화
    */
   useEffect(() => {
     const day = currentDay;
-    const currentBlocks = blocksByDay[day] ?? [];
+    const currentBlocks = currentDayBlocks ?? [];
     latestBlocksByDayRef.current[day] = currentBlocks;
 
     if (isPaused()) {
@@ -330,7 +385,7 @@ export const useBlockSync = ({ onSummaryUpdatingChange, isSyncPausedRef }: UseBl
       debounceTimersRef.current[day] = null;
       void syncCurrentState(day);
     }, DEBOUNCE_MS);
-  }, [blocksByDay, currentDay, templateId, syncCurrentState, setSyncStatus, isPaused]);
+  }, [currentDayBlocks, currentDay, templateId, syncCurrentState, setSyncStatus, isPaused]);
 
   // 컴포넌트 언마운트 시 즉시 동기화
   useEffect(() => {
