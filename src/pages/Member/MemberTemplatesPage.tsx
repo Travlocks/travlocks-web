@@ -5,6 +5,7 @@ import { useMemberProfileQuery } from '@/feature/mypage/hooks/useMemberProfileQu
 import TemplateCard from '@/feature/template/TemplateCard';
 import { toTemplateCard } from '@/feature/mypage/utils/templateAdapter';
 import SideBar from '@/feature/main_page/SideBar';
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 
 const MemberTemplatesPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,6 +17,15 @@ const MemberTemplatesPage = () => {
   const templates = (memberProfileData?.templates.content ?? []).map(toTemplateCard);
 
   const handleCardClick = (templateId: number) => {
+    /**
+     * 온보딩 진입 흐름과 동일하게 템플릿 ID를 선동기화합니다.
+     *
+     * @remarks
+     * - 멤버 템플릿 카드를 클릭한 즉시 store.templateId를 현재 카드 기준으로 갱신합니다.
+     * - 이후 사이드바에서 리믹스/블록 진입이 발생해도 템플릿 컨텍스트를 일관되게 유지합니다.
+     * - 템플릿 전환 시점의 상태 기준을 다른 진입 경로(Onboarding, MyPage)와 통일합니다.
+     */
+    useBlockTemplateStore.getState().setTemplateId(String(templateId));
     setSelectedTemplateId(templateId);
     setIsSidebarOpen(true);
   };
