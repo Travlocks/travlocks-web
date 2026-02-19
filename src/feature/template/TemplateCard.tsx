@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
 interface TemplateCardProps {
   template: Template; // 표시할 템플릿 데이터
   type?: 'recommended' | 'popular';
-  onClick?: (templateId: number) => void; // 콜백
+  onButtonClick?: (templateId: number) => void; // 버튼 클릭 콜백
+  onCardClick?: (templateId: number) => void; // 카드 영역 클릭 콜백
 }
 
 /**
@@ -27,7 +28,9 @@ interface TemplateCardProps {
  *
  * @param props - 템플릿 카드 컴포넌트에 전달되는 props입니다.
  * @param props.template - 카드에 표시할 템플릿 데이터입니다.
- * @param props.onClick - 카드 하단 버튼 클릭 시 호출되는 콜백 함수입니다.
+ * @param props.template - 카드에 표시할 템플릿 데이터입니다.
+ * @param props.onButtonClick - 카드 하단 버튼 클릭 시 호출되는 콜백 함수입니다.
+ * @param props.onCardClick - 카드 영역 클릭 시 호출되는 콜백 함수입니다.
  *   템플릿 ID를 인자로 전달합니다.
  *
  * @returns 템플릿 카드를 렌더링하는 JSX 엘리먼트를 반환합니다.
@@ -37,17 +40,18 @@ interface TemplateCardProps {
  * // 추천 템플릿 카드 예시입니다.
  * <TemplateCard
  *   template={recommendedTemplate}
- *   onClick={(id) => handleTemplateClick(id)}
+ *   onButtonClick={(id) => handleButtonClick(id)}
+ *   onCardClick={(id) => handleCardClick(id)}
  * />
  * ```
  */
-const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
+const TemplateCard = ({ template, type, onButtonClick, onCardClick }: TemplateCardProps) => {
   const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
   const navigate = useNavigate();
   const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
 
   return (
-    <div className={TemplateCardStyle.wrapper()}>
+    <div className={TemplateCardStyle.wrapper()} onClick={() => onCardClick?.(template.templateId)}>
       <div className={TemplateCardStyle.container()}>
         {/* 썸네일 */}
         <div className={TemplateCardStyle.imageContainer}>
@@ -101,8 +105,9 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
               height={45}
               textSize={18}
               variant="white"
-              onClick={() => {
-                onClick?.(template.templateId);
+              onClick={(e) => {
+                e?.stopPropagation();
+                onButtonClick?.(template.templateId);
                 mutate(template.templateId, {
                   onSuccess: (data) => {
                     navigate(`/block/${data.data.remixedTemplateId}`);

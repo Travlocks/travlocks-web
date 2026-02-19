@@ -6,26 +6,41 @@ import RemixIcon from '@assets/icon-remix.svg?react';
 import XIcon from '@assets/icon-x.svg?react';
 import { useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import { useTemplateDetail } from './hooks/queries/useTemplateDetail';
 
 interface SideBarContentProps {
+  templateId: number;
   onClose?: () => void;
   isClosing?: boolean;
 }
 
-const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
+const SideBarContent = ({ templateId, onClose, isClosing }: SideBarContentProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
+  // API 데이터 호출
+  const { data: detailResponse, isLoading, isError } = useTemplateDetail(templateId);
+  const detail = detailResponse?.data;
+
   useEffect(() => {
-    if (!mapRef.current || !window.kakao) return;
+    if (!mapRef.current || !window.kakao || !detail) return;
 
     window.kakao.maps.load(() => {
+      const firstVlock = detail.vlocks?.[0];
+      const lat = firstVlock?.latitude ?? 35.1796;
+      const lng = firstVlock?.longitude ?? 129.0756;
+
       const options = {
-        center: new window.kakao.maps.LatLng(35.1796, 129.0756), // TODO: 좌표
+        center: new window.kakao.maps.LatLng(lat, lng),
         level: 5,
       };
       new window.kakao.maps.Map(mapRef.current!, options);
     });
-  }, []);
+  }, [detail]);
+
+  // API 데이터 로딩/에러 상태 로깅 (유저 확인용)
+  if (isLoading) console.log(`Template ${templateId} loading...`);
+  if (isError) console.error(`Template ${templateId} fetch failed.`);
+  if (detail) console.log('Template detail loaded:', detail);
 
   return (
     <div
@@ -44,12 +59,12 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
         {/* 타이틀 */}
         <div className="flex flex-col gap-5">
           <span className="h8 text-primary-color">템플릿 이름</span>
-          <h1 className="h2 text-base-color-0">부산 푸드투어</h1>
+          <h1 className="h2 text-base-color-0">{detail?.title}</h1>
           <div className="flex items-center gap-2 text-base-color-2 b3">
             <PinIcon />
-            <span>부산</span>
-            <span>·</span>
-            <span>2025.12.23 ~ 2025.12.24</span>
+            <span>{detail?.cityName}</span>
+            {/* <span>·</span> */}
+            {/* <span>2025.12.23 ~ 2025.12.24</span> */}
           </div>
         </div>
 
@@ -58,7 +73,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
           <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img src={ProfileImageUrl} alt="profile" className="w-full h-full object-cover" />
           </div>
-          <span className="h9 text-base-color-0">@먹잘알</span>
+          <span className="h9 text-base-color-0">@{detail?.ownerNickname}</span>
         </div>
 
         {/* 통계 카드 */}
@@ -68,7 +83,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
               <StarIcon className="w-6 h-6" />
             </div>
             <div className="flex flex-col items-center">
-              <span className="h9 text-base-color-0">4.8</span>
+              <span className="h9 text-base-color-0">{detail?.rating}</span>
               <span className="b6 text-base-color-2">평점</span>
             </div>
           </div>
@@ -78,7 +93,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
               <TimeIcon className="w-6 h-6" />
             </div>
             <div className="flex flex-col items-center">
-              <span className="h9 text-base-color-0">1~2시간</span>
+              <span className="h9 text-base-color-0">{detail?.tripDays}</span>
               <span className="b6 text-base-color-2">체류시간</span>
             </div>
           </div>
@@ -88,7 +103,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
               <RemixIcon className="w-6 h-6" />
             </div>
             <div className="flex flex-col items-center">
-              <span className="h9 text-base-color-0">12회</span>
+              <span className="h9 text-base-color-0">{detail?.remixCount}</span>
               <span className="b6 text-base-color-2">리믹스 수</span>
             </div>
           </div>
@@ -98,7 +113,11 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
         <div className="flex flex-col gap-4">
           <h3 className="h8 text-base-color-0">상세 설명</h3>
           <div className="p-5 bg-base-color-5 rounded-[5px] border border-base-color">
-            <p className="b4 text-base-color-3">부산 인생 23년차 최고의 맛집들만 모았습니다 ^^</p>
+            {detail?.description ? (
+              <p className="b4 text-base-color-3">{detail?.description}</p>
+            ) : (
+              <p className="b4 text-base-color-3">상세 설명이 없습니다.</p>
+            )}
           </div>
         </div>
 
@@ -106,7 +125,15 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
         <div className="flex flex-col gap-4">
           <h3 className="h8 text-base-color-0">태그</h3>
           <div className="flex flex-wrap gap-2.5">
-            <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+            {detail?.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
+                #{tag}
+              </span>
+            ))}
+            {detail?.tags.length === 0 && <p className="b4 text-base-color-3">태그가 존재하지 않습니다.</p>}
+            {/* <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
               #부산
             </span>
             <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
@@ -117,7 +144,7 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
             </span>
             <span className="px-5 py-2.5 bg-base-color-6 border border-base-color rounded-full b4 text-base-color-2">
               #부산맛집
-            </span>
+            </span> */}
           </div>
         </div>
 
@@ -138,10 +165,11 @@ const SideBarContent = ({ onClose, isClosing }: SideBarContentProps) => {
 };
 
 interface SideBarProps {
+  templateId: number;
   onClose?: () => void;
 }
 
-const SideBar = ({ onClose }: SideBarProps) => {
+const SideBar = ({ templateId, onClose }: SideBarProps) => {
   const [isClosing, setIsClosing] = useState(false);
 
   const handleClose = () => {
@@ -161,7 +189,7 @@ const SideBar = ({ onClose }: SideBarProps) => {
         )}
         onClick={handleClose}
       />
-      <SideBarContent onClose={handleClose} isClosing={isClosing} />
+      <SideBarContent templateId={templateId} onClose={handleClose} isClosing={isClosing} />
     </>
   );
 };

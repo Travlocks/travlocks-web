@@ -31,7 +31,11 @@ const initialFilters: FilterState = {
 
 const initialSort: SortOption = 'rating';
 
-const TemplateContent = () => {
+interface TemplateContentProps {
+  onCardClick?: (templateId: number) => void;
+}
+
+const TemplateContent = ({ onCardClick }: TemplateContentProps) => {
   // 탐색 기준 상태 관리
   const [keyword, setKeyword] = useState<string>('');
   const [filters, setFilters] = useState<FilterState>(initialFilters);
@@ -108,12 +112,6 @@ const TemplateContent = () => {
   //   setPage(1);
   // }, []);
 
-  // 템플릿 카드 클릭 핸들러
-  const handleTemplateClick = useCallback((templateId: number) => {
-    console.log('Template clicked:', templateId);
-    // 사이드바 열릴 예정
-  }, []);
-
   return (
     <div className="w-full flex flex-col gap-[40px] pb-[200px]">
       <section className="flex justify-center items-center relative">
@@ -167,7 +165,7 @@ const TemplateContent = () => {
                 data={data}
                 currentPage={page}
                 onPageChange={handlePageChange}
-                onTemplateClick={handleTemplateClick}
+                onCardClick={onCardClick}
               />
             </section>
           </main>

@@ -23,8 +23,8 @@ interface SearchResultCardsProps {
   /** 페이지 변경 시 호출되는 콜백 함수 */
   onPageChange: (page: number) => void;
 
-  /** 템플릿 카드 클릭 시 호출되는 콜백 함수 */
-  onTemplateClick?: (templateId: number) => void;
+  /** 템플릿 카드 영역 클릭 시 호출되는 콜백 함수 */
+  onCardClick?: (templateId: number) => void;
 }
 
 /**
@@ -50,7 +50,7 @@ const SearchResultCards = ({
   data,
   currentPage,
   onPageChange,
-  onTemplateClick,
+  onCardClick,
 }: SearchResultCardsProps) => {
   // 로딩 중
   if (isLoading) {
@@ -90,7 +90,7 @@ const SearchResultCards = ({
       {/* 템플릿 카드 그리드 (3x3) */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
         {data.data.map((template) => (
-          <TemplateCard key={template.templateId} template={template} onClick={onTemplateClick} />
+          <TemplateCard key={template.templateId} template={template} onCardClick={onCardClick} />
         ))}
       </div>
 
