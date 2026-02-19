@@ -1,11 +1,9 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMyPageQuery } from '@/feature/mypage/hooks/useMyPageQuery';
 import { type MyTemplateFilter, useMyTemplatesQuery } from '@/feature/mypage/hooks/useMyTemplatesQuery';
 import TemplateCard from '@/feature/template/TemplateCard';
 import ProfileLayout from '@/feature/mypage/components/ProfileLayout';
 import { toTemplateCard } from '@/feature/mypage/utils/templateAdapter';
-import SideBar from '@/feature/main_page/SideBar';
 
 const parseFilter = (value: string | null): MyTemplateFilter => {
   if (value === 'favorite') {
@@ -15,8 +13,7 @@ const parseFilter = (value: string | null): MyTemplateFilter => {
 };
 
 const TemplatesPage = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const filter = parseFilter(searchParams.get('filter'));
   const isFavoriteFilter = filter === 'favorite';
@@ -26,8 +23,7 @@ const TemplatesPage = () => {
   const templates = (templateData?.content ?? []).map(toTemplateCard);
 
   const handleCardClick = (templateId: number) => {
-    setSelectedTemplateId(templateId);
-    setIsSidebarOpen(true);
+    navigate(`/block/${templateId}`);
   };
 
   if (isProfileLoading || isTemplateLoading) {
@@ -70,9 +66,6 @@ const TemplatesPage = () => {
           )
         }
       />
-      {isSidebarOpen && selectedTemplateId && (
-        <SideBar templateId={selectedTemplateId} onClose={() => setIsSidebarOpen(false)} />
-      )}
     </>
   );
 };
