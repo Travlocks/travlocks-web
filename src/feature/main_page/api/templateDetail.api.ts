@@ -9,3 +9,16 @@ export async function getTemplateDetail(templateId: number): Promise<TemplateDet
   const { data } = await axiosInstance.get<TemplateDetailResponseDTO>(`/templates/${templateId}`);
   return data;
 }
+/**
+ * 템플릿 즐겨찾기 추가 API 호출
+ */
+export async function addFavorite(templateId: number): Promise<void> {
+  await axiosInstance.put(`/templates/${templateId}/favorite`);
+}
+
+/**
+ * 템플릿 즐겨찾기 삭제 API 호출
+ */
+export async function deleteFavorite(templateId: number): Promise<void> {
+  await axiosInstance.delete(`/templates/${templateId}/favorite`);
+}
