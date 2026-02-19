@@ -2,11 +2,11 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import useGetRecommendAIVloks from '../hooks/useQuery/useGetRecommendAIVloks';
 import useGetMyPage from '@/feature/user/hooks/queries/useGetMypage';
-import BlockItemUI from '@/shared/components/Block/BlockItemUI';
 
 import RefreshIcon from '@assets/block/icon-refresh.svg?react';
 import convertIdToCity from '../utils/convertIdToCity';
 import useGetTemplateDetail from '../hooks/useQuery/useGetTemplateDetail';
+import RecommendDraggableBlock from './RecommendBlock';
 
 const RecommendCard = () => {
   const { data: userData } = useGetMyPage();
@@ -38,7 +38,7 @@ const RecommendCard = () => {
 
       <div className="flex gap-[20px]">
         {data?.data.vlocks.map((item) => (
-          <BlockItemUI key={item.vlockId} item={item} />
+          <RecommendDraggableBlock key={item.vlockId} item={item} />
         ))}
       </div>
     </div>
