@@ -11,8 +11,6 @@ const TemplateHeader = () => {
           <p className="text-base-color-1 h5">다른 여행자들의 블록을 탐색하고 내 블록으로 리믹스해요!</p>
           <h1 className="text-[60px] font-[600] leading-[60px]">템플릿 탐색</h1>
         </div>
-
-        {/* <SearchBar onSearch={onSearch} placeholder="어디로 떠나고 싶으신가요?" /> */}
       </div>
 
       <DotLottieReact src={TemplateAnimation} loop autoplay className="absolute inset-0 pointer-events-none" />

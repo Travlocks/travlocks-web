@@ -53,7 +53,7 @@ const TemplateCard = ({ template, type, onClick }: TemplateCardProps) => {
         <div className={TemplateCardStyle.imageContainer}>
           <img
             className={TemplateCardStyle.image()}
-            src={template.coverImgUrl || DefaultThumbnail}
+            src={template.coverImageUrl || DefaultThumbnail}
             alt={template.title}
           />
         </div>

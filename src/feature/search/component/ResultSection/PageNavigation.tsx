@@ -9,9 +9,6 @@ interface PageNavigationProps {
   /** 현재 페이지 번호 (1부터 시작) */
   currentPage: number;
 
-  /** 전체 페이지 수 */
-  totalPages: number;
-
   /** 페이지 변경 시 호출되는 콜백 함수 */
   onPageChange: (page: number) => void;
 }
@@ -20,22 +17,21 @@ interface PageNavigationProps {
  * 페이지네이션 컴포넌트
  *
  * @remarks
- * - 1~5 페이지를 표시합니다.
- * - 이전/다음 버튼을 통해 페이지를 이동할 수 있습니다.
- * - 현재 페이지는 하이라이트 처리됩니다.
- * - 첫 페이지에서는 이전 버튼이, 마지막 페이지에서는 다음 버튼이 비활성화됩니다.
+ * - 5개 단위로 페이지 번호를 표시합니다 (1~5, 6~10, ...).
+ * - 전체 페이지 수를 모르므로 다음 버튼은 항상 활성화됩니다.
+ * - 결과가 없는 페이지에 도달하면 상위 컴포넌트에서 빈 결과 화면을 보여줍니다.
  *
  * @param props.currentPage - 현재 페이지 번호 (1부터 시작)
- * @param props.totalPages - 전체 페이지 수
  * @param props.onPageChange - 페이지 변경 시 호출되는 콜백
  */
-const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigationProps) => {
+const PageNavigation = ({ currentPage, onPageChange }: PageNavigationProps) => {
   const maxVisiblePages = 5;
-  const displayPages = Math.min(totalPages, maxVisiblePages);
-  const pages = Array.from({ length: displayPages }, (_, i) => i + 1);
+  const currentBlock = Math.ceil(currentPage / maxVisiblePages);
+  const startPage = (currentBlock - 1) * maxVisiblePages + 1;
+
+  const pages = Array.from({ length: maxVisiblePages }, (_, i) => startPage + i);
 
   const isFirstPage = currentPage === 1;
-  const isLastPage = currentPage === totalPages;
 
   const handlePrevious = () => {
     if (!isFirstPage) {
@@ -44,14 +40,8 @@ const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigatio
   };
 
   const handleNext = () => {
-    if (!isLastPage) {
-      onPageChange(currentPage + 1);
-    }
+    onPageChange(currentPage + 1);
   };
-
-  if (totalPages <= 1) {
-    return null;
-  }
 
   return (
     <nav className={PageNavigationStyle.container}>
@@ -82,8 +72,7 @@ const PageNavigation = ({ currentPage, totalPages, onPageChange }: PageNavigatio
       <button
         type="button"
         onClick={handleNext}
-        disabled={isLastPage}
-        className={PageNavigationStyle.arrowButton(isLastPage)}
+        className={PageNavigationStyle.arrowButton(false)}
         aria-label="다음 페이지">
         <ArrowRightIcon className="w-5 h-5" />
       </button>

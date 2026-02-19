@@ -23,9 +23,9 @@ import FilterIcon from '@/shared/assets/filter.svg?react';
  * 컴포넌트 외부로 이동하여 useCallback 의존성 문제 해결 및 성능 최적화
  */
 const initialFilters: FilterState = {
-  regions: [],
-  tripDurations: [],
-  travelThemes: [],
+  cities: [],
+  tripDays: [],
+  themes: [],
   transportTypes: [],
 };
 
@@ -68,16 +68,16 @@ const TemplateContent = () => {
       const newFilters = { ...filters };
 
       switch (tag.type) {
-        case 'region':
-          newFilters.regions = newFilters.regions.filter((id) => id !== tag.id);
+        case 'cities':
+          newFilters.cities = newFilters.cities.filter((id) => id !== tag.id);
           break;
-        case 'tripDuration':
-          newFilters.tripDurations = newFilters.tripDurations.filter((id) => id !== tag.id);
+        case 'tripDays':
+          newFilters.tripDays = newFilters.tripDays.filter((id) => id !== tag.id);
           break;
-        case 'travelTheme':
-          newFilters.travelThemes = newFilters.travelThemes.filter((id) => id !== tag.id);
+        case 'themes':
+          newFilters.themes = newFilters.themes.filter((id) => id !== tag.id);
           break;
-        case 'transportType':
+        case 'transportTypes':
           newFilters.transportTypes = newFilters.transportTypes.filter((id) => id !== tag.id);
           break;
       }
@@ -116,25 +116,12 @@ const TemplateContent = () => {
 
   return (
     <div className="w-full flex flex-col gap-[40px] pb-[200px]">
-      {/* 애니메이션, 검색 영역 */}
       <section className="flex justify-center items-center relative">
-        <TemplateHeader onSearch={handleSearchChange} />
+        <TemplateHeader />
         <div className="absolute bottom-[40px] z-above">
           <SearchBar onSearch={handleSearchChange} placeholder="어디로 떠나고 싶으신가요?" />
         </div>
       </section>
-
-      {/* 전체보기 버튼
-      <section className="w-full flex justify-center bg-base-color-6 p-[10px] pb-[11px]">
-        <div className="w-[1130px]">
-          <button
-            type="button"
-            onClick={handleResetAll}
-            className="h4 text-base-color-2 underline decoration-[8px] underline-offset-[10px] cursor-pointer">
-            전체 보기
-          </button>
-        </div>
-      </section> */}
 
       {/* 메인 레이아웃: 3-column (왼쪽 사이드 + 메인 컨텐츠 + 오른쪽 사이드) */}
       <div className="flex justify-center px-[40px]">

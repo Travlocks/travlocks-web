@@ -1,89 +1,42 @@
 import { useQuery } from '@tanstack/react-query';
-import type {
-  FilterState,
-  SortOption,
-  SearchTemplateParams,
-  SearchTemplateResponseDTO,
-} from '@/feature/search/types/searchTemplate.types';
-import { TRANSPORT_TYPE_MAP } from '@/shared/constants/transportType';
-import { TRIP_DURATION_MAP } from '@/shared/constants/tripDuration';
+import type { FilterState, SortOption, SearchTemplateParams } from '@/feature/search/types/searchTemplate.types';
 import { QUERY_KEY } from '@/shared/constants/key';
-
-/**
- * 템플릿 탐색 API를 호출하는 함수
- *
- * @remarks
- * - 현재는 Mock 데이터를 반환하며, 추후 실제 API 호출로 대체될 예정입니다.
- * - 로딩 상태 확인을 위한 1초 지연이 포함되어 있습니다. (제거 예정)
- *
- * @param params - 템플릿 검색 파라미터
- * @returns 템플릿 목록과 페이지네이션 정보
- */
-async function fetchTemplates(params: SearchTemplateParams): Promise<SearchTemplateResponseDTO> {
-  // api 호출 예정
-  console.log('fetchTemplates', params);
-
-  // mock 응답
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // 로딩 상태를 확인하기 위한 지연(제거 예정)
-  return {
-    templates: [],
-    pagination: {
-      currentPage: params.page || 1,
-      totalPages: 1,
-      totalItems: 0,
-    },
-  };
-}
+import { getTemplates } from '../api/search.api';
 
 /**
  * 탐색 기준 상태를 API 파라미터로 변환하는 헬퍼 함수
  *
- * @remarks
- * - 클라이언트 측 필터 상태를 서버 API가 요구하는 형식으로 변환합니다.
- * - 빈 값이나 선택되지 않은 필터는 파라미터에서 제외됩니다.
- * - 여행기간은 첫 번째 선택 값을 기준으로 days/nights를 계산합니다.
- * - 교통 수단은 ID를 키(문자열)로 변환합니다.
- *
  * @param keyword - 검색 키워드
  * @param filters - 필터 상태 (지역, 기간, 테마, 교통편)
- * @param sort - 정렬 옵션
- * @param page - 페이지 번호
+ * @param sort - 정렬 옵션 ("최신순", "별점순", "인기순")
+ * @param page - 페이지 번호 (1부터 시작 -> 0부터 시작으로 변환)
  * @returns API 요청에 사용할 파라미터 객체
  */
-function buildParams(keyword: string, filters: FilterState, sort: SortOption, page: number): SearchTemplateParams {
+function buildParams(keyword: string, filters: FilterState, sort: string, page: number): SearchTemplateParams {
   const params: SearchTemplateParams = {
     sort,
-    page,
-    size: 9, // 페이지당 9개 템플릿
+    page: page - 1, // API는 0-based page index 사용
+    size: 9,
   };
 
-  // 키워드 검색 처리
   if (keyword.trim()) {
     params.keyword = keyword.trim();
   }
 
-  // 여행지
-  if (filters.regions.length > 0) {
-    params.region = filters.regions;
+  if (filters.cities.length > 0) {
+    params.cities = filters.cities;
   }
 
-  // 여행기간 (첫 번째 선택값 사용)
-  if (filters.tripDurations.length > 0) {
-    const tripDuration = TRIP_DURATION_MAP[filters.tripDurations[0]];
-    params.trip = {
-      days: tripDuration.trip.days,
-      nights: tripDuration.trip.nights,
-    };
+  if (filters.themes.length > 0) {
+    params.themes = filters.themes;
   }
 
-  // 여행테마
-  if (filters.travelThemes.length > 0) {
-    params.travelTheme = filters.travelThemes;
+  if (filters.tripDays.length > 0) {
+    params.tripDays = filters.tripDays;
   }
 
-  // 이동수단 (ID를 키로 변환)
   if (filters.transportTypes.length > 0) {
-    params.transportType = filters.transportTypes.map((id) => TRANSPORT_TYPE_MAP[id].key);
+    params.transportTypes = filters.transportTypes;
   }
 
   return params;
@@ -109,7 +62,7 @@ export function useTemplateSearch(keyword: string, filters: FilterState, sort: S
   const params = buildParams(keyword, filters, sort, page);
   return useQuery({
     queryKey: [QUERY_KEY.templateSearch, keyword, filters, sort, page],
-    queryFn: () => fetchTemplates(params),
+    queryFn: () => getTemplates(params),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
     // 초기 로드 시에만 자동으로 가져오기
