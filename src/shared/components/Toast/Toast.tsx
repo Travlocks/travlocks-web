@@ -13,6 +13,8 @@ type ToastPosition = 'top-center' | 'top-left' | 'top-right' | 'bottom-center' |
 const toastConfig = {
   success: { icon: 'check', bg: 'bg-primary-color' },
   error: { icon: 'alert', bg: 'bg-negative' },
+  favorite: { icon: 'heartFull', bg: 'bg-[#FF69B4]' },
+  unfavorite: { icon: 'heartEmpty', bg: 'bg-base-color-2' },
 } as const;
 
 const positionClasses: Record<ToastPosition, string> = {
@@ -27,7 +29,7 @@ const positionClasses: Record<ToastPosition, string> = {
 interface ToastItemProps {
   id: string;
   message: string;
-  type: 'success' | 'error';
+  type: 'success' | 'error' | 'favorite' | 'unfavorite';
   position?: ToastPosition;
 }
 
@@ -52,7 +54,13 @@ function ToastItem({ id, message, type, position = 'top-center' }: ToastItemProp
       exit={{ opacity: 0, y: yOffset, scale: 0.95 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className={clsx('flex items-center gap-3 px-8 py-5 rounded-full shadow-lg', bg)}>
-      <AppIcon name={icon} size={30} className={clsx('shrink-0', type === 'error' && 'text-negative')} />
+      <AppIcon
+        name={icon}
+        size={30}
+        fill={type === 'favorite' ? '#FFFFFF' : 'none'}
+        stroke={type === 'favorite' || type === 'unfavorite' ? 'currentColor' : 'none'}
+        className={clsx('shrink-0', type === 'error' && 'text-negative')}
+      />
       <p className="t2 font-medium text-white whitespace-nowrap">{message}</p>
     </motion.div>
   );
