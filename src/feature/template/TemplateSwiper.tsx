@@ -1,10 +1,7 @@
-import useEmblaCarousel from 'embla-carousel-react';
-import type { EmblaOptionsType } from 'embla-carousel';
-import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures';
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import TemplateCard from './TemplateCard';
-import { TemplateSwiperStyle } from './styles/TemplateSwiperStyles';
 import type { Template } from '../home/types/template';
-import { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 // Props of TemplateSwiper
@@ -13,75 +10,133 @@ interface TemplateSwiperProps {
   type: 'recommended' | 'popular';
 }
 
-// Embla Carousel 설정 옵션
-const options: EmblaOptionsType = {
-  align: 'center',
-  slidesToScroll: 1,
-  loop: false,
-};
-
-/**
- * 템플릿 카드를 캐러셀 형태로 표시하는 스와이퍼 컴포넌트입니다.
- *
- * @description
- * - Embla Carousel을 사용하여 캐러셀 구현
- * - 휠 스크롤 시 카드 슬라이딩
- *
- * @param {TemplateSwiperProps} props - 컴포넌트 props
- * @returns {JSX.Element} 템플릿 스와이퍼 컴포넌트
- *
- * @example
- * <TemplateSwiper cards={templateList}
- */
-
 const TemplateSwiper = ({ cards, type }: TemplateSwiperProps) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [
-    WheelGesturesPlugin({
-      forceWheelAxis: 'x',
-    }),
-  ]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [selected, setSelected] = useState(0);
+  // 반응형 뷰포트 너비 업데이트
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    handleResize(); // 초기 실행
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const isCenter = (idx: number) => {
-    return idx >= selected && idx <= selected + 2;
+  // 휠/트랙패드 스크롤 핸들러
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let isThrottled = false;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+
+      if (isThrottled) return;
+
+      // 가로(deltaX) 또는 세로(deltaY) 스크롤 감지
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const threshold = 30; // 감도 조절
+
+      if (Math.abs(delta) > threshold) {
+        if (delta > 0) {
+          // 오른쪽/아래로 스크롤 -> 다음 카드
+          setActiveIndex((prev) => Math.min(prev + 1, cards.length - 1));
+        } else {
+          // 왼쪽/위로 스크롤 -> 이전 카드
+          setActiveIndex((prev) => Math.max(prev - 1, 0));
+        }
+
+        isThrottled = true;
+        setTimeout(() => {
+          isThrottled = false;
+        }, 500); // 쿨타임 (너무 빠른 넘김 방지)
+      }
+    };
+
+    // passive: false로 설정해야 e.preventDefault()가 동작함 (페이지 전체 스크롤 방지)
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [cards.length]);
+
+  // 어떤 카드가 크게 보일지 결정 (현재 activeIndex와 그 양옆)
+  const isIndexLarge = (idx: number) => {
+    return idx >= activeIndex - 1 && idx <= activeIndex + 1;
   };
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
+  /**
+   * 정중앙 정렬 로직 (Loop 없음)
+   */
+  const calculateOffset = () => {
+    if (cards.length === 0) return 0;
 
-    setSelected(emblaApi.selectedScrollSnap()); // 선택된 인덱스 저장
-  }, [emblaApi]);
+    const GAP = 40;
+    const CARD_WIDTH = 387;
+    const LARGE_WIDTH = CARD_WIDTH + GAP;
+    const SMALL_WIDTH = CARD_WIDTH * 0.9 + GAP;
 
-  useEffect(() => {
-    if (!emblaApi) return;
+    let totalOffsetBefore = 0;
+    for (let i = 0; i < activeIndex; i++) {
+      totalOffsetBefore += isIndexLarge(i) ? LARGE_WIDTH : SMALL_WIDTH;
+    }
 
-    onSelect();
-    emblaApi.on('select', onSelect);
+    // 현재(Active) 카드의 절반 너비 (항상 Large)
+    const currentCardHalf = LARGE_WIDTH / 2;
 
-    return () => {
-      emblaApi.off('select', onSelect);
-    };
-  }, [emblaApi, onSelect]);
+    return viewportWidth / 2 - (totalOffsetBefore + currentCardHalf);
+  };
 
   return (
     <div
-      className="w-full flex flex-col items-center"
-      style={{
-        transform: selected === 0 ? 'translateX(15vw)' : 'translateX(0px)',
-        transition: 'transform 0.3s ease',
-      }}>
-      <div className="w-full">
-        {/* Embla Carousel 컨테이너 */}
-        <div className={TemplateSwiperStyle.embla} ref={emblaRef}>
-          <div className={TemplateSwiperStyle.container}>
-            {cards.map((card, idx) => (
-              <div key={card.templateId} className={clsx(TemplateSwiperStyle.slide, !isCenter(idx) && 'scale-75')}>
-                <TemplateCard template={card} type={type} />
-              </div>
-            ))}
-          </div>
-        </div>
+      className={clsx(
+        'relative w-full overflow-hidden py-10 select-none',
+        type === 'recommended' ? 'bg-base-color-5' : 'bg-base-color-6',
+      )}
+      ref={containerRef}>
+      {/* Carousel Body */}
+      <div className="relative flex items-center min-h-[500px]">
+        <motion.div
+          className="flex items-center"
+          animate={{
+            x: calculateOffset(),
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 100,
+            damping: 20,
+            mass: 0.8,
+          }}>
+          {cards.map((card, idx) => {
+            const isLarge = isIndexLarge(idx);
+
+            // TemplateCard 기본 너비 387px
+            // GAP 40px
+            // Large Width = 387 + 40 = 427
+            // Small Width = (387 * 0.9) + 40 = 348.3 + 40 = 388.3
+            const targetWidth = isLarge ? 427 : 388.3;
+
+            return (
+              <motion.div
+                key={card.templateId}
+                className={clsx(
+                  'flex-shrink-0 px-[20px]', // GAP/2
+                  'flex justify-center',
+                )}
+                animate={{
+                  width: targetWidth, // 실제 레이아웃 너비 조정
+                  scale: isLarge ? 1 : 0.9,
+                  opacity: isLarge ? 1 : 0.5,
+                  filter: isLarge ? 'blur(0px)' : 'blur(2px)',
+                }}>
+                {/* TemplateCard의 크기가 확실히 잡히도록 pointer-events 설정 */}
+                <div className="pointer-events-auto w-[387px]">
+                  <TemplateCard template={card} type={type} />
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </div>
   );
