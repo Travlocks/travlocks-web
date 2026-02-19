@@ -13,6 +13,7 @@ import EmptyBlockMessage from '../ui/EmplyBlockMessage';
 import type { SidebarBlock } from '../../types/block';
 import type { VlockModalRequestDto } from '@/feature/block/vlockModal/types/vlockModal.types';
 import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+import { useDroppable } from '@dnd-kit/core';
 
 interface BlockSidebarProps {
   items: SidebarBlock[];
@@ -30,6 +31,10 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
   const { inputProps, debouncedValue } = useBlockSearch({
     activeTab,
     delay: 300,
+  });
+
+  const { setNodeRef } = useDroppable({
+    id: 'sidebar',
   });
 
   // 템플릿 캔버스 응답의 cities를 신뢰하여 사이드바 조회 cityId를 결정
@@ -157,7 +162,7 @@ const BlockSidebar = ({ onOpenVlockModal }: BlockSidebarProps) => {
 
   return (
     // BlockEditor의 에디터 영역 높이(h-[1091px])와 맞추기 위한 고정값
-    <div className="flex flex-col h-[1091px] bg-base-color-6 border-r border-gray-200">
+    <div ref={setNodeRef} className="flex flex-col h-[1091px] bg-base-color-6 border-r border-gray-200">
       {/* 헤더 타이틀 */}
       <div className="px-6 pt-8 pb-4">
         <h2 className="text-xl font-semibold text-black">Vlock 라이브러리</h2>
