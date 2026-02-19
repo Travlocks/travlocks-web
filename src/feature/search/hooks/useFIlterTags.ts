@@ -1,8 +1,4 @@
 import { useMemo } from 'react';
-import { REGION_MAP } from '@/shared/constants/destinationCity';
-import { TRIP_DURATION_MAP } from '@/shared/constants/tripDuration';
-import { TRAVEL_THEME_MAP } from '@/shared/constants/travelTheme';
-import { TRANSPORT_TYPE_MAP } from '@/shared/constants/transportType';
 import type { FilterState, FilterTag } from '../types/searchTemplate.types';
 
 /**
@@ -19,52 +15,48 @@ export function useFilterTags(filters: FilterState): FilterTag[] {
   return useMemo(() => {
     const tags: FilterTag[] = [];
 
-    // 여행지 필터
-    filters.regions.forEach((regionId) => {
-      const region = REGION_MAP[regionId];
-      if (region) {
-        tags.push({
-          type: 'region',
-          id: regionId,
-          label: region.name.korean,
-        });
-      }
+    // 여행지 필터 (cities 배열에 권역 이름이 저장됨)
+    filters.cities.forEach((cityName) => {
+      tags.push({
+        type: 'cities',
+        id: cityName,
+        label: cityName,
+      });
     });
 
-    // 여행기간 필터
-    filters.tripDurations.forEach((durationId) => {
-      const duration = TRIP_DURATION_MAP[durationId];
-      if (duration) {
-        tags.push({
-          type: 'tripDuration',
-          id: durationId,
-          label: duration.label,
-        });
-      }
+    // 여행기간 필터 (tripDays에 ONE_DAY 등이 저장됨 -> 라벨로 변환 필요)
+    // TRIP_DURATION 배열에서 id 매핑을 찾아서 라벨을 가져옵니다.
+    const durationLabelMap: Record<string, string> = {
+      ONE_DAY: '당일치기',
+      TWO_DAYS: '1박 2일',
+      THREE_DAYS: '2박 3일',
+      FOUR_DAYS: '3박 4일',
+      FIVE_DAYS: '4박 5일',
+    };
+    filters.tripDays.forEach((durationKey) => {
+      tags.push({
+        type: 'tripDays',
+        id: durationKey,
+        label: durationLabelMap[durationKey] || durationKey,
+      });
     });
 
-    // 여행테마 필터
-    filters.travelThemes.forEach((themeId) => {
-      const theme = TRAVEL_THEME_MAP[themeId];
-      if (theme) {
-        tags.push({
-          type: 'travelTheme',
-          id: themeId,
-          label: theme.name.korean,
-        });
-      }
+    // 여행테마 필터 (themes에 테마 이름이 저장됨)
+    filters.themes.forEach((themeName) => {
+      tags.push({
+        type: 'themes',
+        id: themeName,
+        label: themeName,
+      });
     });
 
-    // 이동성향(교통편) 필터
-    filters.transportTypes.forEach((transportTypeId) => {
-      const transportType = TRANSPORT_TYPE_MAP[transportTypeId];
-      if (transportType) {
-        tags.push({
-          type: 'transportType',
-          id: transportTypeId,
-          label: transportType.name.korean,
-        });
-      }
+    // 이동성향(교통편) 필터 (transportTypes에 교통편 이름이 저장됨)
+    filters.transportTypes.forEach((transportName) => {
+      tags.push({
+        type: 'transportTypes',
+        id: transportName,
+        label: transportName,
+      });
     });
 
     return tags;

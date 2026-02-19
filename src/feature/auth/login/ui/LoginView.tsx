@@ -17,7 +17,7 @@ import { AppIcon } from '@/shared/ui/icon/AppIcon';
  * 이메일과 비밀번호를 입력받아 로그인을 처리합니다.
  * 소셜 로그인(네이버, 카카오, 구글) 옵션도 제공합니다.
  *
- * @author seomgin36
+ * @author seongmin36
  */
 
 export const LoginView = () => {

@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import FilterSection from './FilterSection';
 import { SearchFilterStyle } from '../../style/SearchFilter.style';
-import { REGIONS, type RegionId } from '@/shared/constants/destinationCity';
-import { TRIP_DURATION, type TripDurationId } from '@/shared/constants/tripDuration';
-import { TRAVEL_THEME, type TravleThemeId } from '@/shared/constants/travelTheme';
-import { TRANSPORT_TYPE, type TransportTypeId } from '@/shared/constants/transportType';
+import { REGIONS } from '@/shared/constants/destinationCity';
+import { TRIP_DURATION } from '@/shared/constants/tripDuration';
+import { TRAVEL_THEME } from '@/shared/constants/travelTheme';
+import { TRANSPORT_TYPE } from '@/shared/constants/transportType';
 import type { FilterState } from '../../types/searchTemplate.types';
 
 /**
@@ -48,52 +48,49 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
     }));
   }, []);
 
-  // 여행지 필터 변경 핸들러
+  // 여행지 필터 변경 핸들러 (권역 이름 사용)
   const handleRegionChange = useCallback(
-    (id: RegionId, checked: boolean) => {
-      const newRegions = checked ? [...filters.regions, id] : filters.regions.filter((regionId) => regionId !== id);
+    (id: string, checked: boolean) => {
+      const newCities = checked ? [...filters.cities, id] : filters.cities.filter((city) => city !== id);
 
       onFilterChange({
         ...filters,
-        regions: newRegions,
+        cities: newCities,
       });
     },
     [filters, onFilterChange],
   );
 
-  // 여행 기간 필터 변경 핸들러
+  // 여행 기간 필터 변경 핸들러 (MAPPING 필요: 1 -> ONE_DAY)
   const handleTripDurationChange = useCallback(
-    (id: TripDurationId, checked: boolean) => {
-      const newTripDurations = checked
-        ? [...filters.tripDurations, id]
-        : filters.tripDurations.filter((durationId) => durationId !== id);
+    (id: string, checked: boolean) => {
+      const newTripDays = checked ? [...filters.tripDays, id] : filters.tripDays.filter((day) => day !== id);
 
       onFilterChange({
         ...filters,
-        tripDurations: newTripDurations,
+        tripDays: newTripDays,
       });
     },
     [filters, onFilterChange],
   );
 
-  // 여행 테마 필터 변경 핸들러
+  // 여행 테마 필터 변경 핸들러 (테마 이름 사용)
   const handleTravelThemeChange = useCallback(
-    (id: TravleThemeId, checked: boolean) => {
-      const newTravelThemes = checked
-        ? [...filters.travelThemes, id]
-        : filters.travelThemes.filter((themeId) => themeId !== id);
+    (id: string, checked: boolean) => {
+      const newThemes = checked ? [...filters.themes, id] : filters.themes.filter((theme) => theme !== id);
 
       onFilterChange({
         ...filters,
-        travelThemes: newTravelThemes,
+        themes: newThemes,
       });
     },
     [filters, onFilterChange],
   );
 
-  // 이동 수단 필터 변경 핸들러
+  // 이동 수단 필터 변경 핸들러 (영문 대문자 키 사용: WALK, TRANSIT, CAR) -> API 스펙엔 한글 '도보', '차량', '대중교통' 요구됨
+  // 요청사항: '도보', '차량', '대중교통' 이 값이 그대로 parameter로 들어가.
   const handleTransportTypeChange = useCallback(
-    (id: TransportTypeId, checked: boolean) => {
+    (id: string, checked: boolean) => {
       const newTransportTypes = checked
         ? [...filters.transportTypes, id]
         : filters.transportTypes.filter((transportTypeId) => transportTypeId !== id);
@@ -111,24 +108,36 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
     onReset();
   }, [onReset]);
 
-  // 필터 데이터 준비
+  // 필터 데이터 준비 - ID를 API 파라미터 값으로 매핑
+
+  // 1. 여행지: 권역 이름 그 자체 ('서울', '경기'...)
   const regionItems = REGIONS.map((region) => ({
-    id: region.id,
+    id: region.name.korean,
     label: region.name.korean,
   }));
 
+  // 2. 여행 기간: ONE_DAY, TWO_DAYS 등 매핑
+  const durationMapping: Record<number, string> = {
+    1: 'ONE_DAY',
+    2: 'TWO_DAYS',
+    3: 'THREE_DAYS',
+    4: 'FOUR_DAYS',
+    5: 'FIVE_DAYS',
+  };
   const durationItems = TRIP_DURATION.map((duration) => ({
-    id: duration.id,
+    id: durationMapping[duration.id],
     label: duration.label,
   }));
 
+  // 3. 여행 테마: 테마 이름 ('자연', '문화'...)
   const themeItems = TRAVEL_THEME.map((theme) => ({
-    id: theme.id,
+    id: theme.name.korean,
     label: theme.name.korean,
   }));
 
+  // 4. 이동 수단: '도보', '차량', '대중교통'
   const transportItems = TRANSPORT_TYPE.map((transport) => ({
-    id: transport.id,
+    id: transport.name.korean,
     label: transport.name.korean,
   }));
 
@@ -148,7 +157,7 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
         <FilterSection
           title="여행지"
           items={regionItems}
-          selectedItems={filters.regions}
+          selectedItems={filters.cities}
           isOpen={openSections.region}
           onToggle={() => handleSectionToggle('region')}
           onItemChange={handleRegionChange}
@@ -160,7 +169,7 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
         <FilterSection
           title="여행 기간"
           items={durationItems}
-          selectedItems={filters.tripDurations}
+          selectedItems={filters.tripDays}
           isOpen={openSections.duration}
           onToggle={() => handleSectionToggle('duration')}
           onItemChange={handleTripDurationChange}
@@ -171,7 +180,7 @@ const SearchFilter = ({ filters, onFilterChange, onReset }: SearchFilterProps) =
         <FilterSection
           title="여행 테마"
           items={themeItems}
-          selectedItems={filters.travelThemes}
+          selectedItems={filters.themes}
           isOpen={openSections.theme}
           onToggle={() => handleSectionToggle('theme')}
           onItemChange={handleTravelThemeChange}

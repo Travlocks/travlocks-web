@@ -1,12 +1,17 @@
 import clsx from 'clsx';
 import { useEffect, useState, type SetStateAction } from 'react';
-import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
+import { useBlockTemplateStore } from '@/shared/stores/blockTemplateStore';
 import type { Level } from '../blockBuild/types/level';
+import SaveModal from './components/SaveModal';
+
 import SaveIcon from '@assets/block/icon-save.svg?react';
 import LeftIcon from '@assets/splash/icon-arrow.svg?react';
+import useGetTemplateDetail from '../blockTimeLine/hooks/useQuery/useGetTemplateDetail';
 
-const VISIBILITY = [
+export const VISIBILITY = [
   {
     id: 1,
     text: '전체 공개',
@@ -37,51 +42,101 @@ interface BlockHeaderProps {
 }
 
 // const BlockHeader = ({ level, setLevel, onTemplateModalOpenChange }: BlockHeaderProps) => {
+export type FormFields = {
+  title: string;
+  description: string;
+};
+
 const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
   const [selectedId, setSelectedId] = useState(1);
   const templateTitle = useBlockTemplateStore((s) => s.templateTitle);
-  const [input, setInput] = useState(templateTitle);
+  const [showSaveModal, setShowSaveModal] = useState<boolean>(false);
+  const { templateId } = useParams();
+
+  const { data } = useGetTemplateDetail(Number(templateId));
+
+  const methods = useForm<FormFields>({
+    defaultValues: {
+      title: templateTitle,
+      description: '',
+    },
+  });
 
   useEffect(() => {
-    setInput(templateTitle);
-  }, [templateTitle]);
+    if (data) {
+      methods.reset({
+        title: data.data.title || '',
+        description: data.data.description || '',
+      });
+    }
+  }, [data, templateTitle, methods]);
 
   return (
-    <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
-      <section className="relative flex gap-[20px] items-center">
-        {/* 이전 버튼 및 여행 제목 */}
-        <div className="flex gap-[8px]">
-          <div
-            onClick={() => {
-              if (level === 'editor') {
-                setLevel('timeline');
-              }
-            }}
-            className={clsx(
-              'rounded-[10px] size-[36px] flex justify-center items-center transition',
-              level === 'timeline' ? 'bg-base-color-3 cursor-not-allowed' : 'bg-primary-color cursor-pointer',
-            )}>
-            <LeftIcon className="text-white rotate-180" />
-          </div>
-          <input
-            value={input}
-            placeholder="여행 제목"
-            onChange={(e) => setInput(e.target.value)}
-            className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
-          />
-        </div>
-
-        {/* 전체 공개 및 나만 보기 버튼 */}
-        <div className="px-[6px] py-[6px] flex gap-[6px] items-center rounded-[5px] bg-base-color-4">
-          {VISIBILITY.map((button) => (
-            <button
-              key={button.id}
-              onClick={() => setSelectedId(button.id)}
+    <FormProvider {...methods}>
+      <div className="border-b border-base-color py-[17px] pl-[23px] pr-[32px] flex justify-between items-center bg-white">
+        <section className="relative flex gap-[20px] items-center">
+          {/* 이전 버튼 및 여행 제목 */}
+          <div className="flex gap-[8px]">
+            <div
+              onClick={() => {
+                if (level === 'editor') {
+                  setLevel('timeline');
+                }
+              }}
               className={clsx(
-                'py-[4px] px-[15px] h8 text-[14px] cursor-pointer rounded-[5px] transition-all',
-                selectedId === button.id ? 'bg-white text-primary-color' : 'bg-base-color-4 text-base-color-3',
+                'rounded-[10px] size-[36px] flex justify-center items-center transition',
+                level === 'timeline' ? 'bg-base-color-3 cursor-not-allowed' : 'bg-primary-color cursor-pointer',
               )}>
-              {button.text}
+              <LeftIcon className="text-white rotate-180" />
+            </div>
+            <Controller
+              name="title"
+              control={methods.control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  placeholder="여행 제목"
+                  className="py-[4px] px-[10px] h6 peer outline-none max-w-[170px] w-full"
+                />
+              )}
+            />
+          </div>
+
+          {/* 전체 공개 및 나만 보기 버튼 */}
+          <div className="px-[6px] py-[6px] flex gap-[6px] items-center rounded-[5px] bg-base-color-4">
+            {VISIBILITY.map((button) => (
+              <button
+                key={button.id}
+                onClick={() => setSelectedId(button.id)}
+                className={clsx(
+                  'py-[4px] px-[15px] h8 text-[14px] cursor-pointer rounded-[5px] transition-all',
+                  selectedId === button.id ? 'bg-white text-primary-color' : 'bg-base-color-4 text-base-color-3',
+                )}>
+                {button.text}
+              </button>
+            ))}
+          </div>
+
+          {/* <BlockTooltip textKey="타이틀" className="peer-hover:opacity-100 opacity-0" /> */}
+        </section>
+
+        {/* 저장 및 공유하기 버튼 */}
+        <section className="flex gap-[25px]">
+          {ACTIONS.map((action) => (
+            <button
+              key={action.id}
+              onClick={() => {
+                if (action.id === 1) {
+                  setShowSaveModal(true);
+                }
+              }}
+              className={clsx(
+                'rounded-[10px] py-[10px] px-[15px] flex gap-[10px] border items-center cursor-pointer',
+                // action.id === 1 && 'border-base-color bg-white',
+                action.id === 1 && 'border-primary-color bg-primary-color text-white',
+              )}>
+              {action.icon}
+              <p>{action.text}</p>
             </button>
           ))}
         </div>
@@ -111,6 +166,13 @@ const BlockHeader = ({ level, setLevel }: BlockHeaderProps) => {
         ))}
       </section>
     </div>
+
+          {showSaveModal && (
+            <SaveModal selectedId={selectedId} setSelectedId={setSelectedId} setShowSaveModal={setShowSaveModal} />
+          )}
+        </section>
+      </div>
+    </FormProvider>
   );
 };
 

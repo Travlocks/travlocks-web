@@ -2,7 +2,7 @@ import DefaultLayout from '@/shared/layouts/DefaultLayout';
 import AuthLayout from '@/shared/layouts/auth/AuthLayout';
 import TestLayout from '@/shared/layouts/TestLayout';
 import FeatureLayout from '@/shared/layouts/FeatureLayout';
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { Suspense } from 'react';
 import { lazyRoutes } from './routes';
 import TestPage from '@/pages/TestPage';
@@ -24,11 +24,7 @@ export const routes: RouteObject[] = [
         children: [
           {
             index: true,
-            element: (
-              <Suspense fallback={<Loading />}>
-                <lazyRoutes.BlockPage />
-              </Suspense>
-            ),
+            element: <Navigate to="/block/onboarding" replace />,
           },
           {
             element: (
@@ -42,12 +38,12 @@ export const routes: RouteObject[] = [
             ],
           },
           {
-            path: 'onboarding',
-            element: <lazyRoutes.OnboardingPage />,
-          },
-          {
             path: ':templateId',
-            element: <lazyRoutes.BlockPage />,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <lazyRoutes.BlockPage />
+              </Suspense>
+            ),
           },
         ],
       },

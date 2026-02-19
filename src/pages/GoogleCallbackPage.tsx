@@ -13,7 +13,17 @@ import { useGoogleLoginCallback } from '@/feature/auth/login/hooks/useSocialLogi
  */
 const GoogleCallbackPage = () => {
   const navigate = useNavigate();
-  const { mutate: googleLogin } = useGoogleLoginCallback();
+  const { mutate: googleLogin } = useGoogleLoginCallback({
+    onSuccess: (data) => {
+      console.log('googleLogin success', data);
+    },
+    onError: (error, errorMessage) => {
+      console.error(error.response?.data, errorMessage);
+      alert(errorMessage);
+      navigate('/login', { replace: true });
+      return;
+    },
+  });
   const called = useRef(false);
 
   useEffect(() => {
