@@ -9,6 +9,10 @@ import DefaultThumbnail from '@assets/template/thumbnail.png';
 import usePostTemplateRemix from '../home/hooks/mutations/usePostTemplateRemix';
 import { useNavigate } from 'react-router-dom';
 import { formatOneDecimal } from '@/shared/utils/format';
+import useDeleteTemplate from '../user/hooks/mutations/useDeleteTemplate';
+import AccountModal from '../mypage/components/AccountModal';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
 
 // Props of TemplateCard
@@ -18,6 +22,7 @@ interface TemplateCardProps {
   onButtonClick?: (templateId: number) => void; // 버튼 클릭 콜백
   onCardClick?: (templateId: number) => void; // 카드 영역 클릭 콜백
   disableAuthorProfileNavigation?: boolean;
+  hasDelete?: boolean;
 }
 
 /**
@@ -54,6 +59,7 @@ const TemplateCard = ({
   onButtonClick,
   onCardClick,
   disableAuthorProfileNavigation = false,
+  hasDelete = false,
 }: TemplateCardProps) => {
   const theme = type === 'recommended' ? template.tripTheme : template.travelTheme;
 
@@ -63,8 +69,29 @@ const TemplateCard = ({
   const canNavigateToAuthorProfile =
     type !== 'recommended' && !disableAuthorProfileNavigation && typeof template.ownerId === 'number';
 
+  const { mutate: mutateDeleteTemplate } = useDeleteTemplate();
+  const queryClient = useQueryClient();
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+
+  const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    setShowDeleteModal(false);
+  };
+
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>, templateId: number) => {
+    e.stopPropagation();
+
+    mutateDeleteTemplate(templateId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['my-templates'] });
+      },
+    });
+    setShowDeleteModal(false);
+  };
+
   return (
-    <div className={TemplateCardStyle.wrapper()} onClick={() => onCardClick?.(template.templateId)}>
+    <div className={TemplateCardStyle.wrapper() + 'group'} onClick={() => onCardClick?.(template.templateId)}>
       <div className={TemplateCardStyle.container()}>
         {/* 썸네일 */}
         <div className={TemplateCardStyle.imageContainer}>
@@ -146,9 +173,30 @@ const TemplateCard = ({
               icon={type === 'popular' ? <RemixIcon className={TemplateCardStyle.buttonIcon} /> : undefined}
               iconPosition="left"
             />
+
+            {hasDelete && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDeleteModal(true);
+                }}
+                className="opacity-0 group-hover:opacity-100 duration-500 flex absolute bottom-[170px] right-[20px] w-[135px] h-[59px] rounded-[30px] bg-white shadow-md justify-center items-center text-base-color-2 b3 cursor-pointer">
+                삭제하기
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <AccountModal
+          modalType="delete"
+          // @ts-expect-error: 이벤트 타입이 달라서 발생하는 TS 오류 무시
+          onCancel={(e) => handleCancel(e)}
+          // @ts-expect-error: 이벤트 타입이 달라서 발생하는 TS 오류 무시
+          onConfirm={(e) => handleDelete(e, template.templateId)}
+        />
+      )}
     </div>
   );
 };
