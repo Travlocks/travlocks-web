@@ -9,6 +9,7 @@ import DefaultThumbnail from '@assets/template/thumbnail.png';
 import usePostTemplateRemix from '../home/hooks/mutations/usePostTemplateRemix';
 import { useNavigate } from 'react-router-dom';
 import { formatOneDecimal } from '@/shared/utils/format';
+import { useRemixReviewStore } from '@/shared/stores/remixReviewStore';
 
 // Props of TemplateCard
 interface TemplateCardProps {
@@ -58,6 +59,7 @@ const TemplateCard = ({
 
   const navigate = useNavigate();
   const { mutate } = usePostTemplateRemix(); // 템플릿 리믹스
+  const registerRemix = useRemixReviewStore((s) => s.registerRemix);
   const canNavigateToAuthorProfile =
     type !== 'recommended' && !disableAuthorProfileNavigation && typeof template.ownerId === 'number';
 
@@ -135,6 +137,7 @@ const TemplateCard = ({
                 onButtonClick?.(template.templateId);
                 mutate(template.templateId, {
                   onSuccess: (data) => {
+                    registerRemix(data.data.remixedTemplateId, data.data.parentTemplateId);
                     navigate(`/block/${data.data.remixedTemplateId}`);
                   },
                 });
