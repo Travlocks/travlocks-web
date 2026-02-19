@@ -171,7 +171,7 @@ const Dashboard = () => {
           icon={<StarIcon />}
           label="즐겨찾기"
           count={myPageData.counts.starCount}
-          onClick={() => navigate('/mypage/templates')}
+          onClick={() => navigate('/mypage/templates?filter=favorite')}
         />
       </div>
 
