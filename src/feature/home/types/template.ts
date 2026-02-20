@@ -5,7 +5,9 @@ import type { SuccessPayload } from '@/shared/types/common';
 export type Template = {
   templateId: number;
   title: string;
-  coverImageUrl: string | null;
+
+  coverImageUrl?: string | null;
+  coverImgUrl?: string | null;
 
   travelTheme?: TravelTheme;
   tripTheme?: TravelTheme; // 추천 템플릿에서 사용

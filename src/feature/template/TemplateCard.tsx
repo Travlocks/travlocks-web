@@ -98,7 +98,7 @@ const TemplateCard = ({
         <div className={TemplateCardStyle.imageContainer}>
           <img
             className={TemplateCardStyle.image()}
-            src={template.coverImageUrl || DefaultThumbnail}
+            src={template.coverImageUrl || template.coverImgUrl || DefaultThumbnail}
             alt={template.title}
           />
         </div>
