@@ -43,5 +43,6 @@
       "@utils/*": ["src/shared/utils/*"]
     }
   },
-  "include": ["src", "src/shared/types"]
+  "include": ["src", "src/shared/types"],
+  "exclude": ["src/**/*.stories.ts", "src/**/*.stories.tsx"]
 }

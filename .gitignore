@@ -27,3 +27,6 @@ dist-ssr
 
 # MCP
 .serena
+
+*storybook.log
+storybook-static
