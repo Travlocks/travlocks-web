@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 
 import type { ResponseGetMeDto } from '@/feature/user/types/user';
 
-import { withMemoryRouter } from '../../../../.storybook/decorators';
 import NavbarMenuModal from './NavbarMenuModal';
 
 const mockMe: ResponseGetMeDto = {
@@ -50,8 +49,10 @@ function MenuModalHost() {
 const meta = {
   title: 'Shared/Navbar/MenuModal',
   tags: ['autodocs'],
-  parameters: { layout: 'fullscreen' },
-  decorators: [withMemoryRouter('/mypage')],
+  parameters: {
+    layout: 'fullscreen',
+    memoryRouter: { initialEntries: ['/mypage'] },
+  },
 } satisfies Meta;
 
 export default meta;

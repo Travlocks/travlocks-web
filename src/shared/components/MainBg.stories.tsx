@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ComponentType } from 'react';
 
-import { withMemoryRouter } from '../../../.storybook/decorators';
 import MainBg from './MainBg';
 
 const meta = {
@@ -13,25 +13,19 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const sizeDecorator = (S: ComponentType) => (
+  <div className="relative h-[480px] w-full overflow-hidden border border-base-color-3">
+    <S />
+  </div>
+);
+
 export const Home: Story = {
-  decorators: [
-    withMemoryRouter('/'),
-    (S) => (
-      <div className="relative h-[480px] w-full overflow-hidden border border-base-color-3">
-        <S />
-      </div>
-    ),
-  ],
+  parameters: { memoryRouter: { initialEntries: ['/'] } },
+  decorators: [sizeDecorator],
 };
 
 export const LoginPage: Story = {
   args: { isFixed: false },
-  decorators: [
-    withMemoryRouter('/login'),
-    (S) => (
-      <div className="relative h-[480px] w-full overflow-hidden border border-base-color-3">
-        <S />
-      </div>
-    ),
-  ],
+  parameters: { memoryRouter: { initialEntries: ['/login'] } },
+  decorators: [sizeDecorator],
 };

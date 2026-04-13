@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { withMemoryRouter } from '../../../.storybook/decorators';
 import EmptyResultCard from './EmptyResultCard';
 
 const meta = {
@@ -8,7 +7,6 @@ const meta = {
   component: EmptyResultCard,
   tags: ['autodocs'],
   parameters: { layout: 'centered' },
-  decorators: [withMemoryRouter('/')],
 } satisfies Meta<typeof EmptyResultCard>;
 
 export default meta;
