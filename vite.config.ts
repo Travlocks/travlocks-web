@@ -17,6 +17,16 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react(), svgr(), tailwindcss()],
+  // storybook-static 아래 iframe.html·번들이 스캔되면 @emotion/is-prop-valid 등
+  // 스토리북 전용 의존성을 앱이 끌어오려 해 오류가 난다. 앱은 index.html만 스캔한다.
+  optimizeDeps: {
+    entries: [path.resolve(dirname, 'index.html')],
+  },
+  server: {
+    watch: {
+      ignored: ['**/storybook-static/**'],
+    },
+  },
   resolve: {
     alias: [...getResolveAliases(dirname)],
   },
