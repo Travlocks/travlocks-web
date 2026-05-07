@@ -54,9 +54,10 @@ function WithHelperStory() {
 
 const meta = {
   title: 'Shared/TextField',
+  component: TextField,
   tags: ['autodocs'],
   parameters: { layout: 'padded' },
-} satisfies Meta;
+} satisfies Meta<typeof TextField>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
