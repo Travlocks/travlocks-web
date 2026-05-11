@@ -1,29 +1,34 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
+
+import { getResolveAliases } from './resolveAliases';
+
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react(), svgr(), tailwindcss()],
+  // storybook-static 아래 iframe.html·번들이 스캔되면 @emotion/is-prop-valid 등
+  // 스토리북 전용 의존성을 앱이 끌어오려 해 오류가 난다. 앱은 index.html만 스캔한다.
+  optimizeDeps: {
+    entries: [path.resolve(dirname, 'index.html')],
+  },
+  server: {
+    watch: {
+      ignored: ['**/storybook-static/**'],
+    },
+  },
   resolve: {
-    alias: [
-      { find: '@', replacement: '/src' },
-      { find: '@feature', replacement: '/src/feature' },
-      { find: '@pages', replacement: '/src/pages' },
-      { find: '@shared', replacement: '/src/shared' },
-      { find: '@apis', replacement: '/src/shared/apis' },
-      { find: '@assets', replacement: '/src/shared/assets' },
-      { find: '@components', replacement: '/src/shared/components' },
-      { find: '@constants', replacement: '/src/shared/constants' },
-      { find: '@data', replacement: '/src/shared/data' },
-      { find: '@hooks', replacement: '/src/shared/hooks' },
-      { find: '@layouts', replacement: '/src/shared/layouts' },
-      { find: '@routes', replacement: '/src/shared/routes' },
-      { find: '@stores', replacement: '/src/shared/stores' },
-      { find: '@types', replacement: '/src/shared/types' },
-      { find: '@utils', replacement: '/src/shared/utils' },
-    ],
+    alias: [...getResolveAliases(dirname)],
   },
   assetsInclude: ['**/*.lottie'],
   build: {
@@ -37,5 +42,32 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    projects: [
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+          storybookTest({
+            configDir: path.join(dirname, '.storybook'),
+          }),
+        ],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [
+              {
+                browser: 'chromium',
+              },
+            ],
+          },
+        },
+      },
+    ],
   },
 });
