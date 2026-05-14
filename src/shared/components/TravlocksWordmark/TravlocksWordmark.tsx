@@ -5,15 +5,17 @@ import logoMainUrl from '@assets/logo/logo-main.svg';
 
 export type TravlocksWordmarkProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> & {
   alt?: string;
+  /** 미지정 시 `logo-main.svg` */
+  src?: string;
 };
 
-export function TravlocksWordmark({ className, alt = 'Travlocks', ...props }: TravlocksWordmarkProps) {
+export function TravlocksWordmark({ className, alt = 'Travlocks', src, ...props }: TravlocksWordmarkProps) {
   return (
     <img
-      src={logoMainUrl}
+      src={src ?? logoMainUrl}
       alt={alt}
       draggable={false}
-      className={clsx('block max-h-full w-auto max-w-full object-contain object-left', className)}
+      className={clsx('block object-contain object-left', className)}
       {...props}
     />
   );
