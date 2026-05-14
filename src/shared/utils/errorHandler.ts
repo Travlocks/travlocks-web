@@ -31,7 +31,7 @@ export const handleLoginError = (
       }
       return message || '이메일 또는 비밀번호가 올바르지 않습니다.';
     case 404:
-      return message || '요청한 리소스를 찾을 수 없습니다.';
+      return message || '가입되어 있는 이메일이 아닙니다.';
     case 409:
       return message || '해당 이메일로 가입된 일반 계정이 이미 존재합니다.';
     case 500:
