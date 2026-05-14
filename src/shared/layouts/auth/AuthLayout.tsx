@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AuthNavButton from '@/shared/components/Button/AuthNavButton';
-import LogoAuth from '@assets/logo/logo-auth.svg?react';
+import { TravlocksWordmark } from '@/shared/components/TravlocksWordmark/TravlocksWordmark';
 import type { AuthLayoutHeader } from './AuthLayout.type';
 import { useState } from 'react';
 import type { AuthLayoutOutletCtx } from './AuthLayout.type';
@@ -57,14 +57,14 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
     resetAuthHeader,
   } satisfies AuthLayoutOutletCtx;
 
-  const { subtitle, description, showAuthNav = false } = header;
+  const { subtitle, description, showAuthNav = false, wordmarkMaxWidthPx = 367 } = header;
 
   return (
     <div key={location.pathname} className="flex justify-center animate-fade-in items-center min-h-dvh px-4 py-8">
       <div className="w-full max-w-[585px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[43px] py-[48px]">
         {/* 로고 */}
         <div className="flex justify-center mb-[28px]">
-          <LogoAuth className="w-[367px] h-[89px]" />
+          <TravlocksWordmark className="h-[89px] w-full" style={{ maxWidth: wordmarkMaxWidthPx }} />
         </div>
 
         {subtitle && <p className="h2 text-[23px] text-black text-center mb-5 whitespace-pre-wrap">{subtitle}</p>}

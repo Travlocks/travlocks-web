@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 
-import Logo from '@assets/Navbar/icon-nav-logo.svg?react';
+import { TravlocksWordmark } from '@/shared/components/TravlocksWordmark/TravlocksWordmark';
 import Puzzle from '@assets/Navbar/icon-puzzle.svg?react';
 import AlarmOn from '@assets/Navbar/icon-alarm-on.svg?react';
 import AlarmOff from '@assets/Navbar/icon-alarm-off.svg?react';
@@ -49,7 +49,13 @@ const Navbar = () => {
   return (
     <nav className="relative bg-white flex justify-center px-8 z-header border-b border-[rgba(217,217,217,0.50)]">
       <div className="flex items-center h-[109px] py-[20px] max-w-[1248px] w-full">
-        <Logo className="self-start cursor-pointer" onClick={() => navigate('/')} />
+        <button
+          type="button"
+          className="self-start cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+          onClick={() => navigate('/')}
+          aria-label="홈으로 이동">
+          <TravlocksWordmark className="h-10 w-auto sm:h-14" />
+        </button>
 
         <div className="flex gap-[36px] justify-end items-center flex-1">
           {MENU.map((menu) => (
