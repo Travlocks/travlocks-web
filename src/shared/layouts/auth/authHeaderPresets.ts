@@ -11,6 +11,7 @@ export const AUTH_HEADER = {
   login: {
     ...DEFAULT_AUTH_HEADER,
     buttonText: 'Vlock 쌓으러 가기',
+    wordmarkMaxWidthPx: 373,
   },
   signup: {
     ...DEFAULT_AUTH_HEADER,

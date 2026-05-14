@@ -5,7 +5,7 @@ import { type DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
 import RoundButton from '@/shared/components/Button/RoundButton';
 import MainBg from '@/shared/components/MainBg';
 
-import Logo from '@assets/logo/logo-auth.svg?react';
+import { TravlocksWordmark } from '@/shared/components/TravlocksWordmark/TravlocksWordmark';
 import SignupAnimation from '@feature/signup/assets/signup-animation.lottie';
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -140,7 +140,7 @@ const CompleteModal = () => {
           </div>
 
           <section className="pt-[14px] bg-white pb-[40px] flex flex-col gap-[28px] items-center rounded-b-[30px] border-b border-x border-base-color">
-            <Logo />
+            <TravlocksWordmark className="max-w-[min(280px,90vw)]" />
             <p className="text-base-color-1 h9">조립하는 즐거움, 나만의 여행 블록 쌓기</p>
           </section>
         </div>

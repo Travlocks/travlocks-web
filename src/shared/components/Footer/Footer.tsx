@@ -1,6 +1,6 @@
 import GitHubIcon from '@/shared/assets/logo/logo-github.svg?react';
 import NotionIcon from '@/shared/assets/logo/logo-notion.svg?react';
-import TravlocksLogo from '@/shared/assets/logo/logo-gray.svg?react';
+import { TravlocksWordmark } from '@/shared/components/TravlocksWordmark/TravlocksWordmark';
 
 /**
  * clamp + Tailwind arbitrary value 기반 자연스러운 반응형
@@ -14,7 +14,7 @@ export const Footer = () => {
           {/* 왼쪽: 로고, 저작권 */}
           <div className="flex w-[clamp(200px,15.2vw,292px)] shrink-0 flex-col gap-[25px]">
             <div className="h-10 w-[clamp(120px,9.4vw,181px)] shrink-0">
-              <TravlocksLogo className="h-full w-full" />
+              <TravlocksWordmark className="h-full w-full" />
             </div>
 
             <div className="flex flex-col gap-1 pl-[clamp(0px,1.67vw,32px)]">

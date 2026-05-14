@@ -9,7 +9,7 @@ import Footer from '../components/Footer/Footer';
 import { useRouteGuard } from '@/feature/splash/hooks/useRouteGuard';
 import { useSplashStore } from '../stores/splashStore';
 import { useShallow } from 'zustand/react/shallow';
-import Logo from '@assets/logo/logo-auth.svg?react';
+import { TravlocksWordmark } from '@/shared/components/TravlocksWordmark/TravlocksWordmark';
 
 interface DefaultLayoutProps {
   showNavbar?: boolean;
@@ -57,7 +57,7 @@ const DefaultLayout = ({ showNavbar = true, protectedRoutes = false }: DefaultLa
       {isBlocked && (
         <div className="fixed inset-0 z-[10000] bg-base-color-6 flex flex-col items-center justify-center px-6 text-center">
           <div className="flex flex-col gap-6 items-center">
-            <Logo className="w-60 h-40" />
+            <TravlocksWordmark className="h-40 w-60 max-w-[90vw]" />
             <div className="flex flex-col gap-2">
               <p className="h5 text-base-color-0 font-semibold">웹에서 봐주세요!</p>
               <p className="b6 text-base-color-2">
