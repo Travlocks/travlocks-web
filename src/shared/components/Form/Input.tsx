@@ -67,13 +67,14 @@ const Input = ({
 
   return (
     <div
-      className={clsx('group relative w-full', !width && (label === 'top' ? 'max-w-[500px]' : 'max-w-[440px]'))}
+      className={clsx('group relative w-full min-w-0', !width && (label === 'top' ? 'max-w-[500px]' : 'max-w-[440px]'))}
       style={{ maxWidth: width }}>
       {/* 상단 라벨 (아이콘 + 텍스트) */}
       {label === 'top' && Icon && (
         <div className="absolute left-[21px] top-[-12px] flex items-center justify-center gap-1 bg-base-color-6 px-[5px] py-[3px]">
-          <Icon className="text-base-color-1 group-focus-within:text-primary-color" />
-          <p className="b6 text-base-color-1 group-focus-within:text-primary-color">
+          <Icon className={clsx(error ? 'text-negative' : 'text-base-color-1 group-focus-within:text-primary-color')} />
+          <p
+            className={clsx('b6', error ? 'text-negative' : 'text-base-color-1 group-focus-within:text-primary-color')}>
             {isPassword ? '비밀번호' : '이메일'}
           </p>
         </div>

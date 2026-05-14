@@ -10,6 +10,17 @@ import { Link } from 'react-router-dom';
 import { AppIcon } from '@/shared/ui/icon/AppIcon';
 import clsx from 'clsx';
 
+function InlineFieldError({ message, className }: { message: string; className?: string }) {
+  return (
+    <div role="alert" className={clsx('flex w-full min-w-0 gap-3 items-start', className)}>
+      <AppIcon name="alert" width={17} height={17} color="#fd7565" className="mt-0.5 shrink-0" aria-hidden />
+      <p className="min-w-0 flex-1 text-left text-[16px] font-medium leading-normal text-negative break-words">
+        {message}
+      </p>
+    </div>
+  );
+}
+
 /**
  * 로그인 페이지 컴포넌트
  *
@@ -45,9 +56,9 @@ export const LoginView = () => {
   const isLoginPending = isPending || isSubmitting;
 
   return (
-    <form onSubmit={submit} className="flex max-w-[500px] flex-col">
+    <form onSubmit={submit} className="flex w-full max-w-[500px] flex-col">
       {/* 이메일 — 피그마: 탭↔첫 필드 간격은 AuthLayout mb-[60px] */}
-      <div className="flex flex-col">
+      <div className="flex w-full min-w-0 flex-col">
         <Input
           register={register('email')}
           type="email"
@@ -55,16 +66,10 @@ export const LoginView = () => {
           placeholder="이메일을 입력해주세요"
           error={!!emailErrorMessage}
         />
-        {emailErrorMessage ? (
-          <span className="text-negative mt-3 flex items-center gap-2 px-0 b6">
-            <AppIcon name="alert" width="17px" height="17px" color="#fd7565" />
-            <span>{emailErrorMessage}</span>
-          </span>
-        ) : null}
       </div>
 
-      {/* 비밀번호: 이메일 필드↔24px, 이메일 오류 시 오류↔비밀번호 라벨 4px */}
-      <div className={clsx('flex flex-col', emailErrorMessage ? 'mt-1' : 'mt-6')}>
+      {/* 비밀번호: 이메일 입력↔24px. 이메일 형식 오류 문구는 비밀번호 필드 하단(Figma 그리드) */}
+      <div className="mt-6 flex w-full min-w-0 flex-col">
         <Input
           register={register('password')}
           type="password"
@@ -78,17 +83,13 @@ export const LoginView = () => {
             }
           }}
         />
-        <div className="mt-[35px] flex justify-end">
+        {emailErrorMessage ? <InlineFieldError message={emailErrorMessage} className="mt-3" /> : null}
+        {apiError ? <InlineFieldError message={apiError} className={emailErrorMessage ? 'mt-2' : 'mt-3'} /> : null}
+        <div className={clsx('flex justify-end', emailErrorMessage || apiError ? 'mt-4' : 'mt-[35px]')}>
           <Link to="/password" className="b6 font-medium text-base-color-1 underline">
             비밀번호를 잊으셨나요?
           </Link>
         </div>
-        {apiError ? (
-          <span className="text-negative mt-3 flex items-center gap-2 b6">
-            <AppIcon name="alert" width="17px" height="17px" color="#fd7565" />
-            <span>{apiError}</span>
-          </span>
-        ) : null}
       </div>
 
       {/* Or 구분선 — 상단 16px, 하단 32px(소셜 영역) */}
