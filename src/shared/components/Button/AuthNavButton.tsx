@@ -19,31 +19,18 @@ const LINKS = [
 
 const AuthNavButton = () => {
   return (
-    <nav className="max-w-[500px] w-full h-[47px] border border-primary-color bg-base-color-6 rounded-[5px] flex">
+    <nav className="flex h-[48px] w-full max-w-[500px] overflow-hidden rounded-[5px] border border-primary-color bg-base-color-6">
       {LINKS.map((link) => (
         <NavLink
           key={link.to}
           to={link.to}
           className={({ isActive }) =>
             clsx(
-              'b3 w-1/2 flex items-center justify-center relative',
-              isActive ? 'bg-primary-color text-base-color-6' : 'text-primary-color',
+              'h9 flex w-1/2 items-center justify-center px-6 py-[12px]',
+              isActive ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
             )
           }>
-          {({ isActive }) => (
-            <>
-              {link.label}
-
-              {/* 로그인 버튼 옆 블록 부분 */}
-              {link.to === '/login' && (
-                <div
-                  className={clsx(
-                    'w-[11px] h-[23px] absolute right-[-11px] z-content',
-                    isActive ? 'bg-primary-color' : 'bg-base-color-6',
-                  )}></div>
-              )}
-            </>
-          )}
+          {link.label}
         </NavLink>
       ))}
     </nav>

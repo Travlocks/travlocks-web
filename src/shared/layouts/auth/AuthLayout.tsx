@@ -30,8 +30,6 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
   const [header, setHeader] = useState<AuthLayoutHeader>(DEFAULT_HEADER);
   const { shouldRequireMember } = useAuth();
 
-  console.log('AuthLayout 렌더링', { memberRoutes, path: location.pathname });
-
   // 멤버 전용 라우트
   if (memberRoutes && shouldRequireMember) {
     return <Navigate to="/" replace />;
@@ -61,21 +59,19 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
 
   return (
     <div key={location.pathname} className="flex justify-center animate-fade-in items-center min-h-dvh px-4 py-8">
-      <div className="w-full max-w-[585px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[43px] py-[48px]">
+      <div className="w-full max-w-[588px] bg-base-color-6 rounded-[30px] border border-[rgba(34,34,34,0.1)] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_8px_10px_-5px_rgba(0,0,0,0.1)] px-[44px] py-[44px]">
         {/* 로고 */}
         <div className="flex justify-center mb-[28px]">
           <TravlocksWordmark className="h-[89px] w-full" style={{ maxWidth: wordmarkMaxWidthPx }} />
         </div>
 
         {subtitle && <p className="h2 text-[23px] text-black text-center mb-5 whitespace-pre-wrap">{subtitle}</p>}
-        {/* 카피 문구 */}
-        {description && (
-          <p className="b2 text-base-color-1 text-center font-normal whitespace-pre-wrap">{description}</p>
-        )}
+        {/* 카피 문구 (피그마: Pretendard Medium 20 / base-color-1) */}
+        {description && <p className="t2 text-base-color-1 text-center whitespace-pre-wrap">{description}</p>}
 
-        {/* 로그인 / 회원가입 / 비밀번호 재설정 탭 */}
+        {/* 로그인 / 회원가입 / 비밀번호 재설정 탭 — 피그마: 카피↔탭 48px, 탭↔폼 60px */}
         {showAuthNav && (
-          <div className="mb-15 mt-12">
+          <div className="mt-[48px] mb-[60px] flex justify-center">
             <AuthNavButton />
           </div>
         )}

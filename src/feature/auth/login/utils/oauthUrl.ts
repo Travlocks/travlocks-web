@@ -43,3 +43,21 @@ export const getNaverOAuthUrl = (): string => {
 
   return `${NAVER_AUTH_URL}?${params.toString()}`;
 };
+
+// Kakao 로그인 OAuth URL (카카오 개발자 콘솔 REST API 키, 미설정 시 null)
+export const getKakaoOAuthUrl = (): string | null => {
+  const clientId = import.meta.env.VITE_KAKAO_LOGIN_REST_API_KEY as string | undefined;
+  if (!clientId) return null;
+
+  const state = generateRandomString();
+  sessionStorage.setItem('kakao_oauth_state', state);
+
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: `${window.location.origin}/kakao/callback`,
+    state,
+  });
+
+  return `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+};

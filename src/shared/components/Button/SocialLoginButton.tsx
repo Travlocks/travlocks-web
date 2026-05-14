@@ -20,9 +20,10 @@ import clsx from 'clsx';
 import { IconBase } from '@/shared/ui/icon/IconBase';
 import NaverIcon from '@assets/logo/logo-naver.svg?react';
 import GoogleIcon from '@assets/logo/logo-google.svg?react';
+import KakaoIcon from '@assets/logo/logo-kakao.svg?react';
 
 interface SocialLoginButtonProps {
-  provider: 'naver' | 'google';
+  provider: 'naver' | 'kakao' | 'google';
   onClick: () => void;
 }
 
@@ -30,15 +31,18 @@ const SocialLoginButton = ({ provider, onClick }: SocialLoginButtonProps) => {
   const buttonConfig = {
     naver: {
       ariaLabel: '네이버 로그인',
-      bgColor: 'bg-[#03EB66]',
-      borderColor: 'border-[#03EB66]',
-      icon: <IconBase icon={NaverIcon} size={51} />,
+      className: 'border border-[#03EB66] bg-[#03EB66]',
+      icon: <IconBase icon={NaverIcon} size={50} />,
+    },
+    kakao: {
+      ariaLabel: '카카오 로그인',
+      className: 'border border-[#FEE500] bg-[#FEE500]',
+      icon: <IconBase icon={KakaoIcon} size={32} />,
     },
     google: {
       ariaLabel: '구글 로그인',
-      bgColor: 'bg-base-color-6',
-      borderColor: 'border-base-color-3',
-      icon: <IconBase icon={GoogleIcon} size={51} fill="#ffffff" />,
+      className: 'border border-base-color bg-base-color-6',
+      icon: <IconBase icon={GoogleIcon} size={28} fill="#ffffff" />,
     },
   };
 
@@ -49,9 +53,8 @@ const SocialLoginButton = ({ provider, onClick }: SocialLoginButtonProps) => {
       type="button"
       onClick={onClick}
       className={clsx(
-        'w-[51px] h-[51px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity',
-        config.bgColor,
-        config.borderColor && `border ${config.borderColor}`,
+        'flex size-[50px] shrink-0 cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-80',
+        config.className,
       )}
       aria-label={config.ariaLabel}>
       {config.icon}

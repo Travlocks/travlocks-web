@@ -10,7 +10,7 @@ const DEFAULT_AUTH_HEADER: AuthLayoutHeader = {
 export const AUTH_HEADER = {
   login: {
     ...DEFAULT_AUTH_HEADER,
-    buttonText: 'Vlock 쌓으러 가기',
+    buttonText: '로그인하고 시작하기',
     wordmarkMaxWidthPx: 373,
   },
   signup: {

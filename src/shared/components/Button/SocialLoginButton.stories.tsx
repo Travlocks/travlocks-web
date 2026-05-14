@@ -10,7 +10,7 @@ const meta = {
   parameters: { layout: 'centered' },
   args: { onClick: fn() },
   argTypes: {
-    provider: { control: 'select', options: ['naver', 'google'] },
+    provider: { control: 'select', options: ['naver', 'kakao', 'google'] },
   },
 } satisfies Meta<typeof SocialLoginButton>;
 
@@ -23,4 +23,8 @@ export const Naver: Story = {
 
 export const Google: Story = {
   args: { provider: 'google' },
+};
+
+export const Kakao: Story = {
+  args: { provider: 'kakao' },
 };
