@@ -270,6 +270,80 @@
     font-weight: 500;
     line-height: normal;
   }
+
+  /*
+   * Google Sign-In material 버튼 마크업 참고
+   * (원형 50px — 네이버·카카오 소셜 행과 동일 크기)
+   */
+  .social-gsi-material-button.gsi-material-button {
+    position: relative;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 9999px;
+    border: 1px solid #dadce0;
+    background-color: #ffffff;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    user-select: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .social-gsi-material-button.gsi-material-button:hover {
+    opacity: 0.95;
+  }
+
+  .social-gsi-material-button .gsi-material-button-state {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: transparent;
+    transition: background-color 0.15s ease;
+  }
+
+  .social-gsi-material-button:hover .gsi-material-button-state {
+    background-color: rgba(60, 64, 67, 0.08);
+  }
+
+  .social-gsi-material-button:active .gsi-material-button-state {
+    background-color: rgba(60, 64, 67, 0.12);
+  }
+
+  .social-gsi-material-button .gsi-material-button-content-wrapper {
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-gsi-material-button .gsi-material-button-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-gsi-material-button .gsi-material-button-icon svg {
+    display: block;
+    width: 28px;
+    height: 28px;
+  }
+
+  .social-gsi-material-button.gsi-material-button:focus-visible {
+    box-shadow:
+      0 0 0 2px #ffffff,
+      0 0 0 4px #3c4ef4;
+  }
 }
 
 @layer utilities {

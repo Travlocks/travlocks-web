@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { getGoogleOAuthUrl, getNaverOAuthUrl } from '../utils/oauthUrl';
+import { getGoogleOAuthUrl, getKakaoOAuthUrl, getNaverOAuthUrl } from '../utils/oauthUrl';
+import { toast } from '@/shared/stores/toastStore';
 
 export const useSocialLogin = () => {
   const redirectToGoogle = useCallback(() => {
@@ -10,17 +11,28 @@ export const useSocialLogin = () => {
     window.location.href = getNaverOAuthUrl();
   }, []);
 
+  const redirectToKakao = useCallback(() => {
+    const url = getKakaoOAuthUrl();
+    if (!url) {
+      toast.error('카카오 로그인을 사용하려면 VITE_KAKAO_LOGIN_REST_API_KEY 설정이 필요합니다.', 'bottom-center');
+      return;
+    }
+    window.location.href = url;
+  }, []);
+
   const handleSocialLogin = useCallback(
-    (provider: 'naver' | 'google') => {
+    (provider: 'naver' | 'kakao' | 'google') => {
       switch (provider) {
         case 'google':
           return redirectToGoogle();
         case 'naver':
           return redirectToNaver();
+        case 'kakao':
+          return redirectToKakao();
       }
     },
-    [redirectToGoogle, redirectToNaver],
+    [redirectToGoogle, redirectToKakao, redirectToNaver],
   );
 
-  return { handleSocialLogin, redirectToGoogle, redirectToNaver };
+  return { handleSocialLogin, redirectToGoogle, redirectToKakao, redirectToNaver };
 };

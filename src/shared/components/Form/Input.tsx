@@ -67,13 +67,14 @@ const Input = ({
 
   return (
     <div
-      className={clsx('group relative w-full', !width && (label === 'top' ? 'max-w-[500px]' : 'max-w-[440px]'))}
+      className={clsx('group relative w-full min-w-0', !width && (label === 'top' ? 'max-w-[500px]' : 'max-w-[440px]'))}
       style={{ maxWidth: width }}>
       {/* 상단 라벨 (아이콘 + 텍스트) */}
       {label === 'top' && Icon && (
-        <div className="flex gap-[3px] justify-center items-center px-[5px] py-[3px] absolute left-[22px] top-[-12px] bg-base-color-6">
-          <Icon className="text-base-color-1 group-focus-within:text-primary-color" />
-          <p className="b6 text-base-color-1 group-focus-within:text-primary-color">
+        <div className="absolute left-[21px] top-[-12px] flex items-center justify-center gap-1 bg-base-color-6 px-[5px] py-[3px]">
+          <Icon className={clsx(error ? 'text-negative' : 'text-base-color-1 group-focus-within:text-primary-color')} />
+          <p
+            className={clsx('b6', error ? 'text-negative' : 'text-base-color-1 group-focus-within:text-primary-color')}>
             {isPassword ? '비밀번호' : '이메일'}
           </p>
         </div>
@@ -90,10 +91,10 @@ const Input = ({
         {...(register ?? {})}
         {...rest}
         className={clsx(
-          `b4 w-full py-[16px] rounded-[10px] border border-base-color-3 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none`,
+          `b4 w-full rounded-[10px] border border-base-color-3 bg-base-color-6 placeholder:font-"Pretendard" placeholder:text-base-color-3 placeholder:tracking-[-0.15px] outline-none`,
           'disabled:bg-base-color-4 disabled:cursor-not-allowed disabled:border-[rgba(0,0,0,0.1)]',
           error && 'border-negative',
-          label === 'top' ? 'px-[18px] h-[60px] focus:border-primary-color' : 'h-[55px]',
+          label === 'top' ? 'h-[61px] px-[28px] py-[20px] focus:border-primary-color' : 'h-[55px]',
           label === 'left' && Icon ? 'px-[49px]' : 'px-[18px]',
           rest.disabled && 'bg-base-color-4! border-base-color-3! text-[#9CA3AF]!',
           className,

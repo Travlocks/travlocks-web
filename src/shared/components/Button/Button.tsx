@@ -16,9 +16,9 @@ import { AppIcon } from '@/shared/ui/icon/AppIcon';
 
  *
  * @example
- * <Button text="Vlock 쌓으러 가기" />
- * <Button text="Vlock 쌓으러 가기" variant="gradient" />
- * <Button text="Vlock 쌓으러 가기" bg="bg-red-400" />
+ * <Button text="로그인하고 시작하기" />
+ * <Button text="로그인하고 시작하기" variant="gradient" />
+ * <Button text="로그인하고 시작하기" bg="bg-red-400" />
  *
  * @author 김진효
  * **/
