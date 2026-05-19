@@ -13,6 +13,7 @@ const PreferenceCard = ({ label, description, icon, isSelected, onClick }: Prefe
   return (
     <button
       type="button"
+      aria-pressed={Boolean(isSelected)}
       onClick={onClick}
       className={clsx(
         'flex h-[114px] w-full flex-col items-center justify-center gap-1 rounded-[10px] border transition-colors',
