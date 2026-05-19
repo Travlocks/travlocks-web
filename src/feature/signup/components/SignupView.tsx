@@ -130,8 +130,8 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
 
   const handleStepNext = useCallback(() => {
     resetStepChrome();
-    setLevel((prev) => prev + 1);
-  }, [resetStepChrome]);
+    setLevel((prev) => Math.min(prev + 1, totalSteps));
+  }, [resetStepChrome, totalSteps]);
 
   const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
