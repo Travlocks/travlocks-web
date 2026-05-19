@@ -23,6 +23,7 @@ export interface StepProps {
   onNext: () => void;
   mode: SignupMode;
   setStepFooter?: (footer: ReactNode | null) => void;
+  setStepDescription?: (description: string) => void;
 }
 
 // ─── 단계 정의 ───
@@ -99,21 +100,30 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
 
   const [level, setLevel] = useState<number>(() => readDevSignupStep(totalSteps));
   const [stepFooter, setStepFooter] = useState<ReactNode | null>(null);
+  const [stepDescriptionOverride, setStepDescriptionOverride] = useState<string | null>(null);
 
-  const goToStep = useCallback((nextLevel: number) => {
+  const resetStepChrome = useCallback(() => {
     setStepFooter(null);
-    setLevel(nextLevel);
+    setStepDescriptionOverride(null);
   }, []);
+
+  const goToStep = useCallback(
+    (nextLevel: number) => {
+      resetStepChrome();
+      setLevel(nextLevel);
+    },
+    [resetStepChrome],
+  );
 
   const handleStepPrev = useCallback(() => {
-    setStepFooter(null);
+    resetStepChrome();
     setLevel((prev) => Math.max(0, prev - 1));
-  }, []);
+  }, [resetStepChrome]);
 
   const handleStepNext = useCallback(() => {
-    setStepFooter(null);
+    resetStepChrome();
     setLevel((prev) => prev + 1);
-  }, []);
+  }, [resetStepChrome]);
 
   const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
@@ -124,11 +134,13 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
 
   const currentStep = steps[level];
   const StepComponent = currentStep?.Component;
-  const stepDescription = SIGNUP_STEP_DESCRIPTIONS[currentStep?.title ?? ''] ?? '';
+  const baseStepDescription = SIGNUP_STEP_DESCRIPTIONS[currentStep?.title ?? ''] ?? '';
   const isTermsStep = level === 0;
   const isEmailStep = !isOnboarding && level === 1;
   const isPasswordStep = !isOnboarding && level === 2;
   const isNicknameStep = isOnboarding ? level === 1 : level === 3;
+  const isPreferenceStep = isOnboarding ? level === 2 : level === 4;
+  const stepDescription = stepDescriptionOverride ?? baseStepDescription;
 
   const modalFooter = isTermsStep ? <TermsStepFooter onNext={() => goToStep(1)} /> : stepFooter;
 
@@ -140,7 +152,7 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
           currentStep={level}
           stepTitle={currentStep.title}
           stepDescription={stepDescription}
-          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep || isNicknameStep}
+          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep || isNicknameStep || isPreferenceStep}
           footer={modalFooter ?? undefined}>
           <StepComponent
             key={level}
@@ -148,6 +160,7 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
             onNext={handleStepNext}
             mode={mode}
             setStepFooter={setStepFooter}
+            setStepDescription={setStepDescriptionOverride}
           />
         </SignupModal>
       )}
