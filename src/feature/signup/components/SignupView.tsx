@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -21,6 +21,7 @@ export interface StepProps {
   onPrev: () => void;
   onNext: () => void;
   mode: SignupMode;
+  setStepFooter?: (footer: ReactNode | null) => void;
 }
 
 // ─── 단계 정의 ───
@@ -96,8 +97,13 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
   const totalSteps = steps.length;
 
   const [level, setLevel] = useState<number>(0);
+  const [stepFooter, setStepFooter] = useState<ReactNode | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const goToStep = (nextLevel: number) => {
+    setStepFooter(null);
+    setLevel(nextLevel);
+  };
+
   const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
     resolver: zodResolver(mode === 'onboarding' ? onboardingSchema : signupSchema),
@@ -109,6 +115,10 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
   const StepComponent = currentStep?.Component;
   const stepDescription = SIGNUP_STEP_DESCRIPTIONS[currentStep?.title ?? ''] ?? '';
   const isTermsStep = level === 0;
+  const isEmailStep = !isOnboarding && level === 1;
+  const isPasswordStep = !isOnboarding && level === 2;
+
+  const modalFooter = isTermsStep ? <TermsStepFooter onNext={() => goToStep(1)} /> : stepFooter;
 
   return (
     <FormProvider {...methods}>
@@ -118,12 +128,14 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
           currentStep={level}
           stepTitle={currentStep.title}
           stepDescription={stepDescription}
-          showBackToLogin={!isOnboarding && isTermsStep}
-          footer={isTermsStep ? <TermsStepFooter onNext={() => setLevel(1)} /> : undefined}>
+          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep}
+          footer={modalFooter ?? undefined}>
           <StepComponent
-            onPrev={() => setLevel(Math.max(0, level - 1))}
-            onNext={() => setLevel(level + 1)}
+            key={level}
+            onPrev={() => goToStep(Math.max(0, level - 1))}
+            onNext={() => goToStep(level + 1)}
             mode={mode}
+            setStepFooter={setStepFooter}
           />
         </SignupModal>
       )}

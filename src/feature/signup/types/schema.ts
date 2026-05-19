@@ -18,7 +18,7 @@ const consentsField = z.array(
 
 // 일반 회원가입 스키마
 export const signupSchema = z.object({
-  email: z.string().email({ message: '올바르지 않은 이메일 형식입니다.' }),
+  email: z.string().email({ message: '이메일 형식이 올바르지 않습니다.' }),
   code: z.string(),
 
   passwordGroup: z
@@ -30,7 +30,7 @@ export const signupSchema = z.object({
       passwordCheck: z.string(),
     })
     .refine((data) => data.password === data.passwordCheck, {
-      message: '비밀번호가 일치하지 않습니다',
+      message: '비밀번호가 일치하지 않습니다.',
       path: ['passwordCheck'],
     }),
 
