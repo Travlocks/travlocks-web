@@ -156,9 +156,7 @@ const Email = ({ onPrev, onNext }: StepProps) => {
 
   return (
     <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">로그인에 사용할 이메일을 입력해 주세요</p>
-
-      <div className="mb-[165px] relative w-full flex-1">
+      <div className="relative mb-[165px] w-full flex-1">
         {/* 이메일 입력 */}
         <Input
           register={register('email')}

@@ -56,6 +56,15 @@ const AuthLayout = ({ memberRoutes = false }: AuthLayoutProps) => {
   } satisfies AuthLayoutOutletCtx;
 
   const { subtitle, description, showAuthNav = false, wordmarkMaxWidthPx = 367 } = header;
+  const isSignupFlow = location.pathname === '/signup' || location.pathname === '/onboarding';
+
+  if (isSignupFlow) {
+    return (
+      <div key={location.pathname} className="flex animate-fade-in justify-center px-4 py-8">
+        <Outlet context={ctx} />
+      </div>
+    );
+  }
 
   return (
     <div key={location.pathname} className="flex justify-center animate-fade-in items-center min-h-dvh px-4 py-8">

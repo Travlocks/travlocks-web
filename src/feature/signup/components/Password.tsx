@@ -35,8 +35,6 @@ const Password = ({ onPrev, onNext }: StepProps) => {
 
   return (
     <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">안전한 비밀번호를 만들어주세요</p>
-
       <form>
         <div className="flex flex-col gap-[8px]">
           {/* 비밀번호 입력 */}
