@@ -1,6 +1,7 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { signupSchema, onboardingSchema, type FormFields, type OnboardingFormFields } from '../types/schema';
 import { SIGNUP_STEP_DESCRIPTIONS } from '../constants/stepMeta';
@@ -12,7 +13,7 @@ import Preference from './Preference';
 import SignupModal from './SignupModal';
 import CompleteModal from './CompleteModal';
 import Button from '@/shared/components/Button/Button';
-import { readDevSignupStep } from '../utils/devSignupPreview';
+import { isDevCompletePreview, readDevSignupStep, seedDevSignupCompleteMock } from '../utils/devSignupPreview';
 
 // ─── 공용 타입 ───
 
@@ -94,11 +95,18 @@ interface SignupViewProps {
 }
 
 const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
+  const queryClient = useQueryClient();
   const isOnboarding = mode === 'onboarding';
   const steps = isOnboarding ? ONBOARDING_STEPS : SIGNUP_STEPS;
   const totalSteps = steps.length;
 
   const [level, setLevel] = useState<number>(() => readDevSignupStep(totalSteps));
+
+  useEffect(() => {
+    if (isDevCompletePreview()) {
+      seedDevSignupCompleteMock(queryClient);
+    }
+  }, [queryClient]);
   const [stepFooter, setStepFooter] = useState<ReactNode | null>(null);
   const [stepDescriptionOverride, setStepDescriptionOverride] = useState<string | null>(null);
 
