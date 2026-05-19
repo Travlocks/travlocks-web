@@ -104,6 +104,8 @@ const Email = ({ onPrev, onNext, setStepFooter }: StepProps) => {
   }, [email, trigger, mutatePostEmailVerification, setValue, setError, resetTimer]);
 
   const handleResend = () => {
+    if (isSubmitting || !verificationId) return;
+
     clearErrors('code');
     setIsSubmitting(true);
 
