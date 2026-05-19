@@ -14,6 +14,7 @@ import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVeri
 import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerificationResend';
 import handleMutationSuccess from '../utils/handleMutationSuccess';
 import handleMutationError from '../utils/handleMutationError';
+import { isMockEmailApi } from '../utils/devSignupPreview';
 
 type SendStatus = 'idle' | 'sent' | 'resent';
 
@@ -68,6 +69,15 @@ const Email = ({ onPrev, onNext, setStepFooter }: StepProps) => {
     const isValid = await trigger('email');
     if (!isValid) return;
 
+    if (isMockEmailApi()) {
+      setValue('verificationId', 'dev-verification-id');
+      setPhase(2);
+      setSendStatus('sent');
+      setShowTimer(true);
+      resetTimer();
+      return;
+    }
+
     setIsSubmitting(true);
     mutatePostEmailVerification(
       { email },
@@ -120,6 +130,12 @@ const Email = ({ onPrev, onNext, setStepFooter }: StepProps) => {
 
   const handleConfirmCode = useCallback(() => {
     if (!code || code.length < 6) return;
+
+    if (isMockEmailApi()) {
+      setValue('signupToken', 'dev-signup-token');
+      onNext();
+      return;
+    }
 
     setIsSubmitting(true);
     mutatePostEmailVerificationConfirm(

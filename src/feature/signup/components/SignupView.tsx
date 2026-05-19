@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -12,6 +12,7 @@ import Preference from './Preference';
 import SignupModal from './SignupModal';
 import CompleteModal from './CompleteModal';
 import Button from '@/shared/components/Button/Button';
+import { readDevSignupStep } from '../utils/devSignupPreview';
 
 // ─── 공용 타입 ───
 
@@ -96,13 +97,23 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
   const steps = isOnboarding ? ONBOARDING_STEPS : SIGNUP_STEPS;
   const totalSteps = steps.length;
 
-  const [level, setLevel] = useState<number>(0);
+  const [level, setLevel] = useState<number>(() => readDevSignupStep(totalSteps));
   const [stepFooter, setStepFooter] = useState<ReactNode | null>(null);
 
-  const goToStep = (nextLevel: number) => {
+  const goToStep = useCallback((nextLevel: number) => {
     setStepFooter(null);
     setLevel(nextLevel);
-  };
+  }, []);
+
+  const handleStepPrev = useCallback(() => {
+    setStepFooter(null);
+    setLevel((prev) => Math.max(0, prev - 1));
+  }, []);
+
+  const handleStepNext = useCallback(() => {
+    setStepFooter(null);
+    setLevel((prev) => prev + 1);
+  }, []);
 
   const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
@@ -117,6 +128,7 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
   const isTermsStep = level === 0;
   const isEmailStep = !isOnboarding && level === 1;
   const isPasswordStep = !isOnboarding && level === 2;
+  const isNicknameStep = isOnboarding ? level === 1 : level === 3;
 
   const modalFooter = isTermsStep ? <TermsStepFooter onNext={() => goToStep(1)} /> : stepFooter;
 
@@ -128,12 +140,12 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
           currentStep={level}
           stepTitle={currentStep.title}
           stepDescription={stepDescription}
-          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep}
+          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep || isNicknameStep}
           footer={modalFooter ?? undefined}>
           <StepComponent
             key={level}
-            onPrev={() => goToStep(Math.max(0, level - 1))}
-            onNext={() => goToStep(level + 1)}
+            onPrev={handleStepPrev}
+            onNext={handleStepNext}
             mode={mode}
             setStepFooter={setStepFooter}
           />
