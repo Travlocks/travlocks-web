@@ -5,7 +5,6 @@ import { useFormContext } from 'react-hook-form';
 import type { StepProps } from './SignupView';
 import type { FormFields } from '../types/schema';
 
-import Button from '@/shared/components/Button/Button';
 import Checkbox from '@/shared/components/Form/Checkbox';
 import TermsModal from './TermsModal';
 
@@ -32,22 +31,18 @@ const TERMS = [
   },
 ] as const;
 
-export type TermKey = (typeof TERMS)[number]['key']; // service, privacy, marketing
+export type TermKey = (typeof TERMS)[number]['key'];
 
-const Terms = ({ onNext }: StepProps) => {
+const Terms = (_props: StepProps) => {
   const { setValue, watch } = useFormContext<FormFields>();
   const consents = watch('consents');
   const [modalType, setModalType] = useState<TermKey | null>(null);
 
-  const allChecked = consents.every((consents) => consents.agreed); // 전체동의했는지
-  const isRequired =
-    consents.find((content) => content.policyId === 1)?.agreed &&
-    consents.find((content) => content.policyId === 2)?.agreed; // 필수 조건
+  const allChecked = consents.every((content) => content.agreed);
 
   const term = TERMS.find((t) => t.key === modalType);
-  const checked = consents.find((c) => c.policyId === term?.policyId)?.agreed; // 각 항목의 체크 여부
+  const checked = consents.find((c) => c.policyId === term?.policyId)?.agreed;
 
-  // 전체 동의 선택한 경우
   const handleAllChange = (checked: boolean) => {
     setValue(
       'consents',
@@ -55,7 +50,6 @@ const Terms = ({ onNext }: StepProps) => {
     );
   };
 
-  // 개별 약관 변경 로직
   const handleItemChange = (policyId: number, checked: boolean) => {
     setValue(
       'consents',
@@ -64,31 +58,47 @@ const Terms = ({ onNext }: StepProps) => {
   };
 
   return (
-    <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">트래블록스 서비스 이용을 위해 약관 동의가 필요합니다</p>
+    <section className="flex flex-col">
+      <Checkbox
+        text="전체 동의"
+        outline
+        checked={allChecked}
+        onChange={handleAllChange}
+        className={clsx(
+          'w-full max-w-none gap-3 border-base-color',
+          allChecked ? 'bg-[rgba(60,78,244,0.1)]' : 'bg-base-color-6',
+        )}
+      />
 
-      {/* 전체 동의 */}
-      <Checkbox text="전체 동의" outline={true} checked={allChecked} onChange={handleAllChange} />
-
-      {/* 개별 약관 */}
-      <div className="flex flex-col my-[8px] gap-[24px]">
-        {TERMS.map((term) => (
-          <div key={term.key} className="flex">
-            <Checkbox
-              text={
-                <div className="flex gap-[3px]">
-                  <span className={clsx(term.required ? 'text-negative' : 'text-base-color-2')}>
-                    {term.required ? '(필수)' : '(선택)'}
-                  </span>
-                  {term.label}
-                </div>
-              }
-              outline={false}
-              checked={!!consents.find((c) => c.policyId === term.policyId)?.agreed}
-              onChange={(checked) => handleItemChange(term.policyId, checked)}
-              className="w-max pr-0"
-            />
-            <ArrowIcon className="cursor-pointer" fill="#4A5569" onClick={() => setModalType(term.key)} />
+      <div className="mt-4 flex flex-col gap-4 pl-5">
+        {TERMS.map((termItem, index) => (
+          <div key={termItem.key}>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <Checkbox
+                  text={
+                    <span className="flex items-center gap-1">
+                      <span className={clsx(termItem.required ? 'text-negative' : 'text-base-color-2')}>
+                        {termItem.required ? '(필수)' : '(선택)'}
+                      </span>
+                      <span className="text-base-color-0">{termItem.label}</span>
+                    </span>
+                  }
+                  outline={false}
+                  checked={!!consents.find((c) => c.policyId === termItem.policyId)?.agreed}
+                  onChange={(checked) => handleItemChange(termItem.policyId, checked)}
+                  className="w-full max-w-none gap-3 px-0"
+                />
+              </div>
+              <button
+                type="button"
+                aria-label={`${termItem.label} 상세 보기`}
+                className="shrink-0 cursor-pointer"
+                onClick={() => setModalType(termItem.key)}>
+                <ArrowIcon className="size-[23px]" fill="#4A5569" />
+              </button>
+            </div>
+            {index < TERMS.length - 1 && <hr className="mt-4 border-base-color" />}
           </div>
         ))}
       </div>
@@ -97,12 +107,10 @@ const Terms = ({ onNext }: StepProps) => {
         <TermsModal
           type={modalType}
           onClose={() => setModalType(null)}
-          onChange={(checked) => handleItemChange(term?.policyId, checked)}
+          onChange={(checked) => handleItemChange(term.policyId, checked)}
           agreements={!!checked}
         />
       )}
-
-      <Button text="다음" disabled={!isRequired} onClick={onNext} />
     </section>
   );
 };

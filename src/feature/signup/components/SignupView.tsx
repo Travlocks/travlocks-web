@@ -1,17 +1,19 @@
-import clsx from 'clsx';
-import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { signupSchema, onboardingSchema, type FormFields, type OnboardingFormFields } from '../types/schema';
+import { SIGNUP_STEP_DESCRIPTIONS } from '../constants/stepMeta';
 import Terms from './Terms';
 import Email from './Email';
 import Password from './Password';
 import Nickname from './Nickname';
 import Preference from './Preference';
-
-import CheckIcon from '@assets/icon-check-password.svg?react';
+import SignupModal from './SignupModal';
 import CompleteModal from './CompleteModal';
+import Button from '@/shared/components/Button/Button';
+import { isDevCompletePreview, readDevSignupStep, seedDevSignupCompleteMock } from '../utils/devSignupPreview';
 
 // ─── 공용 타입 ───
 
@@ -21,6 +23,8 @@ export interface StepProps {
   onPrev: () => void;
   onNext: () => void;
   mode: SignupMode;
+  setStepFooter?: (footer: ReactNode | null) => void;
+  setStepDescription?: (description: string) => void;
 }
 
 // ─── 단계 정의 ───
@@ -73,6 +77,17 @@ const ONBOARDING_DEFAULTS: OnboardingFormFields = {
   preferredTravelThemeIds: [],
 };
 
+const TermsStepFooter = ({ onNext }: { onNext: () => void }) => {
+  const { watch } = useFormContext<FormFields>();
+  const consents = watch('consents');
+
+  const isRequired =
+    consents.find((content) => content.policyId === 1)?.agreed &&
+    consents.find((content) => content.policyId === 2)?.agreed;
+
+  return <Button text="다음" disabled={!isRequired} onClick={onNext} className="h-[60px] max-w-none rounded-[10px]" />;
+};
+
 // ─── 컴포넌트 ───
 
 interface SignupViewProps {
@@ -80,13 +95,44 @@ interface SignupViewProps {
 }
 
 const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
+  const queryClient = useQueryClient();
   const isOnboarding = mode === 'onboarding';
   const steps = isOnboarding ? ONBOARDING_STEPS : SIGNUP_STEPS;
   const totalSteps = steps.length;
 
-  const [level, setLevel] = useState<number>(0);
+  const [level, setLevel] = useState<number>(() => readDevSignupStep(totalSteps));
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEffect(() => {
+    if (isDevCompletePreview()) {
+      seedDevSignupCompleteMock(queryClient);
+    }
+  }, [queryClient]);
+  const [stepFooter, setStepFooter] = useState<ReactNode | null>(null);
+  const [stepDescriptionOverride, setStepDescriptionOverride] = useState<string | null>(null);
+
+  const resetStepChrome = useCallback(() => {
+    setStepFooter(null);
+    setStepDescriptionOverride(null);
+  }, []);
+
+  const goToStep = useCallback(
+    (nextLevel: number) => {
+      resetStepChrome();
+      setLevel(nextLevel);
+    },
+    [resetStepChrome],
+  );
+
+  const handleStepPrev = useCallback(() => {
+    resetStepChrome();
+    setLevel((prev) => Math.max(0, prev - 1));
+  }, [resetStepChrome]);
+
+  const handleStepNext = useCallback(() => {
+    resetStepChrome();
+    setLevel((prev) => Math.min(prev + 1, totalSteps));
+  }, [resetStepChrome, totalSteps]);
+
   const methods = useForm<FormFields | OnboardingFormFields>({
     defaultValues: mode === 'onboarding' ? ONBOARDING_DEFAULTS : SIGNUP_DEFAULTS,
     resolver: zodResolver(mode === 'onboarding' ? onboardingSchema : signupSchema),
@@ -94,61 +140,39 @@ const SignupView = ({ mode = 'signup' }: SignupViewProps) => {
     criteriaMode: 'all',
   });
 
+  const currentStep = steps[level];
+  const StepComponent = currentStep?.Component;
+  const baseStepDescription = SIGNUP_STEP_DESCRIPTIONS[currentStep?.title ?? ''] ?? '';
+  const isTermsStep = level === 0;
+  const isEmailStep = !isOnboarding && level === 1;
+  const isPasswordStep = !isOnboarding && level === 2;
+  const isNicknameStep = isOnboarding ? level === 1 : level === 3;
+  const isPreferenceStep = isOnboarding ? level === 2 : level === 4;
+  const stepDescription = stepDescriptionOverride ?? baseStepDescription;
+
+  const modalFooter = isTermsStep ? <TermsStepFooter onNext={() => goToStep(1)} /> : stepFooter;
+
   return (
     <FormProvider {...methods}>
-      {level < totalSteps && (
-        // 단계 영역
-        <div
-          className={clsx(
-            'relative w-full self-start',
-            // 온보딩 헤더 안겹치게
-            isOnboarding ? 'mt-5' : 'mt-[-32px]',
-          )}>
-          {/* 세로 진행선 */}
-          <div className={clsx('absolute w-[40px] flex flex-col', isOnboarding ? 'min-h-[480px]' : 'min-h-[631px]')}>
-            <div
-              className={clsx(
-                'absolute left-1/2 -translate-x-1/2 w-[3px] rounded-[5px] bg-primary-color',
-                isOnboarding ? 'min-h-[510px]' : 'min-h-[631px]',
-                level === totalSteps - 1 && 'min-h-[300px]!',
-              )}></div>
-          </div>
-
-          {/* 단계 리스트 */}
-          <div className="flex flex-col w-full gap-[28px]">
-            {steps.map(({ id, title, Component }) => (
-              <div key={id} className={clsx('flex', level === id ? 'h6 gap-[23px]' : 'b3 gap-[13px] items-center')}>
-                {/* 원 */}
-                <div
-                  className={clsx(
-                    'b3 rounded-full size-[40px] flex items-center justify-center border-[2px] border-primary-color relative z-10 shrink-0',
-                    level === id ? 'bg-primary-color text-base-color-6' : 'bg-base-color-6 text-primary-color',
-                  )}>
-                  {id < level && <CheckIcon className="size-[30px]" />}
-                  {id >= level && id + 1}
-                </div>
-
-                {/* 각 단계 이름 + 컴포넌트 */}
-                <div className={clsx('flex-1', level === id && 'mt-[5px]')}>
-                  {/* 각 단계 이름 */}
-                  <span>{title}</span>
-
-                  {/* 각 단계별 컴포넌트 */}
-                  {level === id && (
-                    <Component
-                      onPrev={() => setLevel(Math.max(0, id - 1))}
-                      onNext={() => setLevel(id + 1)}
-                      mode={mode}
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {level < totalSteps && currentStep && StepComponent && (
+        <SignupModal
+          steps={steps}
+          currentStep={level}
+          stepTitle={currentStep.title}
+          stepDescription={stepDescription}
+          showBackToLogin={isTermsStep || isEmailStep || isPasswordStep || isNicknameStep || isPreferenceStep}
+          footer={modalFooter ?? undefined}>
+          <StepComponent
+            key={level}
+            onPrev={handleStepPrev}
+            onNext={handleStepNext}
+            mode={mode}
+            setStepFooter={setStepFooter}
+            setStepDescription={setStepDescriptionOverride}
+          />
+        </SignupModal>
       )}
 
-      {/* 가입완료 / 온보딩완료 */}
       {level === totalSteps && <CompleteModal />}
     </FormProvider>
   );

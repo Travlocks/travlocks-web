@@ -2,59 +2,65 @@ import clsx from 'clsx';
 
 import { AppIcon } from '@shared/ui/icon/AppIcon';
 
-/**
- * 에러 메시지 및 안내 메시지를 표시하는 컴포넌트입니다.
- *
- * @param {string} text -- 화면에 렌더링할 메시지 텍스트
- * @param {'check' | 'alert'} type -- 안내 메시지인 경우 check, 에러 메시지인 경우 alert
- * @param {number} width -- 컴포넌트의 max-width. 전달하지 않으면 500px로 적용됩니다.
- * @param {function} onClick -- type이 check일 때 나타나는 '재전송' 버튼 클릭 시 실행될 콜백 함수
- *
- * @example
- * {errors.nickname?.message && <Alert text={errors.nickname?.message} type="alert" width={440}></Alert>}
- * <Alert text="인증 메일 전송됨" type="check" width={440} onClick={() => alert('재전송')}></Alert>
- *
- * @author 김진효
- * **/
-
 interface AlertProps {
   text: string | React.ReactNode;
   type: 'check' | 'alert';
   width?: number;
   onClick?: () => void;
   className?: string;
+  compact?: boolean;
 }
 
-const Alert = ({ text, type, width, onClick, className }: AlertProps) => {
+const Alert = ({ text, type, width, onClick, className, compact = false }: AlertProps) => {
+  const iconSize = compact ? '17px' : '24px';
+
   const Icon =
     type === 'check' ? (
-      <AppIcon name="check" width="24px" height="24px" />
+      <span className="flex size-[17px] shrink-0 items-center justify-center rounded-[10px] bg-primary-color">
+        <AppIcon name="check" width="16px" height="16px" />
+      </span>
     ) : (
-      <AppIcon name="alert" width="24px" height="24px" color="#fd7565" />
+      <AppIcon name="alert" width={iconSize} height={iconSize} color="#fd7565" />
     );
 
   return (
     <div
       className={clsx(
-        'flex items-center gap-[8px] px-[24px] py-[13px] rounded-[5px] text-[16px] font-medium tracking-[-0.15px] w-full',
-        !width && 'max-w-[500px]',
+        'flex w-full items-center rounded-[5px] text-[16px] font-medium tracking-[-0.15px]',
+        compact ? 'min-h-[43px] gap-3 px-5 py-3' : 'gap-2 px-6 py-[13px]',
+        !width && !compact && 'max-w-[500px]',
         type === 'alert' && 'bg-[rgba(253,117,101,0.1)] text-negative',
         type === 'check' && 'bg-[rgba(60,78,244,0.1)] text-primary-color',
         className,
       )}
-      style={{ maxWidth: width }}>
+      style={{ maxWidth: width ?? (compact ? '100%' : undefined) }}>
       {Icon}
 
-      {/* 에러 메시지인 경우 */}
-      {type === 'alert' && text}
+      {type === 'alert' && (
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
+          <span className="min-w-0">{text}</span>
+          {onClick && (
+            <button
+              type="button"
+              onClick={onClick}
+              className="shrink-0 text-[16px] font-medium underline cursor-pointer">
+              재전송
+            </button>
+          )}
+        </div>
+      )}
 
-      {/* 안내 메시지인 경우 */}
       {type === 'check' && (
-        <div className="flex justify-between w-full">
-          {text}
-          <button onClick={onClick} className="text-[17px] font-medium tracking-[-0.15px] underline cursor-pointer">
-            재전송
-          </button>
+        <div className="flex w-full items-center justify-between gap-4">
+          <span>{text}</span>
+          {onClick && (
+            <button
+              type="button"
+              onClick={onClick}
+              className="shrink-0 text-[16px] font-medium underline cursor-pointer">
+              재전송
+            </button>
+          )}
         </div>
       )}
     </div>

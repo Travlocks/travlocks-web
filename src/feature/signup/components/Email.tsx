@@ -1,11 +1,12 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
 import type { FormFields } from '../types/schema';
 import type { StepProps } from './SignupView';
 import Input from '@/shared/components/Form/Input';
 import Alert from '@/shared/components/Form/Alert';
-import DualButton from '@/shared/components/Button/DualButton';
+import SignupStepActions from './SignupStepActions';
 import EmailModal from './EmailModal';
 
 import usePostEmailVerification from '../hooks/mutations/usePostEmailVerification';
@@ -13,60 +14,82 @@ import usePostEmailVerificationConfirm from '../hooks/mutations/usePostEmailVeri
 import usePostEmailVerificationResend from '../hooks/mutations/usePostEmailVerificationResend';
 import handleMutationSuccess from '../utils/handleMutationSuccess';
 import handleMutationError from '../utils/handleMutationError';
+import { isMockEmailApi } from '../utils/devSignupPreview';
 
-const Email = ({ onPrev, onNext }: StepProps) => {
+type SendStatus = 'idle' | 'sent' | 'resent';
+
+const EMAIL_FIELD_CLASS =
+  'rounded-[5px]! h-[53px]! border-base-color! pl-[49px]! text-[18px]! placeholder:text-base-color-3';
+
+const Email = ({ onPrev, onNext, setStepFooter }: StepProps) => {
   const {
     register,
     watch,
     setValue,
     setError,
     clearErrors,
+    trigger,
     formState: { errors },
   } = useFormContext<FormFields>();
 
-  const [step, setStep] = useState<number>(1); // step 1: 이메일, step2: 인증번호
-  const [timeLeft, setTimeLeft] = useState<number>(300); // 5분 타이머
-  const [showTimer, setShowTimer] = useState<boolean>(false);
+  const [phase, setPhase] = useState<1 | 2>(1);
+  const [timeLeft, setTimeLeft] = useState(300);
+  const [showTimer, setShowTimer] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
-
-  const [hasTriedVerify, setHasTriedVerify] = useState(false); // 인증 완료 눌렀는지
-  const [hasRetry, setHasRetry] = useState(false);
-  const [hasTriedResend, setHasTriedResend] = useState(false); // 재전송 눌렀는지
+  const [sendStatus, setSendStatus] = useState<SendStatus>('idle');
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { mutate: mutatePostEmailVerification } = usePostEmailVerification(); // 이메일 인증 코드 발송
-  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm(); // 이메일 인증 코드 확인
-  const { mutate: mutatePostEmailVerificationResned } = usePostEmailVerificationResend(); // 이메일 인증 코드 재발송
+  const { mutate: mutatePostEmailVerification } = usePostEmailVerification();
+  const { mutate: mutatePostEmailVerificationConfirm } = usePostEmailVerificationConfirm();
+  const { mutate: mutatePostEmailVerificationResend } = usePostEmailVerificationResend();
 
   const email = watch('email');
   const code = watch('code');
   const verificationId = watch('verificationId');
 
+  const hasEmailError = Boolean(errors.email?.message);
+  const hasCodeError = Boolean(errors.code?.message);
+  const isEmailValid = Boolean(email) && !hasEmailError;
+
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
-
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  const handleTimer = () => {
-    setTimeLeft(300); // 시간 초기화
-    setTimerKey((prev) => prev + 1); // 타이머 초기화
-    setValue('code', ''); // 입력란 비우기
-  };
+  const resetTimer = useCallback(() => {
+    setTimeLeft(300);
+    setTimerKey((prev) => prev + 1);
+    setValue('code', '');
+    clearErrors('code');
+  }, [setValue, clearErrors]);
 
-  // 이메일 인증 (이메일 입력 후 다음 버튼 누를 때 실행되는 함수)
-  const handleSubmitEmail = () => {
+  const handleSubmitEmail = useCallback(async () => {
+    const isValid = await trigger('email');
+    if (!isValid) return;
+
+    if (isMockEmailApi()) {
+      setValue('verificationId', 'dev-verification-id');
+      setPhase(2);
+      setSendStatus('sent');
+      setShowTimer(true);
+      resetTimer();
+      return;
+    }
+
+    setIsSubmitting(true);
     mutatePostEmailVerification(
       { email },
       {
         onSuccess: (res) => {
           const result = handleMutationSuccess(res, 'send');
-
           if (result?.verificationId) {
             setValue('verificationId', result.verificationId);
-            setStep(2); // 인증 코드 발송 후 코드 입력 레벨로 이동함
+            setPhase(2);
+            setSendStatus('sent');
             setShowTimer(true);
+            resetTimer();
           }
         },
         onError: (error) => {
@@ -75,53 +98,53 @@ const Email = ({ onPrev, onNext }: StepProps) => {
             setError('email', { message });
           }
         },
+        onSettled: () => setIsSubmitting(false),
       },
     );
-  };
+  }, [email, trigger, mutatePostEmailVerification, setValue, setError, resetTimer]);
 
-  // 인증 메일 재전송
   const handleResend = () => {
-    setHasTriedVerify(false); // 재전송 누른 즉시 에러 메시지는 사라지도록
-    setHasTriedResend(false); // 재전송 누르면 안내 문구 사라지도록
-    setHasRetry(true);
-    setShowTimer(false);
+    if (isSubmitting || !verificationId) return;
 
-    setValue('code', '');
+    clearErrors('code');
+    setIsSubmitting(true);
 
-    mutatePostEmailVerificationResned(
+    mutatePostEmailVerificationResend(
       { verificationId },
       {
         onSuccess: (res) => {
           if (res.isSuccess) {
-            setHasTriedResend(true);
-            setHasRetry(false);
-
-            handleTimer();
+            setSendStatus('resent');
+            resetTimer();
             setShowTimer(true);
           }
         },
         onError: (error) => {
           const message = handleMutationError(error);
           if (message) {
-            setHasTriedVerify(true);
             setError('code', { message });
           }
         },
+        onSettled: () => setIsSubmitting(false),
       },
     );
   };
 
-  // 인증 코드 확인 (인증 완료 버튼 클릭 시 실행)
-  const handleConfirmCode = () => {
-    setHasTriedVerify(true);
-    setHasRetry(true);
+  const handleConfirmCode = useCallback(() => {
+    if (!code || code.length < 6) return;
 
+    if (isMockEmailApi()) {
+      setValue('signupToken', 'dev-signup-token');
+      onNext();
+      return;
+    }
+
+    setIsSubmitting(true);
     mutatePostEmailVerificationConfirm(
       { verificationId, code },
       {
         onSuccess: (res) => {
           const result = handleMutationSuccess(res, 'confirm');
-
           if (result?.signupToken) {
             setValue('signupToken', result.signupToken);
             onNext();
@@ -133,164 +156,149 @@ const Email = ({ onPrev, onNext }: StepProps) => {
             setError('code', { message });
           }
         },
+        onSettled: () => setIsSubmitting(false),
       },
     );
-  };
+  }, [code, verificationId, mutatePostEmailVerificationConfirm, setValue, setError, onNext]);
+
+  const handlePrev = useCallback(() => {
+    if (phase === 2) {
+      setPhase(1);
+      setSendStatus('idle');
+      setShowTimer(false);
+      clearErrors('code');
+      setValue('code', '');
+      return;
+    }
+
+    onPrev();
+    setValue('email', '');
+    clearErrors('email');
+  }, [phase, onPrev, setValue, clearErrors]);
 
   useEffect(() => {
-    if (step !== 2) return;
+    if (phase !== 2 || !showTimer) return;
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
+          setError('code', { message: '인증 시간이 만료되었습니다. 다시 시도해주세요.' });
           return 0;
         }
-
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [step, timerKey]);
+  }, [phase, showTimer, timerKey, setError]);
+
+  useEffect(() => {
+    if (!setStepFooter) return;
+
+    const footer = (
+      <SignupStepActions
+        left={{ text: '이전', onClick: handlePrev }}
+        right={{
+          text: '다음',
+          disabled:
+            phase === 1
+              ? !isEmailValid || isSubmitting
+              : !code || code.length < 6 || hasCodeError || isSubmitting || timeLeft === 0,
+          onClick: phase === 1 ? handleSubmitEmail : handleConfirmCode,
+        }}
+      />
+    );
+
+    setStepFooter(footer);
+    return () => setStepFooter(null);
+  }, [
+    phase,
+    email,
+    code,
+    isEmailValid,
+    hasCodeError,
+    isSubmitting,
+    timeLeft,
+    setStepFooter,
+    errors.email,
+    errors.code,
+    handleConfirmCode,
+    handlePrev,
+    handleSubmitEmail,
+  ]);
+
+  const sendAlertMessage = sendStatus === 'resent' ? '인증 메일 재발송 완료!' : '인증 메일 발송 완료';
 
   return (
-    <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">로그인에 사용할 이메일을 입력해 주세요</p>
+    <section className="flex flex-col gap-5">
+      <Input
+        register={register('email', {
+          onChange: () => clearErrors('email'),
+        })}
+        type="email"
+        label="left"
+        placeholder="your@email.com"
+        width={630}
+        disabled={phase === 2}
+        error={hasEmailError}
+        className={EMAIL_FIELD_CLASS}
+      />
 
-      <div className="mb-[165px] relative w-full flex-1">
-        {/* 이메일 입력 */}
-        <Input
-          register={register('email')}
-          type="email"
-          label="left"
-          placeholder="your@email.com"
-          width={500}
-          disabled={step === 2}
-        />
+      {phase === 1 && hasEmailError && (
+        <Alert text={errors.email?.message} type="alert" compact className="max-w-none" />
+      )}
 
-        <div className="absolute top-[61px] w-full">
-          {/* 이메일 유효성 검사 */}
-          {errors.email?.message && <Alert text={errors.email?.message} type="alert"></Alert>}
-
-          {step === 2 && (
-            <div className="flex flex-col gap-[8px] justify-between">
-              {/* 가장 먼저 이메일 인증 요청 */}
-              {!hasRetry && !hasTriedResend && (
-                <Alert text={'인증 메일 발송 완료'} type="check" onClick={handleResend} />
-              )}
-
-              {/* 인증 메일 발송 완료 후 재전송 요청 */}
-              {!hasRetry && hasTriedResend && (
-                <Alert text="인증 메일 재발송 완료!" type="check" onClick={handleResend} />
-              )}
-
-              <div className="relative">
-                {/* 인증코드 */}
-                <Input
-                  register={register('code', {
-                    onChange: () => {
-                      setHasTriedVerify(false);
-                    },
-                  })}
-                  label="left"
-                  placeholder="인증코드를 입력하세요"
-                  maxLength={6}
-                  error={hasTriedVerify}
-                />
-
-                {/* 타이머 */}
-                {step === 2 && showTimer && (
-                  <p className="absolute top-1/2 -translate-y-1/2 right-[24px] text-negative text-[16px] font-[400] leading-[15px]">
-                    {formatTime(timeLeft)}
-                  </p>
-                )}
-              </div>
-
-              {/* 인증코드 틀렸을 때 */}
-              {hasTriedVerify && (
-                <div>
-                  <Alert
-                    text={
-                      <div className="flex justify-between flex-1">
-                        <p>{errors.code?.message}</p>
-                        <p onClick={handleResend} className="underline cursor-pointer">
-                          재전송
-                        </p>
-                      </div>
-                    }
-                    type="alert"
-                  />
-                </div>
-              )}
-            </div>
+      {phase === 2 && (
+        <>
+          {sendStatus !== 'idle' && (
+            <Alert text={sendAlertMessage} type="check" compact className="max-w-none" onClick={handleResend} />
           )}
-        </div>
-      </div>
 
-      {step === 2 && (
-        <p
-          onClick={() => setShowModal(true)}
-          className="underline text-base-color-1 underline-offset-3 b4 self-end cursor-pointer absolute top-[352px]">
-          이메일을 받지 못하셨나요?
-        </p>
-      )}
+          <div className="relative w-full">
+            <input
+              {...register('code', {
+                onChange: () => clearErrors('code'),
+              })}
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="인증코드를 입력하세요"
+              className={clsx(
+                'b4 w-full rounded-[5px] border bg-base-color-6 px-4 py-4 pr-16 text-[18px] text-base-color-0 outline-none placeholder:text-base-color-3',
+                hasCodeError ? 'border-negative' : 'border-base-color',
+              )}
+            />
+            {showTimer && timeLeft > 0 && (
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[16px] text-negative">
+                {formatTime(timeLeft)}
+              </span>
+            )}
+          </div>
 
-      {/* 처음 진입 시 이메일 입력할 때 버튼 (이전/다음) */}
-      {step === 1 && (
-        <>
-          <DualButton
-            left={{
-              text: '이전',
-              variant: 'white',
-              onClick: () => {
-                onPrev();
-                setValue('email', '');
-                clearErrors('email');
-              },
-              className: 'border-base-color!',
-            }}
-            right={{
-              text: '다음',
-              disabled: !email || !!errors.email,
-              onClick: handleSubmitEmail,
-            }}
-            width={215}
-            height={64}
-            gap={10}
-            textSize={20}
-          />
+          {hasCodeError && (
+            <Alert text={errors.code?.message} type="alert" compact className="max-w-none" onClick={handleResend} />
+          )}
+
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
+            className="b6 ml-auto text-base-color-1 underline underline-offset-2">
+            이메일을 받지 못하셨나요?
+          </button>
         </>
       )}
 
-      {/* 이메일 인증 번호 발송 후 나오는 버튼 (이전,인증 완료) */}
-      {step === 2 && (
-        <>
-          <DualButton
-            left={{
-              text: '이전',
-              variant: 'white',
-              onClick: () => {
-                setStep(1);
-                setHasTriedResend(false);
-                handleTimer();
-              },
-            }}
-            right={{
-              text: '인증 완료',
-              disabled: hasTriedVerify || code?.length < 6,
-              type: 'button',
-              onClick: handleConfirmCode,
-            }}
-            width={215}
-            height={64}
-            gap={10}
-            textSize={20}
-          />
-        </>
+      {showModal && (
+        <EmailModal
+          onClose={() => setShowModal(false)}
+          onReturn={() => {
+            setShowModal(false);
+            resetTimer();
+            setShowTimer(true);
+          }}
+        />
       )}
-
-      {showModal && <EmailModal onClick={() => setShowModal(false)} handleTimer={handleTimer} />}
     </section>
   );
 };

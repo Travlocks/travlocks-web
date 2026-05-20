@@ -1,15 +1,18 @@
+import { useCallback, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import type { StepProps } from './SignupView';
 import type { FormFields } from '../types/schema';
 import Input from '@/shared/components/Form/Input';
-import DualButton from '@/shared/components/Button/DualButton';
 import Alert from '@/shared/components/Form/Alert';
+import SignupStepActions from './SignupStepActions';
 import useGetIsNicknameExists from '../hooks/queries/useGetIsNicknameExists';
 import { useDebouncedInputProps } from '@/shared/hooks/useDebouncedInput';
-import { useEffect } from 'react';
 
-const Nickname = ({ onPrev, onNext }: StepProps) => {
+const NICKNAME_FIELD_CLASS = 'rounded-[5px]! h-[53px]! border-base-color! text-[18px]! placeholder:text-base-color-3';
+const DUPLICATE_MESSAGE = '이미 사용 중인 닉네임 입니다.';
+
+const Nickname = ({ onPrev, onNext, setStepFooter }: StepProps) => {
   const {
     register,
     setError,
@@ -19,90 +22,99 @@ const Nickname = ({ onPrev, onNext }: StepProps) => {
     formState: { errors },
   } = useFormContext<FormFields>();
 
-  const { inputProps, debouncedValue, onSubmit, reset } = useDebouncedInputProps({
-    submit: () => {
-      if (!data?.data.exists) {
-        onNext();
-      }
-    },
+  const { inputProps, debouncedValue, reset } = useDebouncedInputProps({
+    submit: () => {},
   });
 
-  const { data } = useGetIsNicknameExists({ nickname: debouncedValue }); // 닉네임 중복 검사
+  const { data, isFetching } = useGetIsNicknameExists({
+    nickname: debouncedValue,
+  });
 
-  // 닉네임 입력 후 다음 클릭 시 중복 검사 실행
-  const handleOnClickNext = () => {
-    onSubmit();
-  };
+  const hasNicknameError = Boolean(errors.nickname?.message);
+  const nicknameValue = inputProps.value ?? '';
+  const nicknameExists = data?.data?.exists;
+
+  const canProceed =
+    Boolean(debouncedValue) &&
+    debouncedValue.length >= 2 &&
+    debouncedValue.length <= 10 &&
+    !hasNicknameError &&
+    !isFetching &&
+    nicknameExists === false;
+
+  const handleNext = useCallback(async () => {
+    if (!debouncedValue) return;
+
+    setValue('nickname', debouncedValue);
+    const isValid = await trigger('nickname');
+    if (!isValid) return;
+
+    if (nicknameExists === true) {
+      setError('nickname', { message: DUPLICATE_MESSAGE });
+      return;
+    }
+
+    onNext();
+  }, [debouncedValue, setValue, trigger, nicknameExists, setError, onNext]);
 
   useEffect(() => {
-    const checkNickname = async () => {
-      // 값 없으면 에러 지우고 종료
-      if (!debouncedValue) {
-        clearErrors('nickname');
-        return;
-      }
+    if (!debouncedValue) {
+      clearErrors('nickname');
+      return;
+    }
 
-      setValue('nickname', debouncedValue);
+    setValue('nickname', debouncedValue, { shouldValidate: false });
+    void trigger('nickname');
+  }, [debouncedValue, setValue, trigger, clearErrors]);
 
-      // 스키마 검증 (2자 이상 10자 이하)
-      const isValid = await trigger('nickname');
+  useEffect(() => {
+    if (!debouncedValue || nicknameExists === undefined) return;
 
-      // 스키마 통과 후 중복 검사
-      if (isValid && data) {
-        if (data?.data.exists) {
-          setError('nickname', {
-            message: '이미 사용 중인 닉네임 입니다.',
-          });
-        } else {
-          clearErrors('nickname');
-        }
-      }
-    };
+    if (nicknameExists) {
+      setError('nickname', { message: DUPLICATE_MESSAGE });
+      return;
+    }
 
-    checkNickname();
-  }, [data, data?.data.exists, debouncedValue, setError, trigger, clearErrors, setValue]);
+    void trigger('nickname');
+  }, [nicknameExists, debouncedValue, setError, trigger]);
+
+  useEffect(() => {
+    if (!setStepFooter) return;
+
+    setStepFooter(
+      <SignupStepActions
+        left={{ text: '이전', onClick: onPrev }}
+        right={{
+          text: '다음',
+          disabled: !canProceed,
+          onClick: handleNext,
+        }}
+      />,
+    );
+
+    return () => setStepFooter(null);
+  }, [canProceed, setStepFooter, onPrev, handleNext]);
 
   return (
-    <section className="flex flex-col gap-[16px]">
-      <p className="text-base-color-2 b3 mt-[8px]">트래블록스에서 사용할 닉네임을 입력해주세요</p>
+    <section className="flex flex-col gap-5">
+      <Input
+        register={register('nickname')}
+        label="left"
+        placeholder="닉네임을 입력해주세요"
+        width={630}
+        error={hasNicknameError}
+        hasCancel
+        className={NICKNAME_FIELD_CLASS}
+        onCancel={() => {
+          reset();
+          clearErrors('nickname');
+        }}
+        {...inputProps}
+      />
 
-      <div className="relative">
-        <Input
-          register={register('nickname')}
-          label="left"
-          placeholder="닉네임 (한글, 영문 2자 이상 ~ 10자 이하)"
-          error={!!errors.nickname?.message}
-          hasCancel={true}
-          onCancel={() => {
-            reset();
-            clearErrors('nickname');
-          }}
-          {...inputProps}
-        />
-
-        <div className="absolute top-[65px] w-full">
-          {errors.nickname?.message && <Alert text={errors.nickname?.message} type="alert"></Alert>}
-        </div>
-      </div>
-
-      <div className="mt-[175px]">
-        <DualButton
-          left={{
-            text: '이전',
-            variant: 'white',
-            onClick: onPrev,
-          }}
-          right={{
-            text: '다음',
-            onClick: handleOnClickNext,
-            disabled: !debouncedValue || !data || data?.data.exists || !!errors.nickname,
-          }}
-          width={215}
-          height={64}
-          gap={10}
-          textSize={20}
-        />
-      </div>
+      {hasNicknameError && nicknameValue && (
+        <Alert text={errors.nickname?.message} type="alert" compact className="max-w-none" />
+      )}
     </section>
   );
 };
