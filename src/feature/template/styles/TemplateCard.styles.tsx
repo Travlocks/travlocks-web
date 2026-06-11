@@ -25,7 +25,7 @@ export const TemplateCardStyle = {
    * Image
    * imageContainer의 overflow-hidden은 카드 컴포넌트 호버 시 줌인되는 이미지가 정해진 영역을 벗어나지 않도록 합니다.
    */
-  imageContainer: 'w-full aspect-[387/240] overflow-hidden',
+  imageContainer: 'relative w-full aspect-[387/240] overflow-hidden cursor-default',
   image: (haveHoverGroup: boolean = true) =>
     clsx(
       'w-full h-full object-cover transition-transform duration-300 ease-in-out',

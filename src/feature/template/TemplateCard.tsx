@@ -94,18 +94,17 @@ const TemplateCard = ({
   return (
     <div className={TemplateCardStyle.wrapper() + 'group'} onClick={() => onCardClick?.(template.templateId)}>
       <div className={TemplateCardStyle.container()}>
-        {/* 썸네일 */}
-        <div className={TemplateCardStyle.imageContainer}>
+        {/* 썸네일 — 클릭 시 카드 onCardClick(사이드바 등)이 열리지 않도록 */}
+        <div className={TemplateCardStyle.imageContainer} onClick={(e) => e.stopPropagation()}>
           <img
             className={TemplateCardStyle.image()}
             src={template.coverImageUrl || template.coverImgUrl || DefaultThumbnail}
             alt={template.title}
+            draggable={false}
           />
-        </div>
-
-        {/* 여행 테마 태그 */}
-        <div className={TemplateCardStyle.travelTheme()} style={{ backgroundColor: THEME_COLORS[theme!] }}>
-          {theme}
+          <div className={TemplateCardStyle.travelTheme()} style={{ backgroundColor: THEME_COLORS[theme!] }}>
+            {theme}
+          </div>
         </div>
 
         {/* 템플릿 정보 */}
